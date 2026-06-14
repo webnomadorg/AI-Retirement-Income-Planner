@@ -13,7 +13,7 @@
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
     panel.addEventListener("click", function (e) {
-      if (e.target.closest("a") && window.innerWidth <= 1200) {
+      if (e.target.closest("a") && window.innerWidth <= 1400) {
         panel.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
       }
