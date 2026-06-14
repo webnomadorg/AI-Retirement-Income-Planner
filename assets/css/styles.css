@@ -460,12 +460,12 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .tg-tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
 .tg-tab .tg-short{ display:none; }
 @media (max-width:560px){
-  .tg-controls{ gap:.7rem; flex-wrap:nowrap; align-items:flex-start; }
-  .tg-tabs{ flex:1; gap:.35rem; }
-  .tg-tab{ padding:.45rem .7rem; font-size:.88rem; }
+  .tg-controls{ gap:.55rem; flex-wrap:nowrap; align-items:flex-start; }
+  .tg-tabs{ flex:1; gap:.2rem; }
+  .tg-tab{ padding:.45rem .48rem; font-size:.85rem; }
   .tg-tab .tg-long{ display:none; }
   .tg-tab .tg-short{ display:inline; }
-  .tg-toggle button{ padding:.45rem .85rem; font-size:1.02rem; }
+  .tg-toggle button{ padding:.45rem .7rem; font-size:1.02rem; }
   .tg-mode-label{ display:none; }
 }
 .tg-toggle{ display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--paper); }
