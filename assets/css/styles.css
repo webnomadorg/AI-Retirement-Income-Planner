@@ -104,7 +104,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .narrow{ max-width:var(--maxw-narrow); }
 .section{ padding-block:clamp(3.2rem,7vw,6rem); }
 .section-tight{ padding-block:clamp(2.2rem,4vw,3.4rem); }
-.band{ background-color:var(--paper-2); background-image:radial-gradient(circle,var(--line) 1px,transparent 1px); background-size:24px 24px; }
+.band{ background-color:var(--paper-2); background-image:radial-gradient(circle,rgba(20,48,75,.13) 1.5px,transparent 1.5px); background-size:22px 22px; }
 .band-ink{ background:linear-gradient(160deg,#10283F,#16324F 55%,#1c3d5e); color:#EaF1F8; }
 .band-ink h1,.band-ink h2,.band-ink h3{ color:#fff; }
 .band-ink p{ color:#C5D4E3; }
