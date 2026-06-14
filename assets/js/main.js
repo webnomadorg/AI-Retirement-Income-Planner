@@ -1,0 +1,215 @@
+/* WebNomad Studio — site interactions. Vanilla JS, no dependencies. */
+(function () {
+  "use strict";
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Mobile navigation toggle ---- */
+  var toggle = document.querySelector(".nav-toggle");
+  var panel = document.getElementById("nav-panel");
+  if (toggle && panel) {
+    toggle.addEventListener("click", function () {
+      var open = panel.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    panel.addEventListener("click", function (e) {
+      if (e.target.closest("a") && window.innerWidth <= 940) {
+        panel.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  /* ---- Sticky header shadow on scroll ---- */
+  var header = document.querySelector(".site-header");
+  if (header) {
+    var onScroll = function () {
+      if (window.scrollY > 12) header.classList.add("scrolled");
+      else header.classList.remove("scrolled");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ---- Scroll reveal (progressive enhancement) ---- */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if (revealEls.length && "IntersectionObserver" in window && !reduceMotion) {
+    document.documentElement.classList.add("reveal-on");
+    // stagger groups: children of [data-stagger] get incremental delays
+    document.querySelectorAll("[data-stagger]").forEach(function (group) {
+      Array.prototype.slice.call(group.children).forEach(function (child, i) {
+        if (child.classList.contains("reveal")) child.style.transitionDelay = (i * 0.07) + "s";
+      });
+    });
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("is-visible"); obs.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---- Count-up for [data-count] when it scrolls into view ---- */
+  var counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+  if (counters.length) {
+    var run = function (el) {
+      var target = parseFloat(el.getAttribute("data-count"));
+      if (reduceMotion) { el.textContent = target; return; }
+      var dur = 1100, start = performance.now();
+      var step = function (now) {
+        var p = Math.min(1, (now - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      };
+      requestAnimationFrame(step);
+    };
+    if ("IntersectionObserver" in window) {
+      var cio = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (en) { if (en.isIntersecting) { run(en.target); obs.unobserve(en.target); } });
+      }, { threshold: 0.6 });
+      counters.forEach(function (el) { cio.observe(el); });
+    } else { counters.forEach(run); }
+  }
+
+  /* ---- Interactive theme gallery ---- */
+  document.querySelectorAll(".theme-gallery").forEach(function (gal) {
+    var stage = gal.querySelector(".tg-stage img");
+    var meta = gal.querySelector(".tg-meta");
+    var tabs = gal.querySelectorAll(".tg-tab");
+    var modeBtns = gal.querySelectorAll(".tg-toggle button");
+    if (!stage) return;
+    var mode = "Light";
+    var current = tabs[0];
+    var seq = 0;
+    var stageWrap = gal.querySelector(".tg-stage");
+    var swap = function () {
+      var theme = current.getAttribute("data-theme");
+      var label = current.getAttribute("data-theme");
+      var m = mode;
+      var src = "assets/img/themes/" + theme + " Theme - " + m + ".jpeg";
+      var token = ++seq;
+      stageWrap.classList.add("swapping");
+      var pre = new Image();
+      pre.onload = function () {
+        if (token !== seq) return;           // a newer selection superseded this one
+        stage.src = src;
+        stage.alt = label + " theme, " + m.toLowerCase() + " mode";
+        if (meta) meta.innerHTML = "<strong>" + label + "</strong> — " + m.toLowerCase() + " mode";
+        requestAnimationFrame(function () { stageWrap.classList.remove("swapping"); });
+      };
+      pre.onerror = function () { if (token === seq) stageWrap.classList.remove("swapping"); };
+      pre.src = src;
+    };
+    tabs.forEach(function (t) {
+      t.addEventListener("click", function () {
+        tabs.forEach(function (x) { x.classList.remove("active"); x.setAttribute("aria-selected", "false"); });
+        t.classList.add("active"); t.setAttribute("aria-selected", "true");
+        current = t; swap();
+      });
+    });
+    modeBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        modeBtns.forEach(function (x) { x.classList.remove("active"); });
+        b.classList.add("active"); mode = b.getAttribute("data-mode"); swap();
+      });
+    });
+  });
+
+  /* ---- Animated FAQ accordion (enhances native <details>) ---- */
+  document.querySelectorAll(".faq details").forEach(function (d) {
+    var summary = d.querySelector("summary");
+    var body = summary && summary.nextElementSibling;
+    if (!body) return;
+    summary.addEventListener("click", function (e) {
+      if (reduceMotion || d.dataset.anim) { return; }   // instant native toggle / ignore mid-anim
+      e.preventDefault();
+      var DUR = 320;
+      var finish = function () {
+        body.style.transition = ""; body.style.height = ""; body.style.opacity = "";
+        d.classList.remove("animating"); delete d.dataset.anim;
+        body.removeEventListener("transitionend", onEnd);
+      };
+      var onEnd = function (ev) { if (ev.propertyName === "height") finish(); };
+      d.dataset.anim = "1"; d.classList.add("animating");
+      body.addEventListener("transitionend", onEnd);
+      // safety net if transitionend doesn't fire
+      setTimeout(function () { if (d.dataset.anim) finish(); }, DUR + 80);
+      if (d.open) {                                   // ---- close ----
+        var h = body.offsetHeight;
+        body.style.height = h + "px"; body.style.opacity = "1";
+        body.getBoundingClientRect();
+        body.style.transition = "height " + DUR + "ms cubic-bezier(.4,0,.2,1), opacity " + (DUR - 80) + "ms ease";
+        body.style.height = "0px"; body.style.opacity = "0";
+        var closeEnd = function (ev) {
+          if (ev.propertyName === "height") { d.open = false; body.removeEventListener("transitionend", closeEnd); }
+        };
+        body.addEventListener("transitionend", closeEnd);
+      } else {                                        // ---- open ----
+        d.open = true;
+        var target = body.offsetHeight;
+        body.style.height = "0px"; body.style.opacity = "0";
+        body.getBoundingClientRect();
+        body.style.transition = "height " + DUR + "ms cubic-bezier(.4,0,.2,1), opacity " + DUR + "ms ease";
+        body.style.height = target + "px"; body.style.opacity = "1";
+      }
+    });
+  });
+
+  /* ---- Video facade: click to load the real player ---- */
+  document.querySelectorAll(".video-facade").forEach(function (fac) {
+    var load = function () {
+      var src = fac.getAttribute("data-embed");
+      if (!src) return;
+      var iframe = document.createElement("iframe");
+      iframe.src = src;
+      iframe.title = fac.getAttribute("data-title") || "Video";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.setAttribute("allowfullscreen", "");
+      fac.innerHTML = "";
+      fac.appendChild(iframe);
+    };
+    fac.addEventListener("click", load);
+    fac.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load(); }
+    });
+  });
+
+  /* ---- Lightbox for screenshots (figures with class "shot") ---- */
+  var box = document.createElement("div");
+  box.className = "lightbox";
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-label", "Enlarged screenshot");
+  box.innerHTML = '<button class="lightbox-close" aria-label="Close">&times;</button><img alt="">';
+  document.body.appendChild(box);
+  var boxImg = box.querySelector("img");
+  var closeBtn = box.querySelector(".lightbox-close");
+
+  function openBox(src, alt) {
+    boxImg.src = src; boxImg.alt = alt || "";
+    box.classList.add("open"); document.body.style.overflow = "hidden"; closeBtn.focus();
+  }
+  function closeBox() {
+    box.classList.remove("open"); document.body.style.overflow = ""; boxImg.src = "";
+  }
+  document.querySelectorAll("figure.shot").forEach(function (fig) {
+    var img = fig.querySelector("img");
+    if (!img) return;
+    fig.setAttribute("tabindex", "0");
+    fig.setAttribute("role", "button");
+    fig.setAttribute("aria-label", "Enlarge: " + (img.alt || "screenshot"));
+    var open = function () { openBox(img.getAttribute("data-full") || img.src, img.alt); };
+    fig.addEventListener("click", open);
+    fig.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+  });
+  box.addEventListener("click", function (e) { if (e.target === box || e.target === closeBtn) closeBox(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && box.classList.contains("open")) closeBox(); });
+
+  /* ---- Footer year ---- */
+  var yr = document.getElementById("year");
+  if (yr) yr.textContent = new Date().getFullYear();
+})();

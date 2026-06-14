@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical &amp; Methodology — AI Retirement Income Planner v7 | WebNomad Studio</title>
+<meta name="description" content="Under the hood: the deterministic month-by-month engine, tax-treaty modeling, Monte Carlo methodology, privacy architecture and validation behind the AI Retirement Income Planner v7. Download the documentation.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://REPLACE-WITH-YOUR-DOMAIN.com/technical.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Technical & Methodology — AI Retirement Income Planner v7">
+<meta property="og:description" content="The engine, the tax modeling, the privacy architecture and the validation — explained, with downloadable documentation.">
+<meta property="og:image" content="https://REPLACE-WITH-YOUR-DOMAIN.com/assets/img/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .doc-card{ display:flex; gap:1rem; align-items:flex-start; }
+  .doc-card .doc-ico{ flex:none; width:46px; height:46px; border-radius:11px; background:var(--sage);
+    color:var(--teal-deep); display:flex; align-items:center; justify-content:center; }
+  .doc-card .doc-ico svg{ width:24px; height:24px; }
+  .doc-card h3{ font-size:1.12rem; margin-bottom:.25rem; }
+  .doc-card p{ font-size:.95rem; margin-bottom:.5rem; }
+  .doc-link{ font-weight:600; font-size:.95rem; text-decoration:none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html" aria-label="WebNomad Studio — home">
+      <img class="logo" src="assets/img/logo-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-sub">Studio</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="technical.html" aria-current="page">Technical</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="https://www.etsy.com/shop/webnomadstudio/" target="_blank" rel="noopener">View on Etsy</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-head band">
+    <div class="container narrow center">
+      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Technical</p>
+      <span class="eyebrow" style="justify-content:center;">Under the hood</span>
+      <h1>How the planner is built</h1>
+      <p class="lead center" style="margin-inline:auto;">For the curious and the careful. A look at the engine, the tax modeling, the privacy architecture and the validation that sit behind every number — plus the full documentation to download.</p>
+    </div>
+  </section>
+
+  <!-- Engine -->
+  <section class="section">
+    <div class="container">
+      <div class="feature-row reveal">
+        <div class="feature-text">
+          <span class="eyebrow">The engine</span>
+          <h3>Deterministic, month‑by‑month — not a black box</h3>
+          <p>The core is a transparent simulation that steps through retirement one month at a time. Configuration flows from your inputs through a clear pipeline — <code>buildPhaseConfig → calcAllPhases → calcPhase → simPhase</code> — applying compound growth, withdrawals and income for each phase.</p>
+          <p>Because it’s deterministic, the same inputs always produce the same results, and every figure can be traced back to the rule that produced it. Tax brackets, deductions, FPL thresholds and Medicare costs are each inflation‑adjusted per phase.</p>
+        </div>
+        <div class="feature-media"><figure class="shot frame"><img src="assets/img/themes/Quiet Fintech Theme - Light.jpeg" alt="The deterministic phase engine output on the dashboard." loading="lazy"></figure></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Three pillars -->
+  <section class="section band">
+    <div class="container">
+      <div class="grid cols-3" data-stagger>
+        <article class="card reveal">
+          <div class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+          <h3>Tax &amp; treaty modeling</h3>
+          <p>US federal brackets with the senior add‑on, Social Security provisional‑income taxation done the IRS way, NIIT and IRMAA with a two‑year lookback, plus flat state tax. International regimes for the UK, Canada and Australia apply the US Foreign Tax Credit under treaty rules.</p>
+        </article>
+        <article class="card reveal">
+          <div class="icon-chip gold" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12A10 10 0 1 1 12 2"/><path d="M22 2 12 12"/><path d="M16 2h6v6"/></svg></div>
+          <h3>Monte Carlo methodology</h3>
+          <p>Thousands of randomised market paths with configurable volatility and — importantly — randomised inflation in every run, for a more honest distribution of outcomes. A historical backtest replays real US market history since 1928 against your plan.</p>
+        </article>
+        <article class="card reveal">
+          <div class="icon-chip sky" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Privacy architecture</h3>
+          <p>The entire app is one self‑contained HTML file. State lives in your browser’s local storage; nothing is transmitted. Optional AI runs under <em>your</em> own API key, called directly from your browser — there’s no WebNomad server in the loop and no account to create.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Validation -->
+  <section class="section">
+    <div class="container">
+      <div class="feature-row flip reveal">
+        <div class="feature-text">
+          <span class="eyebrow">Accuracy &amp; validation</span>
+          <h3>A calculation engine that checks itself</h3>
+          <p>The planner ships with a golden‑master self‑test that re‑runs the engine against fixed fixture plans and diffs the results against known‑good values — catching silent calculation drift instantly. Coverage spans four national tax regimes, Social Security claim‑age splits, RMD/NIIT/ACA, early retirement, Roth conversions, pensions, lump sums and goals.</p>
+          <ul class="checklist">
+            <li>Regression‑guarded calc engine</li>
+            <li>Worked example reports you can inspect</li>
+            <li>Documented methodology &amp; architecture</li>
+          </ul>
+        </div>
+        <div class="feature-media"><figure class="shot frame"><img src="assets/img/screens/color-system.jpg" alt="The planner’s WCAG-AA colour and theme architecture system." loading="lazy"></figure></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accessibility -->
+  <section class="section band">
+    <div class="container narrow">
+      <div class="center" style="margin-bottom:1.6rem;">
+        <span class="eyebrow" style="justify-content:center;">Accessible &amp; honest</span>
+        <h2>Built for confidence, designed for everyone</h2>
+      </div>
+      <div class="callout">
+        <p style="margin:0;"><strong>Information first, accessible by default.</strong> A WCAG‑AA colour system, high‑contrast theme, adjustable text up to 135% and reduced‑motion support make long planning sessions comfortable. The figures distinguish clearly between <em>nominal</em> (future dollars) and <em>real</em> (today’s money) so you’re never misled by inflation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Downloads -->
+  <section class="section">
+    <div class="container">
+      <div class="center" style="max-width:55ch;margin-inline:auto;margin-bottom:2.2rem;">
+        <span class="eyebrow" style="justify-content:center;">Documentation</span>
+        <h2>Read the details for yourself</h2>
+        <p class="lead center" style="margin-inline:auto;">Full documentation, openly available — because a tool you can question is a tool you can trust.</p>
+      </div>
+      <div class="grid cols-2" data-stagger>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+          <div>
+            <h3>User Guide</h3>
+            <p class="muted">A complete walkthrough of every screen and feature in v7.</p>
+            <a class="doc-link" href="assets/downloads/Retirement_Income_Planner_v7_User_Guide.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+          <div>
+            <h3>Methodology</h3>
+            <p class="muted">How the calculations work — assumptions, formulas and modeling choices.</p>
+            <a class="doc-link" href="assets/downloads/Retirement_Planner_Methodology.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+          <div>
+            <h3>Architecture</h3>
+            <p class="muted">The structure of the app, its state model and calculation pipeline.</p>
+            <a class="doc-link" href="assets/downloads/Retirement_Planner_Architecture.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <div>
+            <h3>Security Report</h3>
+            <p class="muted">The privacy model, data handling and the local‑only architecture.</p>
+            <a class="doc-link" href="assets/downloads/Retirement_Planner_Security_Report.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <div>
+            <h3>Validation</h3>
+            <p class="muted">How outputs are checked and regression‑guarded against drift.</p>
+            <a class="doc-link" href="assets/downloads/Retirement_Planner_Validation.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+        <div class="card doc-card reveal">
+          <span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+          <div>
+            <h3>Example Report (v7)</h3>
+            <p class="muted">A real, worked plan exported from the planner — see the output for yourself.</p>
+            <a class="doc-link" href="assets/downloads/Example_Report_v7.pdf" target="_blank" rel="noopener">Download PDF →</a>
+          </div>
+        </div>
+
+      </div>
+      <p class="center muted mt-3" style="font-size:.9rem;">Also available: a Best‑Practices guide — <a href="assets/downloads/Retirement_Planner_Best_Practices.pdf" target="_blank" rel="noopener">download PDF</a>.</p>
+    </div>
+  </section>
+
+  <section class="section band-ink on-ink cta-band">
+    <div class="container">
+      <span class="eyebrow" style="justify-content:center;">Engineered to be trusted</span>
+      <h2>Serious tools for a serious decision.</h2>
+      <div class="cta-actions">
+        <a class="btn btn-primary btn-lg" href="products.html">See the products</a>
+        <a class="btn btn-outline btn-lg" href="faq.html">Read the FAQ</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="WebNomad Studio — home">
+          <img class="logo" src="assets/img/logo-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+      </div>
+      <div class="footer-col"><h4>Explore</h4><ul><li><a href="products.html">Products</a></li><li><a href="features.html">Features</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="technical.html">Technical</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+      <div class="footer-col"><h4>Buy</h4><ul><li><a href="https://www.etsy.com/listing/4509386063/ai-retirement-income-planner-v7-chat" target="_blank" rel="noopener">Planner v7</a></li><li><a href="https://www.etsy.com/listing/4503115757/roth-optimizer-retirement-planner-v6" target="_blank" rel="noopener">v7 + Roth Bundle</a></li><li><a href="https://www.etsy.com/shop/webnomadstudio/" target="_blank" rel="noopener">All versions</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="mailto:dev@webnomad.com">dev@webnomad.com</a></li><li><a href="faq.html">Help &amp; FAQ</a></li><li><a href="technical.html">Documentation</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

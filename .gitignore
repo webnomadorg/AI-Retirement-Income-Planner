@@ -1,0 +1,15 @@
+# Source assets & build helpers — not part of the published site
+Source Files/
+Website Notes.txt
+
+# Local helper script (not part of the published site)
+sync.ps1
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*~
+.vscode/
+.idea/
