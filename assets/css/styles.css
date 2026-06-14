@@ -137,14 +137,14 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .brand .logo{ width:38px; height:38px; flex:none; }
 .brand-name{ font-family:var(--font-display); font-weight:600; font-size:1.22rem; color:var(--ink); line-height:1; letter-spacing:-.01em; }
 .brand-sub{ display:block; font-family:var(--font-sans); font-size:.62rem; letter-spacing:.22em; color:var(--teal); font-weight:600; text-transform:uppercase; margin-top:3px; }
-.brand-tagline{ display:block; font-family:var(--font-sans); font-size:.575rem; letter-spacing:.01em; color:#fff; font-weight:600; margin-top:3px; white-space:nowrap; background:rgba(0,0,0,.48); padding:2px 6px; border-radius:3px; }
-html[data-theme="contrast"] .brand-tagline{ background:none; padding:0; color:var(--teal); }
+.brand-tagline{ display:block; font-family:var(--font-sans); font-size:.575rem; letter-spacing:.01em; color:#fff; font-weight:600; margin-top:1px; white-space:nowrap; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:2px 6px; border-radius:3px; }
+html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:none; -webkit-backdrop-filter:none; padding:0; color:var(--teal); }
 @media (max-width:380px){ .brand-tagline{ font-size:.52rem; } }
 .nav-links{ display:flex; align-items:center; gap:.35rem; list-style:none; margin:0; padding:0; }
 .nav-links a{ display:inline-block; padding:.55rem .85rem; border-radius:9px; text-decoration:none;
   color:var(--ink); font-weight:550; font-size:1rem; transition:background var(--transition),color var(--transition); }
 .nav-links a:hover{ background:var(--paper-2); color:var(--ink-2); }
-.nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(30,122,110,.22); }
+.nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(30,122,110,.34); }
 .nav-cta{ display:flex; align-items:center; gap:.6rem; }
 .nav-toggle{ display:none; }
 
