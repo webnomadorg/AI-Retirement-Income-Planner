@@ -366,7 +366,7 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
 .site-header{ transition:box-shadow .35s var(--transition), background .35s var(--transition); }
 .site-header.scrolled{
   background:
-    linear-gradient(rgba(247,242,232,.90), rgba(247,242,232,.91)),
+    linear-gradient(rgba(247,242,232,.10), rgba(247,242,232,.12)),
     url("../img/header-beach.jpg") center 38% / cover no-repeat;
   box-shadow:0 8px 30px -18px rgba(20,48,75,.45);
 }
@@ -405,7 +405,7 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .stats-band{ display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; }
 .stats-band .stat{ padding:.4rem; }
 .stats-band .stat .num{ display:flex; align-items:baseline; justify-content:center; gap:.05em; }
-.stats-band .num-pre{ font-family:var(--font-sans); font-size:.42em; font-weight:600; color:#9FB3C6; margin-right:.15em; letter-spacing:.01em; }
+.stats-band .num-pre{ font-family:var(--font-sans); font-size:.58em; font-weight:600; color:#9FB3C6; margin-right:.15em; letter-spacing:.01em; }
 @media (max-width:780px){ .stats-band{ grid-template-columns:repeat(2,1fr); gap:1.6rem 1rem; } }
 @media (max-width:420px){ .stats-band{ grid-template-columns:1fr 1fr; } }
 

@@ -55,7 +55,7 @@
     var run = function (el) {
       var target = parseFloat(el.getAttribute("data-count"));
       if (reduceMotion) { el.textContent = target; return; }
-      var dur = 1100, start = performance.now();
+      var dur = 2600, start = performance.now();
       var step = function (now) {
         var p = Math.min(1, (now - start) / dur);
         var eased = 1 - Math.pow(1 - p, 3);
