@@ -107,7 +107,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .site-header{
   position:sticky; top:0; z-index:100;
   background:
-    linear-gradient(rgba(247,242,232,.84), rgba(247,242,232,.86)),
+    linear-gradient(rgba(247,242,232,.10), rgba(247,242,232,.12)),
     url("../img/header-beach.jpg") center 38% / cover no-repeat;
   backdrop-filter:saturate(1.2) blur(10px);
   border-bottom:1px solid var(--line);
@@ -283,8 +283,8 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 /* pills */
 .pill-row{ display:flex; flex-wrap:wrap; gap:.55rem; justify-content:center; }
 .pill{ background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:.5rem 1rem;
-  font-size:.95rem; color:var(--ink-2); font-weight:550; box-shadow:var(--shadow-sm); }
-.pill b{ color:var(--teal-deep); }
+  font-size:.88rem; color:var(--ink-soft); font-weight:400; box-shadow:var(--shadow-sm); }
+.pill b{ color:var(--ink); font-weight:700; font-size:1rem; }
 
 /* ---- 13. Quote / callout ------------------------------------------------- */
 .quote{ font-family:var(--font-display); font-size:clamp(1.5rem,1.1rem+1.6vw,2.3rem); line-height:1.32;
