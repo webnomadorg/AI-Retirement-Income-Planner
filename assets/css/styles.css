@@ -104,7 +104,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .narrow{ max-width:var(--maxw-narrow); }
 .section{ padding-block:clamp(3.2rem,7vw,6rem); }
 .section-tight{ padding-block:clamp(2.2rem,4vw,3.4rem); }
-.band{ background:var(--paper-2); }
+.band{ background-color:var(--paper-2); background-image:radial-gradient(circle,var(--line) 1px,transparent 1px); background-size:24px 24px; }
 .band-ink{ background:linear-gradient(160deg,#10283F,#16324F 55%,#1c3d5e); color:#EaF1F8; }
 .band-ink h1,.band-ink h2,.band-ink h3{ color:#fff; }
 .band-ink p{ color:#C5D4E3; }
@@ -261,7 +261,8 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 
 /* ---- 10. Cards ----------------------------------------------------------- */
 .card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-  padding:clamp(1.3rem,2.5vw,1.8rem); box-shadow:var(--shadow-sm); transition:transform var(--transition),box-shadow var(--transition); }
+  padding:clamp(1.3rem,2.5vw,1.8rem); box-shadow:var(--shadow-sm); transition:transform var(--transition),box-shadow var(--transition);
+  border-top:3px solid var(--teal); }
 .card.hoverable:hover{ transform:translateY(-4px); box-shadow:var(--shadow); }
 .icon-chip{ width:50px; height:50px; border-radius:13px; background:var(--sage); color:var(--teal-deep);
   display:flex; align-items:center; justify-content:center; margin-bottom:1rem; }
@@ -529,6 +530,7 @@ html.dark .dark-toggle .icon-moon{ display:none; }
 }
 @media (min-width:1201px){
   .nav-panel{ gap:1rem; }
+  .nav-cta{ padding-inline-end:.85rem; }
 }
 
 /* ============================================================================
@@ -579,6 +581,7 @@ html.dark .frame-bar i{ background:#2a3448; }
 html.dark .frame-bar i:nth-child(1){ background:#5a3a38; }
 html.dark .frame-bar i:nth-child(2){ background:#5a4c28; }
 html.dark .frame-bar i:nth-child(3){ background:#2a4838; }
+html.dark .band{ background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px); }
 html.dark .band-ink{ background:linear-gradient(160deg,#0c1e30,#102840 55%,#163252); }
 html.dark .site-footer{ background:#0c1220; }
 html.dark .site-footer a{ color:#9ab8cc; }

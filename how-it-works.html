@@ -16,6 +16,23 @@
   .step-num{ display:inline-flex; align-items:center; justify-content:center; width:2.6rem; height:2.6rem;
     border-radius:50%; background:var(--teal); color:#fff; font-family:var(--font-display); font-weight:600;
     font-size:1.3rem; margin-bottom:1rem; box-shadow:0 6px 16px -8px rgba(30,122,110,.8); }
+  .steps-section{ counter-reset:step; }
+  .feature-text:has(.step-num){ counter-increment:step; position:relative; }
+  .feature-text:has(.step-num)::before{
+    content:counter(step);
+    position:absolute;
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:16rem;
+    line-height:1;
+    color:var(--ink);
+    opacity:.04;
+    right:-2rem;
+    top:-1rem;
+    pointer-events:none;
+    user-select:none;
+  }
+  .feature-row.flip .feature-text:has(.step-num)::before{ right:auto; left:-2rem; }
 </style>
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
 </head>
@@ -69,7 +86,7 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section steps-section">
     <div class="container">
 
       <div class="feature-row reveal">
