@@ -174,4 +174,26 @@
   /* ---- Footer year ---- */
   var yr = document.getElementById("year");
   if (yr) yr.textContent = new Date().getFullYear();
+
+  /* ---- Dark mode toggle ---- */
+  var darkBtn = document.getElementById("darkToggle");
+  if (darkBtn) {
+    darkBtn.addEventListener("click", function () {
+      var isDark = document.documentElement.classList.toggle("dark");
+      localStorage.setItem("wn-dark", isDark ? "1" : "0");
+    });
+  }
+
+  /* ---- Colour theme selector ---- */
+  var themeSel = document.getElementById("themeSelect");
+  if (themeSel) {
+    // Sync selector to whatever the inline script applied on load
+    themeSel.value = document.documentElement.getAttribute("data-theme") || "";
+    themeSel.addEventListener("change", function () {
+      var theme = themeSel.value;
+      if (theme) document.documentElement.setAttribute("data-theme", theme);
+      else document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("wn-theme", theme);
+    });
+  }
 })();
