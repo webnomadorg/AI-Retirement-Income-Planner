@@ -80,6 +80,8 @@ html{ font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
 body{
   margin:0; font-family:var(--font-sans); font-size:var(--fs-body);
   line-height:1.65; color:var(--ink); background:var(--paper);
+  background-image:linear-gradient(rgba(20,48,75,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(20,48,75,.05) 1px,transparent 1px);
+  background-size:28px 28px;
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
 img,svg,video{ max-width:100%; height:auto; display:block; }
@@ -563,7 +565,7 @@ html.dark{
   --shadow-lg: 0 30px 70px -28px rgba(0,0,0,.85), 0 10px 24px -12px rgba(0,0,0,.55);
   --ring:      0 0 0 3px rgba(42,181,164,.40);
 }
-html.dark body{ color:var(--ink); background:var(--paper); }
+html.dark body{ color:var(--ink); background:var(--paper); background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px); background-size:28px 28px; }
 html.dark .site-header{
   background:linear-gradient(rgba(19,23,30,.88),rgba(19,23,30,.90)),url("../img/header-beach.jpg") center 38%/cover no-repeat;
   border-color:rgba(180,210,240,.10);
