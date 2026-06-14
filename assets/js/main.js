@@ -117,43 +117,25 @@
     });
   });
 
-  /* ---- Animated FAQ accordion (enhances native <details>) ---- */
+  /* ---- Animated FAQ accordion (Web Animations API — smooth both ways) ---- */
   document.querySelectorAll(".faq details").forEach(function (d) {
     var summary = d.querySelector("summary");
     var body = summary && summary.nextElementSibling;
-    if (!body) return;
+    if (!body || typeof body.animate !== "function") return;   // graceful fallback to native toggle
     summary.addEventListener("click", function (e) {
-      if (reduceMotion || d.dataset.anim) { return; }   // instant native toggle / ignore mid-anim
+      if (reduceMotion || d.dataset.anim) return;              // respect reduced-motion / ignore mid-flight
       e.preventDefault();
-      var DUR = 320;
-      var finish = function () {
-        body.style.transition = ""; body.style.height = ""; body.style.opacity = "";
-        d.classList.remove("animating"); delete d.dataset.anim;
-        body.removeEventListener("transitionend", onEnd);
-      };
-      var onEnd = function (ev) { if (ev.propertyName === "height") finish(); };
-      d.dataset.anim = "1"; d.classList.add("animating");
-      body.addEventListener("transitionend", onEnd);
-      // safety net if transitionend doesn't fire
-      setTimeout(function () { if (d.dataset.anim) finish(); }, DUR + 80);
-      if (d.open) {                                   // ---- close ----
-        var h = body.offsetHeight;
-        body.style.height = h + "px"; body.style.opacity = "1";
-        body.getBoundingClientRect();
-        body.style.transition = "height " + DUR + "ms cubic-bezier(.4,0,.2,1), opacity " + (DUR - 80) + "ms ease";
-        body.style.height = "0px"; body.style.opacity = "0";
-        var closeEnd = function (ev) {
-          if (ev.propertyName === "height") { d.open = false; body.removeEventListener("transitionend", closeEnd); }
-        };
-        body.addEventListener("transitionend", closeEnd);
-      } else {                                        // ---- open ----
-        d.open = true;
-        var target = body.offsetHeight;
-        body.style.height = "0px"; body.style.opacity = "0";
-        body.getBoundingClientRect();
-        body.style.transition = "height " + DUR + "ms cubic-bezier(.4,0,.2,1), opacity " + DUR + "ms ease";
-        body.style.height = target + "px"; body.style.opacity = "1";
-      }
+      var opening = !d.open;
+      d.dataset.anim = "1";
+      if (opening) d.open = true;                              // reveal content so we can measure it
+      var full = body.scrollHeight;
+      var frames = opening
+        ? [{ height: "0px", opacity: 0 }, { height: full + "px", opacity: 1 }]
+        : [{ height: full + "px", opacity: 1 }, { height: "0px", opacity: 0 }];
+      var anim = body.animate(frames, { duration: 300, easing: "cubic-bezier(.4,0,.2,1)" });
+      var done = function () { if (!opening) d.open = false; delete d.dataset.anim; };
+      anim.onfinish = done;
+      anim.oncancel = done;
     });
   });
 
