@@ -117,27 +117,7 @@
     });
   });
 
-  /* ---- Animated FAQ accordion (Web Animations API — smooth both ways) ---- */
-  document.querySelectorAll(".faq details").forEach(function (d) {
-    var summary = d.querySelector("summary");
-    var body = summary && summary.nextElementSibling;
-    if (!body || typeof body.animate !== "function") return;   // graceful fallback to native toggle
-    summary.addEventListener("click", function (e) {
-      if (reduceMotion || d.dataset.anim) return;              // respect reduced-motion / ignore mid-flight
-      e.preventDefault();
-      var opening = !d.open;
-      d.dataset.anim = "1";
-      if (opening) d.open = true;                              // reveal content so we can measure it
-      var full = body.scrollHeight;
-      var frames = opening
-        ? [{ height: "0px", opacity: 0 }, { height: full + "px", opacity: 1 }]
-        : [{ height: full + "px", opacity: 1 }, { height: "0px", opacity: 0 }];
-      var anim = body.animate(frames, { duration: 300, easing: "cubic-bezier(.4,0,.2,1)" });
-      var done = function () { if (!opening) d.open = false; delete d.dataset.anim; };
-      anim.onfinish = done;
-      anim.oncancel = done;
-    });
-  });
+  /* ---- FAQ uses native <details> toggle (no JS animation) ---- */
 
   /* ---- Video facade: click to load the real player ---- */
   document.querySelectorAll(".video-facade").forEach(function (fac) {

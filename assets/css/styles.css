@@ -106,7 +106,10 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 /* ---- 4. Header / nav ----------------------------------------------------- */
 .site-header{
   position:sticky; top:0; z-index:100;
-  background:rgba(247,242,232,.82); backdrop-filter:saturate(1.2) blur(10px);
+  background:
+    linear-gradient(rgba(247,242,232,.84), rgba(247,242,232,.86)),
+    url("../img/header-beach.jpg") center 38% / cover no-repeat;
+  backdrop-filter:saturate(1.2) blur(10px);
   border-bottom:1px solid var(--line);
 }
 .nav{ display:flex; align-items:center; justify-content:space-between; gap:1.5rem; min-height:72px; }
@@ -192,7 +195,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .hero-photo{ position:relative; overflow:hidden; isolation:isolate; color:#fff;
   min-height:clamp(460px, 72vh, 700px); display:flex; align-items:center; padding-block:0; }
 .hero-photo .hero-photo-bg{ position:absolute; inset:0; z-index:-2;
-  background:#0c1d2f url("../img/hero.jpg") center right / cover no-repeat; }
+  background:#0c1d2f url("../img/hero.jpg") right top / cover no-repeat; }
 .hero-photo::before{ content:""; position:absolute; inset:0; z-index:-1; background:
   linear-gradient(90deg, rgba(8,20,33,.93) 0%, rgba(8,20,33,.8) 28%, rgba(8,20,33,.46) 54%, rgba(8,20,33,.12) 80%, rgba(8,20,33,0) 100%),
   linear-gradient(0deg, rgba(8,20,33,.5), rgba(8,20,33,0) 42%); }
@@ -208,7 +211,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .hero-photo .btn-outline:hover{ background:#fff; color:var(--ink); border-color:#fff; }
 @media (max-width:760px){
   .hero-photo{ min-height:auto; }
-  .hero-photo .hero-photo-bg{ background-position:center center; }
+  .hero-photo .hero-photo-bg{ background-position:center top; }
   .hero-photo::before{ background:linear-gradient(0deg, rgba(8,20,33,.92) 0%, rgba(8,20,33,.62) 55%, rgba(8,20,33,.5) 100%); }
   .hero-content{ max-width:100%; padding-block:clamp(2.4rem,9vw,3.4rem); }
 }
@@ -306,7 +309,6 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .faq details[open] summary::after{ transform:rotate(45deg); }
 .faq details > div{ padding:0 1.3rem 1.2rem; color:var(--ink-soft); }
 .faq details > div p:last-child{ margin-bottom:0; }
-.faq details > div{ overflow:hidden; }
 .faq summary{ transition:background var(--transition); }
 .faq details[open] summary, .faq summary:hover{ background:var(--surface-soft); }
 
@@ -362,7 +364,12 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
    20. MOTION & POLISH (progressive — only active when JS adds .reveal-on)
    ============================================================================ */
 .site-header{ transition:box-shadow .35s var(--transition), background .35s var(--transition); }
-.site-header.scrolled{ background:rgba(247,242,232,.95); box-shadow:0 8px 30px -18px rgba(20,48,75,.45); }
+.site-header.scrolled{
+  background:
+    linear-gradient(rgba(247,242,232,.90), rgba(247,242,232,.91)),
+    url("../img/header-beach.jpg") center 38% / cover no-repeat;
+  box-shadow:0 8px 30px -18px rgba(20,48,75,.45);
+}
 
 /* Scroll reveal */
 html.reveal-on .reveal{ opacity:0; transform:translateY(24px);
@@ -435,7 +442,8 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
   .tg-tab{ padding:.45rem .7rem; font-size:.88rem; }
   .tg-tab .tg-long{ display:none; }
   .tg-tab .tg-short{ display:inline; }
-  .tg-toggle button{ padding:.45rem .8rem; font-size:.85rem; }
+  .tg-toggle button{ padding:.45rem .85rem; font-size:1.02rem; }
+  .tg-mode-label{ display:none; }
 }
 .tg-toggle{ display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--paper); }
 .tg-toggle button{ border:none; background:transparent; cursor:pointer; font:inherit; font-weight:600; font-size:.92rem;

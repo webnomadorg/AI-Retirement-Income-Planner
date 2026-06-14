@@ -1,7 +1,7 @@
 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="everwise">
   <rect width="512" height="512" rx="104" fill="#041B33"/>
-  <!-- icon graphic (recentred; brand name/tagline omitted for small sizes) -->
-  <g transform="translate(0,78)">
+  <!-- icon graphic scaled to fill the badge (brand name/tagline omitted for small sizes) -->
+  <g transform="translate(256,256) scale(1.95) translate(-256,-170)">
     <circle cx="256" cy="170" r="95" fill="#5F8F7A"/>
     <path d="M161 185 Q256 150 351 185" stroke="#FFFFFF" stroke-width="6" fill="none"/>
     <circle cx="256" cy="155" r="28" fill="#E4B64A"/>
