@@ -148,7 +148,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .nav-cta{ display:flex; align-items:center; gap:.6rem; }
 .nav-toggle{ display:none; }
 
-@media (max-width:1400px){
+@media (max-width:1420px){
   .nav-toggle{ display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px;
     border:1px solid var(--line); background:var(--surface); border-radius:10px; cursor:pointer; }
   .nav-toggle span{ display:block; width:20px; height:2px; background:var(--ink); position:relative; }
@@ -163,7 +163,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
   .nav-cta{ margin-top:.9rem; }
   .nav-cta .btn{ width:100%; justify-content:center; }
 }
-@media (min-width:1401px){ .nav-panel{ display:flex !important; align-items:center; gap:1.5rem; } }
+@media (min-width:1421px){ .nav-panel{ display:flex !important; align-items:center; gap:1.5rem; } }
 
 /* ---- 5. Buttons ---------------------------------------------------------- */
 .btn{ display:inline-flex; align-items:center; gap:.55rem; font-family:var(--font-sans);
@@ -524,12 +524,12 @@ html.dark .dark-toggle .icon-moon{ display:none; }
 .theme-select:hover{ background:var(--surface); border-color:var(--teal-deep); }
 .theme-select:focus-visible{ outline:none; box-shadow:var(--ring); }
 
-@media (max-width:1400px){
+@media (max-width:1420px){
   .nav-theme{ margin-top:.9rem; gap:.6rem; }
   .theme-select{ max-width:100%; font-size:.95rem; padding:.6rem .7rem; }
   .dark-toggle{ width:44px; height:44px; }
 }
-@media (min-width:1401px){
+@media (min-width:1421px){
   .nav-panel{ gap:1rem; }
   .nav-cta{ padding-inline-end:.85rem; }
 }
