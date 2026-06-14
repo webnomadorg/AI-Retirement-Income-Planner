@@ -330,7 +330,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .faq summary::-webkit-details-marker{ display:none; }
 .faq summary::after{ content:"+"; font-size:1.5rem; color:var(--teal); font-weight:400; transition:transform var(--transition); }
 .faq details[open] summary::after{ transform:rotate(45deg); }
-.faq details > div{ padding:0 1.3rem 1.2rem; color:var(--ink-soft); }
+.faq details > div{ padding:1.2rem 1.3rem; color:var(--ink-soft); }
 .faq details > div p:last-child{ margin-bottom:0; }
 .faq summary{ transition:background var(--transition); }
 .faq details[open] summary, .faq summary:hover{ background:var(--surface-soft); }
@@ -460,8 +460,8 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .tg-tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
 .tg-tab .tg-short{ display:none; }
 @media (max-width:560px){
-  .tg-controls{ gap:.7rem; }
-  .tg-tabs{ gap:.35rem; }
+  .tg-controls{ gap:.7rem; flex-wrap:nowrap; align-items:flex-start; }
+  .tg-tabs{ flex:1; gap:.35rem; }
   .tg-tab{ padding:.45rem .7rem; font-size:.88rem; }
   .tg-tab .tg-long{ display:none; }
   .tg-tab .tg-short{ display:inline; }
