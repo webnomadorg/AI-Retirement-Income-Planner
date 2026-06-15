@@ -536,6 +536,7 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav-cta{ padding-inline-end:.85rem; }
   .brand{ padding-inline-start:.85rem; }
   .nav-links{ padding-inline-start:.85rem; }
+  html.dark .nav{ min-height:80px; }
 }
 
 /* ============================================================================
@@ -568,7 +569,6 @@ html.dark{
   --ring:      0 0 0 3px rgba(42,181,164,.40);
 }
 html.dark body{ color:var(--ink); background:var(--paper); background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px); background-size:28px 28px; }
-html.dark .nav-links a{ padding-block:1px; }
 html.dark .site-header{
   background:linear-gradient(rgba(19,23,30,.88),rgba(19,23,30,.90)),url("../img/header-beach.jpg") center 38%/cover no-repeat;
   border-color:rgba(180,210,240,.10);
