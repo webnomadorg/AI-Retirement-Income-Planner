@@ -536,7 +536,7 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav-cta{ padding-inline-end:.85rem; }
   .brand{ padding-inline-start:.85rem; }
   .nav-links{ padding-inline-start:.85rem; }
-  html.dark .nav{ min-height:80px; }
+  .nav{ min-height:80px; }
 }
 
 /* ============================================================================
