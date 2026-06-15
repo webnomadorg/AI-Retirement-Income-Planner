@@ -540,6 +540,7 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav{ min-height:80px; }
   .brand-name{ margin-top:-2px; }
   .brand-tagline{ margin-top:-4px; }
+  .site-header .brand > span{ transform:translateY(-2px); }
 }
 
 /* ============================================================================
