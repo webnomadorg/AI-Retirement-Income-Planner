@@ -50,7 +50,7 @@ This folder is its own git repo, wired to **github.com/webnomadorg/AI-Retirement
 - Enable **GitHub Pages** on the repo (Settings → Pages → deploy from `main` / root) to host it free at a github.io URL, or point a custom domain at it.
 
 ## Before you go live — quick edits
-1. **Domain:** find-and-replace `https://REPLACE-WITH-YOUR-DOMAIN.com` across all six `.html` files with your real domain (used in canonical + social tags).
+1. **Domain:** canonical + social tags across all seven `.html` files point to `https://airetirementincomeplanner.com`.
 2. **Prices / sales:** edit the `.price`, `.price-was`, `.price-save` spans in `index.html` and `products.html`, and the comparison table in `products.html`.
 3. **Etsy links:** product buttons point to —
    - Planner v7: `https://www.etsy.com/listing/4509386063/...`
