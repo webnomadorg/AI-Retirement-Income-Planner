@@ -142,6 +142,10 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .brand-tagline{ display:block; font-family:var(--font-sans); font-size:.7rem; letter-spacing:.01em; color:#fff; font-weight:600; margin-top:1px; white-space:nowrap; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:2px 6px; border-radius:3px; }
 html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:none; -webkit-backdrop-filter:none; padding:0; color:var(--teal); }
 @media (max-width:380px){ .brand-tagline{ font-size:.52rem; } }
+/* Tighten the brand lockup so the tagline sits close to "WebNomad" and aligns with the logo — at every screen size, not just large desktop. */
+.brand-name{ margin-top:-2px; }
+.brand-tagline{ margin-top:-4px; }
+.site-header .brand > span{ transform:translateY(-2px); }
 .nav-links{ display:flex; align-items:center; gap:.35rem; list-style:none; margin:0; padding:0; }
 .nav-links a{ display:inline-block; padding:.33rem .85rem; margin-top:6px; margin-bottom:6px; border-radius:9px; text-decoration:none;
   color:var(--ink); font-weight:550; font-size:1rem; transition:background var(--transition),color var(--transition); }
@@ -538,9 +542,6 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav-panel{ background:rgba(20,48,75,.13); border-radius:9px; padding-inline:.4rem; }
   html.dark .nav-panel{ background:rgba(255,255,255,.07); }
   .nav{ min-height:80px; }
-  .brand-name{ margin-top:-2px; }
-  .brand-tagline{ margin-top:-4px; }
-  .site-header .brand > span{ transform:translateY(-2px); }
 }
 
 /* ============================================================================
