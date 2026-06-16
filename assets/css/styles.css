@@ -350,6 +350,19 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
 .lightbox-close{ position:fixed; top:1.1rem; right:1.3rem; width:46px; height:46px; border-radius:50%;
   background:rgba(255,255,255,.15); color:#fff; border:none; font-size:1.5rem; cursor:pointer; }
 
+/* ---- Back-to-top FAB — mirrors the planner's scroll-top-fab; shown once the page scrolls ---- */
+.scroll-top-fab{
+  position:fixed; right:20px; bottom:20px; z-index:150; width:46px; height:46px; border-radius:50%;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  box-shadow:var(--shadow); opacity:0; visibility:hidden; transform:translateY(8px);
+  transition:opacity .2s ease, transform .2s ease, visibility .2s, background .15s, color .15s, border-color .15s;
+}
+.scroll-top-fab.visible{ opacity:.65; visibility:visible; transform:translateY(0); }
+.scroll-top-fab.visible:hover{ opacity:1; background:var(--surface); color:var(--teal); border-color:var(--teal); }
+.scroll-top-fab svg{ width:20px; height:20px; pointer-events:none; }
+@media (max-width:480px){ .scroll-top-fab{ right:14px; bottom:14px; width:42px; height:42px; } }
+
 /* ---- 17. Breadcrumb / page header --------------------------------------- */
 .page-head{ padding-block:clamp(2.4rem,5vw,4rem) clamp(1.6rem,3vw,2.4rem); }
 .crumb{ font-size:.9rem; color:var(--ink-faint); margin-bottom:1rem; }
@@ -582,6 +595,7 @@ html.dark .site-header.scrolled{
   background:linear-gradient(rgba(19,23,30,.96),rgba(19,23,30,.98)),url("../img/header-beach.jpg") center 38%/cover no-repeat;
   box-shadow:0 8px 30px -18px rgba(0,0,0,.7);
 }
+html.dark .brand-tagline{ color:#fff; }
 html.dark .nav-toggle{ background:var(--surface); border-color:var(--line); }
 html.dark .nav-toggle span,
 html.dark .nav-toggle span::before,

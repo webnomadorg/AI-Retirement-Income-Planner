@@ -171,6 +171,24 @@
   box.addEventListener("click", function (e) { if (e.target === box || e.target === closeBtn) closeBox(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && box.classList.contains("open")) closeBox(); });
 
+  /* ---- Back-to-top FAB (mirrors the planner's scroll-top-fab) ---- */
+  var fab = document.createElement("button");
+  fab.id = "scroll-top-fab";
+  fab.className = "scroll-top-fab";
+  fab.type = "button";
+  fab.title = "Back to top";
+  fab.setAttribute("aria-label", "Scroll to top");
+  fab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
+  document.body.appendChild(fab);
+  fab.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  });
+  var onFabScroll = function () {
+    fab.classList.toggle("visible", window.scrollY > 400);
+  };
+  onFabScroll();
+  window.addEventListener("scroll", onFabScroll, { passive: true });
+
   /* ---- Footer year ---- */
   var yr = document.getElementById("year");
   if (yr) yr.textContent = new Date().getFullYear();
