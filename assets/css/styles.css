@@ -34,7 +34,7 @@
   --ink-soft:     #51637A;   /* muted body text */
   --ink-faint:    #556879;   /* meta / captions — darkened from #8A97A4 to pass WCAG AA 4.5:1 */
 
-  --teal:         #1E7A6E;   /* primary accent (buttons, emphasis) */
+  --teal:         #1B7165;   /* primary accent (buttons, emphasis) — darkened for WCAG-AA as text on cream bands */
   --teal-deep:    #155E54;   /* hover */
   --emerald:      #2E8B6F;   /* secondary green (success, ticks) */
   --gold:         #C19A2E;   /* highlight / sale */
@@ -139,7 +139,7 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .brand .logo{ width:48px; height:48px; flex:none; }
 .brand-name{ font-family:var(--font-display); font-weight:600; font-size:1.22rem; color:var(--ink); line-height:1; letter-spacing:-.01em; }
 .brand-sub{ display:block; font-family:var(--font-sans); font-size:.62rem; letter-spacing:.22em; color:var(--teal); font-weight:600; text-transform:uppercase; margin-top:3px; }
-.brand-tagline{ display:block; font-family:var(--font-sans); font-size:.7rem; letter-spacing:.01em; color:#86D6C6; font-weight:600; margin-top:1px; margin-left:-6px; white-space:nowrap; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:2px 6px; border-radius:3px; }
+.brand-tagline{ display:block; font-family:var(--font-sans); font-size:.7rem; letter-spacing:.01em; color:#86D6C6; font-weight:600; margin-top:1px; margin-left:-6px; white-space:nowrap; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:2px 6px; border-radius:3px; }
 html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:none; -webkit-backdrop-filter:none; padding:0; color:var(--teal); }
 @media (max-width:380px){ .brand-tagline{ font-size:.52rem; } }
 /* Tighten the brand lockup so the tagline sits close to "WebNomad" and aligns with the logo — at every screen size, not just large desktop. */
@@ -570,7 +570,7 @@ html.dark{
   --ink-soft:     #7090a8;
   --ink-faint:    #8aa8b8;
   --teal:         #2ab5a4;
-  --teal-deep:    #1d9086;
+  --teal-deep:    #24a99a;   /* lightened for WCAG-AA as link text on dark cards */
   --emerald:      #3db58a;
   --gold:         #d4a830;
   --gold-soft:    #3a2e10;
@@ -613,7 +613,7 @@ html.dark .site-footer a{ color:#9ab8cc; }
 html.dark .footer-col h4{ color:var(--ink); }
 html.dark .footer-bottom{ color:#6a8898; }
 html.dark .footer-disclaimer{ color:#7a96ae; }
-html.dark .footer-brand p{ color:#617888; }
+html.dark .footer-brand p{ color:#708aa0; }
 html.dark .lightbox{ background:rgba(0,0,0,.92); }
 html.dark .price-save{ background:var(--gold-soft); color:var(--gold); }
 html.dark .product-tag{ background:#1e2d42; color:#c8d8e8; }
