@@ -511,6 +511,27 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .video-facade .v-label{ position:absolute; left:1.1rem; bottom:1rem; z-index:2; color:#fff; font-weight:600;
   font-size:1rem; text-shadow:0 2px 8px rgba(0,0,0,.5); }
 
+/* ---- Video tutorial grid (thumbnails link out to YouTube — no embed until click) ---- */
+.vid-topic-h{ font-family:var(--font-sans); font-size:var(--fs-eyebrow); font-weight:700; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--teal); margin:2.2rem 0 1rem; }
+.vid-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.4rem; }
+.vid-card{ display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); overflow:hidden; text-decoration:none; box-shadow:var(--shadow-sm);
+  transition:transform var(--transition),box-shadow var(--transition); }
+.vid-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow); }
+.vid-thumb{ position:relative; aspect-ratio:16/9; background:#000; overflow:hidden; }
+.vid-thumb img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s; }
+.vid-card:hover .vid-thumb img{ transform:scale(1.04); }
+.vid-play{ position:absolute; inset:0; margin:auto; width:54px; height:54px; border-radius:50%;
+  background:rgba(0,0,0,.55); color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; padding-left:3px; transition:background var(--transition); }
+.vid-card:hover .vid-play{ background:var(--teal); }
+.vid-card-body{ padding:1rem 1.1rem 1.2rem; display:flex; flex-direction:column; gap:.4rem; flex:1; }
+.vid-card-title{ font-family:var(--font-display); font-weight:600; color:var(--ink); font-size:1.08rem; line-height:1.25; }
+.vid-card-desc{ color:var(--ink-soft); font-size:.92rem; line-height:1.5; flex:1; }
+.vid-card-foot{ color:var(--teal-deep); font-weight:600; font-size:.88rem; margin-top:.2rem; }
+html.dark .vid-card{ background:var(--surface); border-color:var(--line); }
+
 @media (prefers-reduced-motion:reduce){
   *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
   html.reveal-on .reveal{ opacity:1 !important; transform:none !important; }
