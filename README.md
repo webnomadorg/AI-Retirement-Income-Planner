@@ -13,13 +13,14 @@ Built with hand-crafted HTML + CSS + a little vanilla JavaScript — **no build 
 | `products.html` | All products, prices, comparison table |
 | `features.html` | Full capability tour (8 areas) |
 | `how-it-works.html` | 5-step walkthrough + video tutorials |
+| `getting-started.html` | Pre-purchase confidence: guided aids, planning-ahead vs already-retired paths, learning resources |
 | `technical.html` | Engine, methodology, privacy, validation + PDF downloads |
 | `faq.html` | FAQ + contact |
 
 ## Folder structure
 ```
 Website/
-├── index.html, products.html, features.html, how-it-works.html, technical.html, faq.html
+├── index.html, products.html, features.html, how-it-works.html, getting-started.html, technical.html, faq.html
 ├── assets/
 │   ├── css/styles.css         ← the whole design system
 │   ├── js/main.js             ← nav toggle, screenshot lightbox, footer year

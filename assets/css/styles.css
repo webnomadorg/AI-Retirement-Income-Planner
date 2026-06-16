@@ -148,7 +148,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .site-header .brand > span{ transform:translateY(-2px); }
 .nav-links{ display:flex; align-items:center; gap:.35rem; list-style:none; margin:0; padding:0; }
 .nav-links a{ display:inline-block; padding:.33rem .85rem; margin-top:6px; margin-bottom:6px; border-radius:9px; text-decoration:none;
-  color:var(--ink); font-weight:550; font-size:1rem; transition:background var(--transition),color var(--transition); }
+  white-space:nowrap; color:var(--ink); font-weight:550; font-size:1rem; transition:background var(--transition),color var(--transition); }
 .nav-links a:hover{ background:rgba(30,122,110,.14); color:var(--teal-deep); }
 .nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(30,122,110,.28); }
 .nav-cta{ display:flex; align-items:center; gap:.6rem; }
@@ -549,7 +549,11 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .dark-toggle{ width:44px; height:44px; }
 }
 @media (min-width:1421px){
-  .nav-panel{ gap:1rem; }
+  .nav-panel{ gap:.9rem; }
+  .nav{ gap:1rem; }
+  /* Tightened so all seven nav items fit on one row at the 1421px breakpoint floor (no second-line wrap) */
+  .nav-links{ gap:.2rem; }
+  .nav-links a{ padding-inline:.62rem; }
   .nav-cta{ padding-inline-end:.85rem; }
   .brand{ padding-inline-start:.85rem; }
   .nav-panel{ background:rgba(20,48,75,.13); border-radius:9px; padding-inline:.4rem; }
