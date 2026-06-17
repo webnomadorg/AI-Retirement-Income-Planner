@@ -215,3 +215,55 @@
     });
   }
 })();
+
+/* ---- Contact form (contact.html) ---- */
+(function () {
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+  var notice = document.getElementById('form-notice');
+  var success = document.getElementById('form-success');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    if (notice) { notice.textContent = ''; notice.classList.remove('visible'); }
+
+    var name    = (document.getElementById('cf-name')    || {}).value || '';
+    var email   = (document.getElementById('cf-email')   || {}).value || '';
+    var subject = (document.getElementById('cf-subject') || {}).value || '';
+    var message = (document.getElementById('cf-message') || {}).value || '';
+    var honey   = (document.getElementById('_honey')     || {}).value || '';
+    var origHtml = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, subject: subject, message: message, _honey: honey }),
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.data.ok) {
+          form.style.display = 'none';
+          if (success) success.classList.add('visible');
+        } else {
+          if (notice) {
+            notice.textContent = (res.data && res.data.error) || 'Something went wrong. Please try again.';
+            notice.classList.add('visible');
+          }
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+      })
+      .catch(function () {
+        if (notice) {
+          notice.textContent = 'Could not connect. Please check your internet connection and try again.';
+          notice.classList.add('visible');
+        }
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+      });
+  });
+}());

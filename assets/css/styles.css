@@ -1021,3 +1021,56 @@ html.dark[data-theme="contrast"] .checklist li::before{
 }
 html.dark[data-theme="contrast"] .eyebrow{ color:#ffd27a; }
 html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#000000; border-color:#ffffff; }
+
+/* ============================================================================
+   27. CONTACT FORM (contact.html)
+   ============================================================================ */
+.contact-layout{
+  display:grid; grid-template-columns:1.5fr 1fr;
+  gap:clamp(1.6rem,4vw,3.2rem); align-items:start;
+  max-width:980px; margin-inline:auto;
+}
+.contact-info{ display:flex; flex-direction:column; }
+@media (max-width:860px){ .contact-layout{ grid-template-columns:1fr; } }
+
+.form-group{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.3rem; }
+.form-group label{ font-weight:600; color:var(--ink); font-size:1rem; }
+.form-group input,
+.form-group textarea{
+  width:100%; padding:.78rem 1rem;
+  border:1.5px solid var(--line-cool); border-radius:var(--radius-sm);
+  font-family:var(--font-sans); font-size:var(--fs-body); color:var(--ink);
+  background:var(--surface); line-height:1.5;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+.form-group input:focus,
+.form-group textarea:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
+.form-group textarea{ min-height:140px; resize:vertical; }
+
+.form-notice{
+  font-size:.9rem; color:var(--danger);
+  background:rgba(181,64,47,.08); border:1px solid rgba(181,64,47,.22);
+  border-radius:var(--radius-sm); padding:.75rem 1rem; margin-bottom:1.1rem; display:none;
+}
+.form-notice.visible{ display:block; }
+
+.form-success{
+  background:rgba(27,113,101,.08); border:1.5px solid var(--teal);
+  border-radius:var(--radius); padding:clamp(1.8rem,4vw,2.8rem);
+  text-align:center; display:none;
+}
+.form-success.visible{ display:block; }
+.success-icon{
+  width:52px; height:52px; border-radius:50%;
+  background:rgba(27,113,101,.14); color:var(--teal);
+  display:inline-flex; align-items:center; justify-content:center; margin-bottom:1rem;
+}
+
+.sr-only{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+html.dark .form-group input,
+html.dark .form-group textarea{ background:var(--surface); border-color:var(--line); color:var(--ink); }
+html.dark .form-group input::placeholder,
+html.dark .form-group textarea::placeholder{ color:var(--ink-faint); }
+html.dark .form-notice{ background:rgba(224,85,72,.08); border-color:rgba(224,85,72,.22); }
+html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--teal); }
