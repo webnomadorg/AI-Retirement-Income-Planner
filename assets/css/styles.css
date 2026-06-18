@@ -1022,6 +1022,11 @@ html.dark[data-theme="contrast"] .checklist li::before{
 html.dark[data-theme="contrast"] .eyebrow{ color:#ffd27a; }
 html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#000000; border-color:#ffffff; }
 
+/* ---- Footer developer credit ---- */
+.footer-dev{ font-size:.85rem; color:#8BA5BC; margin-top:.9rem; line-height:1.5; }
+.footer-dev a{ color:#CFDDEA; text-decoration:none; }
+.footer-dev a:hover{ color:#fff; }
+
 /* ============================================================================
    27. CONTACT FORM (contact.html)
    ============================================================================ */
