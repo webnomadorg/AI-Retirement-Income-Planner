@@ -394,6 +394,68 @@
     </div>
   </section>
 
+  <!-- ===== VERSION COMPARISON ===== -->
+  <section class="section band" id="compare" aria-labelledby="compare-h">
+    <div class="container">
+      <span class="eyebrow" style="justify-content:center;">Choose your version</span>
+      <h2 id="compare-h" class="center">Compare the versions</h2>
+      <p class="center" style="max-width:62ch;margin:.5rem auto 2.4rem;color:var(--ink-soft);font-size:var(--fs-lead);">Every version includes everything before it, plus its own additions — from the core single-filer model in V1 up to the complete, AI-assisted V7.</p>
+      <div id="cmp-matrix" class="cmp-matrix-wrap"></div>
+      <div id="cmp-stack"></div>
+      <noscript><p class="center" style="color:var(--ink-soft);">Turn on JavaScript to view the full version comparison, or <a href="contact.html">contact us</a> for a complete feature list.</p></noscript>
+    </div>
+    <script>
+    (function(){
+      var V=[
+        {n:'V1',name:'Core Planner',since:1,lbl:'Core',sum:'The essential retirement income model for single filers.'},
+        {n:'V2',name:'Roth + Couples',since:2,lbl:'Roth',sum:'Couples (MFJ), spouse Social Security, Roth balances &amp; conversions, and the SS Optimizer.'},
+        {n:'V3',name:'Rental + RMDs',since:3,lbl:'Rental',sum:'Rental / passive income and Required Minimum Distribution estimates.'},
+        {n:'V4',name:'Canada / Australia',since:4,lbl:'Global',sum:'Canada &amp; Australia (CPP, OAS, Super, Age Pension) plus custom phase ages.'},
+        {n:'V5',name:'Complete Planner',since:5,lbl:'Complete',sum:'Stress testing, six drawdown strategies, Monte Carlo, and Plan-Health scoring.'},
+        {n:'V7',name:'Complete + AI',since:7,lbl:'+ AI',flag:1,sum:'Everything above plus the AI advisor &amp; education system, survivor planning, US state tax, precise tax rules, and full accessibility.'}
+      ];
+      var G=[
+        {t:'Core retirement model',s:1,f:[['Multi-phase income engine','401k, cash &amp; equity drawdown by phase'],['US Social Security &amp; UK State Pension'],['Medicare Part B &amp; D + ACA premium modelling'],['Inflation &amp; real (today’s-money) income'],['Part-time work income, per phase'],['Cash lump-sum events','windfalls in / one-off costs out'],['Live currency exchange rates','6 currencies: USD, GBP, CAD, AUD, PHP, THB'],['Three scenarios','pessimistic / base / optimistic'],['Balance &amp; net-income charts'],['UK income tax','GBP / US residence toggle with Foreign Tax Credit'],['AI advisor prompt &amp; data-research printout'],['Dark mode &amp; theme toggle']]},
+        {t:'Couples &amp; Roth',s:2,f:[['Married Filing Jointly (MFJ) tax brackets'],['Spouse Social Security income'],['Roth IRA balance &amp; tax-free withdrawals'],['Roth conversions','taxable, MAGI-impacting'],['Social Security Optimizer','claiming-age comparison']]},
+        {t:'Rental income &amp; RMDs',s:3,f:[['Rental / passive income','taxable or non-taxable'],['RMD estimate &amp; shortfall warning']]},
+        {t:'International &amp; custom phases',s:4,f:[['Canada support','CPP, OAS, federal &amp; provincial tax'],['Australia support','Superannuation, Age Pension, tax brackets'],['Custom phase age boundaries']]},
+        {t:'Advanced analysis',s:5,f:[['Separate SS claiming age','62–70, split-phase'],['Stress test','12-scenario inflation × return matrix'],['Six drawdown strategies','4% Rule, Variable %, 3 Buckets, Floor &amp; Upside, Guardrails, Monte Carlo'],['Monte Carlo simulation','P10–P90 fan chart'],['Plan-Health confidence score','with insights &amp; recommendations']]},
+        {t:'AI advisor &amp; education',s:7,f:[['Built-in AI Chat advisor','Claude integration'],['One-click “Fetch current tax rates”'],['AI audit of help content','+ one-click apply of AI-corrected prose'],['Annuity calculator','SPIA / DIA / Fixed + COLA, lump-sum funded'],['Retirement education system','explainers, phase-card badges, Concepts-to-learn, What-if Explorer, Glossary, Feature Tour'],['Plan-Health panel','acknowledgement, drawdown ratings, two-tier floor thresholds'],['Plain-language drawdown insights'],['Spouse claim-age + age-gap modelling','for MFJ couples'],['Non-US taxpayer mode'],['Inline text-size toggle'],['Always-visible AI context status pill'],['Contextual video tutorials','+ dedicated Video Tutorials tab'],['63-page printable User Guide','companion download'],['Audit-modal upgrades','Apply / Revert, verification badge, evergreen rewrites'],['Softer paper-tone light theme'],['Dynamic Claude model picker','auto-detects new models, removes deprecated']]},
+        {t:'Survivor, precise tax &amp; accessibility',s:7,f:[['Survivor scenario','surviving-spouse income cliff + new Plan-Health check'],['Coordinated couples SS optimizer','best primary + spouse pair, weighted to protect the survivor'],['US state income tax','flat rate, SS/pension exemptions, type-ahead + AI lookup'],['Birth-year-accurate Social Security FRA','66 → 67'],['NIIT 3.8% net-investment-income surtax'],['IRMAA 2-year lookback','real Medicare rule'],['IRS-accurate Social Security taxation','gradual phase-in'],['Separate healthcare-cost inflation','+ overseas / expat healthcare costs'],['Inflation-aware Monte Carlo','withdrawals rise with each run’s inflation'],['Accessibility','high-contrast theme, XL 135% text, reduced-motion support'],['Plan-with-AI co-pilot','sidebar available on any tab'],['“Ask AI about this” buttons + AI chart insights'],['Allocation + resilience analysis in the PDF report'],['Saved-plan slots with side-by-side compare'],['Plan sign-off with review reminders'],['Per-amount accessible colour picker']]}
+      ];
+      var ncol=V.length+1;
+      // Desktop matrix
+      var th='<thead><tr><th class="cmp-feat">Feature</th>';
+      V.forEach(function(v){th+='<th'+(v.flag?' class="cmp-flagcol"':'')+'><span class="cmp-vnum">'+v.n+'</span><span class="cmp-vlbl">'+v.lbl+'</span></th>';});
+      th+='</tr></thead>';
+      var tb='<tbody>';
+      G.forEach(function(g){
+        tb+='<tr class="cmp-grp"><td colspan="'+ncol+'">'+g.t+'<span class="cmp-since">from V'+g.s+'</span></td></tr>';
+        g.f.forEach(function(it){
+          tb+='<tr><td class="cmp-feat">'+it[0]+(it[1]?'<small>'+it[1]+'</small>':'')+'</td>';
+          V.forEach(function(v){tb+='<td'+(v.flag?' class="cmp-flagcol"':'')+'>'+(v.since>=g.s?'<span class="cmp-yes" aria-label="included">✓</span>':'<span class="cmp-no" aria-label="not included">—</span>')+'</td>';});
+          tb+='</tr>';
+        });
+      });
+      tb+='</tbody>';
+      document.getElementById('cmp-matrix').innerHTML='<table class="cmp-table">'+th+tb+'</table>';
+      // Mobile stack — what each version adds
+      var sh='';
+      V.forEach(function(v,idx){
+        var groups=G.filter(function(g){return g.s===v.since;});
+        var feats=[]; groups.forEach(function(g){g.f.forEach(function(it){feats.push(it[0]);});});
+        sh+='<article class="cmp-vstack-card'+(v.flag?' flag':'')+'">'+
+          '<div class="cmp-vstack-head"><span class="vn">'+v.n+' · '+v.name+'</span>'+(v.flag?'<span class="vbadge">Most complete</span>':'')+'</div>'+
+          '<p class="cmp-vstack-sub">'+v.sum+'</p>'+
+          '<p class="cmp-adds">'+(idx===0?'Includes':'Adds on top of '+V[idx-1].n)+'</p>'+
+          '<ul>'+feats.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul>'+
+        '</article>';
+      });
+      document.getElementById('cmp-stack').innerHTML=sh;
+    })();
+    </script>
+  </section>
+
   <section class="section band-ink on-ink cta-band">
     <div class="container">
       <span class="eyebrow" style="justify-content:center;">One purchase, every feature</span>
