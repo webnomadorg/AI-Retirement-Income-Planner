@@ -669,6 +669,9 @@ html.dark .tg-tab{ background:var(--paper-2); border-color:var(--line); color:va
 html.dark .tg-tab.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 html.dark .tg-toggle{ background:var(--paper-2); border-color:var(--line); }
 html.dark .tg-toggle button{ color:var(--ink-soft); }
+/* Restore the selected toggle's white text in dark mode (the rule above otherwise
+   wins on specificity and dims it to --ink-soft); deep teal keeps white AA-legible. */
+html.dark .tg-toggle button.active{ background:#1B7165; color:#fff; }
 html.dark .theme-gallery{ background:var(--surface); border-color:var(--line); }
 html.dark .showcase-card{ background:var(--surface); border-color:var(--line); }
 html.dark .faq details{ background:var(--surface); border-color:var(--line); }
