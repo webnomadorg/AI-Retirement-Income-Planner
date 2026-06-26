@@ -267,3 +267,53 @@
       });
   });
 }());
+
+/* ---- Newsletter signup form (newsletter.html) ---- */
+(function () {
+  var form = document.getElementById('newsletterForm');
+  if (!form) return;
+  var notice = document.getElementById('nl-notice');
+  var success = document.getElementById('nl-success');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    if (notice) { notice.textContent = ''; notice.classList.remove('visible'); }
+
+    var name  = (document.getElementById('nl-name')  || {}).value || '';
+    var email = (document.getElementById('nl-email') || {}).value || '';
+    var honey = (document.getElementById('nl-honey') || {}).value || '';
+    var origHtml = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+
+    fetch('/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, _honey: honey }),
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.data.ok) {
+          form.style.display = 'none';
+          if (success) success.classList.add('visible');
+        } else {
+          if (notice) {
+            notice.textContent = (res.data && res.data.error) || 'Something went wrong. Please try again.';
+            notice.classList.add('visible');
+          }
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+      })
+      .catch(function () {
+        if (notice) {
+          notice.textContent = 'Could not connect. Please check your internet connection and try again.';
+          notice.classList.add('visible');
+        }
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+      });
+  });
+}());
