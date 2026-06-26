@@ -3,9 +3,43 @@
    list); MailerLite's welcome automation sends the eBook download link.
    Requires MAILERLITE_API_KEY and MAILERLITE_GROUP_ID environment variables in Vercel.
 
+   A best-effort "new signup" notification is also sent to dev@webnomad.org via Resend
+   (RESEND_API_KEY — already used by the contact form); a failure there never fails signup.
+
    Setup + revert notes: see ../NEWSLETTER-SETUP.md.
    The previous Resend-based version (which sent the eBook itself) is git commit 5214145
    and is archived verbatim in that doc. */
+
+// Best-effort internal notification so dev@webnomad.org always gets a copy of each signup.
+// Uses Resend (same key as the contact form). Silently no-ops if the key is missing.
+async function notifyDev(name, email) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    console.error('RESEND_API_KEY is not set — skipping dev notification');
+    return;
+  }
+  const esc = (s) =>
+    String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const safeName = (name || '').trim();
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'WebNomad Newsletter <noreply@webnomad.org>',
+        to: ['dev@webnomad.org'],
+        reply_to: email,
+        subject: `New newsletter signup: ${safeName || email}`,
+        html: `<p><strong>New free-eBook newsletter signup</strong></p>
+<p><strong>Name:</strong> ${safeName ? esc(safeName) : '(not given)'}</p>
+<p><strong>Email:</strong> <a href="mailto:${esc(email)}">${esc(email)}</a></p>`,
+        text: `New free-eBook newsletter signup\nName: ${safeName || '(not given)'}\nEmail: ${email}`,
+      }),
+    });
+  } catch (notifyErr) {
+    console.error('Dev notification failed (non-fatal):', notifyErr);
+  }
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -58,6 +92,7 @@ module.exports = async function handler(req, res) {
 
     // 201 = created, 200 = already existed (updated) — both are success.
     if (mlRes.status === 201 || mlRes.status === 200) {
+      await notifyDev(name, email); // best-effort; never blocks/fails the signup
       return res.status(200).json({ ok: true });
     }
 

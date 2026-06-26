@@ -40,8 +40,10 @@ After adding/changing env vars, **redeploy** so the function picks them up.
 On submit, `api/newsletter.js` calls
 `POST https://connect.mailerlite.com/api/subscribers` with the subscriber's email + first
 name and the group ID. MailerLite returns **201** (new) or **200** (already existed) — both
-are treated as success. The honeypot + email-format checks run first. No email is sent by our
-code anymore; MailerLite's automation handles the welcome + eBook.
+are treated as success. The honeypot + email-format checks run first. MailerLite's automation
+handles the subscriber welcome + eBook. The function additionally sends a best-effort internal
+"new signup" notification to `dev@webnomad.org` via Resend (`RESEND_API_KEY`); if that key is
+missing or the send fails, it's skipped silently and the signup still succeeds.
 
 ### Opt-in mode
 The function sends `status: "active"` → subscribers are added immediately and get the eBook
