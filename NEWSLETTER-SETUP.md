@@ -1,79 +1,209 @@
-# Newsletter signup — setup & revert notes
+# Newsletter signup — setup, operation & switching guide
 
 The free-eBook signup form (`newsletter.html`) posts to the Vercel serverless function
-`api/newsletter.js`. As of the MailerLite change, that function **adds each signup to a
-MailerLite group** (the mailing list) via the MailerLite API. MailerLite then sends the
-welcome email + eBook via an automation.
+`api/newsletter.js`. That function can run in **either of two modes**. This doc records both
+so you can switch between them at any time, even after the original chat/context is gone.
 
-Previously the function sent the welcome email + eBook itself using **Resend** and did not
-build any list. That original version is archived at the bottom of this file so it can be
-restored at any time.
+| Mode | What it does | Builds a mailing list? | Who sends the eBook? | Needs |
+| --- | --- | --- | --- | --- |
+| **A — MailerLite** *(CURRENTLY ACTIVE)* | Adds each signup to a MailerLite group; MailerLite's automation emails the welcome + eBook. Also sends a dev notification via Resend. | ✅ Yes (in MailerLite) | MailerLite automation | `MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `RESEND_API_KEY` |
+| **B — Resend only** *(original)* | The function itself emails the subscriber the welcome + eBook, and notifies dev. No list is stored anywhere. | ❌ No | The function (Resend) | `RESEND_API_KEY` |
 
----
+Both modes: keep the honeypot + email-format checks, and send a best-effort "new signup"
+notification to `dev@webnomad.org` (via Resend) that never blocks the signup.
 
-## Current setup (MailerLite)
-
-### One-time setup in MailerLite
-1. **Account approval** — a brand-new MailerLite account must be approved before it can send
-   any email. Finish the account profile / approval first, or the welcome automation won't
-   actually send.
-2. **Create a group** for subscribers, e.g. "Newsletter — Free eBook".
-3. **Find the Group ID and generate an API token:** Integrations → *MailerLite API* → **Use**.
-   - The **Group IDs** for your account are listed there (scroll to the Groups section).
-   - Click **Generate new token**, name it (e.g. "Website signup"), choose **Allow all IP
-     addresses** (Vercel's outbound IPs are dynamic, so don't use an IP allowlist), then
-     **Create token** and copy it.
-4. **Build the welcome automation:** trigger = *"when a subscriber joins group <your group>"*;
-   add an email step whose body contains a **Download button** linking to the eBook:
-   `https://airetirementincomeplanner.com/assets/downloads/Build-a-Retirement-Plan-You-Can-Question-eBook.pdf`
-
-### Vercel environment variables (Project → Settings → Environment Variables, all envs)
-| Variable | Value |
-| --- | --- |
-| `MAILERLITE_API_KEY` | the API token from step 3 |
-| `MAILERLITE_GROUP_ID` | the Group ID from step 3 |
-| `RESEND_API_KEY` | **leave as-is** — still used by the contact form, and needed if you revert |
-
-After adding/changing env vars, **redeploy** so the function picks them up.
-
-### How the function works now
-On submit, `api/newsletter.js` calls
-`POST https://connect.mailerlite.com/api/subscribers` with the subscriber's email + first
-name and the group ID. MailerLite returns **201** (new) or **200** (already existed) — both
-are treated as success. The honeypot + email-format checks run first. MailerLite's automation
-handles the subscriber welcome + eBook. The function additionally sends a best-effort internal
-"new signup" notification to `dev@webnomad.org` via Resend (`RESEND_API_KEY`); if that key is
-missing or the send fails, it's skipped silently and the signup still succeeds.
-
-### Opt-in mode
-The function sends `status: "active"` → subscribers are added immediately and get the eBook
-right away (best conversion). To switch to **double opt-in** (subscriber must click a
-confirmation link first):
-1. change `status: "active"` to `status: "unconfirmed"` in `api/newsletter.js`, and
-2. enable double opt-in for the group in MailerLite, and
-3. update the `#nl-success` copy in `newsletter.html` to tell users to confirm via email.
+The eBook PDF lives at
+`https://airetirementincomeplanner.com/assets/downloads/Build-a-Retirement-Plan-You-Can-Question-eBook.pdf`
+(unlisted — only delivered by email). Both modes link to it.
 
 ---
 
-## How to revert to the original (Resend) version
+## Current configuration (Mode A — MailerLite)
 
-Either:
+### MailerLite account
+- **Group:** "Newsletter — Free eBook" · **Group ID:** `188987074019329204` (not secret).
+- **API token:** generated under Integrations → MailerLite API → Use → *Generate new token*
+  (chose "Allow all IP addresses"). The token is a **secret** — it is stored only in Vercel
+  (see below), never in this repo. To rotate it: generate a new token in MailerLite and update
+  the Vercel value.
+- **Welcome automation:** trigger = *"when a subscriber joins the group"*, one email step with a
+  **Download** button linking to the eBook URL above. Must be **Active** to send.
+- **Sending domain:** `webnomad.org` verified in MailerLite (so the "from" address doesn't spam).
+- **Opt-in:** single opt-in (instant eBook). For double opt-in, set `status: "unconfirmed"` in
+  the function AND enable double opt-in on the group AND update the `#nl-success` copy in
+  `newsletter.html` to tell users to confirm first.
 
-**A. Via git** — the last Resend-based version is commit `5214145`. Restore just that file:
+### Vercel environment variables (Project → Settings → Environment Variables, all environments)
+| Variable | Used by | Notes |
+| --- | --- | --- |
+| `MAILERLITE_API_KEY` | Mode A | the secret MailerLite token |
+| `MAILERLITE_GROUP_ID` | Mode A | `188987074019329204` |
+| `RESEND_API_KEY` | Both modes + the contact form | leave set; needed for dev notification (A) and everything (B) |
+
+Env-var changes only take effect on the **next deployment** — redeploy after editing them.
+
+---
+
+## How to switch modes
+
+Switching = replace the body of `Website/api/newsletter.js` with the matching version below,
+then commit, push (auto-deploys), and make sure the right env vars exist.
+
+### → Switch to Mode A (MailerLite) — the current state
+1. Ensure `MAILERLITE_API_KEY` + `MAILERLITE_GROUP_ID` (and `RESEND_API_KEY`) are set in Vercel.
+2. Ensure the MailerLite group + welcome automation exist and the automation is **Active**.
+3. Put the **Mode A source** (below) into `api/newsletter.js`. (Or `git checkout c5d03d8 -- api/newsletter.js`.)
+4. Commit, push, redeploy. Test (see Verification).
+
+### → Switch to Mode B (Resend only) — the original
+1. Ensure `RESEND_API_KEY` is set in Vercel (it already is — the contact form uses it).
+2. Put the **Mode B source** (below) into `api/newsletter.js`. (Or `git checkout 5214145 -- api/newsletter.js`.)
+3. Commit, push, redeploy. Test by signing up — the eBook email should arrive directly.
+4. (Optional) the MailerLite env vars can stay or be removed; Mode B ignores them.
+5. Note: any subscribers already collected in MailerLite remain there; Mode B just stops adding new ones.
+
+> Git references: Mode A = commit `c5d03d8` · Mode B (original) = commit `5214145`.
+
+---
+
+## Verification (after any deploy)
+
+The function + external APIs only run on Vercel (not the local static preview), so test live:
+1. Submit `https://airetirementincomeplanner.com/newsletter.html` with a throwaway email.
+2. Page shows the green "Check your inbox!" state (no red error).
+3. **Mode A:** subscriber appears in the MailerLite group; MailerLite welcome email + eBook arrive.
+   **Mode B:** the welcome email + eBook arrive directly.
+4. Both modes: `dev@webnomad.org` receives the "New newsletter signup" notification.
+5. If anything fails, check **Vercel → project → deployment → Logs/Functions** for the
+   `/api/newsletter` entry (it logs the upstream status code).
+
+Common issues: 401 = bad/rotated MailerLite token; "Email service not configured" = a required
+env var is missing or the deploy predates it (redeploy); subscriber added but no welcome email =
+MailerLite automation not Active, domain unverified, or double opt-in awaiting confirmation.
+
+---
+
+## Full source — Mode A (MailerLite, currently active)
+
+```js
+/* Vercel serverless function — POST /api/newsletter
+   Free-eBook newsletter signup. Adds the subscriber to a MailerLite group (the mailing
+   list); MailerLite's welcome automation sends the eBook download link.
+   Requires MAILERLITE_API_KEY and MAILERLITE_GROUP_ID environment variables in Vercel.
+
+   A best-effort "new signup" notification is also sent to dev@webnomad.org via Resend
+   (RESEND_API_KEY — already used by the contact form); a failure there never fails signup.
+
+   Setup + revert notes: see ../NEWSLETTER-SETUP.md.
+   The previous Resend-based version (which sent the eBook itself) is git commit 5214145
+   and is archived verbatim in that doc. */
+
+// Best-effort internal notification so dev@webnomad.org always gets a copy of each signup.
+// Uses Resend (same key as the contact form). Silently no-ops if the key is missing.
+async function notifyDev(name, email) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    console.error('RESEND_API_KEY is not set — skipping dev notification');
+    return;
+  }
+  const esc = (s) =>
+    String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const safeName = (name || '').trim();
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'WebNomad Newsletter <noreply@webnomad.org>',
+        to: ['dev@webnomad.org'],
+        reply_to: email,
+        subject: `New newsletter signup: ${safeName || email}`,
+        html: `<p><strong>New free-eBook newsletter signup</strong></p>
+<p><strong>Name:</strong> ${safeName ? esc(safeName) : '(not given)'}</p>
+<p><strong>Email:</strong> <a href="mailto:${esc(email)}">${esc(email)}</a></p>`,
+        text: `New free-eBook newsletter signup\nName: ${safeName || '(not given)'}\nEmail: ${email}`,
+      }),
+    });
+  } catch (notifyErr) {
+    console.error('Dev notification failed (non-fatal):', notifyErr);
+  }
+}
+
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { name, email, _honey } = req.body || {};
+
+  // Honeypot spam trap — bots fill hidden fields, humans don't
+  if (_honey) return res.status(400).json({ error: 'Bad request' });
+
+  // Basic field validation (name is optional for newsletter signup)
+  if (!email) {
+    return res.status(400).json({ error: 'An email address is required.' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+
+  const apiKey = process.env.MAILERLITE_API_KEY;
+  const groupId = process.env.MAILERLITE_GROUP_ID;
+  if (!apiKey || !groupId) {
+    console.error('MAILERLITE_API_KEY or MAILERLITE_GROUP_ID is not set');
+    return res.status(500).json({ error: 'Email service not configured.' });
+  }
+
+  const safeName = (name || '').trim();
+  const firstName = safeName ? safeName.split(/\s+/)[0] : '';
+
+  try {
+    // Upsert the subscriber into the MailerLite group. MailerLite's automation
+    // (triggered on joining the group) sends the welcome email + eBook link.
+    // status "active" = no confirmation step; switch to "unconfirmed" for double opt-in
+    // (see NEWSLETTER-SETUP.md).
+    const mlRes = await fetch('https://connect.mailerlite.com/api/subscribers', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        fields: firstName ? { name: firstName } : {},
+        groups: [groupId],
+        status: 'active',
+      }),
+    });
+
+    // 201 = created, 200 = already existed (updated) — both are success.
+    if (mlRes.status === 201 || mlRes.status === 200) {
+      await notifyDev(name, email); // best-effort; never blocks/fails the signup
+      return res.status(200).json({ ok: true });
+    }
+
+    // 422 = invalid data (most likely a malformed email MailerLite rejected).
+    if (mlRes.status === 422) {
+      return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+
+    const errText = await mlRes.text();
+    console.error('MailerLite error:', mlRes.status, errText);
+    return res.status(502).json({
+      error: 'Could not complete your signup. Please try again or email dev@webnomad.org directly.',
+    });
+  } catch (err) {
+    console.error('Newsletter handler error:', err);
+    return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+  }
+};
 ```
-cd Website
-git checkout 5214145 -- api/newsletter.js
-```
-Then commit/push and redeploy. No env changes needed (`RESEND_API_KEY` is still set).
 
-**B. Manually** — copy the archived source below back over `Website/api/newsletter.js`,
-then commit/push and redeploy. You may remove the `MAILERLITE_API_KEY` /
-`MAILERLITE_GROUP_ID` Vercel env vars afterwards (optional).
+---
 
-> Note: reverting only changes who *sends the eBook* (back to Resend). Any subscribers already
-> collected in MailerLite stay in MailerLite.
-
-### Archived original `api/newsletter.js` (Resend version)
+## Full source — Mode B (Resend only, original)
 
 ```js
 /* Vercel serverless function — POST /api/newsletter

@@ -15,6 +15,7 @@ Built with hand-crafted HTML + CSS + a little vanilla JavaScript — **no build 
 | `how-it-works.html` | 5-step walkthrough + video tutorials |
 | `getting-started.html` | Pre-purchase confidence: guided aids, planning-ahead vs already-retired paths, learning resources |
 | `technical.html` | Engine, methodology, privacy, validation + PDF downloads |
+| `newsletter.html` | Free-eBook signup + newsletter (see **Forms & email** below) |
 | `faq.html` | FAQ + contact |
 
 ## Folder structure
@@ -66,6 +67,20 @@ Two helper scripts live in `Source Files/_gen/` (they need Python + Pillow; not 
 - `optimize_images.py` — resizes/recompresses screenshots in `assets/img/screens` and `/themes` to a 1500px max width for fast loading. Originals stay safe in `Source Files/`.
 
 Run from the `Website/` folder, e.g. `python "Source Files/_gen/make_images.py"`.
+
+## Forms & email (serverless)
+Two Vercel serverless functions in `api/` power the forms (they only run on Vercel, not the
+local static preview):
+- **`api/contact.js`** — the contact form; emails `dev@webnomad.org` + a confirmation to the
+  sender via **Resend** (`RESEND_API_KEY`).
+- **`api/newsletter.js`** — the free-eBook signup. Currently runs in **MailerLite mode**: adds
+  each subscriber to a MailerLite group (which sends the welcome + eBook automation) and sends a
+  dev notification via Resend. It can also run in the original **Resend-only mode**.
+  👉 **Full setup, env vars, verification, and how to switch between the two modes (with both
+  complete source versions archived) live in [`NEWSLETTER-SETUP.md`](NEWSLETTER-SETUP.md).**
+
+Env vars (Vercel → Project → Settings → Environment Variables): `RESEND_API_KEY`,
+`MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`. None are committed to the repo.
 
 ## Interactive pieces
 - **Theme gallery** (Features page) — tabbed switcher across the 5 themes with a Light/Dark toggle; images preload with a sequence guard so the picture and caption never disagree.
