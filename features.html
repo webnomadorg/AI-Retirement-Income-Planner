@@ -257,7 +257,7 @@
             <li><strong>Specific proposals, not vague advice</strong> — exact numbers you can read and approve</li>
             <li><strong>Simulated before shown</strong> — every proposal passes through the real engine first</li>
             <li><strong>You approve before anything changes</strong> — no silent edits to your plan</li>
-            <li><strong>Your API key, your data</strong> — runs under your own Anthropic key; nothing stored or shared</li>
+            <li><strong>Your API key, your data</strong> — runs under your own provider key (or a local model); nothing stored or shared</li>
           </ul>
         </div>
         <div class="feature-media">
@@ -272,6 +272,47 @@
             </ul>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bring your own AI provider -->
+  <section class="section">
+    <div class="container">
+      <div class="center reveal" style="max-width:62ch;margin-inline:auto;margin-bottom:2.4rem;">
+        <span class="eyebrow" style="justify-content:center;">Your AI, your choice</span>
+        <h2>Use the AI features with your preferred provider</h2>
+        <p class="lead center" style="margin-inline:auto;">The AI co‑pilot and the “Learn the planner” guide aren’t tied to one company. Choose the AI provider you already use — or run a model entirely on your own computer for free. You bring your own key, so usage is billed to you by that provider (never by us), and the app remembers a separate key per provider.</p>
+      </div>
+      <div class="grid cols-3" data-stagger>
+        <article class="card reveal">
+          <h3>Anthropic (Claude)</h3>
+          <p>Recommended for the best results — the proposal engine is tuned for Claude‑class models. Use your own Anthropic API key.</p>
+        </article>
+        <article class="card reveal">
+          <h3>OpenAI</h3>
+          <p>Use GPT‑4o and other OpenAI chat models with your own OpenAI API key.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Google Gemini</h3>
+          <p>Use Gemini 2.5 Pro / Flash and more with your own Google AI Studio key.</p>
+        </article>
+        <article class="card reveal">
+          <h3>OpenRouter</h3>
+          <p>One key, hundreds of models from many providers — handy for comparing options.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Ollama — runs locally</h3>
+          <p>Run an open model on your own machine: free, fully private, no API key, and nothing ever leaves your computer.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Custom endpoint</h3>
+          <p>Any OpenAI‑compatible endpoint (LM Studio, Groq, Together and others) via a base URL.</p>
+        </article>
+      </div>
+      <div class="card reveal" style="margin-top:1.6rem;background:var(--surface-soft);">
+        <p class="eyebrow" style="margin-bottom:.6rem;">A note on model quality</p>
+        <p style="margin:0;">The quality of the AI’s answers — and especially the specific, simulated plan‑editing proposals — depends on the model you choose. <strong>A more capable model gives more accurate, reliable analysis</strong>, which is why an Anthropic (Claude) key is recommended for serious strategy work. Smaller local models (via Ollama) are free and private but less reliable at the structured reasoning the proposals rely on — they’re best suited to the “Learn the planner” how‑to guide. The planner automatically detects each provider’s current models, so your list stays up to date without app updates.</p>
       </div>
     </div>
   </section>
