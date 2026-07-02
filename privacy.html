@@ -4,7 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy — AI Retirement Income Planner | WebNomad Studio</title>
-<!-- Analytics (Google Analytics + Meta Pixel) load only after cookie consent — see assets/js/consent.js -->
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
 <script src="assets/js/consent.js" defer></script>
 <meta name="description" content="How WebNomad Studio handles your data on this website and in the AI Retirement Income Planner. Your plan stays on your device; we keep website data to a minimum. Questions: dev@webnomad.org.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">

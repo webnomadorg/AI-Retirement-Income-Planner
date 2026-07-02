@@ -1,11 +1,13 @@
-/* Cookie consent — gates Google Analytics + Meta (Facebook) Pixel until the
-   visitor opts in. The choice is stored in localStorage('wn-consent') as
-   'granted' or 'denied'. First-party Vercel Web Analytics is cookieless and
-   loads independently of this. A "Cookie settings" link is added to the footer
-   Support column so consent can be changed or withdrawn at any time. */
+/* Cookie consent — the Google Analytics + Meta (Facebook) Pixel tags live inline
+   in every page's <head> (visible in the page source), but start with tracking
+   consent DENIED via Google Consent Mode v2 and Meta's consent API. This script
+   is only the consent SWITCH: accepting the banner upgrades consent, declining
+   (or withdrawing later) keeps/returns it to denied. The choice is stored in
+   localStorage('wn-consent') as 'granted' or 'denied'. First-party Vercel Web
+   Analytics is cookieless and loads independently of this. A "Cookie settings"
+   link is added to the footer Support column so consent can be changed or
+   withdrawn at any time. */
 (function () {
-  var GA_ID = 'G-6VX12DHPY3';
-  var FB_ID = '2106222783607307';
   var KEY = 'wn-consent';
 
   function getChoice() {
@@ -15,31 +17,21 @@
     try { localStorage.setItem(KEY, v); } catch (e) {}
   }
 
-  var loaded = false;
-  function loadAnalytics() {
-    if (loaded) return;
-    loaded = true;
-
-    // Google Analytics
-    var ga = document.createElement('script');
-    ga.async = true;
-    ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(ga);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { dataLayer.push(arguments); };
-    gtag('js', new Date());
-    gtag('config', GA_ID);
-
-    // Meta Pixel
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
-      t = b.createElement(e); t.async = !0; t.src = v;
-      s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
-    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', FB_ID);
-    fbq('track', 'PageView');
+  function applyConsent(granted) {
+    var mode = granted ? 'granted' : 'denied';
+    try {
+      if (typeof window.gtag === 'function') {
+        window.gtag('consent', 'update', {
+          ad_storage: mode,
+          ad_user_data: mode,
+          ad_personalization: mode,
+          analytics_storage: mode
+        });
+      }
+      if (typeof window.fbq === 'function') {
+        window.fbq('consent', granted ? 'grant' : 'revoke');
+      }
+    } catch (e) {}
   }
 
   function removeBanner() {
@@ -47,8 +39,8 @@
     if (b) b.remove();
   }
 
-  function accept() { setChoice('granted'); removeBanner(); loadAnalytics(); }
-  function decline() { setChoice('denied'); removeBanner(); }
+  function accept() { setChoice('granted'); removeBanner(); applyConsent(true); }
+  function decline() { setChoice('denied'); removeBanner(); applyConsent(false); }
 
   function showBanner() {
     if (document.getElementById('cookie-banner')) return;
@@ -97,9 +89,9 @@
     }
   }
 
-  // Load immediately if previously granted; the banner shows only when no
-  // choice has been made yet.
-  if (getChoice() === 'granted') loadAnalytics();
+  // Upgrade consent immediately if previously granted; the banner shows only
+  // when no choice has been made yet.
+  if (getChoice() === 'granted') applyConsent(true);
 
   function init() {
     addFooterLink();

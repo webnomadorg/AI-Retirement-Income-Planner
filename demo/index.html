@@ -2617,6 +2617,35 @@ html[data-theme="contrast"] .irow select:focus{
 <!-- Extra font families for Editorial / Fintech / Pro themes -->
 
 
+<!-- Google Analytics + Meta Pixel — same tags as every page of the site (visible here
+     in the source). Tracking consent starts DENIED (Google Consent Mode v2 / Meta
+     consent API); the cookie banner (../assets/js/consent.js) upgrades it on accept. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
 <style id="demo-consent-css">
 #cookie-banner{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99998;
   display:flex;flex-wrap:wrap;gap:14px;align-items:center;max-width:min(680px,92vw);
