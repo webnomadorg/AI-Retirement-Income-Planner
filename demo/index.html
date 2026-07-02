@@ -7414,16 +7414,21 @@ async function fetchRates(){
   if(liveBtn)liveBtn.style.display='none';
   render();
 }
-function showCustomRates(){demoToast("This demo is fixed to USD — the full version plans in GBP, CAD, AUD, PHP and THB too.");}
+function showCustomRates(){
+  const rateMap={'rate-GBP':CURRENCIES.GBP,'rate-CAD':CURRENCIES.CAD,'rate-AUD':CURRENCIES.AUD,'rate-PHP':CURRENCIES.PHP,'rate-THB':CURRENCIES.THB};
+  Object.entries(rateMap).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1].rate.toFixed(4);});
+  const mr=document.getElementById('manual-rates');if(mr)mr.style.display='block';
+  const liveBtn=document.getElementById('rates-live-btn');if(liveBtn)liveBtn.style.display='none';
+  const ovBtn=document.getElementById('fx-override-btn');if(ovBtn)ovBtn.style.display='none';
+}
 function revertToLiveRates(){}
 // Collapse the custom-rates panel while KEEPING custom rates active. The "Override
 // rates" button reappears (relabelled) as a re-open affordance, so the panel — and
 // its "Use live rates" revert option — stays available.
 function closeCustomRates(){
-  document.getElementById('manual-rates').style.display='none';
+  const mr=document.getElementById('manual-rates');if(mr)mr.style.display='none';
   const ovBtn=document.getElementById('fx-override-btn');
-  if(ovBtn){ovBtn.style.display='';ovBtn.textContent='✏ Edit custom rates';ovBtn.title='Re-open the custom exchange-rate panel (or switch back to live rates)';}
-  // fx-status stays "Custom rates" so the user still sees that custom rates are in effect.
+  if(ovBtn){ovBtn.style.display='';ovBtn.textContent='Override rates';}
 }
 let rateDebounce=null;
 function onRateChange(){
@@ -17926,6 +17931,13 @@ initAiSidebar();
     return el;
   }
 
+  // Record each locked field's value as it gains focus, so snap-back restores exactly
+  // what was showing (markup defaults are empty for JS-populated fields like the FX rates).
+  document.addEventListener('focusin',function(e){
+    const el=lockedInputEl(e.target);
+    if(el&&el.tagName!=='SELECT')el._demoPrev=el.value;
+  },true);
+
   let _snapT=null;
   function snapBack(el){
     clearTimeout(_snapT);
@@ -17934,8 +17946,10 @@ initAiSidebar();
         if(el){
           if(el.tagName==='SELECT'){
             for(let i=0;i<el.options.length;i++){if(el.options[i].defaultSelected){el.selectedIndex=i;break;}}
+          } else if(el._demoPrev!==undefined){
+            el.value=el._demoPrev; // value at focus time (covers JS-populated fields)
           } else if('defaultValue' in el){
-            el.value=el.defaultValue; // markup default (covers annuity, help calcs, pasted text)
+            el.value=el.defaultValue; // markup default fallback
           }
         }
         // Edit-tab inputs are populated from state, not markup — restore those properly
@@ -17997,6 +18011,13 @@ initAiSidebar();
 
   // plan title: make sure it can't be typed in even via keyboard focus
   try{const sub=document.getElementById('dash-subtitle');if(sub)sub.setAttribute('contenteditable','false');}catch(e){}
+
+  // main header: mark the build as a demo ("v7" → "v7 DEMO")
+  try{
+    const h1=document.querySelector('h1');
+    const vTag=h1&&h1.querySelector('span');
+    if(vTag&&/^v7\b/.test(vTag.textContent.trim()))vTag.textContent='v7 DEMO';
+  }catch(e){}
 
   // ── Scripted AI conversation ──
   const fmt=function(v){try{return fmtC(v);}catch(e){return '$'+Math.round(v).toLocaleString();}};
