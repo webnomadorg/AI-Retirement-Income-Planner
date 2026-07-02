@@ -3,18 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact Us — AI Retirement Income Planner | WebNomad Studio</title>
+<title>Try the Interactive Demo — AI Retirement Income Planner v7 | WebNomad Studio</title>
 <!-- Analytics (Google Analytics + Meta Pixel) load only after cookie consent — see assets/js/consent.js -->
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Get in touch with WebNomad Studio. Ask a question before you buy, request support, or just say hello — a real person replies within one business day.">
+<meta name="description" content="Click around the real AI Retirement Income Planner with a pre-loaded sample plan — every tab, chart and analysis tool, no signup, no download. Editing is disabled; everything else is the real thing.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="canonical" href="https://airetirementincomeplanner.com/contact.html">
+<link rel="canonical" href="https://airetirementincomeplanner.com/demo.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Contact Us — WebNomad Studio">
-<meta property="og:description" content="Ask a question before you buy, request support, or just say hello.">
+<meta property="og:title" content="Try the Interactive Demo — AI Retirement Income Planner v7">
+<meta property="og:description" content="Explore the real planner with a sample plan — every tab, chart and analysis tool. No signup, no download.">
 <meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
-<meta property="og:url" content="https://airetirementincomeplanner.com/contact.html">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
 </head>
@@ -33,7 +31,8 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="products.html">Products</a></li>
         <li><a href="features.html">Features</a></li>
-        <li><a href="how-it-works.html">How It Works</a></li><li><a href="getting-started.html">Getting Started</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="getting-started.html">Getting Started</a></li>
         <li><a href="technical.html">Technical</a></li>
         <li><a href="faq.html">FAQ</a></li>
       </ul>
@@ -61,85 +60,65 @@
 
   <section class="page-head band">
     <div class="container narrow center">
-      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Contact</p>
-      <span class="eyebrow" style="justify-content:center;">Get in touch</span>
-      <h1>Contact Us</h1>
-      <p class="lead center" style="margin-inline:auto;">A question before you buy, a support request, or just a hello — we read every message and reply from a real person.</p>
+      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Try the Demo</p>
+      <span class="eyebrow" style="justify-content:center;">See it before you buy it</span>
+      <h1>Try the interactive demo</h1>
+      <p class="lead center" style="margin-inline:auto;">This is the <strong>real planner</strong> — same tabs, same charts, same analysis tools — pre-loaded with a sample plan so you can click around and get a feel for it. No signup, no download, nothing to install.</p>
+      <div class="cta-actions" style="margin-top:1.6rem;justify-content:center;">
+        <a class="btn btn-primary btn-lg" href="demo/">Launch the demo →</a>
+      </div>
+      <p class="muted" style="margin-top:.9rem;font-size:.92rem;">Opens in this tab · runs entirely in your browser · nothing is uploaded or tracked</p>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <div class="contact-layout">
+    <div class="container narrow">
+      <h2 style="text-align:center;">What you’ll be looking at</h2>
+      <p style="max-width:640px;margin-inline:auto;text-align:center;">The demo is loaded with a simple, relatable sample plan: a <strong>single filer retiring at 62</strong> with $530,000 saved across a 401k, cash and a brokerage account, claiming $2,200/mo Social Security at 62. Every number, chart and health check you’ll see is the planner’s genuine output for that plan.</p>
 
-        <!-- Form -->
-        <div>
-          <div id="form-notice" class="form-notice" role="alert"></div>
-
-          <form id="contactForm" novalidate>
-            <!-- Honeypot — hidden from real users, filled by bots -->
-            <div class="sr-only" aria-hidden="true">
-              <label for="_honey">Leave this blank</label>
-              <input type="text" id="_honey" name="_honey" tabindex="-1" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-              <label for="cf-name">Your name <span aria-hidden="true" style="color:var(--danger)">*</span></label>
-              <input type="text" id="cf-name" name="name" autocomplete="name" required placeholder="Jane Smith">
-            </div>
-
-            <div class="form-group">
-              <label for="cf-email">Email address <span aria-hidden="true" style="color:var(--danger)">*</span></label>
-              <input type="email" id="cf-email" name="email" autocomplete="email" required placeholder="jane@example.com">
-            </div>
-
-            <div class="form-group">
-              <label for="cf-subject">Subject <span class="muted" style="font-weight:400;">(optional)</span></label>
-              <input type="text" id="cf-subject" name="subject" placeholder="e.g. Question before buying">
-            </div>
-
-            <div class="form-group">
-              <label for="cf-message">Message <span aria-hidden="true" style="color:var(--danger)">*</span></label>
-              <textarea id="cf-message" name="message" required placeholder="Tell us what you&#x27;d like to know…"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Send message</button>
-            <p class="muted mt-2" style="font-size:.88rem;text-align:center;">Fields marked <span aria-hidden="true" style="color:var(--danger)">*</span> are required. We typically reply within one business day.</p>
-          </form>
-
-          <div id="form-success" class="form-success" role="status" aria-live="polite">
-            <div class="success-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <h2 style="font-size:var(--fs-h3);margin-bottom:.5rem;">Message sent!</h2>
-            <p class="muted" style="max-width:44ch;margin-inline:auto;">We've got your message. We'll be in touch soon.</p>
-          </div>
+      <div class="feature-row" style="margin-top:2.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;">
+        <div class="callout">
+          <h3 style="margin-top:0;">✅ What works — the real thing</h3>
+          <ul style="line-height:1.9;margin:0;padding-left:1.2rem;">
+            <li>All 13 tabs — phase cards, balance &amp; income charts, tax detail</li>
+            <li>Confidence score with live Monte Carlo &amp; historical backtest</li>
+            <li>Stress test grid, Scenarios, SS Optimizer, Drawdown strategies</li>
+            <li>What-if explorer — the Social Security claiming slider is fully live</li>
+            <li>A scripted AI chat conversation — including one proposal you can <strong>actually apply and undo</strong> to watch the whole dashboard recalculate</li>
+            <li>Currency display switching, themes, dark mode, text sizing, the full built-in Help</li>
+          </ul>
         </div>
-
-        <!-- Sidebar info -->
-        <div class="contact-info">
-          <div class="card" style="margin-bottom:1.2rem;">
-            <div class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <h3>Quick replies</h3>
-            <p>We typically get back to you within one business day.</p>
-          </div>
-          <div class="card" style="margin-bottom:1.2rem;">
-            <div class="icon-chip gold" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div>
-            <h3>Or email directly</h3>
-            <p><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></p>
-          </div>
-          <div class="card" style="margin-bottom:1.2rem;">
-            <div class="icon-chip sky" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-            <h3>Looking for answers?</h3>
-            <p><a href="faq.html">Browse the FAQ</a> — most questions are already answered there.</p>
-          </div>
-          <div class="callout" style="font-size:.92rem;display:flex;align-items:flex-start;gap:.6rem;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="flex-shrink:0;margin-top:.15rem;color:var(--teal)" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Your message is sent securely. We never share your details with third parties.</span>
-          </div>
+        <div class="callout">
+          <h3 style="margin-top:0;">🔒 What’s disabled — it’s a sandbox</h3>
+          <ul style="line-height:1.9;margin:0;padding-left:1.2rem;">
+            <li>Editing any number — the sample plan is fixed, so the demo stays consistent</li>
+            <li>Saving, loading, importing or exporting plans</li>
+            <li>The live AI advisor (the demo chat is scripted; the full version connects to a real AI model)</li>
+            <li>Replan-from-today, the setup wizard, and example-plan loading</li>
+          </ul>
+          <p class="muted" style="margin:.8rem 0 0;font-size:.92rem;">Anything disabled shows a small note when you click it — you’ll always know what’s demo and what’s product.</p>
         </div>
-
       </div>
+
+      <div class="callout" style="margin-top:1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem;justify-content:space-between;">
+        <div style="flex:1;min-width:min(100%,340px);">
+          <h3 style="margin:0 0 .2rem;">An honest note</h3>
+          <p class="muted" style="margin:0;">The demo is a restricted sandbox, not a functional planner — you can’t plan your own retirement in it. It exists so you can judge the interface, depth and clarity for yourself before spending a penny. The full version is this exact app with everything switched on, working with <em>your</em> numbers.</p>
+        </div>
+        <a class="btn btn-outline" href="products.html" style="flex-shrink:0;">See pricing →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band-ink on-ink cta-band">
+    <div class="container">
+      <span class="eyebrow" style="justify-content:center;">Two minutes is all it takes</span>
+      <h2>Go on — poke around.</h2>
+      <div class="cta-actions">
+        <a class="btn btn-primary btn-lg" href="demo/">Launch the demo →</a>
+        <a class="btn btn-outline btn-lg" href="products.html">Get the full version</a>
+      </div>
+      <p style="margin-top:1rem;font-size:.95rem;opacity:.7;">Prefer to watch first? <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">See the video tutorials →</a></p>
     </div>
   </section>
 
@@ -163,7 +142,7 @@
       </div>
       <div class="footer-col"><h4>Explore</h4><ul><li><a href="products.html">Products</a></li><li><a href="demo.html">Try the Demo</a></li><li><a href="features.html">Features</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="getting-started.html">Getting Started</a></li><li><a href="technical.html">Technical</a></li><li><a href="newsletter.html">Free eBook</a></li><li><a href="faq.html">FAQ</a></li><li><a href="affiliates.html">Affiliates</a></li></ul></div>
       <div class="footer-col"><h4>Buy</h4><ul><li><a href="https://www.etsy.com/listing/4509386063/ai-retirement-income-planner-v7-chat" target="_blank" rel="noopener">Planner v7</a></li><li><a href="https://www.etsy.com/listing/4503115757/roth-optimizer-retirement-planner-v6" target="_blank" rel="noopener">v7 + Roth Bundle</a></li><li><a href="https://www.etsy.com/shop/webnomadstudio/" target="_blank" rel="noopener">All versions</a></li></ul></div>
-      <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html" aria-current="page">Contact Us</a></li><li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li><li><a href="faq.html">Help &amp; FAQ</a></li><li><a href="technical.html">Documentation</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact Us</a></li><li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li><li><a href="faq.html">Help &amp; FAQ</a></li><li><a href="technical.html">Documentation</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
