@@ -17952,8 +17952,9 @@ initAiSidebar();
     ['#ai-sb-locked','AI provider & API-key setup is available in the full version — this demo chat is a scripted sample.'],
     // wizard is viewable read-only: its toggle buttons (filing status, rental, taxable) mutate S
     ['#wiz-overlay .toggle-btn',LOCK_MSG],
-    // free-eBook download: included with the paid planner, not downloadable from the demo
-    ['a[href*="drive.proton.me"]','The free eBook is included with the full version of the planner — you get the download link alongside the app.']
+    // free-eBook download ONLY (its unique Proton Drive id): included with the paid planner,
+    // not downloadable from the demo. Every other Downloads-section link stays live.
+    ['a[href*="0VQ0C62V8G"]','The free eBook is included with the full version of the planner — you get the download link alongside the app.']
   ];
   document.addEventListener('click',function(e){
     if(!e.target||!e.target.closest)return;
