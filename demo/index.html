@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from Retirement-Planner-v7-v192.html on 2026-07-02. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from Retirement-Planner-v7-v194.html on 2026-07-02. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -1717,6 +1717,9 @@
   .ai-model-row{display:flex;justify-content:flex-start;padding:6px 0 0;}
   .ai-input-row{display:flex;gap:8px;padding:10px 0 6px;flex-shrink:0;align-items:center;}
   .ai-textarea{flex:1;padding:9px 12px;border:0.5px solid var(--border-mid);border-radius:8px;font-size:13px;font-family:var(--font);background:var(--bg-primary);color:var(--text-primary);resize:none;min-height:44px;max-height:140px;line-height:1.5;}
+  /* Send buttons: dimmed + inert while the chat box is empty (see _aiSyncSendBtns).
+     !important because the tab button carries an inline cursor:pointer. */
+  #ai-send-btn:disabled,#ai-sb-send-btn:disabled{opacity:.45;cursor:not-allowed!important;}
   .ai-textarea:focus{outline:none;border-color:#378ADD;}
   .ai-starter-chip{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid rgba(80,65,200,0.28);background:var(--purple-bg);color:var(--purple-text);font-family:var(--font);transition:background 0.15s,color 0.15s,border-color 0.15s,box-shadow 0.15s,transform 0.1s;text-align:left;white-space:nowrap;}
   .ai-starter-chip:hover{background:var(--blue-bg);color:var(--blue-text);border-color:#378ADD;box-shadow:0 2px 8px rgba(55,138,221,0.15);}
@@ -2762,8 +2765,8 @@ html[data-theme="contrast"] .irow select:focus{
     <!-- Input row — always anchored at bottom of sidebar -->
     <div class="ai-sb-input-row">
       <textarea id="ai-sb-input" placeholder="Ask about your plan… (Enter to send)" rows="2"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSbSend();}"></textarea>
-      <button id="ai-sb-send-btn" onclick="aiSbSend()">
+        oninput="_aiSyncSendBtns()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSbSend();}"></textarea>
+      <button id="ai-sb-send-btn" onclick="aiSbSend()" disabled>
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>
       </button>
     </div>
@@ -3964,8 +3967,8 @@ html[data-theme="contrast"] .irow select:focus{
           </div>
           <div class="ai-input-row">
             <textarea id="ai-input" class="ai-textarea" placeholder="Ask about your retirement plan… (Shift+Enter for new line, Enter to send)" rows="2"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
-            <button onclick="aiSend()" id="ai-send-btn" style="padding:10px 22px;white-space:nowrap;background:#378ADD;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background 0.15s,transform 0.1s;flex-shrink:0;" onmouseover="this.style.background='#1a6eb5';" onmouseout="this.style.background='#378ADD';" onmousedown="this.style.transform='scale(0.97)';" onmouseup="this.style.transform='';">
+              oninput="_aiSyncSendBtns()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+            <button onclick="aiSend()" id="ai-send-btn" disabled style="padding:10px 22px;white-space:nowrap;background:#378ADD;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background 0.15s,transform 0.1s,opacity 0.15s;flex-shrink:0;" onmouseover="this.style.background='#1a6eb5';" onmouseout="this.style.background='#378ADD';" onmousedown="this.style.transform='scale(0.97)';" onmouseup="this.style.transform='';">
               Send
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>
             </button>
@@ -16500,6 +16503,17 @@ async function _aiVerifyAndRefine(pr,userText,session){
 }
 
 // ── Tab chat send (independent session — _aiHistory / _aiLastFingerprint) ──
+// Send buttons follow their input: disabled (dimmed) while the box is empty or
+// whitespace-only, enabled as soon as there's real text. Wired to both chat textareas
+// via oninput; buttons mid-request (data-sending) are left alone — the send handlers
+// re-sync when they finish, so typing during a reply can't re-enable a busy button.
+function _aiSyncSendBtns(){
+  [['ai-input','ai-send-btn'],['ai-sb-input','ai-sb-send-btn']].forEach(p=>{
+    const inp=document.getElementById(p[0]),btn=document.getElementById(p[1]);
+    if(!inp||!btn||btn.dataset.sending==='1')return;
+    btn.disabled=!(inp.value||'').trim();
+  });
+}
 async function aiSend(){
   const learn=(_aiMode==='learn');
   const inp=document.getElementById('ai-input');
@@ -16510,7 +16524,7 @@ async function aiSend(){
   const key=_aiGetKey();
   if(!_aiKeyLooksValid(key)){alert('Please add your '+_aiProviderCfg().label+' API key in Settings first.');return;}
   if(inp)inp.value='';
-  if(btn){btn.disabled=true;btn.textContent='Sending…';}
+  if(btn){btn.disabled=true;btn.dataset.sending='1';btn.textContent='Sending…';}
   const userBubble=_addAiBubbleTo(msgs,'user',userText);
   // Display question for Save-PDF: concise label from an Ask-AI button if present, else the typed text.
   const _dispQ=_aiPendingQLabel||userText; _aiPendingQLabel='';
@@ -16567,7 +16581,8 @@ async function aiSend(){
     hist.pop();
     if(msgs)msgs.scrollTop=msgs.scrollHeight;   // on error, show the error note at the bottom
   }
-  if(btn){btn.disabled=false;btn.textContent='Send';}
+  if(btn){delete btn.dataset.sending;btn.textContent='Send';}
+  _aiSyncSendBtns();
 }
 
 // ── Sidebar chat send (independent session — _aiSbHistory / _aiSbLastFp) ──
@@ -16580,7 +16595,7 @@ async function aiSbSend(){
   const key=_aiGetKey();
   if(!_aiKeyLooksValid(key)){alert('Please add your '+_aiProviderCfg().label+' API key in Settings first.');return;}
   if(inp)inp.value='';
-  if(btn){btn.disabled=true;btn.innerHTML='…';}
+  if(btn){btn.disabled=true;btn.dataset.sending='1';btn.innerHTML='…';}
   const userBubble=_addAiBubbleTo(msgs,'user',userText);
   if(userBubble)userBubble.dataset.q=userText;   // Save-PDF question (sidebar has no Ask-AI labels)
   const chips=document.getElementById('ai-sb-chips');
@@ -16616,7 +16631,8 @@ async function aiSbSend(){
     _aiSbHistory.pop();
     if(msgs)msgs.scrollTop=msgs.scrollHeight;   // on error, show the error note at the bottom
   }
-  if(btn){btn.disabled=false;btn.innerHTML='<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>';}
+  if(btn){delete btn.dataset.sending;btn.innerHTML='<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>';}
+  _aiSyncSendBtns();
   // Show clear button once a conversation exists
   const clearBtn=document.getElementById('ai-sb-clear-btn');
   if(clearBtn)clearBtn.style.display='';
