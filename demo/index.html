@@ -63,7 +63,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from Retirement-Planner-v7-v190.html on 2026-07-01. Calc engine stripped; frozen sample plan (single, retire@62). Rebuild: see desktop repo history / plan file. -->
+<!-- DEMO BUILD: forked from Retirement-Planner-v7-v190.html on 2026-07-01. Calc engine stripped; frozen sample plan (single, retire@62). Rebuild: tools/demo-build/ in the desktop repo. -->
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex"/>
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
@@ -8008,9 +8008,13 @@ if(document.body)new MutationObserver(()=>{if(!_trapPending){_trapPending=true;r
 function eVal(usdVal,dataKey,suffix,cls){
   const disp=Math.round(usdVal);
   const sym=CURRENCIES[displayCurrency].symbol;
-  return `<span class="${cls||'ia'}">${sym}${disp.toLocaleString()}${suffix||''}</span>`;
+  return `<span class="${cls||'ia'}">${sym}<span class="ev" data-ekey="${dataKey}">${disp.toLocaleString()}</span>${suffix||''}</span>`;
 }
-function eValMetric(usdVal,dataKey){return fmtC(usdVal);}
+function eValMetric(usdVal,dataKey){
+  const sym=CURRENCIES[displayCurrency].symbol;
+  const disp=Math.round(usdVal);
+  return `${sym}<span class="ev-metric" data-ekey="${dataKey}">${disp.toLocaleString()}</span>`;
+}
 // Parse a formatted number from contenteditable (strip commas etc)
 function parseEVal(str){return parseFloat(String(str).replace(/[^0-9.\-]/g,''))||0;}
 
@@ -10392,17 +10396,7 @@ function _renderAuditKeyEntry(){
 }
 
 // Validates and saves the entered API key, then immediately re-runs the audit.
-function _auditSaveKeyAndRun(){
-  // Audit keeps the typed key visible (clearInput:false) so the user can see what they entered while it runs.
-  if(!_aiKeySubmit('audit-key-input','audit-key-err',{clearInput:false}))return;
-  const submit=document.getElementById('audit-key-submit');
-  if(submit){submit.disabled=true;submit.textContent='Starting audit…';}
-  // Refresh footers (Edit tab rate-fetcher, AI advisor) so they reflect the new key
-  if(typeof refreshRatesFooter==='function')refreshRatesFooter();
-  if(typeof refreshAdvisorFooter==='function')refreshAdvisorFooter();
-  // Now run the audit — key is in localStorage, so the standard path will pick it up
-  auditHelpContent();
-}
+function _auditSaveKeyAndRun(){demoToast("The AI help-content audit is available in the full version.");}
 
 // The constrained list of items we want the AI to verify. Each item has a
 // stable key, a human-readable topic, and a "claim" — the assertion currently
@@ -10428,52 +10422,7 @@ const AUDIT_ITEMS=[
   {key:'niit_tax',         topic:'Net Investment Income Tax (NIIT)',  claim:'NIIT is a 3.8% surtax on net investment income once MAGI exceeds $200,000 (single) or $250,000 (married filing jointly); these thresholds are fixed in statute and not inflation-indexed.'}
 ];
 
-async function auditHelpContent(){
-  const key=_aiGetKey();
-  if(!key){
-    // No key yet — open the modal with the inline key-entry form rather than
-    // dead-ending at an alert. User pastes key → it's saved → audit runs.
-    openAuditModal();
-    _renderAuditKeyEntry();
-    return;
-  }
-  openAuditModal();
-  const body=document.getElementById('audit-body');
-  const subtitle=document.getElementById('audit-head-sub');
-  const rerunBtn=document.getElementById('audit-rerun-btn');
-  const footMeta=document.getElementById('audit-foot-meta');
-  if(!body)return;
-  // Make sure the re-run button is visible (might have been hidden by key-entry form)
-  if(rerunBtn){rerunBtn.style.display='';rerunBtn.disabled=true;}
-  if(subtitle)subtitle.textContent='Asking Claude to verify each claim against current sources…';
-  body.innerHTML=`<div class="audit-intro">Claude reviews each claim below and reports whether it's still accurate as of today's date. For any flagged "changed", a one-click Apply button substitutes the corrected wording into every help section where that fact appears — with a badge so you can see what was changed, and a Revert button if you want to undo. Plan data is never touched.</div><div class="audit-loading"><div class="audit-spinner"></div><span>Auditing ${AUDIT_ITEMS.length} claims… (10–25 seconds)</span></div>`;
-
-  const today=new Date().toISOString().slice(0,10);
-  // Build a compact, structured prompt
-  const itemsBlock=AUDIT_ITEMS.map(i=>`- ${i.key} [${i.topic}]: ${i.claim}`).join('\n');
-  const prompt=`Today is ${today}. Below are factual claims currently embedded in a US/UK retirement planning tool's help content. For each, judge whether the claim is still accurate as of today.\n\nClaims to verify:\n${itemsBlock}\n\nReturn ONLY a JSON array (no prose, no code fences) where each element is:\n{"key": "<the key from above>", "status": "current"|"changed"|"uncertain", "note": "<one or two short sentences explaining what is current or what changed>", "source": "<short source name e.g. 'IRS Pub 590-B 2025' or 'SSA Fact Sheet 2025'; empty string if unsure>", "replacement": "<see rule below>"}\n\nGuidance:\n- "current" = the claim is still accurate as of ${today}. Set "replacement" to "".\n- "changed" = the claim is wrong or has been superseded. Set "replacement" to the CORRECTED fact, written as a single self-contained sentence or short clause suitable for direct substitution into help text — no quotation marks, no leading words like "Actually" or "The correct figure is", just the corrected statement itself. Keep numbers, dates, and specifics precise. The user will see your replacement text substituted verbatim wherever this fact appears in the planner.\n- "uncertain" = you can't verify due to date-of-knowledge limits. Set "replacement" to "".\n\nReturn one entry for each key in the order given. Do not include any keys not in the list.`;
-
-  try{
-    // cheapest currently-available model — picked dynamically per provider via _aiCheapModel()
-    const text=await _aiCallApi([{role:'user',content:prompt}],null,2400,{model:_aiCheapModel()});
-    // Strip code fences just in case the model adds them despite instructions
-    const cleaned=text.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'').trim();
-    let items;
-    try{items=JSON.parse(cleaned);}catch(e){throw new Error('Could not parse audit response as JSON. Raw response: '+text.slice(0,200));}
-    if(!Array.isArray(items))throw new Error('Audit response was not an array.');
-    renderAuditReport(items);
-    // Persist last-audit timestamp for Tier 4 watermark
-    try{localStorage.setItem(HELP_AUDIT_DATE_LS,today);}catch(e){}
-    if(subtitle)subtitle.textContent=`Audit complete — ${today}. ${items.length} claims reviewed.`;
-    _refreshAuditHeadBadge();
-    if(footMeta)footMeta.textContent='Plan data is never modified. Cost: typically $0.05–$0.20 per audit.';
-  }catch(e){
-    body.innerHTML=`<div class="audit-error"><strong>Audit failed.</strong><br>${_aiFriendlyError(e)}<br><br><em>The audit makes a direct call to the Anthropic API from your browser — no server in the middle. Your plan data is never modified.</em></div>`;
-    if(subtitle)subtitle.textContent='Audit failed.';
-  }finally{
-    if(rerunBtn)rerunBtn.disabled=false;
-  }
-}
+async function auditHelpContent(){demoToast('The AI help-content audit is available in the full version — it uses a live AI model to re-verify every Help claim.');}
 
 function renderAuditReport(items){
   const body=document.getElementById('audit-body');
@@ -13629,12 +13578,7 @@ function _openExampleChooser(){
     '<p style="font-size:11.5px;color:var(--text-tertiary);margin-top:12px;line-height:1.5;">More worked examples — windfalls, pensions &amp; rental income, survivor planning — live in <strong>Help → Features → Worked examples</strong>.</p>'+
     '<button class="tool-btn" style="justify-content:center;margin-top:14px;font-size:12.5px;padding:8px;border-radius:5px;" onclick="_backToWelcome()">← Back</button>';
 }
-function _pickProfile(i){
-  const p=RP_PROFILES[i]; if(!p)return;
-  _dismissWelcome();
-  if(p.wizard){ if(typeof openWizard==='function')openWizard(); return; }
-  _applyPlanBlob(JSON.parse(JSON.stringify(p.blob)));
-}
+function _pickProfile(i){demoToast("Loading example plans is available in the full version — this demo is fixed to the retire-at-62 sample.");}
 function _backToWelcome(){
   const ov=document.getElementById('welcome-overlay'); if(!ov)return;
   const box=ov.firstElementChild;
@@ -13697,13 +13641,7 @@ function renderExampleShowcase(){
     '<div class="help-h2" style="margin-top:18px;">Which example shows which feature</div>'+
     '<div class="ex-matrix-wrap"><table class="ex-matrix">'+head+rows+'</table></div>';
 }
-function _loadExampleFromHelp(i){
-  const p=RP_PROFILES[i]; if(!p||!p.blob)return;
-  const ok=confirm('Load the "'+p.name+'" example?\n\nThis replaces your current plan with the example numbers. To keep your current plan, click Cancel and use Export first.');
-  if(!ok)return;
-  closeHelp();
-  setTimeout(function(){_applyPlanBlob(JSON.parse(JSON.stringify(p.blob)));},150);
-}
+function _loadExampleFromHelp(i){demoToast("Loading example plans is available in the full version — this demo is fixed to the retire-at-62 sample.");}
 initTheme();
 initTextSize(); // v6: restore saved text-size preference
 initAmountColorMode(); // v6: restore saved phase-card amount color preference
@@ -17981,7 +17919,9 @@ initAiSidebar();
     'padding:7px 40px 7px 14px;text-align:center;line-height:1.5;border-bottom:1px solid var(--border-light,#d8d8d2);}',
     '#demo-banner b{font-weight:600;}',
     '#demo-banner .demo-banner-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);',
-    'background:none;border:none;cursor:pointer;font-size:15px;color:inherit;padding:2px 6px;line-height:1;}'
+    'background:none;border:none;cursor:pointer;font-size:15px;color:inherit;padding:2px 6px;line-height:1;}',
+    // editable-amount affordance: keep the real app's inline-edit look on frozen amounts
+    '.ev,.ev-metric{cursor:pointer;}'
   ].join('');
   document.head.appendChild(style);
 
@@ -18011,27 +17951,37 @@ initAiSidebar();
   // ── UI locks (capture phase — original inline handlers never fire) ──
   const LOCK_MSG='Editing is disabled in this demo — the full version is fully editable.';
 
-  // ids of what-if controls that would need a live engine recompute
-  const LOCKED_IDS={'whatif-roth-amt':1,'whatif-infl':1,'whatif-survivor-age':1,'whatif-maxspend-target':1};
-
+  // Inverted model: EVERY input/select/textarea is locked unless allowlisted.
+  // The allowlist is purely-cosmetic or verified-live-and-correct controls.
+  const ALLOW_IDS={
+    'ai-input':1,'ai-sb-input':1,                    // chat boxes (scripted conversation)
+    'glossary-search':1,'video-search':1,            // Help text filters
+    'style-picker':1,                                // appearance style select
+    'whatif-ss-age':1,                               // live SSA-formula slider
+    'whatif-roth-phase':1,'whatif-maxspend-gate':1,  // selects covered by frozen variants
+    'primer-noshow':1                                // "don't show again" preference
+  };
   function lockedInputEl(el){
-    if(!el||!el.closest)return null;
-    if(el.id&&LOCKED_IDS[el.id])return el;
-    if(!(el.matches&&el.matches('input,select,textarea')))return null;
-    if(el.closest('#manual-rates'))return el;
-    if(el.closest('#tab-lumps'))return el;
-    const inEdit=el.closest('#tab-edit');
-    if(inEdit&&!el.closest('[data-esec="appearance"]'))return el;
-    return null;
+    if(!el||!el.matches||!el.matches('input,select,textarea'))return null;
+    if(el.id&&ALLOW_IDS[el.id])return null;
+    if(el.closest&&el.closest('[data-esec="appearance"],#appearance-rows,#appearance-schemes'))return null;
+    if(el.type==='range'&&el.closest&&el.closest('#tab-drawdown'))return null; // pure display math, verified
+    return el;
   }
 
   let _snapT=null;
   function snapBack(el){
-    // restore the visual value the frozen plan renders with
     clearTimeout(_snapT);
     _snapT=setTimeout(function(){
       try{
-        if(el&&el.type==='range'){el.value=el.defaultValue;}
+        if(el){
+          if(el.tagName==='SELECT'){
+            for(let i=0;i<el.options.length;i++){if(el.options[i].defaultSelected){el.selectedIndex=i;break;}}
+          } else if('defaultValue' in el){
+            el.value=el.defaultValue; // markup default (covers annuity, help calcs, pasted text)
+          }
+        }
+        // Edit-tab inputs are populated from state, not markup — restore those properly
         if(typeof populateInputsFromUSD==='function')populateInputsFromUSD();
       }catch(e){}
     },350);
@@ -18047,23 +17997,35 @@ initAiSidebar();
       snapBack(el);
     },true);
   });
-  // keydown guard so typing in a locked field doesn't even change it before snap-back
   document.addEventListener('keydown',function(e){
     const el=lockedInputEl(e.target);
     if(!el)return;
     if(e.key&&e.key.length===1){e.preventDefault();e.stopImmediatePropagation();demoToast(LOCK_MSG);}
   },true);
 
-  // click locks: non-USD currencies, plan-horizon +/- , Replan, state-tax AI lookup
+  // click locks: checkboxes/radios (preventDefault stops the toggle), currency, horizon,
+  // replan, plan-status chip, AI settings/key areas, state-tax lookup, plan title
+  const EDIT_AMT_MSG='In the full version this number is editable right here — click it, type, and the whole plan recalculates instantly.';
   const CLICK_LOCK=[
+    ['.ev,.ev-metric',EDIT_AMT_MSG],
+    ['#tab-edit .toggle-btn',LOCK_MSG],
     ['.cur-btn:not([data-cur="USD"])','This demo is fixed to USD — the full version also plans in GBP, CAD, AUD, PHP and THB.'],
     ['#p5-minus','Changing the plan horizon is available in the full version.'],
     ['#p5-plus','Changing the plan horizon is available in the full version.'],
     ['#replan-toggle-btn','Replan-from-today is available in the full version.'],
-    ['[onclick*="aiLookupStateTax"]','The AI state-tax lookup is available in the full version.']
+    ['#plan-status-chip','Plan status & sign-off tracking is available in the full version.'],
+    ['#dash-subtitle','Renaming your plan is available in the full version.'],
+    ['[onclick*="aiLookupStateTax"]','The AI state-tax lookup is available in the full version.'],
+    ['#ai-settings-strip','AI provider & model settings are available in the full version.'],
+    ['#ai-key-setup','AI provider & API-key setup is available in the full version — this demo chat is a scripted sample.'],
+    ['#ai-sb-locked','AI provider & API-key setup is available in the full version — this demo chat is a scripted sample.']
   ];
   document.addEventListener('click',function(e){
     if(!e.target||!e.target.closest)return;
+    // locked checkboxes/radios: block the toggle itself
+    if(e.target.matches&&e.target.matches('input[type="checkbox"],input[type="radio"]')&&lockedInputEl(e.target)){
+      e.preventDefault();e.stopImmediatePropagation();demoToast(LOCK_MSG);return;
+    }
     for(let i=0;i<CLICK_LOCK.length;i++){
       const hit=e.target.closest(CLICK_LOCK[i][0]);
       if(hit){
@@ -18075,13 +18037,53 @@ initAiSidebar();
     }
   },true);
 
+  // plan title: make sure it can't be typed in even via keyboard focus
+  try{const sub=document.getElementById('dash-subtitle');if(sub)sub.setAttribute('contenteditable','false');}catch(e){}
+
   // ── Scripted AI conversation ──
   const fmt=function(v){try{return fmtC(v);}catch(e){return '$'+Math.round(v).toLocaleString();}};
   const last=FROZEN_RESULT[FROZEN_RESULT.length-1];
   const endTotal=last.end.b401k+last.end.bcash+(last.end.bEquity||0)+(last.end.bRoth||0)+(last.end.bSuper||0);
   const p2=FROZEN_RESULT[0];
   const DEMO_NOTE='\n\n_(Demo note: this is a scripted sample answer built from this sample plan’s real numbers — in the full version you chat with a live AI model about YOUR plan.)_';
+  const LEARN_NOTE='\n\n_(Demo note: this is a scripted sample answer — in the full version, Learn mode is a live AI grounded in the planner’s built-in Help, so you can ask it anything about using the app.)_';
 
+  // Learn-the-planner mode: how-to answers for the 6 starter chips + fallback
+  const LEARN_REPLIES=[
+    { test:/roth conversion ladder|model.*roth/i, reply:function(){
+      return 'To model a Roth conversion ladder:\n\n'+
+        '1. On the **Edit values** tab, open the **Roth** card and set your starting Roth balance and growth rate.\n'+
+        '2. Below it, each phase has a **Roth conversion $/yr** field — enter the annual amount you want to convert in that phase (that’s the “ladder”).\n'+
+        '3. Watch the phase cards: conversions show up as taxable income, so keep an eye on the **12% bracket** and **IRMAA/ACA** chips.\n'+
+        '4. Use **What-if → Roth conversion** to sandbox an amount before committing it — it shows the tax cost, MAGI change and threshold flags without touching your plan.'+LEARN_NOTE;
+    }},
+    { test:/where.*claiming age|set my social security|claiming age/i, reply:function(){
+      return 'On the **Edit values** tab, in the **Social Security** card: enter your monthly benefit and pick your **claiming age (62–70)** from the dropdown next to it. The planner treats the amount you enter as your benefit at that claiming age.\n\n'+
+        'Two companion tools: the **SS Optimizer tab** compares all nine claiming ages with breakeven maths, and **What-if → Social Security** lets you drag a slider to see the benefit at any age (try it — it’s live in this demo).'+LEARN_NOTE;
+    }},
+    { test:/aca cliff|cliff warning|what does the aca/i, reply:function(){
+      return 'The **ACA cliff warning** appears on a pre-65 phase card when that phase’s MAGI is close to **400% of the Federal Poverty Level** — the point where ACA premium subsidies vanish entirely (one dollar over costs thousands).\n\n'+
+        'There’s a second, softer line at **250% FPL**: below it you also get Silver cost-sharing reductions (lower deductibles). This sample plan’s Phase 2 sits above the 250% line — you can see that flagged on the Phase 2 card and in the Plan-health checks.\n\n'+
+        'Fixes usually involve swapping 401k withdrawals for cash or Roth in the pre-Medicare years to lower MAGI.'+LEARN_NOTE;
+    }},
+    { test:/lump sum|inheritance|one[- ]off/i, reply:function(){
+      return 'Use the **Lump sums tab**: click **+ Add lump sum**, choose **Money in** (inheritance, house sale) or **Money out** (new roof, wedding), enter the amount, and pick which **phase** it lands in.\n\n'+
+        'The engine applies it at the start of that phase — money in tops up your cash bucket; money out drains cash first, then equity, then the 401k. Every chart, tax figure and health check updates automatically. (Adding lumps is disabled in this demo.)'+LEARN_NOTE;
+    }},
+    { test:/save a scenario|compare it|save.*compare/i, reply:function(){
+      return 'The **Saved plans** button (top bar) gives you **five named slots**. Save the current plan, tweak some numbers, save to a second slot — then click **Compare** for a phase-by-phase side-by-side table (net income, tax, ending balances, deltas highlighted).\n\n'+
+        'For backups or moving between devices, **Export** writes the whole plan to a JSON file and **Import** loads it back. (Saving and importing are disabled in this demo.)'+LEARN_NOTE;
+    }},
+    { test:/word a question|how should i (word|phrase)|advisor/i, reply:function(){
+      return 'Best results come from questions with a **goal plus a constraint**, using your plan’s own vocabulary:\n\n'+
+        '- *“Keep me in the 12% bracket — propose per-phase withdrawal changes.”*\n'+
+        '- *“Get Phase 2 under the ACA CSR ceiling without dropping my net income below $4,000/mo.”*\n'+
+        '- *“Should I delay Social Security to 67 if I need $4,500/mo from 62?”*\n\n'+
+        'In the full version the AI answers with specific numeric proposals you can **apply with one click** (and undo). Vague questions get essays; constrained questions get plans.'+LEARN_NOTE;
+    }}
+  ];
+
+  // Plan mode: one distinct reply per starter chip / sidebar chip + topical fallbacks
   const REPLIES=[
     { test:/summari[sz]e|flag.*risk|overview of my plan/i, reply:function(){
       return 'Here’s your plan at a glance:\n\n'+
@@ -18091,10 +18093,19 @@ initAiSidebar();
         '- The portfolio **grows** across the plan — ending near **'+fmt(endTotal)+'** at age 80. Withdrawals are comfortably sustainable.\n\n'+
         'Two things worth attention: your Phase 2 MAGI ('+fmt(p2.magi)+') sits above the ACA Silver cost-sharing ceiling, and there’s a small RMD shortfall (~'+fmt(last.rmdShortfall)+'/mo) in the final phase.'+DEMO_NOTE;
     }},
-    { test:/tax bracket|12%|bracket check|fill the 12/i, reply:function(){
-      return 'Good news — you’re deep inside the 12% bracket in every phase:\n\n'+
-        FROZEN_RESULT.map(function(p){return '- **'+p.label+'** (ages '+p.ages+'): taxable income '+fmt(p.ti)+' vs a 12%-bracket ceiling of '+fmt(p.adjBrk12)+' — roughly '+fmt(p.adjBrk12-p.ti)+' of headroom.';}).join('\n')+
-        '\n\nThat headroom is why Roth conversions are worth considering — you could convert meaningfully every year and still stay in the 12% bracket.'+DEMO_NOTE;
+    { test:/propose specific numeric|optimi[sz]e my plan|propose optimi/i, reply:function(){
+      return 'Based on this plan’s numbers, here’s what I’d target (in the full version these arrive as one-click applicable proposals):\n\n'+
+        '1. **Restore ACA cost-sharing in Phase 2** — MAGI is '+fmt(p2.magi)+', about '+fmt(p2.magi-p2.fpl250)+' above the 250% FPL Silver-CSR ceiling. Swapping roughly that much annual 401k withdrawal for cash withdrawals (cash is not taxable income) would unlock lower deductibles, often worth $4–8k/yr.\n'+
+        '2. **Fix the final-phase RMD gap** — from age 73 the IRS requires about '+fmt(last.rmdEst)+'/mo but the plan draws '+fmt(last.cfg.w401k)+'/mo; raise the Phase 5 401k withdrawal by ~'+fmt(last.rmdShortfall)+'/mo.\n'+
+        '3. **Use the 12%-bracket headroom** — every phase has '+fmt(p2.adjBrk12-p2.ti)+'+ of unused room; modest Roth conversions from 65 would trim the future RMD pressure without changing your net income.\n\n'+
+        'The plan is already solvent to 80 with a growing balance, so these are refinements, not rescues.'+DEMO_NOTE;
+    }},
+    { test:/roth/i, reply:function(){
+      return 'Your plan currently does **no Roth conversions**, and there’s a case for adding them:\n\n'+
+        '- You have '+fmt(p2.adjBrk12-p2.ti)+'+ of unused 12%-bracket headroom every year.\n'+
+        '- Your 401k **grows** to about '+fmt(last.end.b401k)+' by 80, which is what creates the small RMD pressure ('+fmt(last.rmdEst)+'/mo estimated RMD in the final phase).\n'+
+        '- Converting during the 62–65 window has a trade-off: conversion income raises MAGI, and Phase 2 is already above the ACA CSR line.\n\n'+
+        'A common approach here: modest conversions from 65 (once Medicare replaces ACA) that use the 12% headroom without tripping IRMAA. The **What-if → Roth conversion** sandbox shows the real tax cost of a $20k conversion in any phase — try it in this demo.'+DEMO_NOTE;
     }},
     { test:/aca|csr|subsidy|cliff|pre-?medicare/i, reply:function(){
       return 'Your only pre-Medicare phase is **Phase 2 (62–65)**, where you pay about '+fmt(p2.aca)+'/mo for ACA coverage.\n\n'+
@@ -18102,19 +18113,24 @@ initAiSidebar();
         '- It’s **above the 250% FPL Silver CSR ceiling** ('+fmt(p2.fpl250)+'), so you’re missing cost-sharing reductions worth often $4–8k/yr. Lowering MAGI by about '+fmt(p2.magi-p2.fpl250)+' — e.g. drawing more from cash instead of the 401k — would restore them.\n\n'+
         'From 65 you’re on Medicare and MAGI stays well below the IRMAA surcharge thresholds in every phase.'+DEMO_NOTE;
     }},
-    { test:/roth/i, reply:function(){
-      return 'Your plan currently does **no Roth conversions**, and there’s a case for adding them:\n\n'+
-        '- You have '+fmt(p2.adjBrk12-p2.ti)+'+ of unused 12%-bracket headroom every year.\n'+
-        '- Your 401k **grows** to about '+fmt(last.end.b401k)+' by 80, which is what creates the small RMD pressure ('+fmt(last.rmdEst)+'/mo estimated RMD in the final phase).\n'+
-        '- Converting during the 62–65 window has a trade-off: conversion income raises MAGI, and Phase 2 is already above the ACA CSR line.\n\n'+
-        'A common approach here: modest conversions from 65 (once Medicare replaces ACA) that use the 12% headroom without tripping IRMAA. The **What-if → Roth conversion** sandbox in the full version simulates exact amounts per phase.'+DEMO_NOTE;
+    { test:/tax bracket|12%|bracket check|fill the 12/i, reply:function(){
+      return 'Good news — you’re deep inside the 12% bracket in every phase:\n\n'+
+        FROZEN_RESULT.map(function(p){return '- **'+p.label+'** (ages '+p.ages+'): taxable income '+fmt(p.ti)+' vs a 12%-bracket ceiling of '+fmt(p.adjBrk12)+' — roughly '+fmt(p.adjBrk12-p.ti)+' of headroom.';}).join('\n')+
+        '\n\nThat headroom is why Roth conversions are worth considering — you could convert meaningfully every year and still stay in the 12% bracket.'+DEMO_NOTE;
     }},
     { test:/social security|claim|delay|ss (age|claim)|optimi[sz]e.*ss/i, reply:function(){
       return 'You’re claiming at **62** with '+fmt(FROZEN_S.uss)+'/mo. The trade-off:\n\n'+
         '- Claiming at 62 locks in a permanently reduced cheque but starts income immediately — which suits this plan, since withdrawals stay modest.\n'+
         '- Waiting to 67 (your FRA) would raise the monthly benefit ~43%, and 70 roughly 77% — but you’d bridge 5–8 years from the portfolio first.\n'+
-        '- Delay generally wins if you live past your early 80s; the **SS Optimizer tab** in this demo shows the real breakeven table for this plan.\n\n'+
+        '- Delay generally wins if you live past your early 80s; the **SS Optimizer tab** shows the real breakeven table for this plan.\n\n'+
         'Try the **What-if → Social Security claiming age** slider — it’s live in this demo and shows the benefit and breakeven at every age from 62–70.'+DEMO_NOTE;
+    }},
+    { test:/withdrawal strateg|rebalance|grow.*equity|smooth.*income|even out|depletion timing/i, reply:function(){
+      return 'Looking at the withdrawal mix ('+fmt(p2.cfg.w401k)+'/mo from 401k, '+fmt(p2.cfg.wcash)+'/mo cash, '+fmt(p2.cfg.wEquity)+'/mo equities in every phase):\n\n'+
+        '- Your net income already steps up over time ('+fmt(p2.net_mo)+' → '+fmt(last.net_mo)+'/mo) thanks to Social Security COLA — but in **real** terms it drifts down ('+fmt(p2.net_real)+' → '+fmt(last.net_real)+'/mo in today’s money).\n'+
+        '- To smooth real income you’d draw a little more in later phases — you have room: the sustainable ceiling is about '+fmt(FROZEN_MAXSPEND.solvent.netNom)+'/mo.\n'+
+        '- The equity bucket already grows ('+fmt(FROZEN_S.balEquity)+' → '+fmt(last.end.bEquity)+') since withdrawals are below its growth rate — no bucket depletes before 80.\n\n'+
+        'In the full version I’d propose exact per-phase amounts and you could apply them with one click.'+DEMO_NOTE;
     }},
     { test:/how long|money last|run out|deplete|last me/i, reply:function(){
       return 'On these assumptions your money **outlasts the plan comfortably**:\n\n'+
@@ -18142,13 +18158,6 @@ initAiSidebar();
         'It models per-phase withdrawals across 401k/cash/equity/Roth, Social Security with COLA, US federal + state tax, ACA subsidies and the CSR/400%-FPL cliffs, Medicare + IRMAA, RMDs, Roth conversions, lump sums, Monte Carlo + historical backtests, and more — for the US, UK, Canada, Australia, Philippines and Thailand.\n\n'+
         'What you’re looking at is a sample plan; every chart, table and check you see is the real planner’s output. In the full version this chat connects to a live AI model that analyses **your** plan and proposes specific changes you can apply with one click.'+DEMO_NOTE;
     }},
-    { test:/rebalance|grow.*equity|smooth.*income|even out/i, reply:function(){
-      return 'Looking at the withdrawal mix ('+fmt(p2.cfg.w401k)+'/mo from 401k, '+fmt(p2.cfg.wcash)+'/mo cash, '+fmt(p2.cfg.wEquity)+'/mo equities in every phase):\n\n'+
-        '- Your net income already steps up over time ('+fmt(p2.net_mo)+' → '+fmt(last.net_mo)+'/mo) thanks to Social Security COLA — but in **real** terms it drifts down ('+fmt(p2.net_real)+' → '+fmt(last.net_real)+'/mo in today’s money).\n'+
-        '- To smooth real income you’d draw a little more in later phases — you have room: the sustainable ceiling is about '+fmt(FROZEN_MAXSPEND.solvent.netNom)+'/mo.\n'+
-        '- The equity bucket already grows ('+fmt(FROZEN_S.balEquity)+' → '+fmt(last.end.bEquity)+') since withdrawals are below its growth rate.\n\n'+
-        'In the full version I’d propose exact per-phase amounts and you could apply them with one click.'+DEMO_NOTE;
-    }},
     { test:/lump sum|inheritance|windfall|one[- ]off/i, reply:function(){
       return 'Lump sums live on the **Lump sums tab** — each one is money in (inheritance, house sale) or money out (new roof, big trip), assigned to a phase. The engine applies it at the start of that phase and every chart, tax figure and health check updates.\n\nThis sample plan has none, and adding them is disabled in the demo — but the tab shows exactly how they’re set up.'+DEMO_NOTE;
     }},
@@ -18164,12 +18173,17 @@ initAiSidebar();
         if(messages[i]&&messages[i].role==='user'){text=String(messages[i].content||'');break;}
       }
     }catch(e){}
-    for(let i=0;i<REPLIES.length;i++){
-      if(REPLIES[i].test.test(text)){
-        try{return REPLIES[i].reply();}catch(e){break;}
+    const isLearn=(typeof _aiMode!=='undefined'&&_aiMode==='learn');
+    const set=isLearn?LEARN_REPLIES.concat(REPLIES):REPLIES;
+    for(let i=0;i<set.length;i++){
+      if(set[i].test.test(text)){
+        try{return set[i].reply();}catch(e){break;}
       }
     }
-    // graceful fallback for off-script questions
+    if(isLearn){
+      return 'In the **full version**, Learn mode is a live AI grounded in the planner’s complete built-in Help — it answers any “how do I…?” question about the app, with links straight into the relevant Help section, glossary entry or video.\n\n'+
+        'In this demo I’m scripted, so try one of the starter questions below — or open **Help** (the ? button, top right): every guide, worked example, glossary entry and mini-calculator in there is real.'+LEARN_NOTE;
+    }
     return 'Good question — in the **full version** a live AI model reads your entire plan (balances, withdrawals, taxes, health checks) and answers exactly that, usually with specific numeric proposals you can apply in one click.\n\n'+
       'In this demo I’m a scripted guide, so try one of the starter questions below — or poke around the tabs: the Confidence score, Stress test, SS Optimizer and What-if explorer are all showing this sample plan’s real numbers.'+DEMO_NOTE;
   };
