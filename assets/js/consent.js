@@ -63,7 +63,7 @@
         '<strong>We value your privacy</strong>' +
         '<p>We use cookies only to measure site traffic and improve our content — ' +
         'your retirement plan always stays on your device. See our ' +
-        '<a href="privacy.html">Privacy Policy</a>.</p>' +
+        '<a href="/privacy.html">Privacy Policy</a>.</p>' +
       '</div>' +
       '<div class="cookie-banner-actions">' +
         '<button type="button" class="btn btn-ghost btn-sm" data-cc="decline">Decline</button>' +
