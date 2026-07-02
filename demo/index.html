@@ -17944,7 +17944,6 @@ initAiSidebar();
     ['[onclick*="setUkResident"],[onclick*="setCadResident"],[onclick*="setAusResident"]','Residence-based tax treatment (UK/Canada/Australia) is available in the full version — this demo shows the US-resident calculation.'],
     ['#p5-minus','Changing the plan horizon is available in the full version.'],
     ['#p5-plus','Changing the plan horizon is available in the full version.'],
-    ['#plan-status-chip','Plan status & sign-off tracking is available in the full version.'],
     ['#dash-subtitle','Renaming your plan is available in the full version.'],
     ['[onclick*="aiLookupStateTax"]','The AI state-tax lookup is available in the full version.'],
     ['#ai-settings-strip','AI provider & model settings are available in the full version.'],
@@ -17975,6 +17974,18 @@ initAiSidebar();
 
   // plan title: make sure it can't be typed in even via keyboard focus
   try{const sub=document.getElementById('dash-subtitle');if(sub)sub.setAttribute('contenteditable','false');}catch(e){}
+
+  // Plan status (the "Draft" chip) is LIVE in the demo — stages switch and sign-off
+  // captures a real snapshot, all in-memory only (autoSave is a no-op, so a reload
+  // returns the plan to Draft). One-time heads-up when first opened; the note and
+  // review-date fields stay covered by the global input-lock.
+  let _psToastShown=false;
+  document.addEventListener('click',function(e){
+    if(!_psToastShown&&e.target&&e.target.closest&&e.target.closest('#plan-status-chip')){
+      _psToastShown=true;
+      setTimeout(function(){demoToast('Try it — mark the plan In review, or sign it off to see the sign-off record. Nothing is saved in this demo; reloading returns it to Draft.');},700);
+    }
+  },true);
 
   // Downloads section: the eBook ships with the paid planner — reword the sub-line
   // (the click-lock above intercepts the actual download link)
