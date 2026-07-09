@@ -3,13 +3,16 @@
 
 Assembles static blog pages from Markdown sources + shared partials:
 
-  blog-src/posts/*.md      -> blog/<slug>/index.html   (one folder per post, clean URLs)
+  blog-src/posts/*.md      -> blog/<slug>.html   (flat files — same .html URL style as
+                              the rest of the site; no directory-index URLs anywhere)
   blog-src/templates/*.html   page skeletons with {{TOKENS}}
   partials/*.html             shared header / footer / analytics head
   Blog Posts/Images/*.png  -> assets/img/blog/<slug>-<n>.webp (+ -thumb for card grids)
 
-Also regenerates: blog/index.html (landing page with search/filter),
-blog/feed.xml (RSS), and the blog block inside sitemap.xml.
+Also regenerates: blog.html at the site root (landing page with search/filter),
+blog/feed.xml (RSS), and the blog block inside sitemap.xml. After building, every
+internal href on the generated pages is checked against the files on disk and the
+build FAILS on a broken link — never link a post that is not published yet.
 
 Run from anywhere:  python Website/tools/blog_build.py
 Requires: python-markdown (pip install markdown). Pillow needed only when
@@ -294,7 +297,7 @@ def build_toc(content_html):
 
 
 def jsonld_post(post, images, faq_pairs):
-    url = f"{SITE}/blog/{post['slug']}/"
+    url = f"{SITE}/blog/{post['slug']}.html"
     graph = [{
         "@type": "BlogPosting",
         "headline": post["title"],
@@ -313,7 +316,7 @@ def jsonld_post(post, images, faq_pairs):
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
-            {"@type": "ListItem", "position": 2, "name": "Blog", "item": SITE + "/blog/"},
+            {"@type": "ListItem", "position": 2, "name": "Blog", "item": SITE + "/blog.html"},
             {"@type": "ListItem", "position": 3, "name": post["category"]},
             {"@type": "ListItem", "position": 4, "name": post["title"], "item": url},
         ],
@@ -337,7 +340,7 @@ def related_html(post, all_posts):
     if not picks:
         return ""
     items = "\n".join(
-        f'      <li><a href="/blog/{p["slug"]}/">{p["title"]}</a>'
+        f'      <li><a href="/blog/{p["slug"]}.html">{p["title"]}</a>'
         f' <span class="post-meta">· {p["category"]}</span></li>'
         for p in picks)
     return ('<nav class="related-posts" aria-label="Related articles">\n'
@@ -392,7 +395,7 @@ def render_post(post, all_posts, templates, partials, images):
     tokens = {
         "{{TITLE}}": esc_attr(post["title"]),
         "{{DESCRIPTION}}": esc_attr(post["description"]),
-        "{{CANONICAL}}": f"{SITE}/blog/{post['slug']}/",
+        "{{CANONICAL}}": f"{SITE}/blog/{post['slug']}.html",
         "{{OG_IMAGE}}": SITE + images[1][0] if 1 in images else f"{SITE}/assets/img/og-cover.png",
         "{{ROBOTS}}": '<meta name="robots" content="noindex">\n' if post["draft"] else "",
         "{{DATE_ISO}}": post["published"],
@@ -418,11 +421,11 @@ def render_post(post, all_posts, templates, partials, images):
         html_page = html_page.replace(k, v)
     html_page = re.sub(r"\{\{CUR_[A-Z]+\}\}", "", html_page)  # remaining nav tokens
 
-    out = OUT_DIR / post["slug"] / "index.html"
+    out = OUT_DIR / f"{post['slug']}.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html_page, encoding="utf-8")
     post["read_time"] = read_time
-    print(f"  page: blog/{post['slug']}/index.html ({words} words, ~{read_time} min)")
+    print(f"  page: blog/{post['slug']}.html ({words} words, ~{read_time} min)")
 
 
 def render_index(posts, templates, partials):
@@ -447,7 +450,7 @@ def render_index(posts, templates, partials):
 
     jsonld = ('<script type="application/ld+json">' + json.dumps({
         "@context": "https://schema.org", "@type": "Blog",
-        "name": BLOG_TITLE, "url": f"{SITE}/blog/",
+        "name": BLOG_TITLE, "url": f"{SITE}/blog.html",
         "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": SITE},
     }, ensure_ascii=False) + "</script>")
 
@@ -462,9 +465,8 @@ def render_index(posts, templates, partials):
     }.items():
         page = page.replace(k, v)
     page = re.sub(r"\{\{CUR_[A-Z]+\}\}", "", page)
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUT_DIR / "index.html").write_text(page, encoding="utf-8")
-    print(f"  page: blog/index.html ({len(posts)} posts listed)")
+    (WEBSITE / "blog.html").write_text(page, encoding="utf-8")
+    print(f"  page: blog.html ({len(posts)} posts listed)")
 
 
 def render_feed(posts):
@@ -477,15 +479,16 @@ def render_feed(posts):
         items.append(
             "  <item>\n"
             f"    <title>{esc_attr(p['title'])}</title>\n"
-            f"    <link>{SITE}/blog/{p['slug']}/</link>\n"
-            f"    <guid>{SITE}/blog/{p['slug']}/</guid>\n"
+            f"    <link>{SITE}/blog/{p['slug']}.html</link>\n"
+            f"    <guid>{SITE}/blog/{p['slug']}.html</guid>\n"
             f"    <pubDate>{pub.strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>\n"
             f"    <description>{esc_attr(p['description'])}</description>\n"
             "  </item>")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<rss version="2.0"><channel>\n'
             f"  <title>{BLOG_TITLE}</title>\n"
-            f"  <link>{SITE}/blog/</link>\n"
+            f"  <link>{SITE}/blog.html</link>\n"
             "  <description>Practical retirement income planning articles from WebNomad Studio.</description>\n"
             "  <language>en-us</language>\n"
             + "\n".join(items) + "\n</channel></rss>\n")
@@ -501,7 +504,7 @@ def update_sitemap(posts):
         xml = xml.replace("</urlset>", f"{start_marker}\n{end_marker}\n</urlset>")
     today = datetime.date.today().isoformat()
     entries = [f"""  <url>
-    <loc>{SITE}/blog/</loc>
+    <loc>{SITE}/blog.html</loc>
     <lastmod>{today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -510,7 +513,7 @@ def update_sitemap(posts):
         if p["draft"]:
             continue
         entries.append(f"""  <url>
-    <loc>{SITE}/blog/{p['slug']}/</loc>
+    <loc>{SITE}/blog/{p['slug']}.html</loc>
     <lastmod>{p['updated'] or p['published']}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -520,6 +523,47 @@ def update_sitemap(posts):
                  block, xml, flags=re.S)
     SITEMAP.write_text(xml, encoding="utf-8")
     print(f"  sitemap.xml: blog block regenerated ({len(entries)} URLs)")
+
+
+def prune_stale_output(posts):
+    """blog/ is fully generated: remove pages for posts that no longer exist."""
+    import shutil
+    keep = {f"{p['slug']}.html" for p in posts} | {"feed.xml"}
+    if not OUT_DIR.exists():
+        return
+    for item in OUT_DIR.iterdir():
+        if item.name not in keep:
+            if item.is_dir():
+                shutil.rmtree(item)
+            else:
+                item.unlink()
+            print(f"  pruned stale output: blog/{item.name}")
+
+
+def check_internal_links(posts):
+    """Every root-relative href on generated pages must resolve to a real file.
+    Fails the build on broken links — the guard for the internal-linking workflow."""
+    pages = [WEBSITE / "blog.html"] + [OUT_DIR / f"{p['slug']}.html" for p in posts]
+    broken = []
+    for page in pages:
+        html_text = page.read_text(encoding="utf-8")
+        for href in re.findall(r'href="([^"]*)"', html_text):
+            if not href.startswith("/") or "'" in href or " " in href:
+                continue  # external/relative links, or string-concat fragments in inline JS
+            href = href.split("#")[0].split("?")[0]
+            if not href:
+                continue
+            target = WEBSITE / href.lstrip("/")
+            if href.endswith("/"):
+                target = target / "index.html"
+            if href == "/":
+                target = WEBSITE / "index.html"
+            if not target.exists():
+                broken.append(f"{page.relative_to(WEBSITE)} -> {href}")
+    if broken:
+        sys.exit("BROKEN INTERNAL LINKS (fix before publishing):\n  "
+                 + "\n  ".join(sorted(set(broken))))
+    print(f"  link check: OK ({len(pages)} pages scanned)")
 
 
 # --------------------------------------------------------------------------
@@ -559,6 +603,8 @@ def main():
     render_index(posts, templates, partials)
     render_feed(posts)
     update_sitemap(posts)
+    prune_stale_output(posts)
+    check_internal_links(posts)
     print("Done.")
 
 

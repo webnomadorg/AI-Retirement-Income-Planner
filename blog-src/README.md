@@ -19,10 +19,17 @@ Build (from anywhere):
 python Website/tools/blog_build.py
 ```
 
-Outputs: `blog/<slug>/index.html` per post, `blog/index.html` (landing page with
+Outputs: `blog/<slug>.html` per post (flat files — same `.html` URL style as the rest
+of the site; no directory-index URLs), `blog.html` at the site root (landing page with
 search/filter over an embedded post index), `blog/feed.xml` (RSS), optimized images in
 `assets/img/blog/` (WebP, 1400px full + 640px thumb), and the generated blog block in
-`sitemap.xml`. Requires `pip install markdown` (and `Pillow` when images changed).
+`sitemap.xml`. Stale generated pages are pruned, and the build FAILS on any internal
+link that doesn't resolve to a file on disk (`link check: OK` = green). Requires
+`pip install markdown` (and `Pillow` when images changed).
+
+Internal blog-to-blog links go in the post Markdown as `[anchor](/blog/<slug>.html)` —
+strategy, per-publish checklist and progress tracking live in the desktop repo:
+`Plans/Blog-Internal-Linking-Tracker.md`.
 
 ## Post front matter
 
