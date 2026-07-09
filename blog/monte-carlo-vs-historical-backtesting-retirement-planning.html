@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte Carlo vs Historical Backtesting for Retirement Planning | AI Retirement Income Planner Blog</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Learn the difference between Monte Carlo simulation and historical backtesting for retirement planning, when each method helps, where each can mislead, and how to use both with stress tests.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Monte Carlo vs Historical Backtesting for Retirement Planning">
+<meta property="og:description" content="Learn the difference between Monte Carlo simulation and historical backtesting for retirement planning, when each method helps, where each can mislead, and how to use both with stress tests.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/monte-carlo-vs-historical-backtesting-retirement-planning-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">
+<meta property="article:published_time" content="2026-07-09">
+<meta property="article:modified_time" content="2026-07-09">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Monte Carlo vs Historical Backtesting for Retirement Planning", "description": "Learn the difference between Monte Carlo simulation and historical backtesting for retirement planning, when each method helps, where each can mislead, and how to use both with stress tests.", "datePublished": "2026-07-09", "dateModified": "2026-07-09", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/monte-carlo-vs-historical-backtesting-retirement-planning-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Withdrawals & Risk"}, {"@type": "ListItem", "position": 4, "name": "Monte Carlo vs Historical Backtesting for Retirement Planning", "item": "https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Monte Carlo simulation in retirement planning?", "acceptedAnswer": {"@type": "Answer", "text": "Monte Carlo simulation runs a retirement plan through many randomized future paths. It can estimate a range of possible outcomes and show how sensitive the plan is to market returns, inflation, withdrawals, and other assumptions."}}, {"@type": "Question", "name": "What is historical backtesting in retirement planning?", "acceptedAnswer": {"@type": "Answer", "text": "Historical backtesting runs a retirement plan through real past market periods. It helps show how the plan might have behaved through actual return sequences."}}, {"@type": "Question", "name": "Is Monte Carlo better than historical backtesting?", "acceptedAnswer": {"@type": "Answer", "text": "Neither is better in every case. Monte Carlo is better for broad probability-style ranges. Historical backtesting is better for seeing how a plan handles real past periods. They are strongest when used together."}}, {"@type": "Question", "name": "Can Monte Carlo predict whether I will run out of money?", "acceptedAnswer": {"@type": "Answer", "text": "No. Monte Carlo can estimate outcomes based on assumptions, but it cannot predict future market returns, inflation, taxes, healthcare costs, or life events."}}, {"@type": "Question", "name": "Can historical backtesting predict the future?", "acceptedAnswer": {"@type": "Answer", "text": "No. Historical backtesting shows how a plan would have behaved in past periods. The future may be different."}}, {"@type": "Question", "name": "Why do I still need stress tests?", "acceptedAnswer": {"@type": "Answer", "text": "Stress tests let you test specific risks directly, such as poor early returns, higher inflation, higher healthcare costs, survivor planning, or delayed Social Security."}}, {"@type": "Question", "name": "What confidence score should I aim for?", "acceptedAnswer": {"@type": "Answer", "text": "There is no universal score. A confidence score should be interpreted with the assumptions, weak cases, spending flexibility, taxes, healthcare costs, and personal preferences."}}, {"@type": "Question", "name": "How does the AI Retirement Income Planner use these tools?", "acceptedAnswer": {"@type": "Answer", "text": "The planner includes Monte Carlo simulation, historical backtesting, stress tests, scenario comparison, drawdown strategy comparison, Plan Health checks, Confidence scoring, balance charts, income charts, Social Security tools, and report preview."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/technical.html">Technical</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="https://www.etsy.com/shop/webnomadstudio/" target="_blank" rel="noopener" aria-label="Shop on Etsy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Etsy</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=withdrawals-risk">Withdrawals & Risk</a>
+        </nav>
+        <header class="post-header">
+          <h1>Monte Carlo vs Historical Backtesting for Retirement Planning</h1>
+          <p class="post-meta"><span class="cat-badge">Withdrawals & Risk</span> · Published July 9, 2026 · 15 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-verdict">Short Verdict</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#the-core-difference">The Core Difference</a></li>
+      <li><a href="#what-monte-carlo-simulation-does">What Monte Carlo Simulation Does</a></li>
+      <li><a href="#what-historical-backtesting-does">What Historical Backtesting Does</a></li>
+      <li><a href="#comparison-table">Comparison Table</a></li>
+      <li><a href="#why-a-confidence-score-needs-context">Why A Confidence Score Needs Context</a></li>
+      <li><a href="#sequence-risk-is-the-test-case">Sequence Risk Is The Test Case</a></li>
+      <li><a href="#example-same-plan-different-risk-views">Example: Same Plan, Different Risk Views</a></li>
+      <li><a href="#where-monte-carlo-can-mislead">Where Monte Carlo Can Mislead</a></li>
+      <li><a href="#where-historical-backtesting-can-mislead">Where Historical Backtesting Can Mislead</a></li>
+      <li><a href="#why-stress-tests-still-matter">Why Stress Tests Still Matter</a></li>
+      <li><a href="#how-taxes-affect-both-methods">How Taxes Affect Both Methods</a></li>
+      <li><a href="#how-social-security-timing-affects-risk-tests">How Social Security Timing Affects Risk Tests</a></li>
+      <li><a href="#how-healthcare-costs-affect-risk-tests">How Healthcare Costs Affect Risk Tests</a></li>
+      <li><a href="#how-to-use-both-in-the-ai-retirement-income-planner">How To Use Both In The AI Retirement Income Planner</a></li>
+      <li><a href="#practical-rule-of-thumb">Practical Rule Of Thumb</a></li>
+      <li><a href="#common-mistakes">Common Mistakes</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-verdict">Short Verdict</h2>
+<p>Monte Carlo simulation and historical backtesting answer different retirement planning questions.</p>
+<p>Monte Carlo asks:</p>
+<p>What could happen across many randomly generated future paths?</p>
+<p>Historical backtesting asks:</p>
+<p>How would this plan have behaved through real past market periods?</p>
+<p>Neither method is enough by itself.</p>
+<p>Monte Carlo can show a wide range of possible outcomes, but it depends heavily on assumptions. Historical backtesting can show recognizable periods like high inflation, recessions, and market crashes, but the future will not replay the past exactly.</p>
+<p>The better approach is to use both, then add direct stress tests for specific risks such as poor early returns, higher inflation, higher healthcare costs, delayed Social Security, and survivor outcomes.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/monte-carlo-vs-historical-backtesting-retirement-planning-1.webp" alt="Illustration of a couple comparing Monte Carlo simulation paths and historical market charts for a retirement plan." width="1400" height="788" loading="lazy">
+</figure>
+
+<aside class="cta-box cta-soft">
+  <p>A retirement risk score is useful, but it should lead to better questions. Compare Monte Carlo, historical backtesting, and stress tests before relying on one result.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>Monte Carlo simulation uses repeated random trials to estimate a range of possible outcomes.</li>
+<li>Historical backtesting runs a plan through actual past return sequences.</li>
+<li>Monte Carlo is useful for probability ranges, but assumptions drive the results.</li>
+<li>Historical backtesting is useful for real-world context, but past markets do not define the full future.</li>
+<li>Stress tests are still needed because specific risks can be missed by broad probability views.</li>
+<li>Sequence-of-returns risk should be tested with both methods.</li>
+<li>The AI Retirement Income Planner includes Monte Carlo, historical backtesting, stress tests, Plan Health, Confidence scoring, scenario comparison, and drawdown tools.</li>
+</ul>
+<h2 id="the-core-difference">The Core Difference</h2>
+<p>A retirement projection is trying to answer a hard question:</p>
+<p>Will this income plan hold up across decades of uncertain markets, inflation, taxes, healthcare costs, and personal changes?</p>
+<p>There are several ways to test that question.</p>
+<p>Monte Carlo simulation creates many possible future paths. Each path uses random or pseudo-random variation in returns and sometimes other assumptions. The result is usually expressed as a range of outcomes or a probability-style confidence measure.</p>
+<p>Historical backtesting uses actual past data. Instead of inventing thousands of paths, it runs the plan through historical return sequences. It can show how the plan might have behaved through periods that really occurred.</p>
+<p>The two tools feel similar because both are risk tools.</p>
+<p>They are not the same tool.</p>
+<h2 id="what-monte-carlo-simulation-does">What Monte Carlo Simulation Does</h2>
+<p>In retirement planning, Monte Carlo simulation usually means running the same plan through many randomized return paths.</p>
+<p>A simple retirement Monte Carlo model may vary:</p>
+<ul>
+<li>Stock returns.</li>
+<li>Bond returns.</li>
+<li>Inflation.</li>
+<li>Portfolio volatility.</li>
+<li>Correlations between assets.</li>
+<li>Life expectancy.</li>
+<li>Spending.</li>
+<li>Healthcare costs.</li>
+<li>Taxes, in more detailed models.</li>
+</ul>
+<p>The output might show:</p>
+<ul>
+<li>Probability of the portfolio lasting through a target age.</li>
+<li>Median ending balance.</li>
+<li>Low-end ending balance.</li>
+<li>High-end ending balance.</li>
+<li>Year-by-year range of balances.</li>
+<li>Failure years in weaker runs.</li>
+<li>Sensitivity to spending, returns, and inflation.</li>
+</ul>
+<p>The strength of Monte Carlo is breadth.</p>
+<p>It can create many paths that never happened in exactly that order. It can test thousands of sequences quickly. It can show that a plan may be strong in average conditions and weak in unfavorable conditions.</p>
+<p>The weakness is assumptions.</p>
+<p>If the return assumptions are too optimistic, the output may look too strong. If volatility is understated, the model may miss risk. If taxes, healthcare, and withdrawals are oversimplified, the final score may feel more precise than it is.</p>
+<h2 id="what-historical-backtesting-does">What Historical Backtesting Does</h2>
+<p>Historical backtesting runs a plan through real past market periods.</p>
+<p>For retirement planning, a backtest might ask:</p>
+<ul>
+<li>What if this plan started before a major bear market?</li>
+<li>What if retirement began before high inflation?</li>
+<li>What if poor stock returns arrived early?</li>
+<li>What if bond returns were weak?</li>
+<li>What if the plan faced a long flat market?</li>
+</ul>
+<p>Historical backtesting is useful because it gives the plan a real-world trial.</p>
+<p>Past data includes market relationships that are hard to invent manually. It includes messy periods, recoveries, inflation shocks, rate changes, and long stretches when one asset class did better than another.</p>
+<p>The weakness is that history is limited.</p>
+<p>Only one version of the past happened. The future can include return patterns, inflation paths, tax rules, healthcare costs, and policy changes that have no exact historical match.</p>
+<p>Historical backtesting is a practical tool, not a time machine.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/monte-carlo-vs-historical-backtesting-retirement-planning-2.webp" alt="AI Retirement Income Planner Confidence dashboard showing a plan confidence score with checklist, Monte Carlo, and historical backtest lenses." width="1400" height="788" loading="lazy">
+</figure>
+
+<h2 id="comparison-table">Comparison Table</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Monte Carlo Simulation</th>
+<th>Historical Backtesting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main idea</td>
+<td>Runs many randomized future paths</td>
+<td>Runs the plan through past market periods</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Seeing a range of possible outcomes</td>
+<td>Seeing how the plan handles real past sequences</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Probability-style success or confidence ranges</td>
+<td>Results by historical period or return sequence</td>
+</tr>
+<tr>
+<td>Strength</td>
+<td>Broad range of paths</td>
+<td>Real-world context</td>
+</tr>
+<tr>
+<td>Weakness</td>
+<td>Depends heavily on assumptions</td>
+<td>Limited to history that actually happened</td>
+</tr>
+<tr>
+<td>Good for sequence risk</td>
+<td>Yes, if poor early returns appear in enough runs</td>
+<td>Yes, if tested periods include poor early returns</td>
+</tr>
+<tr>
+<td>Good for inflation shocks</td>
+<td>Yes, if inflation is modeled well</td>
+<td>Yes, if past high-inflation periods are included</td>
+</tr>
+<tr>
+<td>Risk of false comfort</td>
+<td>Optimistic assumptions</td>
+<td>Believing the future must resemble the past</td>
+</tr>
+<tr>
+<td>Best use</td>
+<td>Probability lens</td>
+<td>History lens</td>
+</tr>
+<tr>
+<td>Better together?</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="why-a-confidence-score-needs-context">Why A Confidence Score Needs Context</h2>
+<p>Many retirement tools produce a confidence score.</p>
+<p>That can be helpful.</p>
+<p>It can also mislead if the reader treats one number as the plan.</p>
+<p>A score may hide important details:</p>
+<ul>
+<li>Which years failed.</li>
+<li>Whether the first decade is fragile.</li>
+<li>Whether the survivor plan is weaker.</li>
+<li>Whether healthcare costs are too low.</li>
+<li>Whether taxes were simplified.</li>
+<li>Whether Social Security timing is carrying the plan.</li>
+<li>Whether the result depends on optimistic returns.</li>
+<li>Whether a cash reserve is being depleted.</li>
+</ul>
+<p>For example, a plan may show a strong Monte Carlo score but still fail under a specific historical period with high inflation and poor early returns. Another plan may look weak under conservative Monte Carlo assumptions but survive many historical periods because spending is flexible.</p>
+<p>The score is a dashboard light.</p>
+<p>The plan is the full engine.</p>
+<h2 id="sequence-risk-is-the-test-case">Sequence Risk Is The Test Case</h2>
+<p>Sequence-of-returns risk is one of the best reasons to use both methods.</p>
+<p>Sequence risk is the risk that poor investment returns arrive early in retirement while withdrawals are coming out of the portfolio.</p>
+<p>Monte Carlo can test many random return sequences.</p>
+<p>Historical backtesting can show how a plan behaved through actual poor-start periods.</p>
+<p>But sequence risk should also be tested directly. A useful stress test may force:</p>
+<ul>
+<li>Poor returns in the first few retirement years.</li>
+<li>Higher inflation at the same time.</li>
+<li>Higher healthcare costs at the same time.</li>
+<li>A delayed Social Security bridge.</li>
+<li>Lower spending flexibility.</li>
+<li>A survivor event later in the plan.</li>
+</ul>
+<p>The reason is simple: a broad probability score can smooth over the exact scenario the household most needs to understand.</p>
+<h2 id="example-same-plan-different-risk-views">Example: Same Plan, Different Risk Views</h2>
+<p>Assume a couple retires at 62.</p>
+<p>They have:</p>
+<ul>
+<li>$1,200,000 total portfolio.</li>
+<li>$90,000 annual spending before healthcare.</li>
+<li>Three years before Medicare.</li>
+<li>Social Security delayed to 67 for one spouse and 70 for the higher earner.</li>
+<li>$1,500 monthly pre-Medicare healthcare cost.</li>
+<li>A mix of cash, taxable investments, traditional retirement accounts, and Roth.</li>
+<li>Planned Roth conversions before RMD age.</li>
+</ul>
+<h3 id="monte-carlo-view">Monte Carlo View</h3>
+<p>The Monte Carlo view may show:</p>
+<ul>
+<li>A broad range of ending balances.</li>
+<li>A median plan that looks comfortable.</li>
+<li>Some weak paths where poor returns and withdrawals line up.</li>
+<li>A probability-style confidence estimate.</li>
+<li>Sensitivity to spending and return assumptions.</li>
+</ul>
+<p>This is useful. It tells the couple that uncertainty matters.</p>
+<h3 id="historical-backtest-view">Historical Backtest View</h3>
+<p>The historical view may show:</p>
+<ul>
+<li>Which past starting periods were hardest.</li>
+<li>Whether the plan held up through high inflation.</li>
+<li>Whether early bear markets caused trouble.</li>
+<li>Whether cash helped during weak markets.</li>
+<li>Whether delayed Social Security increased bridge-year stress.</li>
+</ul>
+<p>This is useful too. It gives the couple specific episodes to study.</p>
+<h3 id="stress-test-view">Stress-Test View</h3>
+<p>The stress test may show:</p>
+<ul>
+<li>Poor early returns plus higher healthcare costs create a cash shortage.</li>
+<li>A smaller Roth conversion in the first three years improves the bridge.</li>
+<li>Claiming one Social Security benefit earlier helps cash flow but reduces later income.</li>
+<li>Reducing discretionary spending for two years improves Plan Health.</li>
+</ul>
+<p>Now the couple has a plan, not merely a score.</p>
+<h2 id="where-monte-carlo-can-mislead">Where Monte Carlo Can Mislead</h2>
+<p>Monte Carlo is powerful, but the result depends on the model.</p>
+<p>Watch for these issues:</p>
+<h3 id="optimistic-return-assumptions">Optimistic Return Assumptions</h3>
+<p>If expected returns are too high, the plan can look stronger than it is.</p>
+<h3 id="low-volatility-assumptions">Low Volatility Assumptions</h3>
+<p>If volatility is too low, the model can understate sequence risk.</p>
+<h3 id="thin-tail-risk">Thin Tail Risk</h3>
+<p>Some models may understate rare and severe market periods.</p>
+<h3 id="simplified-taxes">Simplified Taxes</h3>
+<p>Retirement withdrawals are taxable in different ways. A model that ignores tax details may overstate spendable income.</p>
+<h3 id="flat-spending">Flat Spending</h3>
+<p>Real spending often changes by phase. Travel, healthcare, housing, taxes, and later-life care do not always rise evenly.</p>
+<h3 id="weak-healthcare-modeling">Weak Healthcare Modeling</h3>
+<p>Healthcare can affect withdrawals, ACA income, Medicare premiums, IRMAA, and survivor planning.</p>
+<h3 id="overconfidence-in-one-percentage">Overconfidence In One Percentage</h3>
+<p>A 90 percent result does not mean the plan is finished. It means the assumptions produced that result.</p>
+<h2 id="where-historical-backtesting-can-mislead">Where Historical Backtesting Can Mislead</h2>
+<p>Historical backtesting has its own limits.</p>
+<h3 id="the-future-can-be-different">The Future Can Be Different</h3>
+<p>Past returns, inflation, interest rates, taxes, healthcare costs, and policy rules may not repeat.</p>
+<h3 id="history-has-limited-starting-points">History Has Limited Starting Points</h3>
+<p>There are fewer true historical retirement start dates than there are possible future paths.</p>
+<h3 id="past-data-may-not-match-the-portfolio">Past Data May Not Match The Portfolio</h3>
+<p>A modern portfolio may include different funds, fees, tax features, international exposure, cash rates, or annuity income.</p>
+<h3 id="past-tax-rules-may-not-fit-current-rules">Past Tax Rules May Not Fit Current Rules</h3>
+<p>Historical returns can be tested, but today's tax rules and account types may be different.</p>
+<h3 id="healthcare-costs-have-changed">Healthcare Costs Have Changed</h3>
+<p>Medicare, ACA coverage, prescription drug rules, and insurance markets change over time.</p>
+<h3 id="good-historical-results-can-still-miss-personal-risk">Good Historical Results Can Still Miss Personal Risk</h3>
+<p>Your personal risk may be a spouse's death, a delayed retirement date, a long-term care event, a move abroad, or a family support obligation. A historical market test does not automatically capture those.</p>
+<h2 id="why-stress-tests-still-matter">Why Stress Tests Still Matter</h2>
+<p>Stress tests are direct.</p>
+<p>Instead of asking what might happen across many paths or what happened in the past, a stress test asks:</p>
+<p>What if this specific problem hits the plan?</p>
+<p>Useful retirement stress tests include:</p>
+<ul>
+<li>Poor early returns.</li>
+<li>Higher inflation.</li>
+<li>Higher healthcare inflation.</li>
+<li>Lower Social Security timing flexibility.</li>
+<li>Earlier retirement.</li>
+<li>Longer life.</li>
+<li>Lower returns for a decade.</li>
+<li>Higher taxes.</li>
+<li>Roth conversion changes.</li>
+<li>Survivor scenario.</li>
+<li>Large lump-sum expense.</li>
+<li>Expat healthcare or currency shift.</li>
+</ul>
+<p>The AI Retirement Income Planner includes stress testing using 12 scenario combinations. That matters because retirement risk rarely arrives one variable at a time.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Stress test tab with multiple scenario combinations and ending-balance or Plan Health results. Purpose: show stress tests as a third lens alongside Monte Carlo and historical backtesting. Suggested alt text: "Planner stress test tab comparing retirement risk scenarios." -->
+
+<h2 id="how-taxes-affect-both-methods">How Taxes Affect Both Methods</h2>
+<p>Retirement risk analysis should not stop at investment returns.</p>
+<p>Taxes can change the result.</p>
+<p>A plan should account for:</p>
+<ul>
+<li>Traditional IRA and 401k withdrawals.</li>
+<li>Roth withdrawals.</li>
+<li>Taxable brokerage gains.</li>
+<li>Pension income.</li>
+<li>Social Security taxation.</li>
+<li>RMDs.</li>
+<li>Roth conversions.</li>
+<li>NIIT where relevant.</li>
+<li>State tax assumptions.</li>
+<li>ACA income before Medicare.</li>
+<li>Medicare IRMAA after Medicare.</li>
+</ul>
+<p>IRS says RMDs are minimum amounts that must be withdrawn each year from certain retirement accounts once the rules apply. The IRS FAQ says account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts when they reach age 73.</p>
+<p>If a model ignores RMDs, taxes, and Social Security taxation, the risk score may not represent spendable income.</p>
+<p>This is why a retirement risk test should be connected to the income plan and the portfolio balance.</p>
+<h2 id="how-social-security-timing-affects-risk-tests">How Social Security Timing Affects Risk Tests</h2>
+<p>Social Security timing changes portfolio withdrawals.</p>
+<p>SSA says retirement benefits can begin as early as age 62, but benefits started before full retirement age are reduced. SSA also says benefits increase when delayed beyond full retirement age, and the increase stops at age 70.</p>
+<p>That creates different risk patterns:</p>
+<ul>
+<li>Claiming at 62 may reduce early withdrawals but produce lower monthly benefits.</li>
+<li>Delaying may raise later income but require larger bridge withdrawals.</li>
+<li>Couples may test one spouse claiming earlier and the higher earner delaying.</li>
+<li>Survivor planning may favor a different claiming strategy than a single-life break-even view.</li>
+</ul>
+<p>Monte Carlo and historical backtesting should be run under more than one Social Security scenario.</p>
+<p>Otherwise, the user may be testing a benefit decision they have not fully chosen.</p>
+<h2 id="how-healthcare-costs-affect-risk-tests">How Healthcare Costs Affect Risk Tests</h2>
+<p>Healthcare can change retirement risk because it can force withdrawals when markets are weak.</p>
+<p>Before Medicare, ACA Marketplace costs can be affected by household income. HealthCare.gov says Marketplace savings are based on expected household income for the coverage year.</p>
+<p>After Medicare, retirees may still face Part B premiums, Part D premiums, supplemental coverage, out-of-pocket costs, and IRMAA for higher-income households.</p>
+<p>If higher healthcare costs require larger IRA withdrawals, the tax and healthcare picture can shift at the same time.</p>
+<p>A useful risk test should include:</p>
+<ul>
+<li>Base healthcare costs.</li>
+<li>Higher healthcare inflation.</li>
+<li>Pre-Medicare ACA years.</li>
+<li>Medicare premium assumptions.</li>
+<li>IRMAA context.</li>
+<li>Prescription cost pressure.</li>
+<li>Survivor healthcare costs.</li>
+</ul>
+<h2 id="how-to-use-both-in-the-ai-retirement-income-planner">How To Use Both In The AI Retirement Income Planner</h2>
+<p>Use this workflow.</p>
+<h3 id="1-build-a-complete-base-plan">1. Build A Complete Base Plan</h3>
+<p>Enter:</p>
+<ul>
+<li>Retirement age.</li>
+<li>Starting balances.</li>
+<li>Cash.</li>
+<li>Taxable brokerage.</li>
+<li>Tax-deferred accounts.</li>
+<li>Roth accounts.</li>
+<li>Social Security.</li>
+<li>Pensions.</li>
+<li>Part-time income.</li>
+<li>Healthcare costs.</li>
+<li>Inflation.</li>
+<li>Tax assumptions.</li>
+<li>Withdrawal phases.</li>
+<li>Roth conversions.</li>
+<li>RMD assumptions.</li>
+</ul>
+<h3 id="2-review-plan-health-first">2. Review Plan Health First</h3>
+<p>Use Plan Health to look for obvious issues before interpreting probability tools.</p>
+<p>If the base plan has missing inputs, unrealistic healthcare costs, or an unsustainable withdrawal level, Monte Carlo and backtesting will be less useful.</p>
+<h3 id="3-run-monte-carlo">3. Run Monte Carlo</h3>
+<p>Use Monte Carlo to understand:</p>
+<ul>
+<li>Range of outcomes.</li>
+<li>Weak lower-end paths.</li>
+<li>Confidence score context.</li>
+<li>Sensitivity to spending.</li>
+<li>Sensitivity to retirement age.</li>
+<li>Whether the plan depends on favorable returns.</li>
+</ul>
+<h3 id="4-run-historical-backtesting">4. Run Historical Backtesting</h3>
+<p>Use historical backtesting to see:</p>
+<ul>
+<li>Which past periods challenge the plan.</li>
+<li>Whether early bear markets cause trouble.</li>
+<li>Whether inflation periods expose risk.</li>
+<li>Whether withdrawals become too high after market declines.</li>
+<li>Whether cash reserves help.</li>
+</ul>
+<h3 id="5-run-stress-tests">5. Run Stress Tests</h3>
+<p>Use stress tests for direct questions:</p>
+<ul>
+<li>What if the market falls early?</li>
+<li>What if inflation is higher?</li>
+<li>What if healthcare costs rise faster?</li>
+<li>What if Social Security is delayed?</li>
+<li>What if one spouse dies first?</li>
+<li>What if taxes are higher?</li>
+</ul>
+<h3 id="6-compare-drawdown-strategies">6. Compare Drawdown Strategies</h3>
+<p>Use the Drawdown tab to compare withdrawal styles:</p>
+<ul>
+<li>The 4% Rule.</li>
+<li>Variable Percentage Withdrawal.</li>
+<li>The Three-Bucket strategy.</li>
+<li>Floor &amp; Upside.</li>
+<li>Guardrails.</li>
+<li>A Monte Carlo view of withdrawal sustainability.</li>
+</ul>
+<p>Then use the phase withdrawal settings and What-if tools to test ideas such as a cash-first bridge, preserving Roth for later phases, or Roth conversions during lower-income years.</p>
+<h3 id="7-save-scenarios">7. Save Scenarios</h3>
+<p>The planner keeps up to three saved plans in the browser for side-by-side comparison, and JSON export files cover anything beyond that.</p>
+<p>Save versions such as:</p>
+<ul>
+<li>Base plan.</li>
+<li>Monte Carlo weak-case adjustment.</li>
+<li>Historical stress case.</li>
+<li>Higher healthcare inflation.</li>
+<li>Earlier Social Security claim.</li>
+<li>Lower spending for first three retirement years.</li>
+<li>Survivor scenario.</li>
+</ul>
+<h3 id="8-print-or-save-a-report">8. Print Or Save A Report</h3>
+<p>Use report preview to document:</p>
+<ul>
+<li>The assumptions tested.</li>
+<li>The weak points found.</li>
+<li>The changes that improved the plan.</li>
+<li>The items to review next year.</li>
+</ul>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Scenarios or Confidence area with base plan, Monte Carlo, historical backtest, and Plan Health or Confidence results visible. Purpose: show a complete risk review workflow rather than one isolated score. Suggested alt text: "Planner comparing Monte Carlo, historical backtesting, scenarios, and Plan Health." -->
+
+<h2 id="practical-rule-of-thumb">Practical Rule Of Thumb</h2>
+<p>Use Monte Carlo for breadth.</p>
+<p>Use historical backtesting for context.</p>
+<p>Use stress tests for specific fears.</p>
+<p>Then use scenarios to decide what to change.</p>
+<p>For example:</p>
+<ul>
+<li>Monte Carlo says the plan is sensitive to returns.</li>
+<li>Historical backtesting says high-inflation periods are difficult.</li>
+<li>Stress tests say poor early returns plus high healthcare costs are the weak spot.</li>
+<li>Scenario comparison shows that one year of extra work, lower early spending, or a cash bridge improves the result.</li>
+</ul>
+<p>That is a planning workflow.</p>
+<h2 id="common-mistakes">Common Mistakes</h2>
+<h3 id="mistake-1-treating-monte-carlo-as-a-prediction">Mistake 1: Treating Monte Carlo As A Prediction</h3>
+<p>Monte Carlo is a simulation based on assumptions. It is not a forecast.</p>
+<h3 id="mistake-2-treating-historical-backtesting-as-a-script">Mistake 2: Treating Historical Backtesting As A Script</h3>
+<p>History gives useful context, but the future can be different.</p>
+<h3 id="mistake-3-looking-only-at-the-confidence-score">Mistake 3: Looking Only At The Confidence Score</h3>
+<p>The score should lead to better questions, not replace judgment.</p>
+<h3 id="mistake-4-ignoring-taxes">Mistake 4: Ignoring Taxes</h3>
+<p>Portfolio survival and after-tax retirement income are different things.</p>
+<h3 id="mistake-5-ignoring-healthcare">Mistake 5: Ignoring Healthcare</h3>
+<p>Healthcare costs can force withdrawals and affect tax-sensitive planning.</p>
+<h3 id="mistake-6-forgetting-survivor-outcomes">Mistake 6: Forgetting Survivor Outcomes</h3>
+<p>A plan that works for a couple may be weaker for one survivor.</p>
+<h3 id="mistake-7-testing-one-social-security-age">Mistake 7: Testing One Social Security Age</h3>
+<p>Social Security timing changes early withdrawals, later income, survivor income, and taxes.</p>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is educational only. It is not financial, tax, investment, legal, insurance, healthcare, Social Security, estate, or retirement advice. Monte Carlo results, historical backtests, stress tests, and confidence scores depend on assumptions and cannot predict future outcomes. Verify assumptions with official sources and qualified professionals before making retirement decisions.</p>
+<aside class="cta-box cta-demo">
+  <p>Try the demo with a sample retirement plan and compare how Monte Carlo, historical backtesting, and stress tests tell different parts of the risk story.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-is-monte-carlo-simulation-in-retirement-planning">What is Monte Carlo simulation in retirement planning?</h3>
+<p>Monte Carlo simulation runs a retirement plan through many randomized future paths. It can estimate a range of possible outcomes and show how sensitive the plan is to market returns, inflation, withdrawals, and other assumptions.</p>
+<h3 id="what-is-historical-backtesting-in-retirement-planning">What is historical backtesting in retirement planning?</h3>
+<p>Historical backtesting runs a retirement plan through real past market periods. It helps show how the plan might have behaved through actual return sequences.</p>
+<h3 id="is-monte-carlo-better-than-historical-backtesting">Is Monte Carlo better than historical backtesting?</h3>
+<p>Neither is better in every case. Monte Carlo is better for broad probability-style ranges. Historical backtesting is better for seeing how a plan handles real past periods. They are strongest when used together.</p>
+<h3 id="can-monte-carlo-predict-whether-i-will-run-out-of-money">Can Monte Carlo predict whether I will run out of money?</h3>
+<p>No. Monte Carlo can estimate outcomes based on assumptions, but it cannot predict future market returns, inflation, taxes, healthcare costs, or life events.</p>
+<h3 id="can-historical-backtesting-predict-the-future">Can historical backtesting predict the future?</h3>
+<p>No. Historical backtesting shows how a plan would have behaved in past periods. The future may be different.</p>
+<h3 id="why-do-i-still-need-stress-tests">Why do I still need stress tests?</h3>
+<p>Stress tests let you test specific risks directly, such as poor early returns, higher inflation, higher healthcare costs, survivor planning, or delayed Social Security.</p>
+<h3 id="what-confidence-score-should-i-aim-for">What confidence score should I aim for?</h3>
+<p>There is no universal score. A confidence score should be interpreted with the assumptions, weak cases, spending flexibility, taxes, healthcare costs, and personal preferences.</p>
+<h3 id="how-does-the-ai-retirement-income-planner-use-these-tools">How does the AI Retirement Income Planner use these tools?</h3>
+<p>The planner includes Monte Carlo simulation, historical backtesting, stress tests, scenario comparison, drawdown strategy comparison, Plan Health checks, Confidence scoring, balance charts, income charts, Social Security tools, and report preview.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>SEC Investor.gov: What is Risk?: https://www.investor.gov/introduction-investing/investing-basics/what-risk</li>
+<li>Gupta and Tayal: Using Monte Carlo Methods for Retirement Simulations: https://arxiv.org/abs/2306.16563</li>
+<li>SSA: Starting retirement benefits early: https://www.ssa.gov/benefits/retirement/planner/agereduction.html</li>
+<li>SSA: Delayed retirement credits: https://www.ssa.gov/benefits/retirement/planner/delayret.html</li>
+<li>IRS: Required minimum distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>HealthCare.gov: Saving money on health insurance: https://www.healthcare.gov/lower-costs/</li>
+<li>Medicare.gov: Medicare costs: https://www.medicare.gov/basics/costs/medicare-costs</li>
+</ul>
+        </div>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner helps compare Monte Carlo simulation, historical backtesting, stress tests, drawdown strategies, Social Security timing, healthcare costs, taxes, balances, Plan Health, and Confidence scoring in one private browser-based planner.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="https://www.etsy.com/listing/4509386063/ai-retirement-income-planner-v7-chat" target="_blank" rel="noopener">Planner v7</a></li>
+          <li><a href="https://www.etsy.com/listing/4503115757/roth-optimizer-retirement-planner-v6" target="_blank" rel="noopener">v7 + Roth Bundle</a></li>
+          <li><a href="https://www.etsy.com/shop/webnomadstudio/" target="_blank" rel="noopener">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/faq.html">Help &amp; FAQ</a></li>
+          <li><a href="/technical.html">Documentation</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

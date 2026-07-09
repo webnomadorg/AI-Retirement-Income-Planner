@@ -4,5 +4,11 @@
   <link>https://airetirementincomeplanner.com/blog.html</link>
   <description>Practical retirement income planning articles from WebNomad Studio.</description>
   <language>en-us</language>
-
+  <item>
+    <title>Monte Carlo vs Historical Backtesting for Retirement Planning</title>
+    <link>https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html</link>
+    <guid>https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html</guid>
+    <pubDate>Thu, 09 Jul 2026 09:00:00 GMT</pubDate>
+    <description>Learn the difference between Monte Carlo simulation and historical backtesting for retirement planning, when each method helps, where each can mislead, and how to use both with stress tests.</description>
+  </item>
 </channel></rss>

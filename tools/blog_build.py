@@ -334,8 +334,10 @@ def jsonld_post(post, images, faq_pairs):
 
 
 def related_html(post, all_posts):
-    same = [p for p in all_posts if p["slug"] != post["slug"] and p["cat_slug"] == post["cat_slug"]]
-    others = [p for p in all_posts if p["slug"] != post["slug"] and p["cat_slug"] != post["cat_slug"]]
+    # drafts never appear as related links on other posts
+    pool = [p for p in all_posts if p["slug"] != post["slug"] and not p["draft"]]
+    same = [p for p in pool if p["cat_slug"] == post["cat_slug"]]
+    others = [p for p in pool if p["cat_slug"] != post["cat_slug"]]
     picks = (same + others)[:3]
     if not picks:
         return ""
