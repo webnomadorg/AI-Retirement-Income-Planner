@@ -45,6 +45,14 @@
           <input type="search" id="blogSearch" placeholder="Search articles… e.g. Roth, Social Security, ACA" aria-label="Search articles">
         </div>
         <p class="post-count" id="postCount" role="status" aria-live="polite"></p>
+        <div class="view-toggle" role="group" aria-label="Choose article layout">
+          <button id="viewGrid" type="button" class="active" aria-pressed="true" aria-label="Grid view" title="Grid view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+          <button id="viewList" type="button" aria-pressed="false" aria-label="List view" title="List view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
       </div>
       <div class="chip-row" id="chipRow" role="group" aria-label="Filter by topic">
         <button class="chip active" data-cat="">All topics</button>
@@ -82,14 +90,19 @@ var POSTS = {{POSTS_JSON}};
 
 (function () {
   "use strict";
-  var PAGE = 12;
+  // "Load more" reveals in these increments; list rows are shorter, so it starts higher.
+  var GRID_PAGE = 12, LIST_PAGE = 20;
   var grid = document.getElementById("blogGrid");
   var countEl = document.getElementById("postCount");
   var noResults = document.getElementById("noResults");
   var loadMore = document.getElementById("loadMore");
   var search = document.getElementById("blogSearch");
+  var viewGrid = document.getElementById("viewGrid");
+  var viewList = document.getElementById("viewList");
   var chips = Array.prototype.slice.call(document.querySelectorAll("#chipRow .chip"));
-  var state = { cat: "", q: "", shown: PAGE };
+  var savedView = localStorage.getItem("wn-blog-view") === "list" ? "list" : "grid";
+  var state = { cat: "", q: "", view: savedView, shown: savedView === "list" ? LIST_PAGE : GRID_PAGE };
+  function pageSize() { return state.view === "list" ? LIST_PAGE : GRID_PAGE; }
 
   function fmtDate(iso) {
     var d = new Date(iso + "T00:00:00");
@@ -121,6 +134,7 @@ var POSTS = {{POSTS_JSON}};
       "</div></a>";
   }
   function render() {
+    grid.classList.toggle("list-view", state.view === "list");
     var list = POSTS.filter(matches);
     var slice = list.slice(0, state.shown);
     grid.innerHTML = slice.map(card).join("");
@@ -135,7 +149,7 @@ var POSTS = {{POSTS_JSON}};
       chips.forEach(function (c) { c.classList.remove("active"); });
       chip.classList.add("active");
       state.cat = chip.getAttribute("data-cat") || "";
-      state.shown = PAGE;
+      state.shown = pageSize();
       if (state.cat) location.hash = "cat=" + state.cat; else history.replaceState(null, "", location.pathname);
       render();
     });
@@ -145,14 +159,27 @@ var POSTS = {{POSTS_JSON}};
     clearTimeout(debounce);
     debounce = setTimeout(function () {
       state.q = search.value.trim();
-      state.shown = PAGE;
+      state.shown = pageSize();
       render();
     }, 120);
   });
   loadMore.addEventListener("click", function () {
-    state.shown += PAGE;
+    state.shown += pageSize();
     render();
   });
+  function setView(v) {
+    state.view = v;
+    localStorage.setItem("wn-blog-view", v);
+    state.shown = pageSize();
+    viewGrid.classList.toggle("active", v === "grid");
+    viewList.classList.toggle("active", v === "list");
+    viewGrid.setAttribute("aria-pressed", v === "grid");
+    viewList.setAttribute("aria-pressed", v === "list");
+    render();
+  }
+  viewGrid.addEventListener("click", function () { setView("grid"); });
+  viewList.addEventListener("click", function () { setView("list"); });
+  setView(state.view);  // apply saved view + sync button states on load
   // Deep link: /blog/#cat=<slug>
   var m = location.hash.match(/cat=([\w-]+)/);
   if (m) {
