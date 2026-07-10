@@ -288,6 +288,8 @@ A spreadsheet can model those things, but the user has to build or trust the mod
 
 A no-subscription planner can give the user local ownership while reducing formula-maintenance work.
 
+For a closer look at that tradeoff, see [retirement spreadsheet vs retirement planning software](/blog/retirement-spreadsheet-vs-retirement-planning-software.html).
+
 ## Privacy Questions To Ask Before Buying
 
 Before choosing software, ask:
