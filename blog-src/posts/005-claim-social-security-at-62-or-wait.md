@@ -178,7 +178,7 @@ Option 3: Wait until 70. The retiree needs the most savings support during the d
 
 None of these is automatically best.
 
-The result depends on portfolio size, taxes, spending, health, market returns, longevity, and whether the retiree can emotionally tolerate higher early withdrawals.
+The result depends on portfolio size, taxes, [spending](/blog/how-much-can-i-spend-in-retirement.html), health, market returns, longevity, and whether the retiree can emotionally tolerate higher early withdrawals.
 
 [IMAGE PLACEHOLDER - Generated image: A three-column comparison chart labeled Claim at 62, Claim at Full Retirement Age, Claim at 70. Include simple rows for monthly benefit, portfolio withdrawals before claiming, survivor protection, and longevity protection. Prompt for ChatGPT Images 2: "Create a clean retirement planning comparison chart with three columns: Claim at 62, Claim at Full Retirement Age, Claim at 70. Include rows for monthly benefit, withdrawals before claiming, survivor protection, and longevity protection. Professional style, white background, muted blue, green, and gold accents, no logos, no tiny text." Suggested alt text: "Comparison chart for claiming Social Security at 62, full retirement age, or 70."]
 

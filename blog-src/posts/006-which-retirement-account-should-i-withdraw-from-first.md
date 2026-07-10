@@ -38,7 +38,7 @@ Which withdrawal order gives your household the strongest after-tax income plan 
 
 ## Why Withdrawal Order Matters
 
-In retirement, the same spending amount can produce different tax results depending on where the money comes from.
+In retirement, the same [spending amount](/blog/how-much-can-i-spend-in-retirement.html) can produce different tax results depending on where the money comes from.
 
 For example:
 

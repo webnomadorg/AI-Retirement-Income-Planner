@@ -144,7 +144,7 @@ Model the conversion and the healthcare cost in the same plan. A [retirement cal
 
 ## The IRA Withdrawal Problem
 
-If you retire before Social Security and Medicare, you may need portfolio withdrawals to cover spending.
+If you retire before Social Security and Medicare, you may need portfolio withdrawals to cover [your retirement spending](/blog/how-much-can-i-spend-in-retirement.html).
 
 The source of those withdrawals matters.
 
