@@ -78,7 +78,7 @@ Claiming at 62 may be worth modeling if:
 - You are coordinating with a spouse's higher benefit.
 - You are no longer working and have limited other income.
 
-It deserves extra caution if you are still working before full retirement age, because the earnings test may affect benefit payments.
+It deserves extra caution if you are [still working](/blog/working-part-time-in-retirement.html) before full retirement age, because the earnings test may affect benefit payments.
 
 ## What Happens If You Wait?
 

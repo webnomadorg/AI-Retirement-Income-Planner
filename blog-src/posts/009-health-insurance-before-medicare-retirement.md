@@ -39,7 +39,7 @@ For many people, the options include:
 
 HealthCare.gov says that if you retire before age 65 and lose job-based health coverage, you can use the Health Insurance Marketplace to buy a plan. Losing job-based coverage can qualify you for a Special Enrollment Period.
 
-The planning problem is that healthcare costs are not separate from retirement income. IRA withdrawals, 401k withdrawals, Roth conversions, capital gains, and part-time work can all affect income, and income can affect Marketplace savings.
+The planning problem is that healthcare costs are not separate from retirement income. IRA withdrawals, 401k withdrawals, Roth conversions, capital gains, and [part-time work](/blog/working-part-time-in-retirement.html) can all affect income, and income can affect Marketplace savings.
 
 [IMAGE 009-health-insurance-before-medicare-retirement 1]
 

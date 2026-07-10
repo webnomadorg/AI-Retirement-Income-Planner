@@ -366,7 +366,7 @@ A pre-Medicare retiree should model:
 - Dental and vision costs
 - The effect of taxable income on ACA subsidies
 
-This is one reason Roth conversions, withdrawals, capital gains, and part-time income should be reviewed together. A move that looks good for taxes may change healthcare costs.
+This is one reason Roth conversions, withdrawals, capital gains, and [part-time income](/blog/working-part-time-in-retirement.html) should be reviewed together. A move that looks good for taxes may change healthcare costs.
 
 ## Spending, Inflation, And Longevity
 
