@@ -1196,6 +1196,28 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .table-scroll th,.table-scroll td{ padding:.6rem .9rem; text-align:left; border-bottom:1px solid var(--line-soft); }
 .table-scroll th{ font-weight:650; color:var(--ink-2); background:var(--surface-soft); }
 .table-scroll tr:last-child td{ border-bottom:none; }
+
+/* Phones: turn wide comparison tables into stacked cards (one card per row) instead of
+   forcing horizontal scroll. Cell labels come from the build's data-label attributes. */
+@media (max-width:640px){
+  .post-body .table-scroll{ overflow-x:visible; border:none; margin:1.5rem 0; }
+  .post-body .table-scroll table{ display:block; min-width:0; background:none; }
+  .post-body .table-scroll thead{ display:none; }
+  .post-body .table-scroll tbody{ display:block; }
+  .post-body .table-scroll tr{ display:block; margin-bottom:1.1rem; overflow:hidden;
+    border:1px solid var(--line); border-radius:var(--radius-sm);
+    background:var(--surface); box-shadow:var(--shadow-sm); }
+  .post-body .table-scroll td{ display:block; padding:.55rem .95rem; border:none;
+    border-top:1px solid var(--line-soft); text-align:left !important; font-size:.95rem; }
+  .post-body .table-scroll td::before{ content:attr(data-label); display:block;
+    font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; font-weight:700;
+    color:var(--ink-faint); margin-bottom:.12rem; }
+  /* first column becomes the card title */
+  .post-body .table-scroll td:first-child{ background:var(--surface-soft); border-top:none;
+    font-family:var(--font-display); font-size:1.08rem; font-weight:600; color:var(--ink);
+    padding:.7rem .95rem; }
+  .post-body .table-scroll td:first-child::before{ display:none; }
+}
 .cta-box{ margin:2.2rem 0; padding:1.15rem 1.35rem; background:var(--surface-soft);
   border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:var(--radius-sm); }
 .cta-box p{ margin:0 0 .8rem; }

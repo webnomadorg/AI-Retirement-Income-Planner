@@ -248,6 +248,42 @@ def md_to_html(md_text):
     )
 
 
+def enhance_tables(html):
+    """Wrap each table in a .table-scroll div and stamp every body cell with
+    data-label="<column header>". On desktop the table renders normally (scrolling
+    inside the wrapper if wide); on phones the CSS uses those labels to render each
+    row as a stacked card (label above value) instead of a horizontal scroll."""
+    def process_table(m):
+        table = m.group(0)
+        thead = re.search(r"<thead>.*?</thead>", table, re.S)
+        labels = []
+        if thead:
+            labels = [re.sub(r"<[^>]+>", "", x).strip()
+                      for x in re.findall(r"<th[^>]*>(.*?)</th>", thead.group(0), re.S)]
+
+        def process_row(rm):
+            idx = {"i": 0}
+
+            def add_label(cm):
+                i = idx["i"]
+                idx["i"] += 1
+                if "data-label" in cm.group(1):
+                    return cm.group(0)
+                label = labels[i] if i < len(labels) else ""
+                open_tag = cm.group(1)[:-1] + ' data-label="' + esc_attr(label) + '">'
+                return open_tag + cm.group(2) + "</td>"
+
+            return re.sub(r"(<td[^>]*>)(.*?)</td>", add_label, rm.group(0), flags=re.S)
+
+        body = re.search(r"<tbody>.*?</tbody>", table, re.S)
+        if body:
+            new_body = re.sub(r"<tr[^>]*>.*?</tr>", process_row, body.group(0), flags=re.S)
+            table = table[:body.start()] + new_body + table[body.end():]
+        return '<div class="table-scroll">' + table + "</div>"
+
+    return re.sub(r"<table>.*?</table>", process_table, html, flags=re.S)
+
+
 def replace_image_markers(md_text, post, images):
     def figure(m):
         n = int(m.group(1))
@@ -377,9 +413,8 @@ def render_post(post, all_posts, templates, partials, images):
     words = len(re.findall(r"\w+", body_md))
     read_time = max(1, round(words / WORDS_PER_MINUTE))
     content = md_to_html(body_md)
-    # tables scroll inside their own container on small screens
-    content = content.replace("<table>", '<div class="table-scroll"><table>').replace(
-        "</table>", "</table></div>")
+    # wrap tables + tag cells with column headers (desktop scroll / mobile card layout)
+    content = enhance_tables(content)
 
     # Demo CTA box before the FAQ heading (or at the end when there is no FAQ)
     if ctas.get("demo"):
