@@ -76,7 +76,7 @@ Medicare.gov says most people get Medicare Part A and Part B when first eligible
 
 Source: [Medicare.gov, Prepare to sign up](https://www.medicare.gov/basics/get-started-with-medicare/sign-up)
 
-If you retire at 62, you may need health coverage for roughly three years before Medicare begins. [Health insurance before Medicare](/blog/health-insurance-before-medicare-retirement.html) is its own planning problem.
+If you retire at 62, you may need health coverage for roughly three years before Medicare begins, and [retiring at 60](/blog/can-i-retire-at-60.html) stretches that bridge to about five years. [Health insurance before Medicare](/blog/health-insurance-before-medicare-retirement.html) is its own planning problem.
 
 Possible sources include:
 
