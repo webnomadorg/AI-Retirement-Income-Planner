@@ -32,7 +32,7 @@ The familiar rule is to spend taxable accounts first, tax-deferred accounts next
 
 A better question is:
 
-Which withdrawal order gives your household the strongest after-tax income plan across early retirement, RMD years, Medicare years, and survivor years?
+Which withdrawal order gives your household the strongest after-tax income plan across [early retirement](/blog/can-i-retire-at-55.html), RMD years, Medicare years, and survivor years?
 
 [IMAGE 006-which-retirement-account-should-i-withdraw-from-first 1]
 

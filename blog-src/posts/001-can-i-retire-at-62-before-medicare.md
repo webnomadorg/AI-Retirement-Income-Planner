@@ -32,7 +32,7 @@
 
 Yes, some people can retire at 62 before Medicare starts. The hard part is the gap between Social Security and Medicare.
 
-Age 62 is the earliest age most people can claim Social Security retirement benefits. Medicare usually starts at 65. That leaves about three years where your plan may need to cover private health insurance, taxes, withdrawals, and day-to-day income without the full Medicare safety net.
+Age 62 is the earliest age most people can claim Social Security retirement benefits. Medicare usually starts at 65. That leaves about three years where your plan may need to cover private health insurance, taxes, withdrawals, and day-to-day income without the full Medicare safety net. Leaving work earlier only stretches that gap, so [retiring at 55](/blog/can-i-retire-at-55.html) can mean roughly ten years to bridge before Medicare.
 
 The better question is:
 

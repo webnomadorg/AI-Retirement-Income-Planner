@@ -306,6 +306,26 @@ def enhance_tables(html):
     return re.sub(r"<table>.*?</table>", process_table, html, flags=re.S)
 
 
+def external_links_new_tab(html):
+    """Every external link (absolute http/https to another site) opens in a new tab
+    with rel="noopener", matching the rest of the site (header/footer already do this).
+    Internal links are root-relative ('/...') or fragments, so only absolute off-site
+    anchors are rewritten; our own absolute URLs are left as same-tab. Idempotent —
+    skips anchors that already carry target= / rel=."""
+    def add_attrs(m):
+        tag, href = m.group(0), m.group(1)
+        if "airetirementincomeplanner.com" in href:
+            return tag  # our own absolute URL = internal, keep same tab
+        extra = ""
+        if "target=" not in tag:
+            extra += ' target="_blank"'
+        if "rel=" not in tag:
+            extra += ' rel="noopener"'
+        return (tag[:-1] + extra + ">") if extra else tag
+
+    return re.sub(r'<a\b[^>]*?\shref="(https?://[^"]*)"[^>]*>', add_attrs, html)
+
+
 def replace_image_markers(md_text, post, images):
     def figure(m):
         n = int(m.group(1))
@@ -447,6 +467,8 @@ def render_post(post, all_posts, templates, partials, images):
     content = md_to_html(body_md)
     # wrap tables + tag cells with column headers (desktop scroll / mobile card layout)
     content = enhance_tables(content)
+    # external links open in a new tab (rel="noopener") — applies to every post body
+    content = external_links_new_tab(content)
 
     # Demo CTA box before the FAQ heading (or at the end when there is no FAQ)
     if ctas.get("demo"):

@@ -53,7 +53,7 @@ The bridge period can be short or long:
 
 - Retire at 64: about one year before Medicare
 - Retire at 62: about three years before Medicare
-- Retire at 55: about ten years before Medicare
+- [Retire at 55](/blog/can-i-retire-at-55.html): about ten years before Medicare
 
 The longer the bridge, the more important the healthcare model becomes. If you are weighing an age-62 exit, [can I retire at 62 before Medicare?](/blog/can-i-retire-at-62-before-medicare.html) covers the bridge-year decision.
 
