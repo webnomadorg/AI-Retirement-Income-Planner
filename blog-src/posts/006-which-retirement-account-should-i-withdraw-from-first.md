@@ -260,7 +260,7 @@ Use this workflow in the AI Retirement Income Planner:
 
 1. Enter household ages, retirement dates, Social Security timing, pensions, healthcare assumptions, spending goals, and account balances.
 2. Confirm account types in Edit values, including cash, taxable equity, Roth, and tax-deferred accounts.
-3. Set how much each account funds spending in each phase using the phase withdrawal fields (this per-phase mix is your withdrawal order), and use the Drawdown tab to compare withdrawal-rate methods such as the 4% Rule, Guardrails, and bucket strategies.
+3. Set how much each account funds spending in each phase using the phase withdrawal fields (this per-phase mix is your withdrawal order), and use the Drawdown tab to compare withdrawal-rate methods such as the 4% Rule, [Guardrails](/blog/retirement-withdrawal-guardrails.html), and bucket strategies.
 4. Check Balance to see which accounts are being depleted.
 5. Review Tax & ACA for taxable income, healthcare, and Medicare-sensitive years.
 6. Use What-if? to test Roth conversions and planned IRA withdrawals.

@@ -393,7 +393,7 @@ Examples:
 - Downsize later if needed
 - Use cash reserves during market declines
 - Delay a large home project
-- Use a guardrail around annual withdrawals
+- Use a [guardrail around annual withdrawals](/blog/retirement-withdrawal-guardrails.html)
 
 This does not mean you need a bare-bones retirement. It means you know which spending can move if the plan needs help.
 
