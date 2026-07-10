@@ -443,7 +443,7 @@ Look for:
 - Optional AI controls.
 - Clear data ownership.
 
-This is one of the planner's strongest angles.
+This is one of the planner's strongest angles. For a privacy-first comparison, see [best private retirement planning software](/blog/best-private-retirement-planning-software.html).
 
 ### Scenario 5: User Who Wants Cloud Sync And Automatic Updates
 
