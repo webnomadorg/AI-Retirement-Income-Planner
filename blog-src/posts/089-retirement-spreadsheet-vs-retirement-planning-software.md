@@ -188,7 +188,7 @@ Healthcare is a common spreadsheet blind spot.
 
 Before Medicare, ACA Marketplace income can matter. After Medicare, Part B, Part D, supplemental coverage, prescription costs, and IRMAA can matter.
 
-A spreadsheet can include healthcare costs, but the user has to decide how those costs connect to income, withdrawals, and taxes.
+A spreadsheet can include healthcare costs, but the user has to decide how those costs connect to income, withdrawals, and taxes. A [retirement calculator with taxes and healthcare](/blog/best-retirement-calculator-with-taxes-and-healthcare.html) is built to connect them.
 
 The planner includes ACA premium and FPL threshold modeling, ACA 400 percent FPL cliff and 250 percent CSR band references, Medicare Part B and Part D base premiums, IRMAA threshold and two-year lookback behavior, healthcare inflation, and foreign healthcare assumptions when US healthcare is excluded.
 

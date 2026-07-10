@@ -548,7 +548,7 @@ No. The downloaded planner runs in a modern browser and does not require an acco
 
 ### Can no-subscription software model taxes and healthcare?
 
-It can if the planner is built for it. The AI Retirement Income Planner includes Tax & ACA tools, Medicare and IRMAA context, Roth conversions, RMD estimates, Social Security taxation, and healthcare assumptions.
+It can if the planner is built for it. The AI Retirement Income Planner includes Tax & ACA tools, Medicare and IRMAA context, Roth conversions, RMD estimates, Social Security taxation, and healthcare assumptions. For what to look for, see the guide to the [best retirement calculator with taxes and healthcare](/blog/best-retirement-calculator-with-taxes-and-healthcare.html).
 
 ### Is a spreadsheet enough for retirement planning?
 

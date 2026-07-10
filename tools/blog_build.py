@@ -217,19 +217,29 @@ def image_size(path):
 
 
 def prepare_images(post, images_dir):
-    """Convert available source images -> assets/img/blog/. Returns {n: (rel_url, w, h)}."""
+    """Convert the source images the post actually references -> assets/img/blog/.
+    Only image numbers used by an [IMAGE ... N] marker are built; unreferenced numbers
+    are skipped and any stale output from a previously-used image is pruned (so dropping
+    an image from a post also removes its webp). Returns {n: (rel_url, w, h)}."""
+    referenced = {int(x) for x in re.findall(
+        r"\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d)\]", post["body"])}
     out = {}
     for n in range(1, 10):
-        src = find_source_image(images_dir, post["img_base"], n)
         dest = IMG_OUT / f"{post['slug']}-{n}.webp"
+        thumb = IMG_OUT / f"{post['slug']}-1-thumb.webp" if n == 1 else None
+        if n not in referenced:
+            for stale in (dest, thumb):
+                if stale and stale.exists():
+                    stale.unlink()
+                    print(f"  pruned unused image: {stale.name}")
+            continue
+        src = find_source_image(images_dir, post["img_base"], n)
         if src:
             if not dest.exists() or dest.stat().st_mtime < src.stat().st_mtime:
                 w, h = convert_image(src, dest, max_width=1400, quality=80)
                 print(f"  img: {src.name} -> {dest.name} ({w}x{h})")
-            if n == 1:
-                thumb = IMG_OUT / f"{post['slug']}-1-thumb.webp"
-                if not thumb.exists() or thumb.stat().st_mtime < src.stat().st_mtime:
-                    convert_image(src, thumb, max_width=640, quality=75)
+            if n == 1 and (not thumb.exists() or thumb.stat().st_mtime < src.stat().st_mtime):
+                convert_image(src, thumb, max_width=640, quality=75)
         if dest.exists():
             w, h = image_size(dest)
             out[n] = (f"/assets/img/blog/{dest.name}", w, h)
