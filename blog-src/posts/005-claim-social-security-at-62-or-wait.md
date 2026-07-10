@@ -95,7 +95,7 @@ Waiting may be worth modeling if:
 - You are trying to reduce longevity risk.
 - You can use the delay years for Roth conversions or tax planning.
 
-Waiting is not free. You need income during the delay years. That may come from work, taxable savings, IRA withdrawals, a pension, a spouse's income, or another source.
+Waiting is not free. You need income during the delay years. That may come from work, taxable savings, IRA withdrawals, a pension, a spouse's income, or another source. Which account to draw from first is its own decision: see [which retirement account should you withdraw from first?](/blog/which-retirement-account-withdraw-from-first.html)
 
 [IMAGE 005-claim-social-security-at-62-or-wait 2]
 

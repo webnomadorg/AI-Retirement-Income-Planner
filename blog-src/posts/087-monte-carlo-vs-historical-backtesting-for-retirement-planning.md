@@ -459,7 +459,7 @@ Use the Drawdown tab to compare withdrawal styles:
 - Guardrails.
 - A Monte Carlo view of withdrawal sustainability.
 
-Then use the phase withdrawal settings and What-if tools to test ideas such as a cash-first bridge, preserving Roth for later phases, or Roth conversions during lower-income years.
+Then use the phase withdrawal settings and What-if tools to test ideas such as a cash-first bridge, preserving Roth for later phases, or Roth conversions during lower-income years. ([Which account to withdraw from first](/blog/which-retirement-account-withdraw-from-first.html) walks through those tradeoffs.)
 
 ### 7. Save Scenarios
 
