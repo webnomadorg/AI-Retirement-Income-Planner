@@ -1189,8 +1189,8 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .post-body li{ margin:.28rem 0; }
 .post-body blockquote{ margin:1.4rem 0; padding:.2rem 1.2rem; border-left:4px solid var(--teal);
   background:var(--surface-soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; color:var(--ink-soft); }
-.post-img{ margin:2rem 0; }
-.post-img img{ width:100%; height:auto; border-radius:var(--radius-sm); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
+.post-img{ margin:2rem 0; text-align:center; }
+.post-img img{ max-width:100%; width:auto; height:auto; margin-inline:auto; border-radius:var(--radius-sm); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
 .table-scroll{ overflow-x:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:var(--radius-sm); }
 .table-scroll table{ border-collapse:collapse; width:100%; min-width:520px; font-size:.95rem; background:var(--surface); }
 .table-scroll th,.table-scroll td{ padding:.6rem .9rem; text-align:left; border-bottom:1px solid var(--line-soft); }
