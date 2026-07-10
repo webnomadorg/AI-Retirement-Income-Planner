@@ -189,7 +189,7 @@ This is where simple calculators often fail. They may show portfolio survival wh
 
 Social Security is not separate from taxes and healthcare.
 
-SSA says retirement benefits can begin as early as age 62, but benefits started before full retirement age are reduced. SSA also says delaying beyond full retirement age can increase benefits until age 70.
+SSA says retirement benefits can begin as early as age 62, but benefits started before full retirement age are reduced. SSA also says delaying beyond full retirement age can increase benefits until age 70. (Weighing that choice? See [should you claim Social Security at 62 or wait?](/blog/claim-social-security-at-62-or-wait.html))
 
 Claiming age can affect:
 

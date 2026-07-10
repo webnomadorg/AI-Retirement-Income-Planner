@@ -353,7 +353,7 @@ This is why a retirement risk test should be connected to the income plan and th
 
 Social Security timing changes portfolio withdrawals.
 
-SSA says retirement benefits can begin as early as age 62, but benefits started before full retirement age are reduced. SSA also says benefits increase when delayed beyond full retirement age, and the increase stops at age 70.
+SSA says retirement benefits can begin as early as age 62, but benefits started before full retirement age are reduced. SSA also says benefits increase when delayed beyond full retirement age, and the increase stops at age 70. ([Claiming at 62 versus waiting](/blog/claim-social-security-at-62-or-wait.html) is worth testing under more than one market scenario.)
 
 That creates different risk patterns:
 

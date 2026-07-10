@@ -79,13 +79,22 @@ CLUSTER_TO_CATEGORY = {
 }
 CATEGORY_LABEL_TO_SLUG = {label: slug for slug, label in CLUSTER_TO_CATEGORY.values()}
 
-# H2 sections that are production notes, not reader content (lowercased)
+# H2 sections that are production notes, not reader content (lowercased). Includes the
+# heading variants used by the older 'Process Later' drafts (e.g. "internal link
+# suggestions", "suggested article schema") so their trailers are stripped too.
 PRODUCTION_SECTIONS = {
     "internal links to add",
+    "internal link suggestions",
+    "suggested internal links",
     "cta blocks",
+    "suggested cta blocks",
     "schema notes",
+    "suggested article schema",
+    "suggested schema",
+    "suggested faq schema questions",
     "facebook post snippets",
     "newsletter summary",
+    "publishing notes",
 }
 
 WORDS_PER_MINUTE = 225

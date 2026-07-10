@@ -66,7 +66,7 @@ That creates a trade-off:
 
 For someone born in 1960 or later, SSA lists full retirement age as 67. The same SSA page shows that claiming at 62 produces a reduced benefit compared with the full-retirement-age amount.
 
-That does not mean claiming at 62 is wrong. It means the decision needs context.
+That does not mean claiming at 62 is wrong. It means the decision needs context. For a deeper look at that choice, see [should you claim Social Security at 62 or wait?](/blog/claim-social-security-at-62-or-wait.html)
 
 If claiming early lets you avoid selling investments in a bad market, it may help. If delaying gives you a stronger income floor for the rest of your life, it may also help. Couples also need to think about survivor income.
 
