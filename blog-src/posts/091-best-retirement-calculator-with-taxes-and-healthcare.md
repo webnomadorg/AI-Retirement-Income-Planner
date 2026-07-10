@@ -134,7 +134,7 @@ The planning lesson is durable: Medicare is not free, and pre-Medicare healthcar
 
 ## The ACA Years Need Their Own Test
 
-Early retirees often need health insurance before Medicare.
+Early retirees often need health insurance before Medicare. (See [can I retire at 62 before Medicare?](/blog/can-i-retire-at-62-before-medicare.html) for how to plan those bridge years.)
 
 This can be a sensitive period because income choices can affect Marketplace savings.
 

@@ -289,7 +289,10 @@ def enhance_tables(html):
         if body:
             new_body = re.sub(r"<tr[^>]*>.*?</tr>", process_row, body.group(0), flags=re.S)
             table = table[:body.start()] + new_body + table[body.end():]
-        return '<div class="table-scroll">' + table + "</div>"
+        # 2-column tables are key/value lists — they read better as a compact table on
+        # phones than as one card per row, so tag them for the CSS to keep them tabular.
+        cls = "table-scroll table-2col" if len(labels) == 2 else "table-scroll"
+        return f'<div class="{cls}">' + table + "</div>"
 
     return re.sub(r"<table>.*?</table>", process_table, html, flags=re.S)
 
@@ -397,9 +400,19 @@ def related_html(post, all_posts):
 
 
 def render_post(post, all_posts, templates, partials, images):
-    sections = split_sections(post["body"])
+    body = post["body"]
+    # Legacy posts append a production trailer under a body-level H1 (e.g.
+    # "# Publishing Notes"). Article bodies otherwise use only H2/H3, so the first H1
+    # in the body marks the start of that trailer — split it off to the promo file so it
+    # never renders as reader content.
+    h1 = re.search(r"(?m)^# .+$", body)
+    trailer = ""
+    if h1:
+        trailer = body[h1.start():].strip()
+        body = body[:h1.start()]
+    sections = split_sections(body)
     kept, ctas, faq_pairs = [], {}, []
-    promo_parts = []
+    promo_parts = [trailer] if trailer else []
     for heading, md_sec in sections:
         key = heading.lower().strip()
         if key == "cta blocks":
@@ -441,6 +454,7 @@ def render_post(post, all_posts, templates, partials, images):
 
     tokens = {
         "{{TITLE}}": esc_attr(post["title"]),
+        "{{H1}}": esc_attr(post["h1"]),
         "{{DESCRIPTION}}": esc_attr(post["description"]),
         "{{CANONICAL}}": f"{SITE}/blog/{post['slug']}.html",
         "{{OG_IMAGE}}": SITE + images[1][0] if 1 in images else f"{SITE}/assets/img/og-cover.png",

@@ -187,7 +187,7 @@ The reason is simple: a broad probability score can smooth over the exact scenar
 
 ## Example: Same Plan, Different Risk Views
 
-Assume a couple retires at 62.
+Assume a couple retires at 62. (Retiring early has its own bridge-year checklist: see [can I retire at 62 before Medicare?](/blog/can-i-retire-at-62-before-medicare.html).)
 
 They have:
 
