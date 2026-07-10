@@ -449,7 +449,7 @@ Retirement income can come from taxable, tax-deferred, Roth, pension, and Social
 
 ### Why do healthcare costs matter in a retirement calculator?
 
-Healthcare costs can change by age, income, coverage type, Medicare status, prescription needs, and inflation. Before Medicare, income can affect Marketplace savings. After Medicare, IRMAA can affect premiums for higher-income retirees.
+Healthcare costs can change by age, income, coverage type, Medicare status, prescription needs, and inflation. Before Medicare, income can affect Marketplace savings (see [health insurance before Medicare](/blog/health-insurance-before-medicare-retirement.html)). After Medicare, IRMAA can affect premiums for higher-income retirees.
 
 ### Should a calculator include ACA subsidies?
 

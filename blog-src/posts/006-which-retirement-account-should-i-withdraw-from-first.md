@@ -158,7 +158,7 @@ This phase may include:
 - Roth conversions
 - ACA Marketplace income planning
 
-The risk is creating too much income for healthcare subsidies or spending down the wrong accounts too quickly.
+The risk is creating too much income for healthcare subsidies or spending down the wrong accounts too quickly. ([Health insurance before Medicare](/blog/health-insurance-before-medicare-retirement.html) explains that subsidy sensitivity.)
 
 ### Phase 2: Medicare Before RMDs
 
