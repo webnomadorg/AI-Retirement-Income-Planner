@@ -1181,7 +1181,9 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .post-toc li{ margin:.3rem 0; }
 .post-toc a{ text-decoration:none; }
 .post-toc a:hover{ text-decoration:underline; }
-.post-body{ font-size:1.05rem; }
+.post-body{ font-size:1.05rem; overflow-wrap:break-word; }
+/* Long bare URLs (e.g. in Source Links) must break rather than force horizontal scroll on mobile */
+.post-body a{ overflow-wrap:break-word; word-break:break-word; }
 .post-body h2{ font-size:1.72rem; margin-top:2.6rem; scroll-margin-top:90px; }
 .post-body h3{ font-size:1.22rem; margin-top:1.8rem; }
 .post-body li{ margin:.28rem 0; }
