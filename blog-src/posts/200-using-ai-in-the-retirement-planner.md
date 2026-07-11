@@ -14,6 +14,14 @@
 
 **Image 3 alt:** The AI setup screen showing three ways to keep your API key on the device: encrypt with a password, do not save it, or save without a password, with a Save Key and Start Chatting button.
 
+**Lead image:** 4
+
+**Image 4 alt:** Branded overview of the planner's AI options: choose a provider (Anthropic Claude recommended, OpenAI, Google Gemini, OpenRouter, Ollama local, or custom), bring your own key, and use AI for insights, stress testing, income and tax optimisation, and Medicare and ACA planning.
+
+**Image 5 alt:** Two-panel illustration comparing Plan with AI, which analyses your plan and proposes changes you approve, with Learn the planner, which explains how to use the app.
+
+**Image 6 alt:** Illustration of the provider dropdown expanded to show the six AI provider options: Anthropic (Claude), OpenAI, Google Gemini, OpenRouter, Ollama (local), and Custom.
+
 **Meta description:** How to use the AI features in the AI Retirement Income Planner: choosing a provider (Claude, OpenAI, Gemini, OpenRouter, Ollama, or custom), selecting a model, adding an API key safely, and the two AI modes.
 
 **Suggested URL slug:** using-ai-in-the-retirement-planner
@@ -39,7 +47,7 @@ For serious plan analysis and the change proposals, Claude Opus 4.8 or Claude Fa
 
 The rest of this guide explains the two AI modes, each provider's strengths and weaknesses, how to select a model, how to add and protect your API key, and how to get a Claude key step by step.
 
-[IMAGE 200 ai models 1]
+[IMAGE 200 ai models 4]
 
 ## The Two AI Modes: Plan With AI and Learn the Planner
 
@@ -51,7 +59,7 @@ The AI Chat tab has two different modes, and it helps to know which one you are 
 
 A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyse and change your plan, and a cheaper or local model when you just want help using the planner.
 
-[IMAGE PLACEHOLDER - Generated diagram contrasting the two AI modes side by side. Left panel "Plan with AI": reads your plan, proposes numeric edits you approve, needs a capable model. Right panel "Learn the planner": explains how to use the app, runs on cheap or local models. Prompt for an AI image generator: "Create a clean editorial two-panel diagram comparing two modes of an AI assistant. Left panel labelled Plan with AI with icons for a chart and an approve check. Right panel labelled Learn the planner with a book and question-mark icon. Professional muted blue, green, and gold accents, white background, no logos, no tiny text."]
+[IMAGE 200 ai models 5]
 
 ## Bring Your Own Key: How Your Data Is Handled
 
@@ -65,6 +73,8 @@ That has two consequences worth understanding:
 ## The AI Providers, and Their Strengths and Weaknesses
 
 Here is how the six options compare.
+
+[IMAGE 200 ai models 6]
 
 | Provider | Get a key from | Best for | Watch-outs |
 | --- | --- | --- | --- |
@@ -97,6 +107,8 @@ You do not have to commit to one. Each provider keeps its own saved key and mode
 
 Open the AI Chat tab and, if the settings are collapsed, open the settings panel. You will see three controls.
 
+[IMAGE 200 ai models 1]
+
 1. **Provider** is a dropdown listing all six options. Choose one, and the key field, help text, and model list update to match it.
 2. **API key** is where you paste the key for that provider (Ollama needs none). Two buttons sit next to it: **Update** saves or changes the key, and **Remove key** deletes it from this device.
 3. **Model** is a dropdown of suggested models, each with a short hint such as "Most capable" or "Fastest and cheapest." Next to it is a **Refresh** button.
@@ -104,8 +116,6 @@ Open the AI Chat tab and, if the settings are collapsed, open the settings panel
 [IMAGE 200 ai models 2]
 
 About that model list: it is discovered live from the provider and cached for about an hour, so it stays current without an app update. If you just gained access to a new model, or you do not see one you expect, click **Refresh**. You can also simply type any model id straight into the box, which is handy for a specific Ollama model you have pulled or a brand-new release.
-
-[IMAGE PLACEHOLDER - Annotated screenshot of the provider dropdown expanded to show all six providers (Anthropic, OpenAI, Gemini, OpenRouter, Ollama, Custom). Prompt for an AI image generator: "Create a clean UI illustration of a settings dropdown labelled Provider, expanded to show six list items: Anthropic (Claude), OpenAI, Google Gemini, OpenRouter, Ollama (local), Custom. Soft neutral background, professional muted blue and green accents, no logos, no tiny text."]
 
 ## Setting Up Your API Key Safely
 

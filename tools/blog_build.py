@@ -145,6 +145,9 @@ def parse_post(md_path):
     if not published or not re.match(r"^\d{4}-\d{2}-\d{2}$", published):
         sys.exit(f"{md_path.name}: missing/invalid **Published:** YYYY-MM-DD")
 
+    lead = meta.get("lead image", "").strip()
+    card = int(lead) if lead.isdigit() and 1 <= int(lead) <= 9 else 1
+
     return {
         "path": md_path,
         "meta": meta,
@@ -158,6 +161,7 @@ def parse_post(md_path):
         "updated": meta.get("updated") or None,
         "draft": meta.get("draft", "").lower() in ("true", "yes", "1"),
         "img_base": meta.get("image source base") or md_path.stem,
+        "card": card,  # image number used for the landing-page card + OG (default 1)
         "body": body,
     }
 
@@ -232,13 +236,15 @@ def prepare_images(post, images_dir):
     an image from a post also removes its webp). Returns {n: (rel_url, w, h)}."""
     referenced = {int(x) for x in re.findall(
         r"\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d)\]", post["body"])}
+    referenced.add(post["card"])  # the landing-card / OG image is always built
     out = {}
     for n in range(1, 10):
         dest = IMG_OUT / f"{post['slug']}-{n}.webp"
-        thumb = IMG_OUT / f"{post['slug']}-1-thumb.webp" if n == 1 else None
+        thumb = IMG_OUT / f"{post['slug']}-{n}-thumb.webp"
+        is_card = (n == post["card"])
         if n not in referenced:
             for stale in (dest, thumb):
-                if stale and stale.exists():
+                if stale.exists():
                     stale.unlink()
                     print(f"  pruned unused image: {stale.name}")
             continue
@@ -247,8 +253,11 @@ def prepare_images(post, images_dir):
             if not dest.exists() or dest.stat().st_mtime < src.stat().st_mtime:
                 w, h = convert_image(src, dest, max_width=1400, quality=80)
                 print(f"  img: {src.name} -> {dest.name} ({w}x{h})")
-            if n == 1 and (not thumb.exists() or thumb.stat().st_mtime < src.stat().st_mtime):
+            if is_card and (not thumb.exists() or thumb.stat().st_mtime < src.stat().st_mtime):
                 convert_image(src, thumb, max_width=640, quality=75)
+        if not is_card and thumb.exists():
+            thumb.unlink()  # a former card thumb that is no longer the lead image
+            print(f"  pruned stale thumb: {thumb.name}")
         if dest.exists():
             w, h = image_size(dest)
             out[n] = (f"/assets/img/blog/{dest.name}", w, h)
@@ -388,8 +397,8 @@ def jsonld_post(post, images, faq_pairs):
                       "logo": {"@type": "ImageObject",
                                "url": f"{SITE}/assets/img/og-cover.png"}},
     }]
-    if 1 in images:
-        graph[0]["image"] = SITE + images[1][0]
+    if post["card"] in images:
+        graph[0]["image"] = SITE + images[post["card"]][0]
     graph.append({
         "@type": "BreadcrumbList",
         "itemListElement": [
@@ -488,7 +497,7 @@ def render_post(post, all_posts, templates, partials, images):
         "{{H1}}": esc_attr(post["h1"]),
         "{{DESCRIPTION}}": esc_attr(post["description"]),
         "{{CANONICAL}}": f"{SITE}/blog/{post['slug']}.html",
-        "{{OG_IMAGE}}": SITE + images[1][0] if 1 in images else f"{SITE}/assets/img/og-cover.png",
+        "{{OG_IMAGE}}": SITE + images[post['card']][0] if post['card'] in images else f"{SITE}/assets/img/og-cover.png",
         "{{ROBOTS}}": '<meta name="robots" content="noindex">\n' if post["draft"] else "",
         "{{DATE_ISO}}": post["published"],
         "{{MODIFIED_ISO}}": post["updated"] or post["published"],
@@ -535,8 +544,8 @@ def render_index(posts, templates, partials):
         "catSlug": p["cat_slug"],
         "date": p["published"],
         "readTime": p["read_time"],
-        "thumb": f"/assets/img/blog/{p['slug']}-1-thumb.webp"
-                 if (IMG_OUT / f"{p['slug']}-1-thumb.webp").exists() else "",
+        "thumb": f"/assets/img/blog/{p['slug']}-{p['card']}-thumb.webp"
+                 if (IMG_OUT / f"{p['slug']}-{p['card']}-thumb.webp").exists() else "",
         "draft": p["draft"],
     } for p in posts], ensure_ascii=False, indent=1)
 
