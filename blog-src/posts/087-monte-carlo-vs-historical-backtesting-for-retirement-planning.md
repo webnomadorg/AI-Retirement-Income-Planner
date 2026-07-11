@@ -583,7 +583,7 @@ There is no universal score. A confidence score should be interpreted with the a
 
 ### How does the AI Retirement Income Planner use these tools?
 
-The planner includes Monte Carlo simulation, historical backtesting, stress tests, scenario comparison, drawdown strategy comparison, Plan Health checks, Confidence scoring, balance charts, income charts, Social Security tools, and report preview.
+The planner includes Monte Carlo simulation, historical backtesting, stress tests, scenario comparison, drawdown strategy comparison, Plan Health checks, Confidence scoring, balance charts, income charts, Social Security tools, and report preview. It also has an optional AI assistant that can read these results and propose changes you approve; see [using AI in the retirement planner](/blog/using-ai-in-the-retirement-planner.html).
 
 ## Source Links
 
