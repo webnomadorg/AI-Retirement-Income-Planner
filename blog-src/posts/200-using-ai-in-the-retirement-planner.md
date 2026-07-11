@@ -57,7 +57,7 @@ The AI Chat tab has two different modes, and it helps to know which one you are 
 
 **Learn the planner** is a grounded "how do I use this?" chat. It answers questions about the planner itself, such as where to set a claiming age or what an ACA cliff warning means, using the app's own help content. It can even hand a drafted question over to Plan mode for you. Because it is mostly explaining the tool rather than doing heavy analysis, it runs fine on cheaper or local models.
 
-A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyse and change your plan, and a cheaper or local model when you just want help using the planner.
+A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyse and change your plan, and a cheaper or local model when you just want help using the planner. Either way, this is different from pasting your numbers into a general chatbot; [can ChatGPT help with retirement planning?](/blog/can-chatgpt-help-with-retirement-planning.html) covers where a chatbot helps and where it should not.
 
 [IMAGE 200 ai models 5]
 
