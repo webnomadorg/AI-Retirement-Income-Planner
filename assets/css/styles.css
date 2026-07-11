@@ -1267,7 +1267,7 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
   border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:var(--radius-sm); }
 .cta-box p{ margin:0 0 .8rem; }
 .cta-box .cta-box-action{ margin:0; }
-.cta-band{ margin:3rem 0 0; padding:1.8rem 1.6rem; text-align:center; background:var(--surface);
+.cta-band:not(.band-ink){ margin:3rem 0 0; padding:1.8rem 1.6rem; text-align:center; background:var(--surface);
   border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-sm); }
 .cta-band-title{ font-size:1.45rem; margin-bottom:.5rem; }
 .cta-band .hero-cta{ justify-content:center; margin:1rem 0 .8rem; }
