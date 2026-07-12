@@ -296,7 +296,7 @@ The calculator keeps the numbers grounded. AI helps the human understand the mea
 
 ## What To Look For In An AI Retirement Calculator
 
-If you are comparing AI retirement planning tools, look for these traits:
+If you are comparing AI retirement planning tools, [this checklist for what an AI retirement planner should and should not do](/blog/what-an-ai-retirement-planner-should-and-should-not-do.html) covers the full picture, but look for these traits:
 
 - Structured inputs instead of a chat box alone.
 - Year-by-year or month-by-month calculations.

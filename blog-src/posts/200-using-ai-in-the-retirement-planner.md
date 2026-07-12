@@ -176,7 +176,7 @@ To summarise the trade-offs:
 - **Best plan analysis:** Anthropic Claude (Opus 4.8 or Fable 5), paid per use, with your plan figures sent to Anthropic under your own account.
 - **Lowest paid cost:** a free-tier or low-cost model such as Gemini Flash, or a cheaper Claude Haiku model, especially for Learn-the-planner questions.
 
-Whichever you choose, the key stays in your browser, the planner keeps running fully without AI if you prefer, and you can remove the key at any time.
+Whichever you choose, the key stays in your browser, the planner keeps running fully without AI if you prefer, and you can remove the key at any time. That approach, along with keeping every AI proposal under your review, is [what a retirement AI assistant should and should not do](/blog/what-an-ai-retirement-planner-should-and-should-not-do.html).
 
 ## FAQ
 
