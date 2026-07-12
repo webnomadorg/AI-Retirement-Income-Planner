@@ -295,20 +295,17 @@ That structure supports the safer pattern: calculate first, explain second, appr
 
 Use this prompt when testing an AI retirement planner:
 
-```text
-Explain this retirement scenario using only the planner output below. Do not make investment, tax, legal, Social Security, Medicare, insurance, or healthcare decisions for me.
-
-Please:
-- Identify the source of each important number.
-- Explain the biggest tradeoffs.
-- List missing assumptions.
-- Identify official sources to verify.
-- Suggest scenarios to test next.
-- Do not apply changes unless I approve them.
-
-Planner output:
-[paste sanitized summary]
-```
+<div class="prompt-card">
+  <div class="prompt-card-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Prompt to copy
+  </div>
+  <div class="prompt-card-body">
+    <p>Using only the planner output below, explain this scenario in plain English. Do not make investment, tax, legal, Social Security, Medicare, insurance, or healthcare decisions for me &mdash; just explain.</p>
+    <p>For each important number, say where it came from. Flag the biggest tradeoffs and any missing assumptions, and note what I should verify with an official source. Suggest what to test next, but do not apply any changes unless I approve them first.</p>
+    <p>Planner output:<br><span class="prompt-card-fill">[paste sanitized summary]</span></p>
+  </div>
+</div>
 
 This prompt puts AI in the right chair.
 
