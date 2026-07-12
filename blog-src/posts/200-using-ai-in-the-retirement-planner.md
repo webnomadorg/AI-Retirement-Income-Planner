@@ -53,7 +53,7 @@ The rest of this guide explains the two AI modes, each provider's strengths and 
 
 The AI Chat tab has two different modes, and it helps to know which one you are in.
 
-**Plan with AI** works on your real plan. You ask for changes in plain English, and it returns specific numeric edits to your withdrawals, tax strategy, Roth conversions, and phase structure. Every proposed change set is checked against the simulation, and you review and approve it (or undo it) with one click. This is the mode that benefits most from a capable model.
+**Plan with AI** works on your real plan. You ask for changes in plain English, and it returns specific numeric edits to your withdrawals, tax strategy, Roth conversions, and phase structure. Every proposed change set is checked against the simulation, so [the AI always has a real retirement calculator underneath it](/blog/why-ai-needs-a-retirement-calculator-underneath.html), and you review and approve it (or undo it) with one click. This is the mode that benefits most from a capable model.
 
 **Learn the planner** is a grounded "how do I use this?" chat. It answers questions about the planner itself, such as where to set a claiming age or what an ACA cliff warning means, using the app's own help content. It can even hand a drafted question over to Plan mode for you. Because it is mostly explaining the tool rather than doing heavy analysis, it runs fine on cheaper or local models.
 

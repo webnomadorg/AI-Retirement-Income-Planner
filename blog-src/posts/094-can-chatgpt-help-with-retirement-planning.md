@@ -154,7 +154,7 @@ A useful answer has to look at:
 
 ChatGPT can explain the checklist.
 
-A retirement planner should calculate the scenario.
+A retirement planner should calculate the scenario, which is [why AI needs a retirement calculator underneath it](/blog/why-ai-needs-a-retirement-calculator-underneath.html).
 
 That difference matters.
 
