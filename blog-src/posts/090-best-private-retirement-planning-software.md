@@ -135,7 +135,7 @@ The public product site supports the same buyer-facing promise: buy once, no sub
 
 That combination is unusual in retirement planning software.
 
-If avoiding a recurring bill matters too, the guide to [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares the one-time-purchase model with the main cloud tools.
+If avoiding a recurring bill matters too, the guide to [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares the one-time-purchase model with the main cloud tools, and [why one-time purchase retirement software makes sense](/blog/why-one-time-purchase-retirement-software-makes-sense.html) makes the full case for buying once.
 
 Most serious retirement tools are either spreadsheets, cloud apps, advisor platforms, or subscription products. The AI Retirement Income Planner is more like a private planning file with a purpose-built retirement interface.
 

@@ -299,7 +299,7 @@ The user still has to:
 
 Retirement planning software may cost more upfront or through a subscription, but it may save time and reduce modeling gaps.
 
-The AI Retirement Income Planner is positioned as a one-time purchase with no subscription for the downloaded planner. That gives users a middle path: more retirement-specific structure than a spreadsheet, with more ownership than many account-based subscription tools.
+The AI Retirement Income Planner is positioned as a one-time purchase with no subscription for the downloaded planner. That gives users a middle path: more retirement-specific structure than a spreadsheet, with more ownership than many account-based subscription tools, which is [the case for buying once instead of subscribing](/blog/why-one-time-purchase-retirement-software-makes-sense.html) in more detail.
 
 If skipping a subscription is the main goal, the guide to [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares that approach with the main cloud tools.
 

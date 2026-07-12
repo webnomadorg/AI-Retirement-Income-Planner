@@ -42,7 +42,7 @@ It is built for people who want to model:
 - Monte Carlo and historical backtesting.
 - Optional AI help.
 
-Subscription tools can still be excellent for some users. ProjectionLab, MaxiFi, and Boldin all serve real needs. But if the search is specifically for no subscription, no account, and local ownership, the field gets much narrower.
+Subscription tools can still be excellent for some users. ProjectionLab, MaxiFi, and Boldin all serve real needs. But if the search is specifically for no subscription, no account, and local ownership, the field gets much narrower, for [reasons the one-time purchase model addresses directly](/blog/why-one-time-purchase-retirement-software-makes-sense.html).
 
 [IMAGE 088-best-retirement-planning-software-without-a-subscription 1]
 
