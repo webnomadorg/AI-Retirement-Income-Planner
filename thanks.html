@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FAQ &amp; Support — AI Retirement Income Planner v7 | WebNomad Studio</title>
+<title>Thank you — your downloads | WebNomad Studio</title>
+<meta name="robots" content="noindex,nofollow">
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
      Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
      the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
@@ -35,13 +36,8 @@
   fbq('track', 'PageView');
 </script>
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Answers about the AI Retirement Income Planner v7: privacy, offline use, the AI co-pilot, updates, licensing, refunds and support. Email dev@webnomad.org.">
+<meta name="description" content="Thank you for your purchase — download your retirement planning files here.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="canonical" href="https://airetirementincomeplanner.com/faq.html">
-<meta property="og:type" content="website">
-<meta property="og:title" content="FAQ & Support — AI Retirement Income Planner v7">
-<meta property="og:description" content="Privacy, offline use, the AI co-pilot, updates, licensing and support — answered.">
-<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
 </head>
@@ -63,7 +59,7 @@
         <li><a href="/how-it-works.html">How It Works</a></li>
         <li><a href="/getting-started.html">Getting Started</a></li>
         <li><a href="/blog.html">Blog</a></li>
-        <li><a href="/faq.html" aria-current="page">FAQ</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
       </ul>
       <div class="nav-theme">
         <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
@@ -89,72 +85,24 @@
 
   <section class="page-head band">
     <div class="container narrow center">
-      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; FAQ</p>
-      <span class="eyebrow" style="justify-content:center;">Good to know</span>
-      <h1>Frequently asked questions</h1>
-      <p class="lead center" style="margin-inline:auto;">Everything you might want to know before you buy. Still stuck? <a href="contact.html">Contact us</a> or email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a>.</p>
+      <span class="eyebrow" style="justify-content:center;" id="thanksEyebrow">Purchase complete</span>
+      <h1 id="thanksTitle">Thank you!</h1>
+      <p class="lead center" style="margin-inline:auto;" id="thanksLead">One moment — fetching your downloads…</p>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <div class="faq">
-
-        <h2 style="font-size:var(--fs-h3);margin-bottom:1rem;">Buying &amp; ownership</h2>
-        <details open><summary>Can I try it before I buy?</summary><div><p>Yes — there’s a free <a href="demo.html">interactive demo</a>: the real planner pre‑loaded with a sample plan, running in your browser with no signup or download. Editing is disabled (it’s a restricted sandbox, not a functional planner), but every tab, chart and analysis tool is the genuine article, so you can judge the depth and clarity for yourself before spending anything.</p></div></details>
-        <details><summary>Is this a subscription?</summary><div><p>No. Every product is a one‑time purchase. You download the file and own it outright — there are no recurring fees, no renewals and no account to manage.</p></div></details>
-        <details><summary>How is it delivered?</summary><div><p>As an instant digital download. Checkout is handled securely by Stripe, and the moment you pay you land on your personal download page (Stripe also emails you a receipt). You download a ZIP containing the self‑contained HTML planner and its user guide — there’s nothing to install and nothing shipped.</p></div></details>
-        <details><summary>What’s the difference between the planner, the bundle and the Roth Optimizer?</summary><div><p>The <strong>Planner v7</strong> is the complete retirement income tool. The <strong>Roth Conversion Optimizer</strong> is a focused companion for minimising lifetime tax through Roth conversions. The <strong>Bundle</strong> includes both — for just $2.50 more than the planner alone. See the <a href="products.html">Products page</a> for a full comparison.</p></div></details>
-        <details><summary>Can I upgrade from an earlier version?</summary><div><p>Yes. Export your plan as JSON from your current version and import it into a newer one to carry your numbers forward.</p></div></details>
-
-        <h2 style="font-size:var(--fs-h3);margin:2.4rem 0 1rem;">Privacy &amp; security</h2>
-        <details><summary>Is my financial data uploaded anywhere?</summary><div><p>No. Your plan stays in your browser’s local storage unless you choose to export a backup file. Nothing is sent to a server, and there are no bank connections.</p></div></details>
-        <details><summary>Does it work offline?</summary><div><p>Yes. Once the file is loaded, the planner works offline. (An internet connection is only needed if you choose to use the optional AI features or refresh tax‑rate research.)</p></div></details>
-        <details><summary>Do I need to create an account?</summary><div><p>No account, ever. You open the file and start planning.</p></div></details>
-
-        <h2 style="font-size:var(--fs-h3);margin:2.4rem 0 1rem;">The AI co‑pilot</h2>
-        <details><summary>Do I have to use the AI features?</summary><div><p>No — the AI is entirely optional. The full planner works without it. If you do use it, it runs under your own API key, called directly from your browser.</p></div></details>
-        <details><summary>Can I trust what the AI suggests?</summary><div><p>The AI proposes specific numeric changes, then the planner runs them through its own deterministic simulator and shows you the verified result. You always approve a change before it’s applied — the math is never taken on faith.</p></div></details>
-        <details><summary>Which AI provider do I need — can I use one I already have?</summary><div><p>You can choose from several: <strong>Anthropic (Claude)</strong>, <strong>OpenAI</strong>, <strong>Google Gemini</strong>, <strong>OpenRouter</strong>, a local <strong>Ollama</strong> model, or any OpenAI‑compatible custom endpoint. You bring your own key (Ollama needs none and runs free on your own computer), and the planner remembers a separate key per provider. Anthropic (Claude) is recommended for the best results.</p></div></details>
-        <details><summary>Does the model I pick affect the quality of the AI features?</summary><div><p>Yes. The quality of the AI’s answers — especially the specific, simulated plan‑editing proposals — depends on the model you choose. A more capable model gives more accurate, reliable analysis, so an Anthropic (Claude) key is recommended for serious strategy work. Smaller local models (via Ollama) are free and private but best suited to the “Learn the planner” how‑to mode. The planner auto‑detects each provider’s current models, so your list stays current without app updates.</p></div></details>
-
-        <h2 style="font-size:var(--fs-h3);margin:2.4rem 0 1rem;">Using the planner</h2>
-        <details><summary>Does it support countries other than the US?</summary><div><p>Yes. It models the US, UK, Canada and Australia — including local taxes, state pensions and healthcare — plus expatriate residency modes and six currencies (USD, GBP, CAD, AUD, PHP, THB).</p></div></details>
-        <details><summary>Can I share my plan with an adviser or partner?</summary><div><p>Yes. Export a multi‑page PDF to share a readable report, or a JSON file that someone can import into their own copy of the planner.</p></div></details>
-        <details><summary>Can I save and compare more than one plan?</summary><div><p>Yes. The planner keeps three named save slots so you can hold several versions — say a "retire at 62" plan beside a "retire at 65" one — and compare them side by side. Your work autosaves as you go, and undo/redo lets you experiment freely. For longer‑term archiving you can also export an unlimited number of JSON backups.</p></div></details>
-        <details><summary>What devices does it run on?</summary><div><p>Any modern desktop or laptop browser. It’s a data‑rich dashboard, so a larger screen gives the most comfortable experience; an adjustable text size and high‑contrast theme help with readability.</p></div></details>
-
-        <h2 style="font-size:var(--fs-h3);margin:2.4rem 0 1rem;">Important to understand</h2>
-        <details><summary>How current are the tax figures and guidance?</summary><div><p>Tax brackets, deductions and thresholds are inflation‑adjusted for each phase of your plan. You can refresh current‑year figures with the built‑in AI tax‑rate research prompt, and the in‑app help and educational content is AI fact‑checked and stamped with a "Last verified" date so you can see how recent it is. As always, confirm anything material with a qualified professional.</p></div></details>
-        <details><summary>Is this financial advice?</summary><div><p>No. It is an educational planning tool that helps you model scenarios and understand your options. It does not provide personalised investment, tax or legal advice. Every figure is an estimate based on the values you enter — always consult a qualified professional before making financial decisions.</p></div></details>
-        <details><summary>What’s your refund policy?</summary><div><p>If something isn’t working, <a href="contact.html">contact us</a> or email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we’ll put it right. Payments are processed by Stripe, and refunds — including any consumer‑law cooling‑off rights that apply where you live — are honoured through the same checkout.</p></div></details>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="section band">
     <div class="container narrow">
-      <div class="card center reveal" style="padding:clamp(1.8rem,4vw,2.8rem);">
-        <div class="icon-chip" style="margin-inline:auto;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div>
-        <h2 style="font-size:var(--fs-h3);">Still have a question?</h2>
-        <p class="muted" style="max-width:46ch;margin-inline:auto;">We’re happy to help before or after you buy. Reach out and you’ll hear back from a real person.</p>
-        <div class="cta-actions">
-          <a class="btn btn-primary btn-lg" href="contact.html">Contact us</a>
-          <a class="btn btn-ghost btn-lg" href="mailto:dev@webnomad.org">dev@webnomad.org</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section band-ink on-ink cta-band">
-    <div class="container">
-      <span class="eyebrow" style="justify-content:center;">No subscription. No account.</span>
-      <h2>Ready to plan with confidence?</h2>
-      <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="products.html">See products &amp; pricing</a>
-        <a class="btn btn-outline btn-lg" href="demo.html">Try the demo</a>
+      <div id="downloads" class="grid" style="gap:1rem;"></div>
+      <div class="card mt-3" id="thanksHelp" style="display:none;">
+        <h3 style="margin-top:0;">Keep your files safe</h3>
+        <ul style="margin:0;padding-left:1.2rem;">
+          <li><strong>Bookmark this page</strong> — your download links keep working, and only work for your completed purchase.</li>
+          <li>Stripe has emailed a receipt to the address you used at checkout.</li>
+          <li>Each download is a ZIP containing the planner file and its user guide. Unzip it, then open the <code>.html</code> file in your browser — everything runs locally and privately.</li>
+          <li>New to the planner? Start with the <a href="getting-started.html">Getting Started guide</a>.</li>
+          <li>Any trouble at all: <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> — include your receipt and we'll sort it quickly.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -220,8 +168,65 @@
 </footer>
 
 <script src="assets/js/main.js"></script>
-<!-- Vercel Web Analytics -->
-<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var sid = params.get('session_id') || '';
+  var lead = document.getElementById('thanksLead');
+  var title = document.getElementById('thanksTitle');
+  var eyebrow = document.getElementById('thanksEyebrow');
+  var list = document.getElementById('downloads');
+  var help = document.getElementById('thanksHelp');
+
+  function fail(msg) {
+    eyebrow.textContent = 'Something needs attention';
+    title.textContent = 'We could not load your downloads';
+    lead.innerHTML = msg + ' If you need help, email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> with your receipt.';
+  }
+
+  if (!sid) {
+    fail('This page needs the secure link you were sent to after checkout.');
+    return;
+  }
+
+  fetch('/api/download?session_id=' + encodeURIComponent(sid))
+    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+    .then(function (res) {
+      if (!res.ok || !res.body.paid) { fail(res.body && res.body.error ? res.body.error : 'Verification failed.'); return; }
+      lead.textContent = 'Your purchase is confirmed. Download your files below — they are yours to keep.';
+      res.body.products.forEach(function (p) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.style.display = 'flex';
+        card.style.justifyContent = 'space-between';
+        card.style.alignItems = 'center';
+        card.style.gap = '1rem';
+        card.style.flexWrap = 'wrap';
+        var name = document.createElement('div');
+        name.innerHTML = '<strong>' + p.name + '</strong><br><span class="muted" style="font-size:.9rem;">' + p.zip + '</span>';
+        var a = document.createElement('a');
+        a.className = 'btn btn-primary';
+        a.textContent = 'Download ZIP';
+        a.href = '/api/download?session_id=' + encodeURIComponent(sid) + '&zip=' + encodeURIComponent(p.zip);
+        card.appendChild(name);
+        card.appendChild(a);
+        list.appendChild(card);
+      });
+      help.style.display = '';
+      // Conversion events (fire only once per session id; consent mode gates delivery)
+      try {
+        var k = 'wn-purchase-' + sid.slice(-12);
+        if (!localStorage.getItem(k)) {
+          localStorage.setItem(k, '1');
+          var value = (res.body.amount_total || 0) / 100;
+          var currency = (res.body.currency || 'usd').toUpperCase();
+          if (typeof gtag === 'function') gtag('event', 'purchase', { transaction_id: sid, value: value, currency: currency });
+          if (typeof fbq === 'function') fbq('track', 'Purchase', { value: value, currency: currency });
+        }
+      } catch (e) { /* analytics must never break downloads */ }
+    })
+    .catch(function () { fail('We could not reach the verification service.'); });
+})();
+</script>
 </body>
 </html>

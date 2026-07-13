@@ -1,6 +1,6 @@
 # WebNomad Studio — Marketing Website
 
-A fast, fully static marketing site for the **AI Retirement Income Planner v7** and the **Roth Conversion Optimizer**, with buttons linking to the Etsy store (no shopping cart).
+A fast, fully static marketing site for the **AI Retirement Income Planner v7** and the **Roth Conversion Optimizer**, selling **directly via Stripe Managed Payments** (Stripe is merchant of record; payment-link buttons, no cart). The Etsy shop still exists but is no longer linked from the site.
 
 Built with hand-crafted HTML + CSS + a little vanilla JavaScript — **no build step, no framework, no server requirements.** It runs from any static host or even straight off disk.
 
@@ -26,7 +26,7 @@ Website/
 │   ├── css/styles.css         ← the whole design system
 │   ├── js/main.js             ← nav toggle, screenshot lightbox, footer year
 │   ├── img/
-│   │   ├── etsy/              ← Etsy listing graphics (1–11, companion)
+│   │   ├── etsy/              ← product listing graphics (1–11, companion; folder name is historical)
 │   │   ├── screens/          ← product screenshots
 │   │   ├── themes/           ← theme/appearance screenshots
 │   │   ├── logo-mark.svg, favicon.svg, og-cover.png
@@ -53,11 +53,12 @@ This folder is its own git repo, wired to **github.com/webnomadorg/AI-Retirement
 ## Before you go live — quick edits
 1. **Domain:** canonical + social tags across all seven `.html` files point to `https://airetirementincomeplanner.com`.
 2. **Prices / sales:** edit the `.price`, `.price-was`, `.price-save` spans in `index.html` and `products.html`, and the comparison table in `products.html`.
-3. **Etsy links:** product buttons point to —
-   - Planner v7: `https://www.etsy.com/listing/4509386063/...`
-   - Bundle (v7 + Roth): `https://www.etsy.com/listing/4503115757/...`
-   - Shop / earlier versions: `https://www.etsy.com/shop/webnomadstudio/`
-   Update these if listings change. (The standalone Roth Optimizer currently points to the shop — swap in its own listing URL when available.)
+3. **Stripe payment links** (created by `tools/stripe/create-catalog.mjs` in the desktop repo; canonical list in its `catalog-output.json`):
+   - Planner v7 $37.49: `https://buy.stripe.com/fZucN6f6u6LEef08V74Ja00`
+   - Bundle (v7 + Roth) $39.99: `https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01`
+   - Roth Optimizer $5.99: `https://buy.stripe.com/14AbJ25vU7PI9YKgnz4Ja02`
+   - v1 $4.99 / v2 $9.99 / v3 $12.99 / v4 $16.99 / v5 $19.99: `.../6oU8wQbUi2vo6My1sF4Ja03`, `.../00weVecYmee6b2Ob3f4Ja04`, `.../5kQcN69Mab1Ufj4gnz4Ja05`, `.../4gM6oIaQe8TM8UG0oB4Ja06`, `.../8x200kf6ugme7QCc7j4Ja07`
+   After payment, Stripe redirects to `thanks.html?session_id=…`, which lists downloads served by `api/download.mjs` (verifies the Checkout Session, then streams the ZIP from the **private** Vercel Blob store — product files are never in this repo, which is public).
 4. **Contact email:** `dev@webnomad.com` (search to change).
 5. **Social share image:** `assets/img/og-cover.png` (1200×630-ish). Replace to taste.
 
@@ -69,8 +70,11 @@ Two helper scripts live in `Source Files/_gen/` (they need Python + Pillow; not 
 Run from the `Website/` folder, e.g. `python "Source Files/_gen/make_images.py"`.
 
 ## Forms & email (serverless)
-Two Vercel serverless functions in `api/` power the forms (they only run on Vercel, not the
+Three Vercel serverless functions in `api/` (they only run on Vercel, not the
 local static preview):
+- **`api/download.mjs`** — purchase delivery: verifies a Stripe Checkout Session
+  (`STRIPE_VERIFY_KEY`, a restricted read-only key) and streams the product ZIP from the
+  private Vercel Blob store (Blob auth is automatic via OIDC). Used by `thanks.html`.
 - **`api/contact.js`** — the contact form; emails `dev@webnomad.org` + a confirmation to the
   sender via **Resend** (`RESEND_API_KEY`).
 - **`api/newsletter.js`** — the free-eBook signup. Currently runs in **MailerLite mode**: adds
@@ -80,7 +84,7 @@ local static preview):
   complete source versions archived) live in [`NEWSLETTER-SETUP.md`](NEWSLETTER-SETUP.md).**
 
 Env vars (Vercel → Project → Settings → Environment Variables): `RESEND_API_KEY`,
-`MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`. None are committed to the repo.
+`MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `STRIPE_VERIFY_KEY`. None are committed to the repo.
 
 ## Interactive pieces
 - **Theme gallery** (Features page) — tabbed switcher across the 5 themes with a Light/Dark toggle; images preload with a sequence guard so the picture and caption never disagree.

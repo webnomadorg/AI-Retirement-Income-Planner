@@ -180,8 +180,6 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .btn svg{ width:1.05em; height:1.05em; }
 .btn-primary{ background:var(--teal); color:#fff; box-shadow:0 6px 18px -8px rgba(30,122,110,.7); }
 .btn-primary:hover{ background:var(--teal-deep); color:#fff; box-shadow:0 10px 24px -8px rgba(30,122,110,.75); }
-.btn-etsy{ background:#F1641E; color:#fff; box-shadow:0 6px 18px -8px rgba(241,100,30,.7); }
-.btn-etsy:hover{ background:#d8540f; color:#fff; }
 .btn-outline{ background:transparent; color:var(--ink); border-color:var(--ink); }
 .btn-outline:hover{ background:var(--ink); color:#fff; }
 .btn-ghost{ background:var(--surface); color:var(--ink-2); border-color:var(--line); box-shadow:var(--shadow-sm); }
@@ -461,11 +459,11 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .btn, .card.hoverable, .product-card{ transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
 
 /* Premium sheen sweep on solid CTAs (hover-triggered, not perpetual) */
-.btn-primary, .btn-etsy{ position:relative; overflow:hidden; isolation:isolate; }
-.btn-primary::after, .btn-etsy::after{ content:""; position:absolute; top:0; left:-130%; width:55%; height:100%;
+.btn-primary{ position:relative; overflow:hidden; isolation:isolate; }
+.btn-primary::after{ content:""; position:absolute; top:0; left:-130%; width:55%; height:100%;
   background:linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent);
   transform:skewX(-18deg); transition:left .6s cubic-bezier(.4,0,.2,1); z-index:-1; pointer-events:none; }
-.btn-primary:hover::after, .btn-etsy:hover::after{ left:150%; }
+.btn-primary:hover::after{ left:150%; }
 
 /* Featured product card: soft ambient glow */
 .product-card.featured{ box-shadow:var(--shadow-lg), 0 0 0 1px rgba(30,122,110,.18); }

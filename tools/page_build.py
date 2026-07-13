@@ -31,7 +31,7 @@ PAGES = {
     "features.html": "FEATURES",
     "how-it-works.html": "HOW",
     "getting-started.html": "START",
-    "technical.html": "TECHNICAL",
+    "technical.html": "",
     "faq.html": "FAQ",
     "contact.html": "",
     "affiliates.html": "",
@@ -39,9 +39,10 @@ PAGES = {
     "newsletter.html": "",
     "demo.html": "",
     "about.html": "",
+    "thanks.html": "",
 }
 
-NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "BLOG", "TECHNICAL", "FAQ"]
+NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "BLOG", "FAQ"]
 
 HEADER_RE = re.compile(r'<header class="site-header">.*?</header>', re.S)
 FOOTER_RE = re.compile(r'<footer class="site-footer">.*?</footer>', re.S)

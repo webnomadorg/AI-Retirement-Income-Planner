@@ -1,0 +1,8 @@
+{
+  "name": "ai-retirement-income-planner-site",
+  "private": true,
+  "description": "Static marketing site + serverless purchase-delivery function (see /api/download.mjs)",
+  "dependencies": {
+    "@vercel/blob": "^2.3.0"
+  }
+}
