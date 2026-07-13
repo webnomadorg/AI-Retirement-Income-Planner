@@ -75,6 +75,10 @@ local static preview):
 - **`api/download.mjs`** — purchase delivery: verifies a Stripe Checkout Session
   (`STRIPE_VERIFY_KEY`, a restricted read-only key) and streams the product ZIP from the
   private Vercel Blob store (Blob auth is automatic via OIDC). Used by `thanks.html`.
+  ⚠ Keep the classic Node `(req, res)` handler signature — the web-standard
+  `handler(request)` form crashes this project's runtime. The product ZIPs and the Stripe
+  catalog are maintained by tooling in a separate private repo; product files are never
+  committed here (this repo is public).
 - **`api/contact.js`** — the contact form; emails `dev@webnomad.org` + a confirmation to the
   sender via **Resend** (`RESEND_API_KEY`).
 - **`api/newsletter.js`** — the free-eBook signup. Currently runs in **MailerLite mode**: adds
