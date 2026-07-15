@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from fork-v195.html on 2026-07-13. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from demo-fork-v196.html on 2026-07-15. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -2719,6 +2719,21 @@ html[data-theme="contrast"] .irow select:focus{
       <rect y="10.66" width="24" height="2.67" fill="#fff"/>
       <rect y="13.33" width="24" height="2.67" fill="#A51931"/>
     </symbol>
+    <symbol id="flag-eu" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#003399"/>
+      <circle cx="12" cy="3.2" r="0.85" fill="#FFCC00"/>
+      <circle cx="14.4" cy="3.84" r="0.85" fill="#FFCC00"/>
+      <circle cx="16.16" cy="5.6" r="0.85" fill="#FFCC00"/>
+      <circle cx="16.8" cy="8" r="0.85" fill="#FFCC00"/>
+      <circle cx="16.16" cy="10.4" r="0.85" fill="#FFCC00"/>
+      <circle cx="14.4" cy="12.16" r="0.85" fill="#FFCC00"/>
+      <circle cx="12" cy="12.8" r="0.85" fill="#FFCC00"/>
+      <circle cx="9.6" cy="12.16" r="0.85" fill="#FFCC00"/>
+      <circle cx="7.84" cy="10.4" r="0.85" fill="#FFCC00"/>
+      <circle cx="7.2" cy="8" r="0.85" fill="#FFCC00"/>
+      <circle cx="7.84" cy="5.6" r="0.85" fill="#FFCC00"/>
+      <circle cx="9.6" cy="3.84" r="0.85" fill="#FFCC00"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -2835,6 +2850,7 @@ html[data-theme="contrast"] .irow select:focus{
     <button class="cur-btn" data-cur="AUD" onclick="setCurrency('AUD')"><svg class="flag-icon"><use href="#flag-au"/></svg> AUD</button>
     <button class="cur-btn" data-cur="PHP" onclick="setCurrency('PHP')"><svg class="flag-icon"><use href="#flag-ph"/></svg> PHP</button>
     <button class="cur-btn" data-cur="THB" onclick="setCurrency('THB')"><svg class="flag-icon"><use href="#flag-th"/></svg> THB</button>
+    <button class="cur-btn" data-cur="EUR" onclick="setCurrency('EUR')"><svg class="flag-icon"><use href="#flag-eu"/></svg> EUR</button>
     <button class="fx-calc-btn" id="fx-calc-btn" onclick="openConverter()" title="Currency converter" aria-label="Open currency converter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="16" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg></button>
     <button class="fx-override-btn" id="fx-override-btn" onclick="showCustomRates()" style="display:none" title="Set your own rates for scenario modelling">Override rates</button>
     <!-- v6 (Layout B): view-controls (text-size + dark) moved here from the deleted .toolbar -->
@@ -2890,6 +2906,7 @@ html[data-theme="contrast"] .irow select:focus{
         <div class="irow" style="margin:0;"><label><svg class="flag-icon"><use href="#flag-au"/></svg> 1 USD = ? AUD</label><input id="rate-AUD" type="number" step="any" placeholder="e.g. 1.5500"/></div>
         <div class="irow" style="margin:0;"><label><svg class="flag-icon"><use href="#flag-ph"/></svg> 1 USD = ? PHP</label><input id="rate-PHP" type="number" step="any" placeholder="e.g. 56.50"/></div>
         <div class="irow" style="margin:0;"><label><svg class="flag-icon"><use href="#flag-th"/></svg> 1 USD = ? THB</label><input id="rate-THB" type="number" step="any" placeholder="e.g. 33.50"/></div>
+        <div class="irow" style="margin:0;"><label><svg class="flag-icon"><use href="#flag-eu"/></svg> 1 USD = ? EUR</label><input id="rate-EUR" type="number" step="any" placeholder="e.g. 0.9200"/></div>
       </div>
     </div>
   </div>
@@ -3797,7 +3814,7 @@ html[data-theme="contrast"] .irow select:focus{
             <p id="tg-brackets"><strong>Tax brackets:</strong> Fully configurable base-year values. 10% up to your configured ceiling · 12% to your ceiling · 22% to your ceiling · 24% above. All bracket boundaries, deductions, and FPL thresholds are automatically inflated forward to each phase's midpoint using your general inflation rate, approximating annual IRS/HHS adjustments. The inflated values are shown on each phase card.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=h_uoF0G6KvI','_blank','noopener');" title="Watch the 12% bracket explainer">&#x25B6; 12% bracket &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=rH6en3nLYSA','_blank','noopener');" title="Watch the Taxable vs gross income explainer">&#x25B6; Taxable income &middot; 90 sec</button></span></p>
             <p id="tg-irmaa"><strong>IRMAA:</strong> If MAGI exceeds the IRMAA threshold (configurable in Edit tab), a warning is shown on the phase card. The threshold is inflation-adjusted per phase like other tax parameters.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=37DmoK5Qctc','_blank','noopener');" title="Watch the IRMAA explainer">&#x25B6; IRMAA &middot; 3 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=zvfzCqmcTuE','_blank','noopener');" title="Watch the MAGI explainer">&#x25B6; MAGI &middot; 3 min</button></span></p>
             <p id="tg-aca"><strong>ACA &amp; FPL:</strong> Prior-year FPL values are used for ACA eligibility, consistent with marketplace guidelines. FPL thresholds are inflation-adjusted forward in calculations.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=BO2K4lYp5JY','_blank','noopener');" title="Watch the ACA 400% FPL cliff explainer">&#x25B6; ACA cliff &middot; 3 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=DZHeRgc7j8A','_blank','noopener');" title="Watch the ACA 100% FPL floor explainer">&#x25B6; ACA floor &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=iqkf062QstQ','_blank','noopener');" title="Watch the FPL explainer">&#x25B6; FPL &middot; 90 sec</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=sJMUnkn_7FE','_blank','noopener');" title="Watch the ACA premium subsidy structure explainer">&#x25B6; ACA subsidy &middot; 2 min</button></span></p>
-            <p id="tg-foreign"><strong>Foreign residence mode:</strong> When a non-USD currency is selected (GBP, PHP, THB), ACA premiums, Medicare Part B/D, ACA subsidy/CSR eligibility, and IRMAA checks are excluded from calculations and shown as N/A on the dashboard. This reflects a scenario where the retiree is living outside the United States.</p>
+            <p id="tg-foreign"><strong>Foreign residence mode:</strong> When a non-USD currency is selected (GBP, PHP, THB, EUR), ACA premiums, Medicare Part B/D, ACA subsidy/CSR eligibility, and IRMAA checks are excluded from calculations and shown as N/A on the dashboard. This reflects a scenario where the retiree is living outside the United States.</p>
             <p id="tg-uk"><strong>UK residence mode (GBP only):</strong> When GBP is selected and UK Residence is active, UK income tax is calculated on 401k withdrawals + UK State Pension + equity gains + part-time income. <span data-fact-key="us_uk_treaty">US Social Security is NOT taxed in the UK under the US-UK treaty (Article 17 — taxed only in the US).</span> US federal tax is reduced by a Foreign Tax Credit equal to the UK tax paid (capped at US tax liability), preventing double taxation. The effective tax paid is the higher of the two countries' tax on the overlapping income. UK tax brackets (personal allowance, basic/higher/additional rates) are configurable in the Edit tab and inflation-adjusted per phase.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=r4LF6gegC6A','_blank','noopener');" title="Watch the Foreign Tax Credit explainer">&#x25B6; FTC &middot; 3 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=N0Q3lAR6Y5Y','_blank','noopener');" title="Watch the US-UK Treaty: Social Security explainer">&#x25B6; US-UK Treaty (SS) &middot; 90 sec</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=V3HN24H_xH8','_blank','noopener');" title="Watch the UK personal allowance &amp; bands explainer">&#x25B6; UK allowance &amp; bands &middot; 2 min</button></span></p>
             <p id="tg-ssprov"><strong>SS provisional income:</strong> Other income + part-time income + 50% of SS. <span data-fact-key="ss_provisional">Under $25k → 0% taxable. $25–34k → 50%. Above $34k → 85%.</span><span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=VZ49x24FpvQ','_blank','noopener');" title="Watch the SS Provisional Income explainer">&#x25B6; SS Provisional &middot; 2 min</button></span></p>
             <p id="tg-equity"><strong>Equities:</strong> Equity withdrawals are treated as post-tax capital returns (not included in ordinary income tax). They are included in MAGI for ACA calculations. The equity balance compounds at your specified annual rate of return.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=QaE6yEg4bks','_blank','noopener');" title="Watch the Pre-plan equity gain explainer">&#x25B6; Equity gain &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=jruRa7C1kgQ','_blank','noopener');" title="Watch the Long-term capital gains explainer">&#x25B6; LTCG &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=j_s8xd5OfgE','_blank','noopener');" title="Watch the Qualified dividends explainer">&#x25B6; Qualified dividends &middot; 90 sec</button></span></p>
@@ -4259,7 +4276,7 @@ html[data-theme="contrast"] .irow select:focus{
       <!-- ─── CURRENCIES ──────────────────────────────────────── -->
       <div class="help-pane" id="hp-currencies">
         <div class="help-h2">Selecting a currency</div>
-        <p class="help-p">The six buttons at the top of the page — <strong>USD, GBP, CAD, AUD, PHP, THB</strong> — set the active currency for the scenario. This controls which tax model applies (US, UK, Canadian, or Australian) and whether ACA and Medicare are included. Live exchange rates are fetched automatically on load; if that fails, a manual entry form appears so you can type them in.</p>
+        <p class="help-p">The seven buttons at the top of the page — <strong>USD, GBP, CAD, AUD, PHP, THB, EUR</strong> — set the active currency for the scenario. This controls which tax model applies (US, UK, Canadian, or Australian) and whether ACA and Medicare are included. Live exchange rates are fetched automatically on load; if that fails, a manual entry form appears so you can type them in.</p>
 
         <div class="help-h2">Display currency toggle</div>
         <p class="help-p">When a non-USD currency is selected, a pair of toggle buttons appears beside the phase grid heading — for example <strong>USD</strong> and <strong>GBP</strong>. These switch what is <em>displayed</em> on screen without altering any underlying values (all calculations always run in USD internally). Use this to quickly check how your income looks in local currency versus US dollars.</p>
@@ -4273,8 +4290,8 @@ html[data-theme="contrast"] .irow select:focus{
         <p class="help-p"><strong>USA Resident</strong> — You hold GBP-denominated assets or want to model a GBP budget, but remain a US tax resident. Only US federal tax calculations run; no UK tax is applied.</p>
         <p class="help-p"><strong>UK Resident</strong> — You live in the UK. UK income tax is calculated on 401k withdrawals, UK State Pension, equity gains, and part-time income. US Social Security is <em>not</em> taxed in the UK under the US–UK treaty (Article 17 — taxable only in the US). A Foreign Tax Credit equal to UK tax paid (capped at US tax liability) offsets your US federal bill, preventing double taxation. In practice you pay the higher of the two countries' tax on overlapping income, not both in full.</p>
 
-        <div class="help-h2">PHP &amp; THB — foreign residence mode</div>
-        <p class="help-p">Selecting PHP (Philippines) or THB (Thailand) activates foreign residence mode. As with GBP, ACA, Medicare, IRMAA, and related US healthcare calculations are excluded. No local country tax is applied — the model is designed to project a USD-based income against a lower cost-of-living context, with display conversion into the local currency for reference. Because US healthcare is excluded, an <strong>Overseas healthcare cost /mo</strong> field appears in the Income streams card (Edit tab) so you can model private/international insurance and out-of-pocket costs — it grows each phase at your healthcare-inflation rate. Leave it at 0 if your healthcare is fully covered.</p>
+        <div class="help-h2">PHP, THB &amp; EUR — foreign residence mode</div>
+        <p class="help-p">Selecting PHP (Philippines), THB (Thailand), or EUR (Eurozone) activates foreign residence mode. The euro is used across many countries with very different tax systems, so — like PHP and THB — no local country tax model is applied. As with GBP, ACA, Medicare, IRMAA, and related US healthcare calculations are excluded. No local country tax is applied — the model is designed to project a USD-based income against a lower cost-of-living context, with display conversion into the local currency for reference. Because US healthcare is excluded, an <strong>Overseas healthcare cost /mo</strong> field appears in the Income streams card (Edit tab) so you can model private/international insurance and out-of-pocket costs — it grows each phase at your healthcare-inflation rate. Leave it at 0 if your healthcare is fully covered.</p>
       </div>
 
       <!-- ─── FEATURES ────────────────────────────────────────── -->
@@ -4461,7 +4478,7 @@ html[data-theme="contrast"] .irow select:focus{
         <p class="help-p">The AI Chat adapts fully to your active currency and residency setting:</p>
         <p class="help-p"><strong>USD (US resident):</strong> Full ACA, IRMAA, bracket, and RMD analysis. The AI sizes proposals to respect ACA subsidy cliffs and Medicare surcharge thresholds.</p>
         <p class="help-p"><strong>GBP + UK Tax Resident:</strong> The AI understands the dual-tax system — UK income tax applies to 401k, UK pension, equity gains, and part-time income; US Social Security is exempt under treaty Article 17 and taxed only in the US; the Foreign Tax Credit offsets UK tax against US liability. UK-specific health checks (ACA, IRMAA, RMD) are correctly marked N/A and excluded from analysis. Proposals respect both UK rate band ceilings and US bracket thresholds simultaneously.</p>
-        <p class="help-p"><strong>PHP / THB (foreign resident):</strong> ACA, Medicare, and IRMAA are excluded from the analysis. The AI focuses on US federal tax bracket efficiency for withdrawals from US-based accounts.</p>
+        <p class="help-p"><strong>PHP / THB / EUR (foreign resident):</strong> ACA, Medicare, and IRMAA are excluded from the analysis. The AI focuses on US federal tax bracket efficiency for withdrawals from US-based accounts.</p>
 
         <div class="help-h2">Plan change detection</div>
         <p class="help-p">If you edit any value on the dashboard or in Edit values between messages, the AI is automatically notified. A system note appears in the chat and the AI is instructed to treat the latest plan snapshot as authoritative and disregard any specific dollar amounts quoted in earlier messages. Conversation history is trimmed to the most recent exchanges to reduce stale-data confusion.</p>
@@ -4570,7 +4587,7 @@ html[data-theme="contrast"] .irow select:focus{
 
       <!-- ─── CURRENCY CONVERTER ──────────────────────────────────── -->
       <div class="help-pane" id="hp-converter">
-        <div class="help-tip">Convert between any of the six supported currencies. It uses the same exchange rates the planner is currently using — switch to live or custom rates from the <strong>currency bar</strong> at the top of the dashboard.</div>
+        <div class="help-tip">Convert between any of the seven supported currencies. It uses the same exchange rates the planner is currently using — switch to live or custom rates from the <strong>currency bar</strong> at the top of the dashboard.</div>
 
         <div class="fxc-card">
           <div class="fxc-row">
@@ -5002,7 +5019,7 @@ html[data-theme="contrast"] .irow select:focus{
           <div class="wiz-feat-icon">&#x1F30D;</div>
           <div>
             <div class="wiz-feat-title">Multi-currency, multi-residence</div>
-            <div class="wiz-feat-text">USD, GBP (with UK Tax Resident treaty model), CAD with CPP/OAS, AUD with Super, PHP/THB foreign-resident modes. Custom phase boundaries for any retirement age. MFJ filing, spouse Social Security, Roth IRA &amp; conversions, RMD tracking, and a SS claiming-age optimizer.</div>
+            <div class="wiz-feat-text">USD, GBP (with UK Tax Resident treaty model), CAD with CPP/OAS, AUD with Super, PHP/THB/EUR foreign-resident modes. Custom phase boundaries for any retirement age. MFJ filing, spouse Social Security, Roth IRA &amp; conversions, RMD tracking, and a SS claiming-age optimizer.</div>
           </div>
         </div>
 
@@ -5012,7 +5029,7 @@ html[data-theme="contrast"] .irow select:focus{
       <!-- ─── STEP 2: Your Numbers ─────────────────────────────── -->
       <div class="wiz-step" id="wstep-2">
         <div class="wiz-h2">Your starting numbers</div>
-        <p class="wiz-sub">Enter your current savings balances and retirement age. All values in USD — use the currency buttons to display in GBP, PHP, or THB later.</p>
+        <p class="wiz-sub">Enter your current savings balances and retirement age. All values in USD — use the currency buttons to display in GBP, EUR, PHP, or THB later.</p>
 
         <div class="wiz-field">
           <label>Retirement start age</label>
@@ -5607,7 +5624,7 @@ const FROZEN_MAXSPEND={"us":{"solvent":{"gate":"solvent","passAt1":true,"capped"
  * @property {number} birthYear   0 ⇒ estimate FRA from age
  * @property {'single'|'mfj'} filingStatus
  * @property {boolean} ukResident       GBP + UK toggle: UK tax + Foreign Tax Credit
- * @property {boolean} foreignResident  PHP/THB expat: disables US healthcare
+ * @property {boolean} foreignResident  PHP/THB/EUR expat: disables US healthcare
  * @property {boolean} subjectToUsTax   false ⇒ US fed tax / IRMAA / ACA / SS-provisional all zero
  * @property {number} ssStartAge        SS claiming age 62–70
  * @property {number} uss               primary SS /mo at base age
@@ -5922,7 +5939,7 @@ function calcSurvivorPhases(){
 // ═══════════════════════════════════════════════════════════════
 // 3. CURRENCY
 // ═══════════════════════════════════════════════════════════════
-const CURRENCIES={USD:{symbol:'$',code:'USD',rate:1},GBP:{symbol:'£',code:'GBP',rate:0.79},CAD:{symbol:'C$',code:'CAD',rate:1.38},AUD:{symbol:'A$',code:'AUD',rate:1.55},PHP:{symbol:'₱',code:'PHP',rate:56.5},THB:{symbol:'฿',code:'THB',rate:33.5}};
+const CURRENCIES={USD:{symbol:'$',code:'USD',rate:1},GBP:{symbol:'£',code:'GBP',rate:0.79},CAD:{symbol:'C$',code:'CAD',rate:1.38},AUD:{symbol:'A$',code:'AUD',rate:1.55},PHP:{symbol:'₱',code:'PHP',rate:56.5},THB:{symbol:'฿',code:'THB',rate:33.5},EUR:{symbol:'€',code:'EUR',rate:0.92}};
 let activeCurrency='USD',displayCurrency='USD',ratesLive=false,ratesCustom=false;
 function toDisplay(v){return v*CURRENCIES[displayCurrency].rate;}
 function toUSD(v){return v/CURRENCIES[displayCurrency].rate;}
@@ -6820,7 +6837,7 @@ function _renderPdfReport(ai){
   const isUkResPdf=!!S.ukResident;
   const isCadResPdf=_curPdf==='CAD'&&S.cadResident!==false;
   const isAusResPdf=_curPdf==='AUD'&&S.ausResident!==false;
-  const isForeignPdf=(_curPdf==='PHP'||_curPdf==='THB')||(!!S.foreignResident&&!isUkResPdf);
+  const isForeignPdf=(_curPdf==='PHP'||_curPdf==='THB'||_curPdf==='EUR')||(!!S.foreignResident&&!isUkResPdf);
   const isMFJpdf=S.filingStatus==='mfj';
   const usFedPdf=S.subjectToUsTax!==false&&!isCadResPdf&&!isAusResPdf;       // US federal brackets relevant
   const usHealthPdf=usFedPdf&&!isUkResPdf&&!isForeignPdf;                     // ACA/Medicare/IRMAA/NIIT relevant
@@ -7475,7 +7492,7 @@ async function fetchRates(){
   if(el){el.textContent='Fetching live rates…';el.className='fx-status loading';}
   await new Promise(r=>setTimeout(r,700));
   CURRENCIES.GBP.rate=0.79;CURRENCIES.CAD.rate=1.37;CURRENCIES.AUD.rate=1.52;
-  CURRENCIES.PHP.rate=57.10;CURRENCIES.THB.rate=34.90;
+  CURRENCIES.PHP.rate=57.10;CURRENCIES.THB.rate=34.90;CURRENCIES.EUR.rate=0.92;
   ratesLive=true;ratesCustom=false;
   if(el){el.textContent='Live rates ✓';el.className='fx-status live';}
   const mr=document.getElementById('manual-rates');if(mr)mr.style.display='none';
@@ -7484,7 +7501,7 @@ async function fetchRates(){
   render();
 }
 function showCustomRates(){
-  const rateMap={'rate-GBP':CURRENCIES.GBP,'rate-CAD':CURRENCIES.CAD,'rate-AUD':CURRENCIES.AUD,'rate-PHP':CURRENCIES.PHP,'rate-THB':CURRENCIES.THB};
+  const rateMap={'rate-GBP':CURRENCIES.GBP,'rate-CAD':CURRENCIES.CAD,'rate-AUD':CURRENCIES.AUD,'rate-PHP':CURRENCIES.PHP,'rate-THB':CURRENCIES.THB,'rate-EUR':CURRENCIES.EUR};
   Object.entries(rateMap).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1].rate.toFixed(4);});
   const mr=document.getElementById('manual-rates');if(mr)mr.style.display='block';
   const liveBtn=document.getElementById('rates-live-btn');if(liveBtn)liveBtn.style.display='none';
@@ -7502,15 +7519,15 @@ function closeCustomRates(){
 let rateDebounce=null;
 function onRateChange(){
   const g=id=>{const el=document.getElementById(id);return el?parseFloat(el.value)||0:0;};
-  const gbp=g('rate-GBP'),cad=g('rate-CAD'),aud=g('rate-AUD'),php=g('rate-PHP'),thb=g('rate-THB');
+  const gbp=g('rate-GBP'),cad=g('rate-CAD'),aud=g('rate-AUD'),php=g('rate-PHP'),thb=g('rate-THB'),eur=g('rate-EUR');
   if(gbp>0)CURRENCIES.GBP.rate=gbp;if(cad>0)CURRENCIES.CAD.rate=cad;if(aud>0)CURRENCIES.AUD.rate=aud;
-  if(php>0)CURRENCIES.PHP.rate=php;if(thb>0)CURRENCIES.THB.rate=thb;
+  if(php>0)CURRENCIES.PHP.rate=php;if(thb>0)CURRENCIES.THB.rate=thb;if(eur>0)CURRENCIES.EUR.rate=eur;
   clearTimeout(rateDebounce);rateDebounce=setTimeout(()=>render(),500);
 }
 // ── Currency converter (Help → 💱 Converter tab) ────────────────────────────
 // Self-contained utility. Reads the live CURRENCIES rates (live/custom/default);
 // never touches plan state or the calc engine.
-const FX_LIST=[['USD','US Dollar','flag-us'],['GBP','British Pound','flag-gb'],['CAD','Canadian Dollar','flag-ca'],['AUD','Australian Dollar','flag-au'],['PHP','Philippine Peso','flag-ph'],['THB','Thai Baht','flag-th']];
+const FX_LIST=[['USD','US Dollar','flag-us'],['GBP','British Pound','flag-gb'],['CAD','Canadian Dollar','flag-ca'],['AUD','Australian Dollar','flag-au'],['PHP','Philippine Peso','flag-ph'],['THB','Thai Baht','flag-th'],['EUR','Euro','flag-eu']];
 let fxcFrom='USD',fxcTo='GBP',fxcReady=false;
 function fxConvert(amt,from,to){const rf=(CURRENCIES[from]||{}).rate||1,rt=(CURRENCIES[to]||{}).rate||1;return amt/rf*rt;}
 function fxFmt(v,code){const sym=(CURRENCIES[code]||{}).symbol||'';return sym+Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -7658,11 +7675,11 @@ function setCurrency(code){
     S.foreignResident=false;
     S.ukResident=false;
   } else if(code==='AUD'){
-    // AUD: same model as CAD — residency drives behavior, foreignResident is for PHP/THB only.
+    // AUD: same model as CAD — residency drives behavior, foreignResident is for PHP/THB/EUR only.
     S.foreignResident=false;
     S.ukResident=false;
   } else {
-    // PHP/THB: true foreign residence (no UI residency toggle)
+    // PHP/THB/EUR: true foreign residence (no UI residency toggle)
     S.foreignResident=(code!=='USD');
     S.ukResident=false;
   }
@@ -9805,7 +9822,7 @@ function scrollToReplanPanel(){
 }
 function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps));if(name==='scenarios')renderScenarios();if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(()=>{const grid=document.getElementById('phases-grid');const wrapper=document.getElementById('phases-scroll-wrapper');if(grid&&grid.classList.contains('phases-7')&&wrapper){const ww=wrapper.offsetWidth;if(ww>0){const colW=Math.floor((ww-5*8)/6);grid.style.gridTemplateColumns=`repeat(7,${colW}px)`;}}});} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
 function setupLumpDelegation(){const ct=document.getElementById('lump-list');ct.addEventListener('input',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-amt'))updateLumpField(id,'amount',el.value);else if(el.classList.contains('lump-label'))updateLumpField(id,'label',el.value);});ct.addEventListener('change',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-phase'))updateLumpField(id,'phase',el.value);else if(el.classList.contains('lump-dir'))updateLumpField(id,'dir',el.value);});ct.addEventListener('click',e=>{const btn=e.target.closest('.lump-del');if(btn){const id=parseInt(btn.dataset.id);if(id)removeLump(id);}});}
-function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
+function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB','rate-EUR'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
 window.addEventListener('load',()=>{reflowTabs();setTimeout(reflowTabs,200);});
 window.addEventListener('resize',()=>requestAnimationFrame(reflowTabs));
 
@@ -13682,7 +13699,7 @@ initLearnCardVisibility(); // v7: restore Concepts-to-learn show/hide preference
 initConfTeaserVisibility(); // restore Plan-confidence teaser show/hide preference
 const didLoad=autoLoad();
 if(didLoad){document.querySelectorAll('.cur-btn').forEach(b=>b.classList.toggle('active',b.dataset.cur===activeCurrency));syncP5EndUI();}
-S.foreignResident=S.ukResident?false:(activeCurrency==='PHP'||activeCurrency==='THB');
+S.foreignResident=S.ukResident?false:(activeCurrency==='PHP'||activeCurrency==='THB'||activeCurrency==='EUR');
 // v5: on load, sync ssBaseAge to ssStartAge so entered amount means "benefit at claiming age" (unless replanned)
 if(!(S.currentAge&&S.currentAge>=(S.ssStartAge||62)))S.ssBaseAge=S.ssStartAge||62;
 syncSplitState();updateEditLabels();populateInputsFromUSD();renderLumpList();setupLumpDelegation();setupRateListeners();updatePhaseCardVisibility();updateChangedIndicators();render();setupInlineEditing();updateCurrencyToggle();fetchRates();
@@ -15939,7 +15956,7 @@ A single-file retirement income planning dashboard. It runs a month-by-month sim
 - Healthcare: ACA premiums, the 400% FPL subsidy cliff and 250% FPL Silver CSR band, Medicare Part B/D and IRMAA surcharges; expat/overseas healthcare for foreign residents.
 - RMDs from age 73, inflation (general + optional separate healthcare inflation), lump sums (windfalls and one-off expenses), and an annuity calculator.
 - Analysis: Confidence score & Plan Health checks, What-if explorer, Stress test, Monte-Carlo & historical backtest, SS Optimizer, Drawdown strategies, Scenarios, Replan (fast-forward to current age), and a printable PDF Report.
-- Multi-currency/residency: USD, GBP (UK resident), CAD, AUD, PHP, THB.
+- Multi-currency/residency: USD, GBP (UK resident), CAD, AUD, PHP, THB, EUR. PHP/THB/EUR are foreign-resident display currencies (US federal tax only, no US healthcare, no local tax model).
 
 # WHERE THINGS ARE (UI map)
 - Set every number on the **Edit values** tab (starting balances, growth rates, income streams, per-phase withdrawals, tax parameters, phase age boundaries, RMD, survivor, goals).
@@ -16266,7 +16283,7 @@ function buildHealthSnapshot(){
       out+=`  FTC: Foreign Tax Credit offsets UK tax against US liability (capped at US tax). Net = income − US tax after FTC − UK tax − healthcare.\n`;
     }
 
-    // ── Foreign-resident phases (PHP/THB — non-UK) ─────────────
+    // ── Foreign-resident phases (PHP/THB/EUR — non-UK) ─────────
     const foreignPhases=phs.filter(p=>p.foreign&&!p.isUkRes);
     if(foreignPhases.length){
       out+=`\nUS federal tax thresholds per foreign-resident phase (ACA/IRMAA not applicable):\n`;
@@ -17251,7 +17268,7 @@ function calcAnnuity(){
     return;
   }
   const maxAge=100;
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtK=v=>{const a=Math.abs(v);return a>=1e6?curr+(a/1e6).toFixed(1)+'M':a>=1000?curr+Math.round(a/1000)+'k':curr+Math.round(a);};
   const fmtM=v=>curr+Math.round(v).toLocaleString();
 
@@ -17372,7 +17389,7 @@ function _renderAnnuityAddToPlan(premium,buyAge,startAge,monthlyBase,cola){
   const addEl=document.getElementById('ann-add-to-plan');
   if(!addEl)return;
   addEl.style.display='';
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtM=v=>curr+Math.round(v).toLocaleString();
 
   // ── Already in plan — show Remove / Try Again UI ──────────────
@@ -17549,7 +17566,7 @@ function setAnnFundingMode(mode){
 // _renderAnnuityAddToPlan render AND from _annUpdateSplitDependents for targeted
 // updates that don't touch the input fields (so focus is never lost).
 function _annRenderSplitTotal(premium){
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtM=v=>curr+Math.round(v).toLocaleString();
   const lumpTotal=Object.values(_annSplit.lumps||{}).reduce((a,v)=>a+(v||0),0);
   const total=(_annSplit.balCash||0)+(_annSplit.bal401k||0)+(_annSplit.balEquity||0)+(_annSplit.balRoth||0)+lumpTotal;
@@ -17565,7 +17582,7 @@ function _annRenderSplitTotal(premium){
   return `<div class="ann-funding-total"><span class="ann-funding-total-label">Allocated: <strong>${fmtM(total)}</strong> of ${fmtM(premium)} premium</span><span class="ann-funding-total-value ${cls}">${msg}</span></div>`;
 }
 function _annRenderSplitTaxNote(){
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtM=v=>curr+Math.round(v).toLocaleString();
   if(!(_annSplit.bal401k>0||_annSplit.balEquity>0))return '';
   return `<div class="ann-funding-tax-note">
@@ -17575,7 +17592,7 @@ function _annRenderSplitTaxNote(){
   </div>`;
 }
 function _annRenderSplitDeductions(){
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtM=v=>curr+Math.round(v).toLocaleString();
   const rows=[];
   if(_annSplit.balCash>0)rows.push(`<div style="color:var(--red-text);">&#x2212; ${fmtM(_annSplit.balCash)} from cash</div>`);
@@ -17609,7 +17626,7 @@ function _annUpdateSplitDependents(field){
     const meta=document.querySelector(`[data-ann-meta="${field}"]`);
     if(meta){
       const avail=parseFloat(meta.getAttribute('data-ann-avail'))||0;
-      const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+      const curr=CURRENCIES[displayCurrency].symbol;
       const fmtM=v=>curr+Math.round(v).toLocaleString();
       let cur=0;
       if(field.startsWith('lump:')){
@@ -17784,7 +17801,7 @@ function _doAnnAdd({premiumDisplay,buyAge,startAge,monthlyBase,cola,fundingDispl
 function _showAnnOverdraftDialog(premium,availCash,ctx){
   // Clean up any previous instance
   document.getElementById('ann-overdraft-overlay')?.remove();
-  const curr=displayCurrency==='GBP'?'£':displayCurrency==='PHP'?'₱':displayCurrency==='THB'?'฿':'$';
+  const curr=CURRENCIES[displayCurrency].symbol;
   const fmtM=v=>curr+Math.round(v).toLocaleString();
   const shortfall=premium-availCash;
   const html=`
