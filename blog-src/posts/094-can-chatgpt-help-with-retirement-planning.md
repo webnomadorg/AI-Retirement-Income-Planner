@@ -244,7 +244,7 @@ Avoid prompts like:
 - "How much can I safely withdraw forever?"
 - "Give me a tax strategy for the rest of retirement."
 
-These questions need current rules, precise inputs, calculations, and often professional review.
+These questions need current rules, precise inputs, calculations, and often professional review, which is [why AI retirement advice needs verified numbers](/blog/why-ai-retirement-advice-needs-verified-numbers.html) before you rely on it.
 
 ChatGPT can help frame the question.
 

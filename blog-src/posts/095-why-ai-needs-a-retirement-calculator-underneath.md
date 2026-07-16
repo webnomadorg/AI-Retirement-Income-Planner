@@ -235,7 +235,7 @@ OpenAI's Data Controls FAQ explains that users can control whether their ChatGPT
 
 Investor.gov warns that AI-generated investment information can be inaccurate, incomplete, misleading, faulty, or made up.
 
-Those cautions matter in retirement planning because the output can sound polished even when a rule, date, or assumption is wrong.
+Those cautions matter in retirement planning because the output can sound polished even when a rule, date, or assumption is wrong, which is [why AI retirement advice needs verified numbers](/blog/why-ai-retirement-advice-needs-verified-numbers.html) underneath the explanation.
 
 ## How The AI Retirement Income Planner Handles This
 

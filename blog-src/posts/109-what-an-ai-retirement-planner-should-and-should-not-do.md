@@ -160,7 +160,7 @@ Human approval is not friction. It is the control layer.
 
 AI should ask for the minimum data needed. It should not request account numbers, passwords, Social Security numbers, full dates of birth, tax return uploads, or bank login details.
 
-A better AI planner lets users calculate locally, then share only sanitized summaries if they choose to use AI.
+A better AI planner lets users calculate locally, then share only sanitized summaries if they choose to use AI, a habit at the center of [how to use AI safely for retirement planning](/blog/how-to-use-ai-safely-for-retirement-planning.html).
 
 ## What An AI Retirement Planner Should Not Do
 
