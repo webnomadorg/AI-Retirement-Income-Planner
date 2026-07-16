@@ -160,9 +160,23 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
   .nav-toggle span{ display:block; width:20px; height:2px; background:var(--ink); position:relative; }
   .nav-toggle span::before,.nav-toggle span::after{ content:""; position:absolute; left:0; width:20px; height:2px; background:var(--ink); }
   .nav-toggle span::before{ top:-6px; } .nav-toggle span::after{ top:6px; }
+  /* The panel is position:fixed, so any content past the screen edge is UNREACHABLE —
+     the page scroll can't move a fixed element. Cap it to the viewport and let it scroll.
+     Use 100dvh, not 100vh: iOS Safari's address bar + toolbar make the VISIBLE viewport
+     ~659px on an iPhone 13, not the nominal 844px, so 100vh still overflows (the classic
+     iOS vh bug). The plain-vh line is a fallback for browsers that don't know dvh.
+     Landscape needs this too: the hamburger is used below 1500px, so a landscape phone
+     gets this panel in a ~390px-tall viewport. */
   .nav-panel{ position:fixed; inset:72px 0 auto 0; background:var(--paper);
     border-bottom:1px solid var(--line); box-shadow:var(--shadow);
-    display:none; flex-direction:column; padding:1rem clamp(1.1rem,4vw,2.2rem) 1.6rem; gap:.2rem; }
+    display:none; flex-direction:column; padding:1rem clamp(1.1rem,4vw,2.2rem) 1.6rem; gap:.2rem;
+    max-height:calc(100vh - 72px);
+    max-height:calc(100dvh - 72px);
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    /* keep the last item clear of the iPhone home indicator */
+    padding-bottom:calc(1.6rem + env(safe-area-inset-bottom, 0px)); }
   .nav-panel.open{ display:flex; }
   .nav-links{ flex-direction:column; align-items:stretch; gap:.1rem; }
   .nav-links a{ padding:.85rem .6rem; font-size:1.1rem; border-bottom:1px solid var(--line-soft); border-radius:0; }
@@ -592,7 +606,16 @@ html.dark .dark-toggle .icon-moon{ display:none; }
 .theme-select:focus-visible{ outline:none; box-shadow:var(--ring); }
 
 @media (max-width:1500px){
-  .nav-theme{ margin-top:.9rem; gap:.6rem; }
+  /* Theme controls sit at the TOP of the open panel, not buried at the bottom.
+     The panel can be taller than a phone screen (7 links alone nearly fill an
+     iPhone 13), so anything below them needs a scroll to reach. order:-1 does this
+     without touching the DOM, so the desktop nav row is completely unaffected.
+     Note this is visual order only: keyboard/screen-reader order still follows the
+     DOM (links, then theme), which is exactly today's behaviour — no regression,
+     and there is no header-bar width cost to the brand lockup. */
+  .nav-theme{ order:-1; margin-top:0; margin-bottom:.35rem; gap:.6rem;
+    padding-bottom:.9rem; border-bottom:1px solid var(--line-soft); }
+  .nav-theme .theme-select{ flex:1; }
   .theme-select{ max-width:100%; font-size:.95rem; padding:.6rem .7rem; }
   .dark-toggle{ width:44px; height:44px; }
 }
