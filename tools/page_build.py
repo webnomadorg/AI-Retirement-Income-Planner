@@ -40,6 +40,7 @@ PAGES = {
     "demo.html": "",
     "about.html": "",
     "thanks.html": "",
+    "404.html": "",
 }
 
 NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "BLOG", "FAQ"]

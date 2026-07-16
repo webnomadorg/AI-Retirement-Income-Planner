@@ -1294,3 +1294,26 @@ html.dark .chip{ background:var(--surface); border-color:var(--line); color:var(
 html.dark .chip.active{ background:var(--teal); border-color:var(--teal); color:#fff; }
 html.dark .cat-badge{ color:#7FD6C8; background:rgba(127,214,200,.14); }
 html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
+
+/* ── 404 page ────────────────────────────────────────────────────────────────
+   Scoped .err-* helpers for 404.html. Everything else there reuses the standard
+   .card / .grid.cols-4 / .btn / .lead classes, so the page inherits the theme
+   (incl. dark mode) through the normal tokens with no per-page overrides. */
+.err-hero{ margin-bottom:clamp(2.4rem,5vw,3.6rem); }
+.err-hero h1{ margin-bottom:.9rem; }
+.err-lead{ margin-bottom:1.6rem; }
+.err-hint{ max-width:60ch; margin:0 auto 1.6rem; padding:.9rem 1.3rem; font-size:1rem;
+  color:var(--ink-soft); background:var(--surface-soft); border:1px solid var(--line);
+  border-left:3px solid var(--teal); border-radius:var(--radius-sm,8px); text-align:left; }
+.err-actions{ display:flex; flex-wrap:wrap; gap:.8rem; justify-content:center; }
+.err-grid{ margin-bottom:clamp(1.8rem,4vw,2.6rem); }
+/* Whole card is the link: kill the anchor underline/colour, keep the card's own type scale. */
+.err-card{ display:flex; flex-direction:column; text-decoration:none; color:inherit; }
+.err-card:hover{ color:inherit; border-color:var(--teal); }
+.err-card h3{ color:var(--ink-2); }
+.err-card p{ flex:1; margin-bottom:.9rem; }
+.err-card-go{ font-family:var(--font-sans); font-size:.92rem; font-weight:600; color:var(--teal); }
+.err-card:hover .err-card-go{ color:var(--teal-deep); }
+.err-card-go::after{ content:" \2192"; }
+.err-help{ max-width:64ch; margin-inline:auto; padding:clamp(1.5rem,3vw,2.1rem); }
+.err-help h3{ margin-bottom:.5rem; }
