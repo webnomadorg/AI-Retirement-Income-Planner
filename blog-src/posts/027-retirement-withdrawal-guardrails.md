@@ -440,7 +440,7 @@ A practical workflow:
 5. Add healthcare, tax, and inflation assumptions.
 6. Review Balance and Drawdown.
 7. Run Stress test scenarios.
-8. Check Confidence and Plan Health.
+8. Check Confidence and [Plan Health](/blog/how-to-use-plan-health-ai-retirement-income-planner.html).
 9. Create a lower-spending fallback scenario.
 10. Create a higher-spending good-outcome scenario.
 11. Create tax and healthcare guardrail scenarios.

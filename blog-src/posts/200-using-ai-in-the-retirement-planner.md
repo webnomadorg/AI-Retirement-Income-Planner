@@ -162,7 +162,7 @@ In **Plan with AI**, the starters include:
 
 In **Learn the planner**, the starters are how-to questions such as "Where do I set my Social Security claiming age?" or "How do I add a one-off lump sum like an inheritance?"
 
-You can also send the AI a question straight from elsewhere in the app. Many results, including the stress tests and [Monte Carlo and historical backtests](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html), have an "Ask AI about this" button that opens the chat with a detailed, plan-aware question already written for you.
+You can also send the AI a question straight from elsewhere in the app. Many results, including the stress tests, the [Plan Health checks](/blog/how-to-use-plan-health-ai-retirement-income-planner.html), and [Monte Carlo and historical backtests](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html), have an "Ask AI about this" button that opens the chat with a detailed, plan-aware question already written for you.
 
 ### Clearing the Conversation
 

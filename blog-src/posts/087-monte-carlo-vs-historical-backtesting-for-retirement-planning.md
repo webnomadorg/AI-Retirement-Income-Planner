@@ -412,7 +412,7 @@ Enter:
 
 ### 2. Review Plan Health First
 
-Use Plan Health to look for obvious issues before interpreting probability tools.
+Use [Plan Health](/blog/how-to-use-plan-health-ai-retirement-income-planner.html) to look for obvious issues before interpreting probability tools.
 
 If the base plan has missing inputs, unrealistic healthcare costs, or an unsustainable withdrawal level, Monte Carlo and backtesting will be less useful.
 
