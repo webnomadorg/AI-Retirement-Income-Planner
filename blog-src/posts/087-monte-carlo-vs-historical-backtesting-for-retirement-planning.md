@@ -294,7 +294,7 @@ Medicare, ACA coverage, prescription drug rules, and insurance markets change ov
 
 ### Good Historical Results Can Still Miss Personal Risk
 
-Your personal risk may be a spouse's death, a delayed retirement date, a long-term care event, a move abroad, or a family support obligation. A historical market test does not automatically capture those.
+Your personal risk may be a spouse's death, a delayed retirement date, a long-term care event, a [move abroad](/blog/how-to-compare-retiring-in-the-us-vs-abroad.html), or a family support obligation. A historical market test does not automatically capture those.
 
 ## Why Stress Tests Still Matter
 

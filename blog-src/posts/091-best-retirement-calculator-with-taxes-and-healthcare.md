@@ -122,7 +122,7 @@ A healthcare-aware calculator should include:
 - Dental, vision, and hearing.
 - IRMAA exposure.
 - Healthcare inflation.
-- Foreign healthcare assumptions if retiring abroad.
+- Foreign healthcare assumptions if [retiring abroad](/blog/how-to-compare-retiring-in-the-us-vs-abroad.html).
 
 HealthCare.gov says Marketplace savings are based on expected household income for the year of coverage. That means a retirement withdrawal can affect healthcare cost before Medicare.
 
