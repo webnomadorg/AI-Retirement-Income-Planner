@@ -268,6 +268,51 @@
   });
 }());
 
+/* ---- "Share your experience" prefill (contact.html#share) ----
+   The post-purchase thanks page tells buyers to come back after a few weeks of real use,
+   so the ask has to live somewhere permanent and findable — here, plus a footer link.
+   Fills the normal contact form with the feedback questions and the permission block
+   (see Plans/Testimonials-Pipeline.md — a quote is never published without that consent). */
+(function () {
+  var start = document.getElementById('shareStart');
+  var subject = document.getElementById('cf-subject');
+  var message = document.getElementById('cf-message');
+  if (!start || !subject || !message) return;
+
+  var TEMPLATE = [
+    '1. What I was trying to work out when I bought it:',
+    '',
+    '',
+    '2. What it showed me that I did not already know:',
+    '',
+    '',
+    "3. Anything that frustrated me, or that I'd change:",
+    '',
+    '',
+    '--- Happy to be quoted? (entirely optional) ---',
+    'Only fill this in if you are comfortable with your words appearing on the website:',
+    '',
+    'Name to show (e.g. Dave R., or just a first name):',
+    'Roughly where I am based (e.g. Colorado, or Kent UK):',
+    'You may quote me on the website: yes / no'
+  ].join('\n');
+
+  function prefill(focus) {
+    // never clobber something the visitor has already typed
+    if (!message.value.trim()) message.value = TEMPLATE;
+    if (!subject.value.trim()) subject.value = "How I'm getting on with the planner";
+    if (focus) {
+      message.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      message.focus({ preventScroll: true });
+      message.setSelectionRange(0, 0);
+    }
+  }
+
+  start.addEventListener('click', function (e) { e.preventDefault(); prefill(true); });
+  // deep link from the footer / thanks page: contact.html#share
+  if (location.hash === '#share') prefill(false);
+}());
+
 /* ---- Newsletter signup form (newsletter.html) ---- */
 (function () {
   var form = document.getElementById('newsletterForm');
