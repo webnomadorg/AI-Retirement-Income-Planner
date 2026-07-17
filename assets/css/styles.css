@@ -288,6 +288,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .icon-chip svg{ width:26px; height:26px; }
 .icon-chip.gold{ background:#F4ECD3; color:var(--gold); }
 .icon-chip.sky{ background:var(--sky); color:var(--ink-2); }
+.icon-chip.rose{ background:#FDE8E4; color:var(--danger); }
 .card h3{ font-size:1.25rem; margin-bottom:.4rem; }
 .card p{ color:var(--ink-soft); margin:0; font-size:1rem; }
 
@@ -701,6 +702,7 @@ html.dark .tag{ background:rgba(42,181,164,.15); color:var(--teal); }
 html.dark .icon-chip{ background:var(--sage); }
 html.dark .icon-chip.gold{ background:var(--gold-soft); color:var(--gold); }
 html.dark .icon-chip.sky{ background:var(--sky); color:var(--ink-2); }
+html.dark .icon-chip.rose{ background:#3D1D18; color:var(--danger); }
 html.dark .btn-ghost{ background:var(--surface); border-color:var(--line); color:var(--ink-2); }
 html.dark .btn-outline{ border-color:var(--ink); color:var(--ink); }
 html.dark .btn-outline:hover{ background:var(--ink); color:var(--paper); }
@@ -1306,6 +1308,45 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
   border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-sm); }
 .cta-band-title{ font-size:1.45rem; margin-bottom:.5rem; }
 .cta-band .hero-cta{ justify-content:center; margin:1rem 0 .8rem; }
+
+/* ---- 20. Scenario cards ("Which one is you?") ---------------------------
+   Situation-led cards: a real question a buyer arrives with, answered by naming
+   what the planner actually computes. Designed to sit on a .band-ink section, so
+   every rule is class-scoped to out-specify the .band-ink h3/p colour overrides. */
+.scenario-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(1.1rem,2.2vw,1.6rem); }
+@media (max-width:980px){ .scenario-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){ .scenario-grid{ grid-template-columns:1fr; } }
+
+.scenario-card{ position:relative; display:flex; flex-direction:column; overflow:hidden;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:clamp(1.3rem,2.2vw,1.7rem); box-shadow:var(--shadow-sm);
+  transition:transform var(--transition),box-shadow var(--transition); }
+/* accent rail — colour-matched to the card's icon chip */
+.scenario-card::before{ content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--teal); }
+.scenario-card.is-gold::before{ background:var(--gold); }
+.scenario-card.is-sky::before{ background:var(--ink-2); }
+.scenario-card.is-rose::before{ background:var(--danger); }
+.scenario-card:hover{ transform:translateY(-4px); box-shadow:0 24px 48px -20px rgba(0,0,0,.55); }
+
+.scenario-head{ display:flex; align-items:center; gap:.7rem; margin-bottom:.95rem; }
+.scenario-card .icon-chip{ width:42px; height:42px; border-radius:11px; margin-bottom:0; flex-shrink:0; }
+.scenario-card .icon-chip svg{ width:22px; height:22px; }
+.scenario-card .scenario-tag{ font-family:var(--font-sans); font-size:.7rem; font-weight:700;
+  letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); line-height:1.35; }
+
+.scenario-card .scenario-q{ font-family:var(--font-display); font-size:1.2rem; line-height:1.3;
+  font-weight:600; color:var(--ink); margin:0 0 .55rem; letter-spacing:-.005em; }
+.scenario-card .scenario-a{ color:var(--ink-soft); font-size:.97rem; line-height:1.6; margin:0 0 1.1rem; }
+.scenario-card .scenario-a strong{ color:var(--ink); font-weight:650; }
+
+.scenario-tools{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:auto;
+  padding-top:.9rem; border-top:1px solid var(--line-soft); }
+.scenario-tool{ font-size:.72rem; font-weight:600; color:var(--teal-deep); background:var(--sage);
+  border-radius:999px; padding:.3rem .62rem; white-space:nowrap; }
+
+/* Footnote under the grid — states plainly that these are capabilities, not customer quotes. */
+.scenario-note{ margin:1.8rem auto 0; max-width:64ch; text-align:center; font-size:.9rem; }
+.on-ink .scenario-note{ color:#B9CADA; }
 .cta-trust{ margin:0; font-size:.82rem; color:var(--ink-faint); }
 .related-posts{ margin-top:2.6rem; padding-top:1.6rem; border-top:1px solid var(--line); }
 .related-posts h2{ font-size:1.3rem; }
