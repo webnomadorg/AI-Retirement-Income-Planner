@@ -1099,6 +1099,11 @@ html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#0000
 .form-group input:focus,
 .form-group textarea:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
 .form-group textarea{ min-height:140px; resize:vertical; }
+/* Opt-in taller variant. The contact form gets prefilled with a ~15-line feedback template
+   (see Plans/Testimonials-Pipeline.md), which is unreadable in the 140px default. Applied
+   per-textarea so the affiliates form — same .form-group markup, same #cf-message id — is
+   unaffected. */
+.form-group textarea.textarea-tall{ min-height:280px; }
 
 .form-notice{
   font-size:.9rem; color:var(--danger);
