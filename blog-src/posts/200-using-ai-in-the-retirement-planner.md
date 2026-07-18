@@ -160,7 +160,7 @@ In **Plan with AI**, the starters include:
 
 "Propose optimisations" is the one many people use first: it returns specific numeric changes sized to respect your tax brackets, ACA cliff, and IRMAA thresholds, which you can apply with one click. It pairs naturally with questions about [how much you can safely spend in retirement](/blog/how-much-can-i-spend-in-retirement.html).
 
-In **Learn the planner**, the starters are how-to questions such as "Where do I set my Social Security claiming age?" or "How do I add a one-off lump sum like an inheritance?"
+In **Learn the planner**, the starters are how-to questions such as "Where do I set my Social Security claiming age?" or "How do I add a one-off lump sum like an inheritance?" For a step-by-step guide to working with both modes, see [how to use the AI co-pilot](/blog/how-to-use-the-ai-co-pilot.html).
 
 You can also send the AI a question straight from elsewhere in the app. Many results, including the stress tests, the [Plan Health checks](/blog/how-to-use-plan-health-ai-retirement-income-planner.html), and [Monte Carlo and historical backtests](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html), have an "Ask AI about this" button that opens the chat with a detailed, plan-aware question already written for you.
 

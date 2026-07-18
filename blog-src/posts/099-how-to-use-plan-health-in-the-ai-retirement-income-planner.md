@@ -299,7 +299,7 @@ The note field is one line, so keep it to the reason: "rental property not model
 
 The planner includes optional AI assistance, and Plan Health is wired into it. If you have not set that up yet, [using AI in the retirement planner](/blog/using-ai-in-the-retirement-planner.html) covers the providers, models, and key handling.
 
-Every failing or warning check has an "Ask AI about this" button that writes the prompt for you. It sends the check name, its status, its explanation, and your actual plan numbers, then asks the model to explain the flag and propose specific changes. You do not have to describe your situation from scratch.
+Every failing or warning check has an "Ask AI about this" button that writes the prompt for you. It sends the check name, its status, its explanation, and your actual plan numbers, then asks the model to explain the flag and propose specific changes. You do not have to describe your situation from scratch. Once the answer comes back, [how to use the AI co-pilot](/blog/how-to-use-the-ai-co-pilot.html) covers reviewing and approving what it proposes.
 
 If you would rather type your own question, be specific. Instead of asking:
 

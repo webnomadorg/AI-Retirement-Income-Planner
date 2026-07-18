@@ -157,7 +157,7 @@ This keeps AI in a useful role: helping gather facts before calculations begin.
 
 ## Safe Use Case 3: Explain Planner Output
 
-AI is more useful after the planner has run the numbers.
+AI is more useful after the planner has run the numbers. This is the core of [how an AI co-pilot can explain a retirement plan](/blog/how-an-ai-co-pilot-can-explain-a-retirement-plan.html): it translates a calculated result into plain English.
 
 A better prompt is:
 
