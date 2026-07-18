@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from demo-fork-v196.html on 2026-07-15. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v197.html on 2026-07-18. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -356,6 +356,7 @@
   .sp-notes-preview .note-h3{font-size:13.5px;}
   .sp-notes-empty{color:var(--text-tertiary);font-style:italic;}
   .sp-cmp-title{margin:18px 0 8px;font-size:14px;}
+  .sp-cmp-askai{margin:2px 0 10px;}
   .sp-cmp-scroll{overflow:auto;max-height:46vh;border:0.5px solid var(--border-light);border-radius:8px;}
   .sp-cmp{width:100%;border-collapse:collapse;font-size:12px;}
   .sp-cmp th{position:sticky;top:0;background:var(--bg-secondary);text-align:right;padding:6px 10px;font-weight:600;border-bottom:0.5px solid var(--border-mid);}
@@ -6366,7 +6367,101 @@ function _mergeSlotS(sd){
   ['p0','p1','p2','p3','p4','p5','p1b','p2b','p3b','p4b','p5b'].forEach(k=>{if(sd.S&&sd.S[k])m[k]={...D_USD[k],...sd.S[k]};});
   return m;
 }
-function compareSlot(i){demoToast("Comparing saved plans is available in the full version.");}
+// Shared totals reducers — used by both the compare table and the Ask-AI seed so the two never drift.
+function _cmpSumTax(arr){return arr.reduce((a,p)=>a+((p.tax_mo||0)*(p.months||0)),0);}
+function _cmpFinalBal(arr){const last=arr[arr.length-1]; if(!last||!last.end)return 0; return (last.end.b401k||0)+(last.end.bcash||0)+(last.end.bEquity||0)+(last.end.bRoth||0);}
+// Compute both plans for a slot comparison. Returns null (empty slot), {err:true} (unreadable blob),
+// or {s,sd,cur,slotPhases,name}. calcAllPhases is memoised, so the second call from the Ask-AI path
+// is essentially free. Shared by compareSlot (render) and _compareAiSeed (the AI question).
+function _compareSlotData(i){
+  const s=_readSlots()[i]; if(!s)return null;
+  let sd; try{sd=JSON.parse(s.blob);}catch(e){return {err:true};}
+  if(typeof liveCalcFlush==='function')liveCalcFlush();
+  const cur=calcAllPhases(S,p5EndAge,lumps);
+  const slotPhases=calcAllPhases(_mergeSlotS(sd),sd.p5EndAge||p5EndAge,sd.lumps||[]);
+  return {s,sd,cur,slotPhases,name:s.name||('Slot '+(i+1))};
+}
+// Diff the current plan's inputs against a saved slot's, over the canonical D_USD key space
+// (top-level scalars + phase objects), plus the out-of-S globals (p5EndAge, activeCurrency, lumps).
+// Raw stored/base values — the AI only needs which assumptions changed and the direction. Capped.
+function _slotInputDiff(sd){
+  const sav=_mergeSlotS(sd), out=[];
+  const fmt=v=>{ if(v==null)return '(unset)'; if(typeof v==='number')return Number.isInteger(v)?String(v):String(Math.round(v*100)/100); if(typeof v==='boolean')return v?'on':'off'; return String(v); };
+  const diff=(k,a,b)=>{ if(typeof a==='number'&&typeof b==='number'){ if(Math.abs(a-b)>1e-6)out.push(k+': '+fmt(a)+' → '+fmt(b)); } else if(a!==b)out.push(k+': '+fmt(a)+' → '+fmt(b)); };
+  for(const k in D_USD){
+    if(k==='notes')continue;                                  // free-text, not a modelling assumption
+    const dv=D_USD[k];
+    if(dv&&typeof dv==='object'){ const ca=S[k]||{}, cb=sav[k]||{}; for(const sk in dv)diff(k+'.'+sk, ca[sk], cb[sk]); }
+    else diff(k, S[k], sav[k]);
+  }
+  if((p5EndAge||0)!==(sd.p5EndAge||0))out.push('p5EndAge: '+fmt(p5EndAge||0)+' → '+fmt(sd.p5EndAge||0));
+  if((activeCurrency||'USD')!==(sd.activeCurrency||'USD'))out.push('activeCurrency: '+(activeCurrency||'USD')+' → '+(sd.activeCurrency||'USD'));
+  const lsum=arr=>{arr=Array.isArray(arr)?arr:[];let ins=0,outs=0,n=0;arr.forEach(l=>{if(l&&l.amtUSD>0){n++;if(l.dir==='out')outs+=l.amtUSD;else ins+=l.amtUSD;}});return {n,ins,outs};};
+  const cl=lsum(typeof lumps!=='undefined'?lumps:[]), sl=lsum(sd.lumps);
+  if(cl.n!==sl.n||Math.abs(cl.ins-sl.ins)>1e-6||Math.abs(cl.outs-sl.outs)>1e-6)out.push('lump sums: '+cl.n+' ('+fmt(cl.ins)+' in / '+fmt(cl.outs)+' out) → '+sl.n+' ('+fmt(sl.ins)+' in / '+fmt(sl.outs)+' out)');
+  if(!out.length)return 'No input differences detected.';
+  const CAP=30; if(out.length>CAP){const extra=out.length-CAP; out.length=CAP; out.push('(+'+extra+' more differences omitted)');}
+  return out.join('\n');
+}
+// Build the plan-aware seed for "Ask AI about this comparison": the outcome metrics (mirroring the
+// table) + the input-assumption diff, so the model can explain WHY the two scenarios differ. The live
+// CURRENT plan is attached automatically by aiSend()/buildAiContext(); the saved plan is known only
+// through this text. Returns {seed,name} or null. fmtC formats in the active display currency.
+function _compareAiSeed(i){
+  const d=_compareSlotData(i); if(!d||d.err)return null;
+  const {cur,slotPhases,name,sd}=d;
+  const f=v=>(v==null?'—':fmtC(v));
+  const n=Math.max(cur.length,slotPhases.length), lines=[];
+  for(let p=0;p<n;p++){
+    const c=cur[p],o=slotPhases[p];
+    const lbl=(c&&c.label)||(o&&o.label)||('Phase '+(p+1));
+    let row='• '+lbl+': net/mo '+f(c&&c.net_mo)+' vs '+f(o&&o.net_mo)+'; tax/mo '+f(c&&c.tax_mo)+' vs '+f(o&&o.tax_mo)+
+      '; end 401k '+f(c&&c.end&&c.end.b401k)+' vs '+f(o&&o.end&&o.end.b401k)+'; end cash '+f(c&&c.end&&c.end.bcash)+' vs '+f(o&&o.end&&o.end.bcash)+
+      '; end equity '+f(c&&c.end&&c.end.bEquity)+' vs '+f(o&&o.end&&o.end.bEquity);
+    if((c&&c.end&&c.end.bRoth)||(o&&o.end&&o.end.bRoth))row+='; end Roth '+f(c&&c.end&&c.end.bRoth)+' vs '+f(o&&o.end&&o.end.bRoth);
+    lines.push(row);
+  }
+  lines.push('• Totals: total tax paid '+f(_cmpSumTax(cur))+' vs '+f(_cmpSumTax(slotPhases))+'; final total balance '+f(_cmpFinalBal(cur))+' vs '+f(_cmpFinalBal(slotPhases)));
+  const seed='I’m comparing my current plan with my saved plan "'+name+'" side by side in the Saved plans panel. '+
+    'Note: the plan snapshot attached to this chat is my CURRENT plan; the saved plan is described only by the figures below (each metric reads "current vs '+name+'").\n\n'+
+    'Outcome metrics by phase (active display currency):\n'+lines.join('\n')+'\n\n'+
+    'Input assumptions that differ (current → saved "'+name+'", raw base values):\n'+_slotInputDiff(sd)+'\n\n'+
+    'Using my actual numbers, explain which of these input differences most drive the outcome differences, the key trade-offs between the two scenarios, and which assumptions I should double-check. Do not tell me which plan to choose — lay out the trade-offs so I can decide.';
+  return {seed,name};
+}
+// Click handler for the compare panel's Ask-AI button. Closes the modal (it overlays the tabs),
+// forces Plan mode (a comparison is inherently a plan question; Learn mode gets no plan numbers),
+// then routes through askAi() — which auto-sends, or queues + shows the key-setup form when no key.
+function askAiCompareSlot(i){demoToast("Asking AI about a saved-plan comparison is available in the full version.");}
+function compareSlot(i){
+  const host=document.getElementById('sp-compare'); if(!host)return;
+  const d=_compareSlotData(i); if(!d)return;
+  if(d.err){host.innerHTML='<p class="sp-err">Could not read this slot.</p>';return;}
+  const {cur,slotPhases}=d, nm=escHtml(d.name);
+  const fmtD=(c,o,goodHigh)=>{ if(c==null||o==null)return '<td class="sp-delta">—</td>'; const dv=c-o; if(Math.abs(dv)<0.5)return '<td class="sp-delta">—</td>'; const good=goodHigh?dv>0:dv<0; return '<td class="sp-delta" style="color:'+(good?'var(--green-text)':'var(--red-text)')+'">'+(dv>0?'+':'')+fmtC(dv)+'</td>'; };
+  const row=(lbl,cv,ov,goodHigh)=>'<tr><td class="sp-m">'+lbl+'</td><td>'+(cv==null?'—':fmtC(cv))+'</td><td>'+(ov==null?'—':fmtC(ov))+'</td>'+fmtD(cv,ov,goodHigh)+'</tr>';
+  // Ask-AI button sits between the title and the scroll box, so it never scrolls out of view. Because
+  // it lives inside #sp-compare, it exists only while a comparison is rendered (save/delete clear the host).
+  let html='<h4 class="sp-cmp-title">Current plan vs &ldquo;'+nm+'&rdquo;</h4>'+
+    '<div class="sp-cmp-askai"><button type="button" class="popover-askai-btn" onclick="askAiCompareSlot('+i+')">&#x2728; Ask AI about this comparison</button></div>'+
+    '<div class="sp-cmp-scroll"><table class="sp-cmp"><thead><tr><th>Metric</th><th>Current</th><th>'+nm+'</th><th>&Delta;</th></tr></thead><tbody>';
+  const n=Math.max(cur.length,slotPhases.length);
+  for(let p=0;p<n;p++){
+    const c=cur[p],o=slotPhases[p];
+    html+='<tr class="sp-ph"><td colspan="4">'+escHtml((c&&c.label)||(o&&o.label)||('Phase '+(p+1)))+'</td></tr>';
+    html+=row('Net income /mo', c&&c.net_mo, o&&o.net_mo, true);
+    html+=row('Tax /mo', c&&c.tax_mo, o&&o.tax_mo, false);
+    html+=row('End 401k', c&&c.end&&c.end.b401k, o&&o.end&&o.end.b401k, true);
+    html+=row('End cash', c&&c.end&&c.end.bcash, o&&o.end&&o.end.bcash, true);
+    html+=row('End equity', c&&c.end&&c.end.bEquity, o&&o.end&&o.end.bEquity, true);
+    if((c&&c.end&&c.end.bRoth)||(o&&o.end&&o.end.bRoth)) html+=row('End Roth', c&&c.end&&c.end.bRoth, o&&o.end&&o.end.bRoth, true);
+  }
+  html+='<tr class="sp-ph"><td colspan="4">Totals</td></tr>';
+  html+=row('Total tax paid', _cmpSumTax(cur), _cmpSumTax(slotPhases), false);
+  html+=row('Final total balance', _cmpFinalBal(cur), _cmpFinalBal(slotPhases), true);
+  html+='</tbody></table></div>';
+  host.innerHTML=html;
+}
 
 // ═══ Calc-engine self-test (?selftest=1): golden-master regression guard ═══
 // Runs calcAllPhases against fixed fixture plans and diffs key per-phase outputs against golden
@@ -17970,6 +18065,24 @@ initAiSidebar();
     }
   }catch(e){}
 
+  // ── Seed a sample saved plan so Saved plans → Compare (and its "Ask AI about this
+  //    comparison" button) is VIEWABLE in the demo. Save / Load / Delete stay toasts, but
+  //    compareSlot is left real (see transform.mjs), so clicking Compare on this slot renders
+  //    a real side-by-side table. The slot is a "Conservative returns" scenario (r401k 4% /
+  //    cash 0.75%): its frozen-lookup key maps to a captured stress variant, so the table
+  //    shows genuine deltas vs the base plan rather than an all-"—" self-comparison. ──
+  try{
+    const _sl=_readSlots();
+    if(!_sl[0]){
+      const _cs=JSON.parse(JSON.stringify(FROZEN_S));
+      _cs.r401k=4; _cs.rCash=0.75;                 // → captured "4|0.75|3|rc:0,0,0,0|w:1500,1500,1500,1500|res:us" variant
+      _sl[0]={ name:'Conservative returns',
+        blob:JSON.stringify({ S:_cs, lumps:FROZEN_LUMPS, p5EndAge:FROZEN_P5END, activeCurrency:'USD' }),
+        savedAt:Date.now()-3*86400000 };
+      localStorage.setItem(PLAN_SLOTS_LS, JSON.stringify(_sl));
+    }
+  }catch(e){}
+
   // ── UI locks (capture phase — original inline handlers never fire) ──
   const LOCK_MSG='Editing is disabled in this demo — the full version is fully editable.';
 
@@ -18135,7 +18248,7 @@ initAiSidebar();
         'The engine applies it at the start of that phase — money in tops up your cash bucket; money out drains cash first, then equity, then the 401k. Every chart, tax figure and health check updates automatically. (This demo’s sample plan includes a $10,000 inheritance in Phase 2 — adding or editing lumps is disabled here.)'+LEARN_NOTE;
     }},
     { test:/save a scenario|compare it|save.*compare/i, reply:function(){
-      return 'The **Saved plans** button (top bar) gives you **five named slots**. Save the current plan, tweak some numbers, save to a second slot — then click **Compare** for a phase-by-phase side-by-side table (net income, tax, ending balances, deltas highlighted).\n\n'+
+      return 'The **Saved plans** button (top bar) gives you **three named slots**. Save the current plan, tweak some numbers, save to a second slot — then click **Compare** for a phase-by-phase side-by-side table (net income, tax, ending balances, deltas highlighted). That table also has an **“Ask AI about this comparison”** button that sends both scenarios to the AI to explain why they differ — you can open a sample comparison right here from the Saved plans button.\n\n'+
         'For backups or moving between devices, **Export** writes the whole plan to a JSON file and **Import** loads it back. (Saving and importing are disabled in this demo.)'+LEARN_NOTE;
     }},
     { test:/word a question|how should i (word|phrase)|advisor/i, reply:function(){
@@ -18232,7 +18345,7 @@ initAiSidebar();
       return 'Lump sums live on the **Lump sums tab** — each one is money in (inheritance, house sale) or money out (new roof, big trip), assigned to a phase. The engine applies it at the start of that phase and every chart, tax figure and health check updates.\n\nThis sample plan has one: a **$10,000 inheritance** arriving at the start of Phase 2. You can see it on the Lump sums tab, and it shows up as a top-up to the cash bucket in the balance chart. Adding or editing lumps is disabled in the demo.'+DEMO_NOTE;
     }},
     { test:/save|scenario|compare (a|my|plans)/i, reply:function(){
-      return 'The full version has **five save slots** (plus JSON export/import for backups and sharing between devices). You can save the current plan, load an older one, and view a side-by-side **comparison table** — phase by phase — of any saved plan against the current one. Saving is disabled in this demo.'+DEMO_NOTE;
+      return 'The full version has **three save slots** (plus JSON export/import for backups and sharing between devices). You can save the current plan, load an older one, and view a side-by-side **comparison table** — phase by phase — of any saved plan against the current one, with an **“Ask AI about this comparison”** button that explains the differences in plain English. You can preview that table right here: open **Saved plans** and hit **Compare** on the sample slot. Saving your own plans is disabled in this demo.'+DEMO_NOTE;
     }}
   ];
 
