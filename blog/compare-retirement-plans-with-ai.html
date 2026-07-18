@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Compare Two Retirement Plans with AI | AI Retirement Income Planner Blog</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="The AI Retirement Income Planner can now compare two saved retirement plans side by side and have AI explain why they differ. Here is how the Ask AI about this comparison button works, what it sends, and how to read the answer.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/compare-retirement-plans-with-ai.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Compare Two Retirement Plans with AI">
+<meta property="og:description" content="The AI Retirement Income Planner can now compare two saved retirement plans side by side and have AI explain why they differ. Here is how the Ask AI about this comparison button works, what it sends, and how to read the answer.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/compare-retirement-plans-with-ai-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/compare-retirement-plans-with-ai.html">
+<meta property="article:published_time" content="2026-07-18">
+<meta property="article:modified_time" content="2026-07-18">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Compare Two Retirement Plans with AI", "description": "The AI Retirement Income Planner can now compare two saved retirement plans side by side and have AI explain why they differ. Here is how the Ask AI about this comparison button works, what it sends, and how to read the answer.", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/compare-retirement-plans-with-ai.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/compare-retirement-plans-with-ai-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "AI & Retirement"}, {"@type": "ListItem", "position": 4, "name": "How to Compare Two Retirement Plans with AI", "item": "https://airetirementincomeplanner.com/blog/compare-retirement-plans-with-ai.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many plans can I compare?", "acceptedAnswer": {"@type": "Answer", "text": "The planner keeps up to three saved plan snapshots in your browser, and each can be compared against your current plan one at a time. For more variations, export plans to JSON files and import them back in when you want to compare them."}}, {"@type": "Question", "name": "Does the AI see both plans in full?", "acceptedAnswer": {"@type": "Answer", "text": "Not quite. Your current plan is attached to the chat automatically in full. The saved plan is described inside the prompt as outcome metrics plus a diff of the input assumptions that differ, which is enough for the AI to explain the differences."}}, {"@type": "Question", "name": "Do I need an API key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Like the planner's other AI features, comparison analysis uses your own key with a supported provider (Claude, OpenAI, Gemini, OpenRouter, or a local model). The planner's deterministic calculations, including the comparison table itself, work with no key at all."}}, {"@type": "Question", "name": "Will it tell me which plan is better?", "acceptedAnswer": {"@type": "Answer", "text": "No. The prompt deliberately asks the AI to lay out the trade-offs and flag what to verify, and it tells the model not to choose for you. The decision stays with you."}}, {"@type": "Question", "name": "Where does the answer appear?", "acceptedAnswer": {"@type": "Answer", "text": "In the AI Chat tab. Clicking the button closes the Saved plans panel, switches to the AI Chat tab in Plan mode, and sends the question, so the answer streams in like any other chat."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=ai-retirement">AI & Retirement</a>
+        </nav>
+        <header class="post-header">
+          <h1>How to Compare Two Retirement Plans with AI</h1>
+          <p class="post-meta"><span class="cat-badge">AI & Retirement</span> · Published July 18, 2026 · 9 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#quick-answer">Quick Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#what-the-button-does">What the Button Does</a></li>
+      <li><a href="#how-to-use-it">How to Use It</a></li>
+      <li><a href="#what-the-ai-actually-sees">What the AI Actually Sees</a></li>
+      <li><a href="#a-worked-example">A Worked Example</a></li>
+      <li><a href="#what-it-will-not-do">What It Will Not Do</a></li>
+      <li><a href="#tips-for-a-better-comparison">Tips for a Better Comparison</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="quick-answer">Quick Answer</h2>
+<p>The AI Retirement Income Planner lets you save up to three plan snapshots, compare any one of them against your current plan in a side-by-side table, and then click <strong>Ask AI about this comparison</strong> to have AI explain, in plain English, why the two plans differ.</p>
+<p>The button appears on the comparison table itself. When you click it, the planner sends the AI two things: the outcome numbers from the side-by-side table, and a short list of the input assumptions that actually differ between the two plans. The AI Chat tab then opens and the answer streams in. It focuses on the useful question a side-by-side table cannot answer on its own: not just <em>what</em> changed, but <em>which input changes caused which outcome changes</em>, and what trade-offs that creates.</p>
+<p>It is optional, it uses your own AI key, and it is framed to lay out the trade-offs rather than tell you which plan to pick.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/compare-retirement-plans-with-ai-1.webp" alt="Branded feature graphic titled Compare Two Plans with AI, showing the Saved plans panel, the Ask AI about this comparison button, and an AI insights summary of the differences between two saved retirement scenarios." width="1400" height="788" loading="lazy">
+</figure>
+
+<aside class="cta-box cta-soft">
+  <p>Testing two retirement scenarios? Save both, compare them side by side, and let the AI explain what is actually driving the difference before you decide.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>The planner holds up to three saved plan snapshots on your device, and each can be compared against your current plan.</li>
+<li>The comparison table shows per-phase net income, tax, and ending balances, with the difference highlighted.</li>
+<li><strong>Ask AI about this comparison</strong> appears on that table and sends the metrics plus a diff of the input assumptions to your AI model.</li>
+<li>The AI explains which input differences drive the outcome differences, not just the raw deltas.</li>
+<li>Your current plan is attached to the chat automatically; the saved plan travels inside the prompt.</li>
+<li>It needs an API key, like the planner's other AI features, and works with any supported provider.</li>
+<li>The prompt tells the AI to lay out trade-offs and not to pick a plan for you.</li>
+</ul>
+<h2 id="what-the-button-does">What the Button Does</h2>
+<p>A side-by-side table is good at showing you <em>that</em> two plans differ. It is not good at telling you <em>why</em>.</p>
+<p>Say one plan ends with $1.39M and the other with $364k. The table shows the gap. It does not tell you whether that gap comes from the retirement age you changed, or from a larger starting balance, a spouse's Social Security, a different inflation assumption, and a Roth conversion you also changed at the same time. Those are very different conclusions, and only one of them is the decision you were actually testing.</p>
+<p><strong>Ask AI about this comparison</strong> is built for exactly that gap. It takes the comparison you are already looking at and asks the AI to separate the real drivers from the noise. The typical answer ranks the input differences by impact, ties each one to the outcome it moved, spells out the trade-offs, and lists the assumptions worth double-checking. This pairs naturally with the broader idea of <a href="/blog/how-an-ai-co-pilot-can-explain-a-retirement-plan.html">how an AI co-pilot can explain a retirement plan</a>: the calculator produces the numbers, and the AI translates them.</p>
+<h2 id="how-to-use-it">How to Use It</h2>
+<p>The button only appears once a comparison is on screen, so there are a few short steps to get there.</p>
+<ol>
+<li>Open <strong>Saved plans</strong> from the top toolbar.</li>
+<li>Save your current plan to a slot and give it a name (for example, "Retire at 62").</li>
+<li>Change some inputs so your current plan is different from the saved one, or import a plan you exported earlier. A comparison is only interesting when the two plans differ.</li>
+<li>Click <strong>Compare</strong> on the saved slot. The <strong>Current plan vs "&lt;name&gt;"</strong> table appears.</li>
+<li>Click <strong>✨ Ask AI about this comparison</strong>. The Saved plans panel closes, the AI Chat tab opens in Plan mode, and the answer streams in.</li>
+</ol>
+<figure class="shot post-img">
+<img src="/assets/img/blog/compare-retirement-plans-with-ai-2.webp" alt="The AI Retirement Income Planner Saved plans panel with three saved slots and a Current plan versus Retire at 62 comparison table, showing per-phase net income, tax, and ending balances alongside the Ask AI about this comparison button." width="775" height="884" loading="lazy">
+</figure>
+
+<p>If you have not set up an AI key yet, the button still works: it remembers your request and opens the key-setup screen, then asks the question automatically once your key is saved. Setting up a provider is a one-time step covered in <a href="/blog/using-ai-in-the-retirement-planner.html">using AI in the retirement planner</a>.</p>
+<h2 id="what-the-ai-actually-sees">What the AI Actually Sees</h2>
+<p>It helps to know exactly what is sent, because it explains why the answers are grounded rather than generic.</p>
+<p>Two things go to the model:</p>
+<ul>
+<li><strong>The current plan, in full.</strong> The planner attaches a complete snapshot of your current plan to every AI message automatically, including its calculated phase results and Plan Health signals. You do not have to describe it.</li>
+<li><strong>The saved plan, as figures in the prompt.</strong> The model cannot see your saved slot directly, so the prompt spells it out: the outcome metrics by phase (net income, tax, and ending balances, written as "current vs saved"), followed by a short diff of the input assumptions that differ between the two plans, each written as <code>current → saved</code>.</li>
+</ul>
+<p>That input diff is the important part. Instead of leaving the AI to guess why the numbers moved, the prompt hands it the exact levers that changed, such as <code>ssStartAge: 62 → 70</code>, <code>bal401k: 100000 → 300000</code>, or <code>filingStatus: single → mfj</code>. The prompt then asks the model to explain which of those differences most drive the outcome gap, to lay out the trade-offs, and to flag which assumptions you should verify, and it explicitly tells the model not to choose a plan for you.</p>
+<p>Because the real numbers come from the planner's deterministic engine and the AI only interprets them, the explanation starts from calculated results rather than made-up ones. That is the whole point of <a href="/blog/why-ai-needs-a-retirement-calculator-underneath.html">why AI needs a retirement calculator underneath</a> it.</p>
+<h2 id="a-worked-example">A Worked Example</h2>
+<p>Suppose you compare a plan named "Retire later (SS70)" against your current plan and the ending balances are $364k versus $1.39M. That is a big gap, and it would be easy to conclude that delaying Social Security to 70 is what created it.</p>
+<p>A good comparison answer pushes back on that. In a real example, the AI ranked the differences and found that the ending-balance gap was driven mostly by two things that had nothing to do with retirement timing: the saved plan started with three times the 401k balance, and it added a spouse's Social Security. Delaying Social Security to 70, the change you were actually testing, was real but smaller, and in the near term it made income <em>tighter</em>, not looser, because it removed eight years of benefits. The answer then flagged the assumptions to reconcile, including a different inflation rate and a Roth conversion that were changed at the same time, and offered to model the timing change on its own so the comparison would be apples-to-apples.</p>
+<p>That is the difference between reading a table and understanding it: the table shows a $1M gap, and the AI shows that most of the gap is not the decision you thought you were making.</p>
+<p>📄 <strong>See the full worked example:</strong> the exact prompt the planner builds and the AI's complete driver analysis are in <a href="/downloads/Ask-AI-about-the-comparison.pdf" target="_blank" rel="noopener">this example PDF</a>, so you can see the format of the question and the shape of a good answer before you run your own.</p>
+<h2 id="what-it-will-not-do">What It Will Not Do</h2>
+<p>The comparison feature is deliberately scoped to explanation, not decisions.</p>
+<ul>
+<li>It does not tell you which plan to choose. The prompt asks for trade-offs so you can decide.</li>
+<li>It does not change your plan. It only reads and explains; nothing is edited by clicking the button.</li>
+<li>It does not verify tax law, Social Security rules, or Medicare thresholds. Confirm rule-based claims with official sources.</li>
+<li>It is not a substitute for professional review on a decision that matters.</li>
+</ul>
+<p>AI can also sound confident while being wrong, so treat a comparison answer as a well-organized starting point, not a verdict. Keeping AI in that lane is the core of <a href="/blog/how-to-use-the-ai-co-pilot.html">how to use the AI co-pilot</a> safely.</p>
+<h2 id="tips-for-a-better-comparison">Tips for a Better Comparison</h2>
+<ul>
+<li><strong>Change one thing at a time.</strong> If you compare a plan that differs on six inputs, the AI has to untangle six drivers. Isolate the decision you actually care about and the answer gets much sharper.</li>
+<li><strong>Name your plans clearly.</strong> "Retire at 62" and "Retire at 65" read better in the answer than "Slot 1" and "Slot 2."</li>
+<li><strong>Compare in real terms when inflation differs.</strong> If the two plans use different inflation rates, raw ending balances are not directly comparable, and a good answer will say so.</li>
+<li><strong>Ask a follow-up.</strong> The answer lands in the normal AI Chat, so you can keep going: ask it to isolate a single change, or to turn the trade-offs into a checklist.</li>
+<li><strong>Verify before acting.</strong> Anything the AI says about tax brackets, ACA, IRMAA, or Social Security timing should be checked against the planner's own output and official sources.</li>
+</ul>
+<aside class="cta-box cta-demo">
+  <p>Open Saved plans in the live demo, hit Compare on the sample slot, and see the Ask AI about this comparison button in action.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="how-many-plans-can-i-compare">How many plans can I compare?</h3>
+<p>The planner keeps up to three saved plan snapshots in your browser, and each can be compared against your current plan one at a time. For more variations, export plans to JSON files and import them back in when you want to compare them.</p>
+<h3 id="does-the-ai-see-both-plans-in-full">Does the AI see both plans in full?</h3>
+<p>Not quite. Your current plan is attached to the chat automatically in full. The saved plan is described inside the prompt as outcome metrics plus a diff of the input assumptions that differ, which is enough for the AI to explain the differences.</p>
+<h3 id="do-i-need-an-api-key">Do I need an API key?</h3>
+<p>Yes. Like the planner's other AI features, comparison analysis uses your own key with a supported provider (Claude, OpenAI, Gemini, OpenRouter, or a local model). The planner's deterministic calculations, including the comparison table itself, work with no key at all.</p>
+<h3 id="will-it-tell-me-which-plan-is-better">Will it tell me which plan is better?</h3>
+<p>No. The prompt deliberately asks the AI to lay out the trade-offs and flag what to verify, and it tells the model not to choose for you. The decision stays with you.</p>
+<h3 id="where-does-the-answer-appear">Where does the answer appear?</h3>
+<p>In the AI Chat tab. Clicking the button closes the Saved plans panel, switches to the AI Chat tab in Plan mode, and sends the question, so the answer streams in like any other chat.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>OpenAI, ChatGPT General FAQ: https://help.openai.com/en/articles/6783457-chatgpt-general-faq</li>
+<li>Investor.gov, Artificial Intelligence and Investment Fraud: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/artificial-intelligence-fraud</li>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, Social Security, Medicare, estate, or retirement advice. AI output and planner projections depend on inputs and assumptions, and real-world outcomes can differ. Verify important numbers and rules with official sources and a qualified professional before acting.</p>
+        </div>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner combines calculator-backed projections, up to three saved plans, side-by-side comparison, and optional AI that explains the differences, so you can understand a trade-off before you commit to it.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/how-an-ai-co-pilot-can-explain-a-retirement-plan.html">How an AI Co-Pilot Can Explain a Retirement Plan</a> <span class="post-meta">· AI & Retirement</span></li>
+      <li><a href="/blog/how-to-use-the-ai-co-pilot.html">How to Use the AI Co-Pilot</a> <span class="post-meta">· AI & Retirement</span></li>
+      <li><a href="/blog/how-to-use-ai-safely-for-retirement-planning.html">How to Use AI Safely for Retirement Planning</a> <span class="post-meta">· AI & Retirement</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/contact.html#share">Share your experience</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

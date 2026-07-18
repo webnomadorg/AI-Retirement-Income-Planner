@@ -24,7 +24,7 @@
 
 ## Short Answer
 
-Use the AI Co-Pilot after the planner has calculated something specific. Ask it to explain a Plan Health item, compare scenarios, summarize a report, identify missing assumptions, or suggest a change to test. If it proposes a change, review it yourself and run the planner before accepting the idea.
+Use the AI Co-Pilot after the planner has calculated something specific. Ask it to explain a Plan Health item, [compare two saved plans](/blog/compare-retirement-plans-with-ai.html), summarize a report, identify missing assumptions, or suggest a change to test. If it proposes a change, review it yourself and run the planner before accepting the idea.
 
 The safest workflow is calculator first, AI explanation second, user approval third.
 

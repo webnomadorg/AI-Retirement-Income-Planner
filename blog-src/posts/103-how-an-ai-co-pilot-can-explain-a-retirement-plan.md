@@ -148,7 +148,7 @@ A vague version, by contrast, invites vague judgment:
 
 ## Explaining Scenario Differences
 
-An AI co-pilot can also help compare scenarios.
+An AI co-pilot can also help compare scenarios. The planner has a dedicated button for this: [comparing two retirement plans with AI](/blog/compare-retirement-plans-with-ai.html) puts two saved plans side by side and asks the AI to explain what is driving the difference.
 
 For example, suppose the planner has:
 
