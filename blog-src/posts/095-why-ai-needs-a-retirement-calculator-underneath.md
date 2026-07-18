@@ -393,6 +393,5 @@ Suggested internal links:
 
 AI can be helpful in retirement planning, but only when it has calculator math underneath it. This article explains why taxes, healthcare, Social Security, Roth conversions, RMDs, balances, and risk tools need structured modeling before AI explanations can be useful. It positions the AI Retirement Income Planner as a calculator-first tool with optional AI assistance for interpreting results and testing user-approved scenarios.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, privacy, cybersecurity, Social Security, estate, AI safety, or retirement advice. Verify important decisions with official sources, qualified professionals, and your own planning assumptions.

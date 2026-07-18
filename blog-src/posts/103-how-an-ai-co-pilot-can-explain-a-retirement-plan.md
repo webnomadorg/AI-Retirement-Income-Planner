@@ -428,6 +428,5 @@ Suggested internal links:
 
 An AI co-pilot can make retirement planning easier to understand when it explains calculated planner output. This article covers how AI can explain Plan Health, scenarios, taxes, healthcare, Social Security timing, survivor planning, and reports while keeping calculator math and user review in charge. It positions the AI Retirement Income Planner as a calculator-first tool with optional AI Chat, Plan with AI, user-approved AI proposals, Plan Health, Confidence, scenarios, What-if tools, and report workflows.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, privacy, cybersecurity, Social Security, Medicare, estate, AI safety, software, or retirement advice. AI output and planner projections depend on inputs and assumptions, and real-world outcomes can differ.

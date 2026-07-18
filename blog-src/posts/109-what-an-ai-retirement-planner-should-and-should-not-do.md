@@ -388,6 +388,5 @@ Suggested internal links:
 
 This post explains what an AI retirement planner should and should not do. It covers calculator-backed planning, missing assumptions, scenario comparison, official-source verification, privacy, human approval, market-prediction limits, tax and Social Security boundaries, and how the AI Retirement Income Planner fits with optional AI Chat and Plan with AI workflows.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, privacy, cybersecurity, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. AI output can be inaccurate or misleading, and retirement planning decisions should be verified with reliable sources and qualified professionals.

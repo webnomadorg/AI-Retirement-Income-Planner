@@ -386,6 +386,5 @@ Use `FAQPage` schema for:
 
 The AI Co-Pilot in the AI Retirement Income Planner is optional. Use AI Chat for plan questions, plan review, Learn-the-planner mode, and proposal workflows. Use Plan with AI when working beside a specific tab. Cloud AI requires your own API key, while local Ollama can be used without a cloud API key. The best workflow is to run the planner first, ask AI to explain specific results, review user-approved AI proposals, rerun the planner, and verify important details.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, privacy, cybersecurity, AI safety, software, or retirement advice. AI tools can produce incorrect, incomplete, outdated, or persuasive-sounding responses. Confirm tax, Medicare, Social Security, RMD, withdrawal, investment, insurance, healthcare, inflation, estate, privacy, cybersecurity, AI, and software details with official sources and qualified professionals.

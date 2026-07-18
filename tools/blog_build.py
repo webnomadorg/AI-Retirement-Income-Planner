@@ -97,6 +97,15 @@ PRODUCTION_SECTIONS = {
     "publishing notes",
 }
 
+# Reader-facing H2 headings the AI drafts get wrong. "Bottom Disclaimer" is a
+# layout/production artifact that must never render (it also leaks into the TOC + anchor);
+# the site convention is "Educational Disclaimer" (matches the **Educational disclaimer:**
+# front-matter key and the education-not-advice voice). Map lowercased heading -> correct text.
+HEADING_NORMALIZE = {
+    "bottom disclaimer": "Educational Disclaimer",
+    "disclaimer": "Educational Disclaimer",
+}
+
 WORDS_PER_MINUTE = 225
 
 
@@ -453,6 +462,11 @@ def render_post(post, all_posts, templates, partials, images):
     promo_parts = [trailer] if trailer else []
     for heading, md_sec in sections:
         key = heading.lower().strip()
+        if key in HEADING_NORMALIZE:
+            fixed = HEADING_NORMALIZE[key]
+            # rewrite only the heading line's text; keep the ## level (drives the id/anchor + TOC)
+            md_sec = re.sub(r"(?m)^(#+[ \t]+).+$", lambda m: m.group(1) + fixed, md_sec, count=1)
+            key = fixed.lower().strip()
         if key == "cta blocks":
             ctas = extract_ctas(md_sec)
             continue

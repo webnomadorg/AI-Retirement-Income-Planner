@@ -454,6 +454,5 @@ Suggested internal links:
 
 AI can be useful in retirement planning when it is used carefully. This article explains how to use AI for education, checklists, scenario summaries, and professional-prep questions while avoiding final-decision prompts, privacy mistakes, and unverified AI output. It positions the AI Retirement Income Planner as a calculator-backed, optional-AI workflow with Plan Health, scenarios, user-approved AI proposals, reports, and verification habits built into the planning process.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, privacy, cybersecurity, Social Security, Medicare, estate, AI safety, or retirement advice. AI output and planner projections depend on inputs and assumptions, and real-world outcomes can differ.

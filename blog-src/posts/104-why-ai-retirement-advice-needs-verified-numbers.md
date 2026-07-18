@@ -447,6 +447,5 @@ Suggested internal links:
 
 AI retirement advice needs verified numbers because retirement planning depends on exact inputs. This article explains why Social Security, Roth conversions, healthcare, taxes, RMDs, survivor income, balances, and spending assumptions should be checked before AI explains a plan. It positions the AI Retirement Income Planner as a calculator-backed workflow where verified inputs, Plan Health, scenarios, reports, and optional AI assistance work together.
 
-## Bottom Disclaimer
-
+## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, privacy, cybersecurity, Social Security, Medicare, estate, AI safety, software, or retirement advice. AI output and planner projections depend on inputs and assumptions, and real-world outcomes can differ.
