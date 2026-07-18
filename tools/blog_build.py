@@ -88,6 +88,13 @@ PRODUCTION_SECTIONS = {
     "suggested internal links",
     "cta blocks",
     "suggested cta blocks",
+    # Legacy drafts sometimes put the CTA under a per-type heading instead of one
+    # "CTA Blocks" section. Strip these so they never leak as a stray reader heading.
+    # (To actually surface the CTA as the end band, rename to "## CTA Blocks" with a
+    #  "**Product/Soft/Demo CTA:**" marker so extract_ctas picks it up.)
+    "suggested product cta",
+    "suggested soft cta",
+    "suggested demo cta",
     "schema notes",
     "suggested article schema",
     "suggested schema",

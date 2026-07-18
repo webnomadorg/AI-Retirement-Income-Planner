@@ -347,3 +347,7 @@ That detail matters.
 ## Newsletter Summary
 
 Claiming Social Security at 62 can provide income sooner, while waiting can raise the monthly benefit. This article explains what to model before choosing a claiming age, including work income, Medicare timing, survivor planning, taxes, Roth conversions, RMDs, and portfolio withdrawals.
+
+## Educational Disclaimer
+
+This article is for education only. Social Security claiming decisions can affect lifetime income, survivor benefits, taxes, healthcare planning, and portfolio withdrawals. Check SSA.gov and consider speaking with a qualified financial or tax professional before making a claiming decision.

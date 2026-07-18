@@ -260,3 +260,7 @@ Your AI key stays in your browser, and with Ollama your plan never leaves your c
 ## Newsletter Summary
 
 The AI Retirement Income Planner has an optional, bring-your-own-key AI assistant. This guide explains the two modes (Plan with AI versus Learn the planner), compares the six providers (Claude, OpenAI, Gemini, OpenRouter, Ollama, and custom), recommends Claude Opus 4.8 or Fable 5 for plan analysis and local models for how-to chat, and walks through selecting a model, refreshing the model list, and adding an API key safely, including step-by-step Claude signup.
+
+## Educational Disclaimer
+
+This article is for general education only. It is not financial, tax, investment, or legal advice, and it is not official guidance from any AI provider. AI models can be wrong. Always review AI suggestions against your own numbers and a qualified professional before acting. Provider names, models, and pricing change, so confirm current details with each provider.

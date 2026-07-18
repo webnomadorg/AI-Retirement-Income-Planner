@@ -536,9 +536,9 @@ Create a base scenario, then create fallback and upside scenarios. Change spendi
 - Claim Social Security At 62 Or Wait?
 - How Inflation Affects Retirement Income Planning
 
-## Suggested Product CTA
+## CTA Blocks
 
-Want a retirement plan that adapts instead of breaking under stress? The AI Retirement Income Planner lets you build base, fallback, and upside scenarios, test withdrawals, taxes, healthcare, Social Security timing, inflation, and plan health privately in your browser.
+**Product CTA:** Want a retirement plan that adapts instead of breaking under stress? The AI Retirement Income Planner lets you build base, fallback, and upside scenarios, test withdrawals, taxes, healthcare, Social Security timing, inflation, and plan health privately in your browser.
 
 ## Facebook Post Snippets
 
@@ -557,3 +557,7 @@ Useful guardrail question: if your portfolio drops 15 percent in year one of ret
 - Internal Revenue Service, "Retirement plan and IRA required minimum distributions FAQs": https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs
 - Social Security Administration, "Starting Your Retirement Benefits Early": https://www.ssa.gov/benefits/retirement/planner/agereduction.html
 - Medicare.gov, "Costs": https://www.medicare.gov/basics/costs/medicare-costs
+
+## Educational Disclaimer
+
+This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, or Social Security advice. Investment returns, tax rules, healthcare costs, inflation, and personal circumstances change. Confirm decisions with qualified professionals and official sources before acting.

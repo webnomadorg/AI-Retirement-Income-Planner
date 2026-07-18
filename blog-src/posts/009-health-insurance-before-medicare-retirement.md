@@ -356,3 +356,7 @@ That does not make them wrong. It means taxes and healthcare should be modeled t
 
 Early retirees need a health insurance bridge before Medicare. This article explains how Marketplace coverage, COBRA, spouse coverage, retiree benefits, income estimates, IRA withdrawals, Roth conversions, and Medicare timing can affect the retirement plan.
 
+
+## Educational Disclaimer
+
+This article is for education only. Health insurance options, Marketplace rules, COBRA rules, Medicare timing, and tax credits depend on personal facts and current law. Check HealthCare.gov, Medicare.gov, DOL.gov, and qualified insurance, tax, or financial professionals before making healthcare or retirement decisions.

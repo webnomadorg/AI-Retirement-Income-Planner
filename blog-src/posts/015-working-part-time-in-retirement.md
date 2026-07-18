@@ -389,3 +389,7 @@ Then compare taxes, healthcare, withdrawals, confidence, and Plan Health.
 
 Part-time work can make retirement more flexible, but it can also affect Social Security benefits, taxes, ACA Marketplace savings, Medicare IRMAA, withdrawal order, and Roth conversion room. This article explains what retirees should model before relying on earned income.
 
+
+## Educational Disclaimer
+
+This article is for education only. Part-time work can affect taxes, Social Security benefits, healthcare subsidies, Medicare costs, withdrawals, and retirement projections. Check SSA.gov, IRS.gov, HealthCare.gov, and qualified tax, financial, and healthcare professionals before making retirement income decisions.

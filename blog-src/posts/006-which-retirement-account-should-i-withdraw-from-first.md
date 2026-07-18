@@ -421,3 +421,7 @@ Then check taxes, healthcare costs, RMDs, confidence, and survivor outcomes.
 
 There is no universal retirement withdrawal order. Taxable-first, IRA-earlier, Roth-last, and blended strategies can all work in different situations. This article explains how account type, taxes, Social Security, Medicare, RMDs, and survivor planning should be modeled before choosing which account to spend first.
 
+
+## Educational Disclaimer
+
+This article is for education only. Retirement withdrawal choices can affect taxes, Medicare premiums, Social Security taxation, RMDs, estate planning, and long-term income. Check current IRS rules and consider speaking with a qualified tax or financial professional before making withdrawal decisions.

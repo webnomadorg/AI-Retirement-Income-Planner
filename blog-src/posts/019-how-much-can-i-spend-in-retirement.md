@@ -497,9 +497,9 @@ Review it at least once per year and after major changes such as retirement, Soc
 - Health Insurance Before Medicare Retirement
 - How RMDs Can Change Your Retirement Tax Bill
 
-## Suggested Product CTA
+## CTA Blocks
 
-Trying to find a retirement spending number that holds up under taxes, healthcare, Social Security timing, withdrawals, inflation, and stress tests? The AI Retirement Income Planner lets you build and compare private retirement income scenarios in your browser.
+**Product CTA:** Trying to find a retirement spending number that holds up under taxes, healthcare, Social Security timing, withdrawals, inflation, and stress tests? The AI Retirement Income Planner lets you build and compare private retirement income scenarios in your browser.
 
 ## Facebook Post Snippets
 
@@ -519,3 +519,7 @@ The 4 percent rule can be a starting point, but your real retirement spending pl
 - Medicare.gov, "Costs": https://www.medicare.gov/basics/costs/medicare-costs
 - Internal Revenue Service, "Retirement plan and IRA required minimum distributions FAQs": https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs
 - Investor.gov, "What is Risk?": https://www.investor.gov/introduction-investing/investing-basics/what-risk
+
+## Educational Disclaimer
+
+This article is for general education only. It is not financial, tax, investment, legal, insurance, or Social Security claiming advice. Retirement rules, tax rules, healthcare costs, and personal circumstances change. Confirm decisions with qualified professionals and official sources before acting.

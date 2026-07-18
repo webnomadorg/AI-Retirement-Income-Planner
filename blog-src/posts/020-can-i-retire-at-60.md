@@ -345,9 +345,9 @@ The biggest risk is often the combination of early withdrawals, healthcare befor
 - Retirement Stress Tests Before You Retire
 - Retirement Plan Health Checklist
 
-## Suggested Product CTA
+## CTA Blocks
 
-Thinking about retiring at 60? The AI Retirement Income Planner lets you model the bridge years before Medicare and Social Security, compare claiming ages, test healthcare and taxes, and save multiple retirement scenarios privately in your browser.
+**Product CTA:** Thinking about retiring at 60? The AI Retirement Income Planner lets you model the bridge years before Medicare and Social Security, compare claiming ages, test healthcare and taxes, and save multiple retirement scenarios privately in your browser.
 
 ## Facebook Post Snippets
 
@@ -366,3 +366,7 @@ Before retiring at 60, test three scenarios: retire now, work one more year, and
 - Social Security Administration, "What Important Things to Consider When Planning for Retirement": https://www.ssa.gov/benefits/retirement/planner/otherthings.html
 - HealthCare.gov, "Health coverage for retirees": https://www.healthcare.gov/retirees/
 - Internal Revenue Service, "Retirement topics - Exceptions to tax on early distributions": https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-exceptions-to-tax-on-early-distributions
+
+## Educational Disclaimer
+
+This article is for general education only. It is not financial, tax, investment, legal, insurance, healthcare, or Social Security claiming advice. Retirement rules, tax rules, healthcare costs, and personal circumstances change. Confirm decisions with qualified professionals and official sources before acting.
