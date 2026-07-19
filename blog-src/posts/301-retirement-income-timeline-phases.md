@@ -18,6 +18,8 @@
 
 **Image 2 alt:** The planner's Overview tab showing retirement as a row of phase cards with their age ranges, income, taxes, healthcare, and ending balances.
 
+**Image 3 alt:** Editorial illustration of the four planning questions for each retirement phase (which income sources are available, which costs and rules apply, which accounts to use, and what balance is carried into the next phase), with five phase cards passing their remaining balance forward into an Overview dashboard.
+
 **Primary keyword:** phase-based retirement planning
 
 **Secondary keywords:** retirement income timeline, retirement phases, retirement planning by age, retirement milestones, pre-Medicare bridge years
@@ -145,6 +147,8 @@ Before you calculate anything, sketch a rough timeline. Start with your expected
 - Any planned relocation, currency or residency change, mortgage payoff, or expected change in spending or healthcare costs.
 
 You do not need a perfect list. You just need enough structure to separate one phase from another. Then, for each phase, jot down four things: which income sources are available, which major costs or rules apply, which accounts may need to be used, and what balance should remain for the next phase. That simple exercise turns retirement from a vague future into a sequence you can actually analyze, which is precisely what the planner's Overview tab then does with real numbers.
+
+[IMAGE the four planning questions each phase feeds into the Overview 3]
 
 The next article in the series looks at what fills that timeline: [why your monthly income number is only the start](/blog/gross-net-real-retirement-income.html), and how gross, net, and real income tell you very different things.
 
