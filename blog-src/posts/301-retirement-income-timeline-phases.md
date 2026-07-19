@@ -106,7 +106,7 @@ Five smaller, clearer questions are far easier to review than one giant retireme
 
 The most important connection between phases is the **ending balance**. Whatever remains at the end of one phase becomes the starting point for the next. Draw down too aggressively early and the next phase starts weaker. Keep withdrawals too low and the portfolio grows, but you may live more tightly than you needed to.
 
-A low ending balance is not automatically wrong. Some retirees deliberately spend down assets, especially with strong guaranteed income; others want to preserve a cushion for healthcare, a long life, or legacy. The point is not whether the balance falls. The point is whether the decline is **understood, intentional, and still leaves the later phases workable.** Because the planner shows each phase's ending balance and carries it into the next, that trade-off is visible instead of hidden. (This is the subject of the next article in the series.)
+A low ending balance is not automatically wrong. Some retirees deliberately spend down assets, especially with strong guaranteed income; others want to preserve a cushion for healthcare, a long life, or legacy. The point is not whether the balance falls. The point is whether the decline is **understood, intentional, and still leaves the later phases workable.** Because the planner shows each phase's ending balance and carries it into the next, that trade-off is visible instead of hidden. (The ending balance gets a closer look later in this series.)
 
 ## The Same Withdrawal Can Land Differently in Different Phases
 
@@ -145,6 +145,8 @@ Before you calculate anything, sketch a rough timeline. Start with your expected
 - Any planned relocation, currency or residency change, mortgage payoff, or expected change in spending or healthcare costs.
 
 You do not need a perfect list. You just need enough structure to separate one phase from another. Then, for each phase, jot down four things: which income sources are available, which major costs or rules apply, which accounts may need to be used, and what balance should remain for the next phase. That simple exercise turns retirement from a vague future into a sequence you can actually analyze, which is precisely what the planner's Overview tab then does with real numbers.
+
+The next article in the series looks at what fills that timeline: [why your monthly income number is only the start](/blog/gross-net-real-retirement-income.html), and how gross, net, and real income tell you very different things.
 
 ## FAQ
 
