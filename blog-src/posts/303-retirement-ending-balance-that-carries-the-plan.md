@@ -16,7 +16,7 @@
 
 **Image 1 alt:** Editorial illustration of retirement as a chain of phases, each phase passing its ending balance to the next like links in a chain, with a portfolio line rising and falling over time.
 
-**Image 2 alt:** The planner's Balance tab showing the account-balances-across-phases chart and its "Reading your balance chart" insights, with an Ask AI about this button.
+**Image 2 alt:** The planner's Balance tab showing the account-balances-across-phases chart, with a chart-insights popover open and an Ask AI about this button.
 
 **Primary keyword:** retirement ending balance
 
