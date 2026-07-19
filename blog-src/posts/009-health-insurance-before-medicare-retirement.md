@@ -133,7 +133,7 @@ Roth conversions before RMD age can be useful. They can also raise income during
 
 That matters because Marketplace savings depend on income and household size.
 
-For example, a retiree might convert $40,000 from a traditional IRA to Roth in a low-wage retirement year. From a tax-bracket view, that may look reasonable. From a healthcare view, it may reduce premium tax credits or cost-sharing reductions.
+For example, a retiree might convert $40,000 from a traditional IRA to Roth in a low-wage retirement year. From a tax-bracket view, that may look reasonable. From a healthcare view, it may reduce premium tax credits or [cost-sharing reductions](/blog/aca-silver-plan-cost-sharing-reductions.html).
 
 The answer is not "never convert before Medicare."
 
