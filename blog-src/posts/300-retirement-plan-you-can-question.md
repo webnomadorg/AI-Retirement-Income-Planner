@@ -110,7 +110,7 @@ Build a first version from reasonable estimates and **save it as a baseline.** T
 
 A retirement plan does not need to be perfect to be useful. It needs to be clear enough that you can review it, and honest enough that you keep questioning it.
 
-The next articles in this series work through the pieces one at a time, starting with the foundation: why retirement income is best planned as a timeline of phases.
+The next articles in this series work through the pieces one at a time, starting with the foundation: why retirement income is best planned as a [timeline of phases](/blog/retirement-income-timeline-phases.html).
 
 ## FAQ
 
