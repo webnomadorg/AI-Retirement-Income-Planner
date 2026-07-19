@@ -10,6 +10,14 @@
 
 **Suggested URL slug:** retirement-plan-you-can-question
 
+**Image source base:** retirement-plan-you-can-question
+
+**Lead image:** 1
+
+**Image 1 alt:** Editorial illustration contrasting a single retirement "number" with a structured, phase-by-phase retirement plan you can question.
+
+**Image 2 alt:** The planner's Overview tab showing retirement as a timeline of phase cards, each with income, withdrawals, estimated taxes and healthcare, net and real income, and ending balance.
+
 **Primary keyword:** retirement income plan
 
 **Secondary keywords:** working retirement plan, can I retire, retirement planning tool, phase-based retirement planning, retirement income model
@@ -19,6 +27,8 @@
 ## Quick Answer
 
 Most retirement questions start as one number: "I have $600,000," or "this calculator says I have an 85% chance." Neither answers the questions that actually decide whether retirement works: how much of your income survives taxes and healthcare costs, what happens in the years before Medicare and Social Security, and whether a withdrawal today quietly weakens a phase ten years from now.
+
+[IMAGE one number versus a working retirement plan 1]
 
 A better goal is a **retirement plan you can question**: a working model, organized as a timeline, that shows net and real income, taxes, healthcare costs, and ending balances phase by phase, so you can change one assumption and immediately see the effect on the rest of the plan.
 
@@ -76,6 +86,8 @@ A [spreadsheet](/blog/retirement-spreadsheet-vs-retirement-planning-software.htm
 ## What This Looks Like in the Planner
 
 The AI Retirement Income Planner was built around exactly this idea. It is a **single HTML file that opens in your browser**, with no account and no sign-up, and your figures stay on your own device rather than being uploaded to a server.
+
+[IMAGE planner Overview tab showing retirement as phase cards 2]
 
 Inside, the plan is a working model:
 
