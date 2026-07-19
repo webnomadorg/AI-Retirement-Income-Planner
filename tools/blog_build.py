@@ -76,6 +76,8 @@ CLUSTER_TO_CATEGORY = {
     "expat and international retirement": ("expat", "Expat & International"),
     "planner tutorials": ("planner-howto", "Planner How-To"),
     "already retired": ("already-retired", "Already Retired"),
+    # Pillar series derived from the companion eBook "Build a Retirement Plan You Can Question"
+    "build a plan you can question": ("planning-framework", "Planning Framework"),
 }
 CATEGORY_LABEL_TO_SLUG = {label: slug for slug, label in CLUSTER_TO_CATEGORY.values()}
 

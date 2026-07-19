@@ -90,7 +90,7 @@ That is no longer a plain-English question. It is a calculator problem.
 
 ## What A Retirement Calculator Adds
 
-A real retirement calculator gives AI something concrete to work from.
+A real retirement calculator gives AI something concrete to work from. It is the difference between a single answer and [a retirement plan you can question](/blog/retirement-plan-you-can-question.html): a working model AI can read, rather than a number it has to invent.
 
 It turns broad questions into structured inputs:
 
