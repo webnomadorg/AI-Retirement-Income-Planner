@@ -30,7 +30,7 @@ Most retirement plans start with a monthly target: "I need about $4,000 a month.
 
 [IMAGE one income number splitting into gross net real and a floor 1]
 
-Is it **gross or spendable**? **Taxable or tax-free**? **Reliable or dependent on withdrawals**? **Protected against inflation** or quietly losing value? A useful plan breaks the single number into clearer parts: gross versus net, nominal versus real, and reliable versus flexible. Once you can see those parts, the same $4,000 stops being one figure and becomes a plan you can actually evaluate.
+Is it **gross or spendable**? **Taxable or tax-free**? **Reliable or dependent on withdrawals**? **Protected against inflation** or losing value over time? A useful plan breaks the single number into clearer parts: gross versus net, nominal versus real, and reliable versus flexible. Once you can see those parts, the same $4,000 stops being one figure and becomes a plan you can actually evaluate.
 
 This is the third article in our framework series drawn from the free companion eBook. The previous one covered [why retirement income is best planned as a timeline of phases](/blog/retirement-income-timeline-phases.html).
 
@@ -108,7 +108,7 @@ Because it is one connected model, adjusting a withdrawal moves all of these at 
 
 You do not need to predict every expense perfectly. For each phase, aim to identify a short list: reliable income, flexible withdrawals, which income is taxable versus tax-free, which is healthcare-sensitive, your essential income floor, your discretionary spending, and the ending balance. The goal is not a perfect forecast. It is to see whether the plan has enough income, enough flexibility, and enough remaining balance to keep working, phase after phase.
 
-The next article in the series looks more closely at that last item: the ending balance, the number that carries the plan forward from one phase to the next.
+The next article in the series looks more closely at that last item: [the ending balance](/blog/retirement-ending-balance-that-carries-the-plan.html), the number that carries the plan forward from one phase to the next.
 
 ## FAQ
 
@@ -149,7 +149,7 @@ This series summarizes it, but the complete step-by-step framework is in the fre
 
 **Snippet 2:** Two retirees, same $4,500 a month, same Social Security. One takes the rest from a traditional IRA, one from a Roth. The gross looks identical; the tax result is not. In retirement, where the income comes from matters as much as how much.
 
-**Snippet 3:** A plan showing $5,000 a month at 62 and $5,500 at 78 looks like a raise, until you adjust for inflation. Nominal income is the dollar amount; real income is what it buys. A plan can look stable in dollars while quietly weakening in real terms.
+**Snippet 3:** A plan showing $5,000 a month at 62 and $5,500 at 78 looks like a raise, until you adjust for inflation. Nominal income is the dollar amount; real income is what it buys. A plan can look stable in dollars while weakening in real terms.
 
 ## Newsletter Summary
 

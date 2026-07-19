@@ -355,7 +355,7 @@ No. Use AI for explanation, organization, and scenario ideas. Verify important d
 
 **Product CTA:** Use the AI Retirement Income Planner when you want calculator-backed retirement planning with optional AI Chat, Plan with AI, user-approved AI proposals, Plan Health, Plan Confidence, scenarios, reports, and privacy-aware setup choices.
 
-**Demo CTA:** Want to see the AI Co-Pilot in action? Open the AI Chat tab or the Plan with AI sidebar in the live demo, calculate a plan first, then ask it to explain one specific result.
+**Demo CTA:** Want to see where the AI Co-Pilot lives? Open the AI Chat tab or the Plan with AI sidebar in the live demo to see how they sit alongside a fully worked sample plan.
 
 ## Schema Notes
 

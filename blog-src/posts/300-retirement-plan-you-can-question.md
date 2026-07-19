@@ -26,7 +26,7 @@
 
 ## Quick Answer
 
-Most retirement questions start as one number: "I have $600,000," or "this calculator says I have an 85% chance." Neither answers the questions that actually decide whether retirement works: how much of your income survives taxes and healthcare costs, what happens in the years before Medicare and Social Security, and whether a withdrawal today quietly weakens a phase ten years from now.
+Most retirement questions start as one number: "I have $600,000," or "this calculator says I have an 85% chance." Neither answers the questions that actually decide whether retirement works: how much of your income survives taxes and healthcare costs, what happens in the years before Medicare and Social Security, and whether a withdrawal today weakens a phase ten years from now.
 
 [IMAGE one number versus a working retirement plan 1]
 
@@ -46,7 +46,7 @@ This is the first article in a series based on the free companion eBook *Build a
 
 ## "Can I Retire?" Is Not One Question
 
-Most people begin retirement planning with a simple question: *Can I retire?* But that question quietly contains several harder ones:
+Most people begin retirement planning with a simple question: *Can I retire?* But that question actually contains several harder ones:
 
 - Can I create enough monthly income, and will it still be enough after taxes?
 - What happens before Medicare begins at 65? What happens when Social Security starts?
@@ -94,7 +94,7 @@ Inside, the plan is a working model:
 - The **Overview** tab shows retirement as a set of phase cards. Each card lays out that phase's income sources, withdrawals, estimated taxes and healthcare costs, net income, real income, and ending balance. Change a number and the affected phases recalculate.
 - You can **save up to three plan snapshots** and compare any one of them against your current plan in a side-by-side table (a baseline, an improved version, a conservative version), so you can see exactly what a change did. There is even an "Ask AI about this comparison" button that explains *why* two versions differ.
 - The **Confidence** tab reviews the plan from several angles at once (income adequacy, tax-bracket efficiency, ACA and IRMAA exposure, portfolio survival, RMD pressure, and more), so a single reassuring number never hides a weak spot.
-- If you add your own AI key, an optional AI chat can read the plan you have entered and answer questions about it, but it works [on top of the planner's real calculations, not instead of them](/blog/why-ai-needs-a-retirement-calculator-underneath.html).
+- If you add your own API key, an optional AI chat can read the plan you have entered and answer questions about it, but it works [on top of the planner's real calculations, not instead of them](/blog/why-ai-needs-a-retirement-calculator-underneath.html).
 
 The planner does not make decisions for you. It gives you a structured way to review options, which is the whole point of a plan you can question.
 
@@ -140,7 +140,7 @@ This series summarizes it, but the complete step-by-step framework is in the fre
 
 **Soft CTA:** Want to see a plan you can actually question? The interactive demo shows a full sample plan broken out phase by phase: income, taxes, healthcare, and ending balances.
 
-**Demo CTA:** Open the live demo, look at the Overview phase cards, and change a number to watch the later phases recalculate.
+**Demo CTA:** Open the live demo and explore a full sample plan laid out as Overview phase cards, each with its income, taxes, healthcare, net and real income, and ending balance.
 
 **Product CTA:** The AI Retirement Income Planner turns your own numbers into a working model: phase-by-phase income, taxes, and healthcare, up to three saved plans you can compare, a plan-health review, and optional AI that reads your plan. One-time purchase, no subscription, runs privately in your browser.
 
@@ -148,7 +148,7 @@ This series summarizes it, but the complete step-by-step framework is in the fre
 
 **Snippet 1:** "I have $600,000." "This calculator says 85%." Neither answers the questions that actually decide whether retirement works. Here's why your plan should be something you can question, not one number.
 
-**Snippet 2:** A single "chance of success" score can look healthy while one phase of your plan is quietly fragile. A working model shows you where the risk is, and lets you test a fix.
+**Snippet 2:** A single "chance of success" score can look healthy while one phase of your plan is fragile. A working model shows you where the risk is, and lets you test a fix.
 
 **Snippet 3:** Don't wait for perfect inputs. Build a baseline from reasonable estimates, save it, then test the alternatives you're unsure about. A plan doesn't need to be perfect to be useful.
 

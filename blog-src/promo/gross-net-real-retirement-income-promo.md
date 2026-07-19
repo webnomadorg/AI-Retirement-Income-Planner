@@ -7,7 +7,7 @@
 
 **Snippet 2:** Two retirees, same $4,500 a month, same Social Security. One takes the rest from a traditional IRA, one from a Roth. The gross looks identical; the tax result is not. In retirement, where the income comes from matters as much as how much.
 
-**Snippet 3:** A plan showing $5,000 a month at 62 and $5,500 at 78 looks like a raise, until you adjust for inflation. Nominal income is the dollar amount; real income is what it buys. A plan can look stable in dollars while quietly weakening in real terms.
+**Snippet 3:** A plan showing $5,000 a month at 62 and $5,500 at 78 looks like a raise, until you adjust for inflation. Nominal income is the dollar amount; real income is what it buys. A plan can look stable in dollars while weakening in real terms.
 
 ## Newsletter Summary
 

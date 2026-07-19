@@ -30,7 +30,7 @@ Retirement is easier to plan when you stop treating it as one long, uniform peri
 
 [IMAGE retirement drawn as a timeline of phases 1]
 
-A **phase** is simply a stretch of retirement where the same conditions apply: the same income sources, the same healthcare rules, the same tax situation. Break retirement into phases and you can ask a much better question than "how much can I withdraw?" You can ask, phase by phase, *what does this period need to accomplish, and does today's decision quietly weaken a later phase?*
+A **phase** is simply a stretch of retirement where the same conditions apply: the same income sources, the same healthcare rules, the same tax situation. Break retirement into phases and you can ask a much better question than "how much can I withdraw?" You can ask, phase by phase, *what does this period need to accomplish, and does today's decision weaken a later phase?*
 
 This is the second article in our framework series drawn from the free companion eBook. If you have not read it yet, start with [why a retirement plan should be a working model, not one number](/blog/retirement-plan-you-can-question.html).
 
@@ -77,11 +77,11 @@ The planner turns those milestones into a working structure. By default it split
 
 | Phase | Default ages | What tends to change |
 | --- | --- | --- |
-| **Phase 1** | Retirement to 62 | The years before Social Security. Cash, 401(k)/IRA, brokerage, or part-time work carry the income. If you are under 65, ACA and MAGI matter. |
-| **Phase 2** | 62 to 65 | Social Security can begin here. Still before Medicare, so ACA thresholds may still apply. |
-| **Phase 3** | 65 to 67 | Medicare has begun. ACA concerns give way to Medicare premiums and possible IRMAA surcharges. |
-| **Phase 4** | 67 to 72 | Full retirement age reached. Often a useful low-tax window for testing Roth conversions before RMDs. |
-| **Phase 5** | 72 to plan end | The RMD years (RMDs currently start at 73). Taxable income may rise whether or not you need the cash. |
+| **Phase&nbsp;1** | Retirement to 62 | The years before Social Security. Cash, 401(k)/IRA, brokerage, or part-time work carry the income. If you are under 65, ACA and MAGI matter. |
+| **Phase&nbsp;2** | 62 to 65 | Social Security can begin here. Still before Medicare, so ACA thresholds may still apply. |
+| **Phase&nbsp;3** | 65 to 67 | Medicare has begun. ACA concerns give way to Medicare premiums and possible IRMAA surcharges. |
+| **Phase&nbsp;4** | 67 to 72 | Full retirement age reached. Often a useful low-tax window for testing Roth conversions before RMDs. |
+| **Phase&nbsp;5** | 72 to plan end | The RMD years (RMDs currently start at 73). Taxable income may rise whether or not you need the cash. |
 
 Two things make this more than a fixed template:
 
@@ -106,7 +106,7 @@ Five smaller, clearer questions are far easier to review than one giant retireme
 
 The most important connection between phases is the **ending balance**. Whatever remains at the end of one phase becomes the starting point for the next. Draw down too aggressively early and the next phase starts weaker. Keep withdrawals too low and the portfolio grows, but you may live more tightly than you needed to.
 
-A low ending balance is not automatically wrong. Some retirees deliberately spend down assets, especially with strong guaranteed income; others want to preserve a cushion for healthcare, a long life, or legacy. The point is not whether the balance falls. The point is whether the decline is **understood, intentional, and still leaves the later phases workable.** Because the planner shows each phase's ending balance and carries it into the next, that trade-off is visible instead of hidden. (The ending balance gets a closer look later in this series.)
+A low ending balance is not automatically wrong. Some retirees deliberately spend down assets, especially with strong guaranteed income; others want to preserve a cushion for healthcare, a long life, or legacy. The point is not whether the balance falls. The point is whether the decline is **understood, intentional, and still leaves the later phases workable.** Because the planner shows each phase's ending balance and carries it into the next, that trade-off is visible instead of hidden. (The ending balance gets [a closer look later in this series](/blog/retirement-ending-balance-that-carries-the-plan.html).)
 
 ## The Same Withdrawal Can Land Differently in Different Phases
 
@@ -160,7 +160,7 @@ Change the boundaries. Retire at 55 and you will want a longer early phase befor
 
 ### Why does the ending balance matter so much between phases?
 
-Because each phase hands its ending balance to the next as a starting balance. A phase can hit its income target and still weaken the following phase by drawing down too fast. Seeing the balance carried forward, phase by phase, is what tells you whether the current period is supporting the future or quietly consuming it.
+Because each phase hands its ending balance to the next as a starting balance. A phase can hit its income target and still weaken the following phase by drawing down too fast. Seeing the balance carried forward, phase by phase, is what tells you whether the current period is supporting the future or consuming it.
 
 ### Where can I get the full framework?
 
