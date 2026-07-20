@@ -16,7 +16,7 @@
 
 **Image 1 alt:** Editorial illustration of the widow's tax cliff: a surviving spouse's household income steps down as one Social Security check stops while a larger tax slice is taken under single-filer brackets.
 
-**Image 2 alt:** The planner's survivor scenario showing the surviving spouse keeping the larger Social Security benefit, a switch to single-filer taxes, and the Survivor Income Resilience Plan Health check.
+**Image 2 alt:** The planner's What-if Survivor explorer showing the surviving spouse's net income versus the couple's, the lost Social Security check, and the added tax from switching to single-filer brackets (the widow's tax cliff).
 
 **Primary keyword:** widow's tax cliff
 
