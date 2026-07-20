@@ -245,6 +245,9 @@
         var label = SESSION_LABEL[s.book] || 'session';
         var card = document.createElement('div');
         card.className = 'card';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.alignItems = 'flex-start';
         var head = document.createElement('h3');
         head.style.marginTop = '0';
         head.textContent = 'Book your ' + label;
@@ -262,6 +265,8 @@
           a.target = '_blank';
           a.rel = 'noopener';
           a.textContent = 'Choose a time';
+          a.style.marginTop = '.75rem';
+          a.style.alignSelf = 'flex-start';
           card.appendChild(a);
         } else {
           var note = document.createElement('p');
