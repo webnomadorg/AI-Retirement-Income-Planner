@@ -16,7 +16,7 @@
 
 **Image 1 alt:** Editorial illustration of the ACA cost-sharing-reduction income band before age 65, with a Silver plan lowering a retiree's deductible and out-of-pocket maximum inside the 100 to 250 percent federal poverty level range.
 
-**Image 2 alt:** The planner's phase card and Tax and ACA tab showing an ACA Silver CSR status badge and the CSR income-band check for a pre-Medicare year.
+**Image 2 alt:** The planner's Overview phase cards showing an ACA Silver CSR status badge (100 to 250 percent FPL) and a cliff-headroom popover warning that a pre-Medicare phase's MAGI is just below the 250 percent FPL Silver CSR ceiling.
 
 **Primary keyword:** ACA Silver plan cost-sharing reductions
 
