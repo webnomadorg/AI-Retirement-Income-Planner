@@ -82,12 +82,12 @@ The planner turns those milestones into a working structure. By default it split
 | **Phase&nbsp;1** | Retirement to 62 | The years before Social Security. Cash, 401(k)/IRA, brokerage, or part-time work carry the income. If you are under 65, ACA and MAGI matter. |
 | **Phase&nbsp;2** | 62 to 65 | Social Security can begin here. Still before Medicare, so ACA thresholds may still apply. |
 | **Phase&nbsp;3** | 65 to 67 | Medicare has begun. ACA concerns give way to Medicare premiums and possible IRMAA surcharges. |
-| **Phase&nbsp;4** | 67 to 72 | Full retirement age reached. Often a useful low-tax window for testing Roth conversions before RMDs. |
-| **Phase&nbsp;5** | 72 to plan end | The RMD years (RMDs currently start at 73). Taxable income may rise whether or not you need the cash. |
+| **Phase&nbsp;4** | 67 to 73 | Full retirement age reached. The low-tax window that runs right up to RMDs, so often the best stretch for testing Roth conversions. |
+| **Phase&nbsp;5** | 73 to plan end | The RMD years, which begin at 73. Taxable income may rise whether or not you need the cash. |
 
 Two things make this more than a fixed template:
 
-- **You edit the boundaries.** Those ages (62, 65, 67, 72) are inputs, not hard-coded rules. If your Medicare, claiming, or retirement dates differ, change them and the phases redraw.
+- **You edit the boundaries.** Those ages (62, 65, 67, 73) are inputs, not hard-coded rules. If your Medicare, claiming, or retirement dates differ, change them and the phases redraw.
 - **The timeline adapts to you automatically.** If you retire before 59½, the planner adds a separate **"Pre 59½"** phase, because most retirement accounts are penalty-locked until then. And it **splits a phase at your Social Security start age**, showing a "before Social Security" and "after Social Security" half so the change is visible right where it happens.
 
 ## Each Phase Has Its Own Job
