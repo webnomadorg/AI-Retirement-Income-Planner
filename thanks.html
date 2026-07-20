@@ -213,6 +213,8 @@
       if (!res.ok || !res.body.paid) { fail(res.body && res.body.error ? res.body.error : 'Verification failed.'); return; }
       var products = res.body.products || [];
       var sessions = res.body.sessions || [];
+      var buyerEmail = res.body.customer_email || '';
+      var safeEmail = buyerEmail.replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; });
       if (products.length && sessions.length) {
         lead.textContent = 'Your purchase is confirmed. Download your files below and book your session — both are ready for you.';
       } else if (sessions.length) {
@@ -247,7 +249,10 @@
         head.style.marginTop = '0';
         head.textContent = 'Book your ' + label;
         var body = document.createElement('p');
-        body.innerHTML = 'Your session isn’t scheduled yet — pick a time that suits you. A Google Meet link is added automatically, and you’ll leave with a starter scenario file. We’ve also emailed this link to you, so you can book later if now isn’t convenient.';
+        var emailedTo = safeEmail
+          ? 'We’ve also emailed this link to <strong>' + safeEmail + '</strong>, so you can book later if now isn’t convenient.'
+          : 'We’ve also emailed this link to you, so you can book later if now isn’t convenient.';
+        body.innerHTML = 'Your session isn’t scheduled yet — pick a time that suits you. A Google Meet link is added automatically, and you’ll leave with a starter scenario file. ' + emailedTo;
         card.appendChild(head);
         card.appendChild(body);
         if (url) {
