@@ -49,12 +49,17 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'This purchase has not completed payment yet. Refresh in a minute, or contact dev@webnomad.org.' });
     }
 
-    const products = (session.line_items?.data ?? [])
+    const lineItems = session.line_items?.data ?? [];
+    const products = lineItems
       .map(li => ({ name: li.price?.product?.name ?? li.description, zip: li.price?.product?.metadata?.zip }))
       .filter(p => p.zip);
+    // Bookable educational sessions carry metadata.book (a duration key) and have no zip.
+    const sessions = lineItems
+      .map(li => ({ name: li.price?.product?.name ?? li.description, book: li.price?.product?.metadata?.book }))
+      .filter(s => s.book);
 
-    if (!products.length) {
-      return res.status(404).json({ error: 'No downloadable files are attached to this purchase — contact dev@webnomad.org with your receipt.' });
+    if (!products.length && !sessions.length) {
+      return res.status(404).json({ error: 'No downloadable files or sessions are attached to this purchase — contact dev@webnomad.org with your receipt.' });
     }
 
     // Manifest mode
@@ -63,6 +68,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         paid: true,
         products,
+        sessions,
         amount_total: session.amount_total,
         currency: session.currency,
         customer_email: session.customer_details?.email ?? null,

@@ -58,6 +58,7 @@
         <li><a href="/features.html">Features</a></li>
         <li><a href="/how-it-works.html">How It Works</a></li>
         <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
         <li><a href="/blog.html">Blog</a></li>
         <li><a href="/faq.html">FAQ</a></li>
       </ul>
@@ -94,6 +95,7 @@
   <section class="section">
     <div class="container narrow">
       <div id="downloads" class="grid" style="gap:1rem;"></div>
+      <div id="booking" class="grid mt-3" style="gap:1rem;"></div>
       <div class="card mt-3" id="thanksHelp" style="display:none;">
         <h3 style="margin-top:0;">Keep your files safe</h3>
         <ul style="margin:0;padding-left:1.2rem;">
@@ -151,6 +153,7 @@
         <ul>
           <li><a href="/products.html#v7">Planner v7</a></li>
           <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
           <li><a href="/products.html">All versions</a></li>
         </ul>
       </div>
@@ -164,6 +167,7 @@
           <li><a href="/contact.html#share">Share your experience</a></li>
           <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
           <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
         </ul>
       </div>
     </div>
@@ -184,8 +188,13 @@
   var title = document.getElementById('thanksTitle');
   var eyebrow = document.getElementById('thanksEyebrow');
   var list = document.getElementById('downloads');
+  var bookingList = document.getElementById('booking');
   var help = document.getElementById('thanksHelp');
   var feedback = document.getElementById('thanksFeedback');
+
+  // Calendly scheduling links by session duration key (metadata.book). 1-hour only at launch.
+  var CALENDLY = { '1hr': 'https://calendly.com/webnomad/1-on-1-planner-session-1-hour' };
+  var SESSION_LABEL = { '1hr': '1-hour session', '2hr': '2-hour session' };
 
   function fail(msg) {
     eyebrow.textContent = 'Something needs attention';
@@ -202,8 +211,16 @@
     .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
     .then(function (res) {
       if (!res.ok || !res.body.paid) { fail(res.body && res.body.error ? res.body.error : 'Verification failed.'); return; }
-      lead.textContent = 'Your purchase is confirmed. Download your files below — they are yours to keep.';
-      res.body.products.forEach(function (p) {
+      var products = res.body.products || [];
+      var sessions = res.body.sessions || [];
+      if (products.length && sessions.length) {
+        lead.textContent = 'Your purchase is confirmed. Download your files below and book your session — both are ready for you.';
+      } else if (sessions.length) {
+        lead.textContent = 'Your purchase is confirmed. Book your session below to lock in a time — we’ve also emailed you the link.';
+      } else {
+        lead.textContent = 'Your purchase is confirmed. Download your files below — they are yours to keep.';
+      }
+      products.forEach(function (p) {
         var card = document.createElement('div');
         card.className = 'card';
         card.style.display = 'flex';
@@ -221,8 +238,36 @@
         card.appendChild(a);
         list.appendChild(card);
       });
-      help.style.display = '';
-      feedback.style.display = '';
+      sessions.forEach(function (s) {
+        var url = CALENDLY[s.book];
+        var label = SESSION_LABEL[s.book] || 'session';
+        var card = document.createElement('div');
+        card.className = 'card';
+        var head = document.createElement('h3');
+        head.style.marginTop = '0';
+        head.textContent = 'Book your ' + label;
+        var body = document.createElement('p');
+        body.innerHTML = 'Your session isn’t scheduled yet — pick a time that suits you. A Google Meet link is added automatically, and you’ll leave with a starter scenario file. We’ve also emailed this link to you, so you can book later if now isn’t convenient.';
+        card.appendChild(head);
+        card.appendChild(body);
+        if (url) {
+          var a = document.createElement('a');
+          a.className = 'btn btn-primary';
+          a.href = url;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.textContent = 'Choose a time';
+          card.appendChild(a);
+        } else {
+          var note = document.createElement('p');
+          note.className = 'muted';
+          note.style.margin = '0';
+          note.innerHTML = 'We’ll email you to arrange a time. Any questions: <a href="mailto:dev@webnomad.org">dev@webnomad.org</a>.';
+          card.appendChild(note);
+        }
+        bookingList.appendChild(card);
+      });
+      if (products.length) { help.style.display = ''; feedback.style.display = ''; }
       // Conversion events (fire only once per session id; consent mode gates delivery)
       try {
         var k = 'wn-purchase-' + sid.slice(-12);

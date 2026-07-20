@@ -301,6 +301,8 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .product-tag{ position:absolute; top:14px; left:14px; background:var(--ink); color:#fff;
   font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.4rem .7rem; border-radius:999px; }
 .product-tag.best{ background:var(--teal); }
+/* Inline variant for cards with no product image (e.g. session tiers) */
+.product-tag.static{ position:static; top:auto; left:auto; display:inline-block; align-self:flex-start; margin:0 0 .7rem; }
 .product-body{ padding:clamp(1.3rem,2.4vw,1.7rem); display:flex; flex-direction:column; flex:1; }
 .product-body h3{ font-size:1.4rem; margin-bottom:.35rem; }
 .product-desc{ color:var(--ink-soft); font-size:1rem; }

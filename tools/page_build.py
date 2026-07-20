@@ -31,11 +31,13 @@ PAGES = {
     "features.html": "FEATURES",
     "how-it-works.html": "HOW",
     "getting-started.html": "START",
+    "sessions.html": "SESSIONS",
     "technical.html": "",
     "faq.html": "FAQ",
     "contact.html": "",
     "affiliates.html": "",
     "privacy.html": "",
+    "terms.html": "",
     "newsletter.html": "",
     "demo.html": "",
     "about.html": "",
@@ -43,7 +45,10 @@ PAGES = {
     "404.html": "",
 }
 
-NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "BLOG", "FAQ"]
+# NOTE: test-checkout.html is intentionally NOT listed — it's a temporary, unlinked
+# standalone page (no shared chrome) removed after the $1 pipeline test.
+
+NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "SESSIONS", "BLOG", "FAQ"]
 
 HEADER_RE = re.compile(r'<header class="site-header">.*?</header>', re.S)
 FOOTER_RE = re.compile(r'<footer class="site-footer">.*?</footer>', re.S)
