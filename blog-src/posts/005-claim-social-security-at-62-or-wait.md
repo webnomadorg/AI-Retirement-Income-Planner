@@ -135,7 +135,7 @@ If you are leaving work before 65, the bridge to Medicare is its own planning pr
 
 For married couples, Social Security claiming is often a household decision.
 
-The higher earner's claiming age can affect the benefit available to a surviving spouse. That makes the delay decision more important for couples where one spouse has a much larger benefit.
+The higher earner's claiming age can affect the benefit available to a surviving spouse. That makes the delay decision more important for couples where one spouse has a much larger benefit, because of the [widow's tax cliff](/blog/survivor-benefits-widows-tax-cliff.html).
 
 A simple breakeven calculation may miss this.
 
