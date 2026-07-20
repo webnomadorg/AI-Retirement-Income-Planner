@@ -45,9 +45,6 @@ PAGES = {
     "404.html": "",
 }
 
-# NOTE: test-checkout.html is intentionally NOT listed — it's a temporary, unlinked
-# standalone page (no shared chrome) removed after the $1 pipeline test.
-
 NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "SESSIONS", "BLOG", "FAQ"]
 
 HEADER_RE = re.compile(r'<header class="site-header">.*?</header>', re.S)
