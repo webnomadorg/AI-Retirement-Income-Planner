@@ -153,8 +153,10 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(30,122,110,.28); }
 .nav-cta{ display:flex; align-items:center; gap:.6rem; }
 .nav-toggle{ display:none; }
+/* The Buy-now CTA must never wrap its own label onto a second line */
+.nav-cta .btn{ white-space:nowrap; }
 
-@media (max-width:1500px){
+@media (max-width:1600px){
   .nav-toggle{ display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px;
     border:1px solid var(--line); background:var(--surface); border-radius:10px; cursor:pointer; }
   .nav-toggle span{ display:block; width:20px; height:2px; background:var(--ink); position:relative; }
@@ -183,7 +185,7 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
   .nav-cta{ margin-top:.9rem; }
   .nav-cta .btn{ width:100%; justify-content:center; }
 }
-@media (min-width:1501px){ .nav-panel{ display:flex !important; align-items:center; gap:1.5rem; } }
+@media (min-width:1601px){ .nav-panel{ display:flex !important; align-items:center; gap:1.5rem; } }
 
 /* ---- 5. Buttons ---------------------------------------------------------- */
 .btn{ display:inline-flex; align-items:center; gap:.55rem; font-family:var(--font-sans);
@@ -608,7 +610,7 @@ html.dark .dark-toggle .icon-moon{ display:none; }
 .theme-select:hover{ background:var(--surface); border-color:var(--teal-deep); }
 .theme-select:focus-visible{ outline:none; box-shadow:var(--ring); }
 
-@media (max-width:1500px){
+@media (max-width:1600px){
   /* Theme controls sit at the TOP of the open panel, not buried at the bottom.
      The panel can be taller than a phone screen (7 links alone nearly fill an
      iPhone 13), so anything below them needs a scroll to reach. order:-1 does this
@@ -622,10 +624,10 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .theme-select{ max-width:100%; font-size:.95rem; padding:.6rem .7rem; }
   .dark-toggle{ width:44px; height:44px; }
 }
-@media (min-width:1501px){
+@media (min-width:1601px){
   .nav-panel{ gap:.9rem; }
   .nav{ gap:1rem; }
-  /* Tightened so all eight nav items (incl. Blog) fit on one row at the 1501px breakpoint floor (no second-line wrap) */
+  /* Tightened so all nav items + the Buy-now CTA fit on one row at the 1601px breakpoint floor (no second-line wrap) */
   .nav-links{ gap:.2rem; }
   .nav-links a{ padding-inline:.62rem; }
   .nav-cta{ padding-inline-end:.85rem; }
