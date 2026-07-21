@@ -89,7 +89,7 @@ Cash has a split role. It is essential for emergencies, near-term spending, and 
 
 ## When a Real-Income Decline Is Acceptable
 
-A falling real income is not automatically a failure, and a rising nominal income is not automatically a success. Both statements point to the same discipline: judge the plan by real spending power and by intent. If real income declines later but essential expenses stay covered, healthcare is protected, there is a reserve for surprises, and the retiree is comfortable with a more modest later lifestyle, then a planned decline is perfectly reasonable. The risk is the unnoticed decline, where later phases weaken while the nominal figure keeps rising and hides it. The remedy is simply to look at real income, every phase, and decide.
+A falling real income is not automatically a failure, and a rising nominal income is not automatically a success. Both statements point to the same discipline: judge the plan by real spending power and by intent. If real income declines later but essential expenses stay covered, healthcare is protected, there is a reserve for surprises, and the retiree is comfortable with a more modest later lifestyle, then a planned decline is perfectly reasonable. The risk is the unnoticed decline, where later phases weaken while the nominal figure keeps rising and hides it. The remedy is simply to look at real income, every phase, and decide. Real income is the last of the individual angles, and the next article in this series brings them together to [check a plan from several angles at once](/blog/check-your-retirement-plan-from-several-angles.html).
 
 ## How the Planner Shows Real Income
 
