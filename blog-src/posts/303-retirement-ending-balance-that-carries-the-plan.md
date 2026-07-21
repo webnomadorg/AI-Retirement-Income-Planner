@@ -108,7 +108,7 @@ That mix is why [the order you draw from your accounts](/blog/which-retirement-a
 
 ## Taxes and Healthcare Move the Balance Too
 
-Ending balances are not shaped by withdrawals and growth alone. Taxes reduce what is left, and they reshape *future* balances: skipping taxable withdrawals now can grow a pre-tax account into a larger RMD problem later. Healthcare thresholds work the same way. Before Medicare, extra income can raise ACA premiums; after 65, it can trigger IRMAA surcharges. A withdrawal that looks manageable before those effects can be noticeably less efficient once the full cost is counted, which is why the ending balance is best read **after taxes and healthcare**, not before. The next article in this series looks at taxes in detail.
+Ending balances are not shaped by withdrawals and growth alone. Taxes reduce what is left, and they reshape *future* balances: skipping taxable withdrawals now can grow a pre-tax account into a larger RMD problem later. Healthcare thresholds work the same way. Before Medicare, extra income can raise ACA premiums; after 65, it can trigger IRMAA surcharges. A withdrawal that looks manageable before those effects can be noticeably less efficient once the full cost is counted, which is why the ending balance is best read **after taxes and healthcare**, not before. The next article in this series looks at [how taxes change the shape of retirement income](/blog/how-taxes-change-retirement-income.html) in detail.
 
 ## How the Planner Shows the Ending Balance
 
