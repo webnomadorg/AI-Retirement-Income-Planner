@@ -109,7 +109,7 @@ The useful question is whether the event can be timed, split, offset, or funded 
 
 ## Put Healthcare in Net Income
 
-Healthcare shapes real lifestyle, so it belongs in net income rather than as a footnote. A retiree may have strong gross income and a tighter life than expected once premiums, deductibles, prescriptions, and out-of-pocket costs are paid. If gross income is $5,000 a month but healthcare runs $900 before Medicare, the spendable figure is very different, and if a higher withdrawal raises that healthcare cost, the net gain from the withdrawal shrinks. Treating healthcare as a core expense, not a side note, is what keeps a plan honest.
+Healthcare shapes real lifestyle, so it belongs in net income rather than as a footnote. A retiree may have strong gross income and a tighter life than expected once premiums, deductibles, prescriptions, and out-of-pocket costs are paid. If gross income is $5,000 a month but healthcare runs $900 before Medicare, the spendable figure is very different, and if a higher withdrawal raises that healthcare cost, the net gain from the withdrawal shrinks. Treating healthcare as a core expense, not a side note, is what keeps a plan honest. And because those costs tend to rise faster than general prices, the next article in this series looks at [inflation and real income](/blog/inflation-and-real-retirement-income.html).
 
 ## Living Abroad
 
