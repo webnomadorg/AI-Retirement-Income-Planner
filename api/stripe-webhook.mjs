@@ -182,6 +182,7 @@ export default async function handler(req, res) {
           html: `<p>Thank you for booking a ${esc(label)}!</p>
 <p><strong>Your session isn’t scheduled yet</strong> — please pick a time that suits you. It’s confirmed once you choose a slot:</p>
 ${bookHtml}
+<p style="color:#555;font-size:.92rem">None of the available times convenient? Just reply to this email (or write to <a href="mailto:dev@webnomad.org">dev@webnomad.org</a>) with a few times that suit you and I’ll do my best to accommodate them. Once we agree a time that works for us both, you’ll receive a calendar invitation with the meeting link.</p>
 <p>What to expect:</p>
 <ul>
   <li>A one-hour, online, screen-share walkthrough of the planner — how to set it up, enter your numbers, and read the results, plus the concepts behind them.</li>
@@ -193,7 +194,7 @@ ${bookHtml}
   These sessions are <strong>educational instruction only</strong> — they are not financial, tax, or legal advice, and no personalised recommendations are given. See the <a href="${SITE}/terms.html">session terms</a>.
 </p>
 <p>— WebNomad Studio<br><a href="${SITE}">airetirementincomeplanner.com</a></p>`,
-          text: `Thank you for booking a ${label}!\n\nYour session isn’t scheduled yet — please pick a time here (it’s confirmed once you choose a slot):\n${url || 'We’ll email you to arrange a time.'}\n\nA Google Meet link is added automatically. You’ll leave with a starter scenario file emailed afterwards. Nothing sensitive is required.\n\nThese sessions are educational instruction only — not financial, tax, or legal advice. Terms: ${SITE}/terms.html\n\n— WebNomad Studio\n${SITE}`,
+          text: `Thank you for booking a ${label}!\n\nYour session isn’t scheduled yet — please pick a time here (it’s confirmed once you choose a slot):\n${url || 'We’ll email you to arrange a time.'}\n\nNone of the available times convenient? Reply to this email with a few times that suit you and I’ll do my best to accommodate them; once we agree a time you’ll get a calendar invitation with the meeting link.\n\nA Google Meet link is added automatically. You’ll leave with a starter scenario file emailed afterwards. Nothing sensitive is required.\n\nThese sessions are educational instruction only — not financial, tax, or legal advice. Terms: ${SITE}/terms.html\n\n— WebNomad Studio\n${SITE}`,
         });
       } catch (e) {
         console.error('stripe-webhook: buyer booking email failed', e);
