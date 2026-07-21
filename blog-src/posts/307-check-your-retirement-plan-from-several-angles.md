@@ -102,7 +102,7 @@ Each check is marked green, amber, or red with a plain-language reason, and, by 
 
 ## A Simple Review Order
 
-You do not have to follow a fixed order, but one that works is: check each phase has positive net income, then that real income stays acceptable, then that ending balances carry from phase to phase, then your tax bracket position, then any ACA or healthcare-sensitive years, then Medicare and IRMAA exposure, then future RMD pressure, then withdrawal sustainability, then stress-test the plan, and finally review account mix and flexibility. It simply helps organize the work so nothing important gets skipped.
+You do not have to follow a fixed order, but one that works is: check each phase has positive net income, then that real income stays acceptable, then that ending balances carry from phase to phase, then your tax bracket position, then any ACA or healthcare-sensitive years, then Medicare and IRMAA exposure, then future RMD pressure, then withdrawal sustainability, then stress-test the plan, and finally review account mix and flexibility. It simply helps organize the work so nothing important gets skipped. Once the plan checks out from several angles, the next question is how to draw it down, which the next article in this series covers by [comparing withdrawal strategies](/blog/comparing-retirement-withdrawal-strategies.html).
 
 ## FAQ
 
