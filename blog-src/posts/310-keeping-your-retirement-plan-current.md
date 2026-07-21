@@ -89,7 +89,7 @@ Two features make the annual habit stick. A **plan-status chip** moves a plan th
 
 ## A Simple Annual Review Checklist
 
-Once a year, this sequence keeps the work organized: save the current plan as last year's version; update your current age and balances; update income sources, spending, tax values, healthcare values, and inflation and COLA assumptions; update currency rates if relevant; review each phase card; check net and real income; review ending balances and Plan Health; review your tax bracket position, ACA or IRMAA exposure, and RMD pressure; stress-test lower returns and higher inflation; then save the updated baseline. It is not about precision for its own sake. It is about staying informed enough to make good decisions with the numbers as they actually are.
+Once a year, this sequence keeps the work organized: save the current plan as last year's version; update your current age and balances; update income sources, spending, tax values, healthcare values, and inflation and COLA assumptions; update currency rates if relevant; review each phase card; check net and real income; review ending balances and Plan Health; review your tax bracket position, ACA or IRMAA exposure, and RMD pressure; stress-test lower returns and higher inflation; then save the updated baseline. It is not about precision for its own sake. It is about staying informed enough to make good decisions with the numbers as they actually are. If you have not built a plan yet, the next article in this series walks through [your first planning session](/blog/your-first-retirement-planning-session.html) step by step.
 
 ## FAQ
 
