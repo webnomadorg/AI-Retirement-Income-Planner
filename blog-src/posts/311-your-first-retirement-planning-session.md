@@ -32,7 +32,7 @@ The goal of your first planning session is not a perfect retirement plan. It is 
 
 That matters because without a baseline every question stays abstract. With one, each question has a place to land: you can see which phase is strongest, which is weakest, test Social Security timing, adjust withdrawals, check taxes and healthcare, compare strategies, and save a revised version to compare against the original. This article walks through a practical first session, gathering your inputs, building and reading the baseline, saving it, then reviewing and improving one change at a time.
 
-This is the twelfth article in our framework series drawn from the free companion eBook, and it brings the whole framework together into a workflow. The previous one covered [keeping your plan current](/blog/keeping-your-retirement-plan-current.html), the habit that a first baseline eventually feeds into.
+This is the twelfth article in our framework series drawn from the free companion eBook, and it brings the whole framework together into a workflow. The previous one covered [keeping your plan current](/blog/keeping-your-retirement-plan-current.html), the habit that a first baseline eventually feeds into, and the next one walks a single example through the whole framework in a [retirement plan case study](/blog/retirement-plan-case-study.html).
 
 📘 **Free companion eBook:** this series is drawn from *Build a Retirement Plan You Can Question*. [Get the full framework free](/newsletter.html).
 
