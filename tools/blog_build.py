@@ -81,6 +81,34 @@ CLUSTER_TO_CATEGORY = {
 }
 CATEGORY_LABEL_TO_SLUG = {label: slug for slug, label in CLUSTER_TO_CATEGORY.values()}
 
+# Ordered blog series. A post whose slug is in a series gets a numbered "read in
+# order" list of the WHOLE series as its related-articles block (the current post
+# is shown in place but NOT linked) instead of the generic 3-pick related list.
+# Order = the intended reading order, not publish date. Keep slugs in sync with
+# the posts' **Suggested URL slug** / filename.
+SERIES = [
+    {
+        "label": "Build a Retirement Plan You Can Question",
+        "heading": "The full series: Build a Retirement Plan You Can Question",
+        "slugs": [
+            "retirement-plan-you-can-question",
+            "retirement-income-timeline-phases",
+            "gross-net-real-retirement-income",
+            "retirement-ending-balance-that-carries-the-plan",
+            "how-taxes-change-retirement-income",
+            "how-healthcare-costs-move-with-income",
+            "inflation-and-real-retirement-income",
+            "check-your-retirement-plan-from-several-angles",
+            "comparing-retirement-withdrawal-strategies",
+            "asking-better-retirement-questions-with-ai",
+            "keeping-your-retirement-plan-current",
+            "your-first-retirement-planning-session",
+            "retirement-plan-case-study",
+            "questions-to-ask-your-retirement-plan",
+        ],
+    },
+]
+
 # H2 sections that are production notes, not reader content (lowercased). Includes the
 # heading variants used by the older 'Process Later' drafts (e.g. "internal link
 # suggestions", "suggested article schema") so their trailers are stripped too.
@@ -225,6 +253,41 @@ def find_source_image(images_dir, base, n):
         if p.exists():
             return p
     return None
+
+
+def find_square_image(square_dir, base, card):
+    """Locate the pre-cropped SQUARE version of a post's card image, if the user
+    supplied one. Files live in '<images>/square images/' and are named
+    '<base> <card> SQUARE.<ext>' or '<base> SQUARE.<ext>' (the number is optional,
+    matching how the flat card images are named with/without a trailing number)."""
+    for name in (f"{base} {card} SQUARE", f"{base} SQUARE"):
+        for ext in (".png", ".jpg", ".jpeg", ".webp"):
+            p = square_dir / f"{name}{ext}"
+            if p.exists():
+                return p
+    return None
+
+
+def prepare_square_thumb(post, square_dir):
+    """Build the list-view square thumbnail (assets/img/blog/<slug>-sq.webp) from a
+    genuinely-square source in 'square images/'. Returns its URL, or '' if there is
+    no (square) source — in which case the landing page's list view falls back to the
+    normal 16:10 thumbnail. Only the card/OG image gets a square variant."""
+    dest = IMG_OUT / f"{post['slug']}-sq.webp"
+    src = find_square_image(square_dir, post["img_base"], post["card"])
+    ok = False
+    if src:
+        w0, h0 = image_size(src)
+        ok = abs(w0 - h0) <= max(w0, h0) * 0.02  # within 2% of 1:1
+    if not ok:
+        if dest.exists():
+            dest.unlink()
+            print(f"  pruned square thumb (no square source): {dest.name}")
+        return ""
+    if not dest.exists() or dest.stat().st_mtime < src.stat().st_mtime:
+        w, h = convert_image(src, dest, max_width=560, quality=80)
+        print(f"  sq:  {src.name} -> {dest.name} ({w}x{h})")
+    return f"/assets/img/blog/{dest.name}"
 
 
 def convert_image(src, dest, max_width, quality):
@@ -438,7 +501,40 @@ def jsonld_post(post, images, faq_pairs):
             + json.dumps(data, ensure_ascii=False) + "</script>")
 
 
+def series_for(slug):
+    """Return the SERIES entry a post belongs to (by slug), or None."""
+    for s in SERIES:
+        if slug in s["slugs"]:
+            return s
+    return None
+
+
+def series_related_html(post, series, by_slug):
+    """A numbered, read-in-order list of the whole series. The current post is shown
+    in its position but rendered as plain text (no link, aria-current)."""
+    lis = []
+    for slug in series["slugs"]:
+        p = by_slug.get(slug)
+        if not p or p["draft"]:
+            continue  # never link an unpublished/removed post
+        title = esc_attr(p["title"])
+        if slug == post["slug"]:
+            lis.append(f'      <li aria-current="true"><span class="series-current">{title} '
+                       f'<span class="series-here">(you are here)</span></span></li>')
+        else:
+            lis.append(f'      <li><a href="/blog/{slug}.html">{title}</a></li>')
+    items = "\n".join(lis)
+    return ('<nav class="related-posts series-nav" aria-label="Articles in this series">\n'
+            f'  <h2>{esc_attr(series["heading"])}</h2>\n'
+            '  <p class="series-intro">Read in order for the full framework:</p>\n'
+            f'  <ol class="series-list">\n{items}\n  </ol>\n</nav>')
+
+
 def related_html(post, all_posts):
+    by_slug = {p["slug"]: p for p in all_posts}
+    series = series_for(post["slug"])
+    if series:
+        return series_related_html(post, series, by_slug)
     # drafts never appear as related links on other posts
     pool = [p for p in all_posts if p["slug"] != post["slug"] and not p["draft"]]
     same = [p for p in pool if p["cat_slug"] == post["cat_slug"]]
@@ -569,6 +665,7 @@ def render_index(posts, templates, partials):
         "readTime": p["read_time"],
         "thumb": f"/assets/img/blog/{p['slug']}-{p['card']}-thumb.webp"
                  if (IMG_OUT / f"{p['slug']}-{p['card']}-thumb.webp").exists() else "",
+        "sqThumb": p.get("sq_thumb", ""),
         "draft": p["draft"],
     } for p in posts], ensure_ascii=False, indent=1)
 
@@ -720,9 +817,12 @@ def main():
         sys.exit(f"Duplicate slugs: {dupes}")
     posts.sort(key=lambda p: p["published"], reverse=True)
 
+    square_dir = images_dir / "square images"
+
     print(f"Building {len(posts)} post(s)...")
     for post in posts:
         images = prepare_images(post, images_dir)
+        post["sq_thumb"] = prepare_square_thumb(post, square_dir)
         render_post(post, posts, templates, partials, images)
     render_index(posts, templates, partials)
     render_feed(posts)

@@ -123,8 +123,17 @@ var POSTS = {{POSTS_JSON}};
     return true;
   }
   function card(p) {
+    // List view uses the pre-cropped square thumbnail when the post has one
+    // (falls back to the 16:10 grid thumb); grid view always uses the 16:10 thumb.
+    var isList = state.view === "list";
+    var useSquare = isList && p.sqThumb;
+    var imgSrc = useSquare ? p.sqThumb : p.thumb;
+    var img = imgSrc
+      ? '<img class="post-card-thumb' + (useSquare ? ' sq-thumb' : '') + '" src="' + esc(imgSrc) +
+        '" alt="" loading="lazy" width="' + (useSquare ? '400" height="400"' : '640" height="400"') + '>'
+      : '<div class="post-card-fallback" aria-hidden="true"></div>';
     return '<a class="post-card card hoverable" href="/blog/' + esc(p.slug) + '.html">' +
-      (p.thumb ? '<img src="' + esc(p.thumb) + '" alt="" loading="lazy" width="640" height="400">' : '<div class="post-card-fallback" aria-hidden="true"></div>') +
+      img +
       '<div class="post-card-body">' +
       '<span class="cat-badge">' + esc(p.category) + '</span>' +
       (p.draft ? ' <span class="cat-badge draft-badge">Draft preview</span>' : "") +

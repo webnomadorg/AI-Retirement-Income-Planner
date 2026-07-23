@@ -1212,12 +1212,22 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .blog-grid.list-view .post-card>img,
 .blog-grid.list-view .post-card-fallback{ width:190px; aspect-ratio:16/10; flex:0 0 auto;
   border-bottom:none; border-right:1px solid var(--line-soft); }
+/* Posts with a pre-cropped square image (.sq-thumb) reuse this same fixed-width box, so the
+   left column stays aligned with the 16:10 fallback rows. Because the source is already square,
+   object-fit:cover trims only a few px top/bottom here instead of the ~third a 16:10 image
+   loses off its sides — that better crop is the whole point of the square variant. On phones
+   (below) the box is short/narrow, so the square is fixed and centered instead. */
 .blog-grid.list-view .post-card-body{ flex:1; justify-content:center; padding:.8rem 1.15rem; gap:.35rem; }
 .blog-grid.list-view .post-card-body h3{ font-size:1.06rem; }
 .blog-grid.list-view .post-card-body p{ -webkit-line-clamp:2; }
 @media (max-width:600px){
   .blog-grid.list-view .post-card>img,
   .blog-grid.list-view .post-card-fallback{ width:104px; }
+  /* Fixed, centered square on phones. Mobile list rows are tall (narrow text wraps to many
+     lines), so a full-height thumb would either crop the square heavily or, if it tracked the
+     row height, run away. A fixed square source needs no crop. */
+  .blog-grid.list-view .post-card>img.sq-thumb{ width:104px; height:104px; aspect-ratio:auto;
+    align-self:center; }
   .blog-grid.list-view .post-card-body{ padding:.7rem .85rem; }
 }
 .draft-badge{ color:var(--warn); background:rgba(183,121,31,.14); }
@@ -1361,6 +1371,14 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .related-posts h2{ font-size:1.3rem; }
 .related-posts ul{ list-style:none; padding:0; margin:0; }
 .related-posts li{ margin:.55rem 0; }
+/* Numbered "read in order" list for a blog series */
+.series-nav .series-intro{ margin:.2rem 0 .9rem; color:var(--ink-soft); font-size:.95rem; }
+.series-list{ margin:0; padding:0 0 0 1.6rem; list-style:decimal; }
+.series-list li{ margin:.5rem 0; padding-left:.3rem; }
+.series-list li::marker{ color:var(--teal-deep); font-weight:700; }
+.series-current{ font-weight:600; color:var(--ink); }
+.series-here{ font-weight:600; color:var(--teal-deep); font-size:.85rem;
+  text-transform:uppercase; letter-spacing:.04em; margin-left:.3rem; }
 
 /* Blog dark mode: token overrides cover most of it; fix the accent chips */
 html.dark .chip{ background:var(--surface); border-color:var(--line); color:var(--ink-soft); }
