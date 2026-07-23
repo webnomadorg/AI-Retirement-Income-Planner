@@ -87,7 +87,14 @@ A good comparison answer pushes back on that. In a real example, the AI ranked t
 
 That is the difference between reading a table and understanding it: the table shows a $1M gap, and the AI shows that most of the gap is not the decision you thought you were making.
 
-📄 **See the full worked example:** the exact prompt the planner builds and the AI's complete driver analysis are in <a href="/downloads/Ask-AI-about-the-comparison.pdf" target="_blank" rel="noopener">this example PDF</a>, so you can see the format of the question and the shape of a good answer before you run your own.
+<div class="download-card">
+  <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></svg>
+  <div class="download-card-body">
+    <p class="download-card-title">See the full worked example</p>
+    <p class="download-card-desc">The exact prompt the planner builds and the AI's complete driver analysis, so you can see the format of the question and the shape of a good answer before you run your own.</p>
+    <a class="btn btn-primary btn-sm" href="/downloads/Ask-AI-about-the-comparison.pdf" target="_blank" rel="noopener">Download the sample report (PDF)</a>
+  </div>
+</div>
 
 ## What It Will Not Do
 
