@@ -45,7 +45,7 @@ But earned income can also:
 
 - Affect Social Security benefits if you claim before full retirement age
 - Raise taxable income
-- Affect ACA Marketplace savings before Medicare
+- Affect [ACA Marketplace savings before Medicare](/blog/taxes-aca-healthcare-early-retirement.html)
 - Affect Medicare IRMAA for some retirees
 - Reduce time available for travel, caregiving, or rest
 

@@ -140,7 +140,7 @@ The point is that you can start before you understand everything. You begin so y
 
 Everything you type auto-saves in your browser as you go, so your work is there when you return. When a plan looks right, you can rename it to describe what it represents, then export it as a JSON file to keep a permanent copy on your own machine. You can hold as many exported plans as you like and reload any of them later.
 
-The planner keeps up to three saved plans in browser slots for quick side-by-side comparison, and the JSON export covers any additional versions you want to keep. That workflow, saving several plans and comparing them, is worth its own walkthrough. For now, exporting one finished plan is enough to be sure your work is safe.
+The planner keeps up to three saved plans in browser slots for quick side-by-side comparison, and the JSON export covers any additional versions you want to keep. That workflow, [saving, loading, and comparing scenarios](/blog/save-load-compare-retirement-scenarios.html), is worth its own walkthrough. For now, exporting one finished plan is enough to be sure your work is safe.
 
 ## FAQ
 

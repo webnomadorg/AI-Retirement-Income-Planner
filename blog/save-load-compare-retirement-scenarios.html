@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Save, Load, and Compare Retirement Scenarios Side by Side | AI Retirement Income Planner Blog</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="A step-by-step guide to saving retirement plans, reloading them later, and comparing scenarios side by side, using saved-plan slots and JSON export in the AI Retirement Income Planner.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/save-load-compare-retirement-scenarios.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Save, Load, and Compare Retirement Scenarios Side by Side">
+<meta property="og:description" content="A step-by-step guide to saving retirement plans, reloading them later, and comparing scenarios side by side, using saved-plan slots and JSON export in the AI Retirement Income Planner.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/save-load-compare-retirement-scenarios-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/save-load-compare-retirement-scenarios.html">
+<meta property="article:published_time" content="2026-07-24">
+<meta property="article:modified_time" content="2026-07-24">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Save, Load, and Compare Retirement Scenarios Side by Side", "description": "A step-by-step guide to saving retirement plans, reloading them later, and comparing scenarios side by side, using saved-plan slots and JSON export in the AI Retirement Income Planner.", "datePublished": "2026-07-24", "dateModified": "2026-07-24", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/save-load-compare-retirement-scenarios.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/save-load-compare-retirement-scenarios-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To"}, {"@type": "ListItem", "position": 4, "name": "How to Save, Load, and Compare Retirement Scenarios Side by Side", "item": "https://airetirementincomeplanner.com/blog/save-load-compare-retirement-scenarios.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between saved-plan slots and exporting to JSON?", "acceptedAnswer": {"@type": "Answer", "text": "Saved-plan slots keep up to three snapshots in your browser for quick side-by-side comparison on that device, and they are not included in exports. Exporting to JSON writes a plan to a file on your computer, which you can keep in unlimited numbers, use as a backup, and move between devices. Slots are for the decision in front of you; exports are your permanent library."}}, {"@type": "Question", "name": "Does resetting the planner delete my saved plans?", "acceptedAnswer": {"@type": "Answer", "text": "Resetting changes only your current working plan back to defaults. Any plan you have exported to a JSON file is a separate copy on your computer and is untouched, so you can import it again at any time. It is good practice to export a plan before a big change so you always have a way back."}}, {"@type": "Question", "name": "How many scenarios can I compare at once?", "acceptedAnswer": {"@type": "Answer", "text": "The built-in compare view puts one saved plan next to your current plan. To look at several at the same time, open the planner in multiple browser tabs and load a different scenario in each, since each tab is independent. For most decisions, comparing two plans that differ by a single change is the clearest approach."}}, {"@type": "Question", "name": "Will my plans be uploaded anywhere when I save them?", "acceptedAnswer": {"@type": "Answer", "text": "No. Saved-plan slots live in your browser on that device, and JSON exports are files saved to your own computer. There is no planner account and nothing is uploaded to the developer. You control where your exported files go."}}, {"@type": "Question", "name": "Why should I compare scenarios instead of just building one good plan?", "acceptedAnswer": {"@type": "Answer", "text": "A single plan only tells you whether one set of assumptions works. It cannot tell you whether a different choice would have been better. Comparing a baseline against alternatives, one change at a time, is how you see the actual trade-off behind a decision like when to claim Social Security or whether to retire two years earlier."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>How to Save, Load, and Compare Retirement Scenarios</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published July 24, 2026 · 10 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#quick-answer">Quick Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#auto-save-is-not-the-same-as-saving-a-copy">Auto-Save Is Not the Same as Saving a Copy</a></li>
+      <li><a href="#name-each-scenario-so-you-know-what-it-is">Name Each Scenario So You Know What It Is</a></li>
+      <li><a href="#save-plans-to-slots-for-quick-comparison">Save Plans to Slots for Quick Comparison</a></li>
+      <li><a href="#export-to-json-for-an-unlimited-library">Export to JSON for an Unlimited Library</a></li>
+      <li><a href="#reset-to-a-clean-baseline-for-a-new-scenario">Reset to a Clean Baseline for a New Scenario</a></li>
+      <li><a href="#compare-scenarios-side-by-side">Compare Scenarios Side by Side</a></li>
+      <li><a href="#what-is-worth-comparing">What Is Worth Comparing</a></li>
+      <li><a href="#ask-ai-about-the-comparison">Ask AI About the Comparison</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="quick-answer">Quick Answer</h2>
+<p>Comparing scenarios is where retirement planning gets genuinely useful. A single plan tells you whether one set of assumptions works. Comparing several tells you which choice is actually better: retire now or in two years, claim Social Security early or wait, work part time or not, stay put or move.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/save-load-compare-retirement-scenarios-1.webp" alt="Editorial illustration of a person comparing three retirement plan versions laid out side by side, weighing the trade-offs between them." width="1400" height="876" loading="lazy">
+</figure>
+
+<p>The AI Retirement Income Planner gives you two complementary ways to keep versions of a plan. <strong>Saved plans</strong> holds up to three snapshots in your browser for quick side-by-side comparison against your current plan. <strong>Export to JSON</strong> saves a plan as a file on your own computer, so you can keep an unlimited library of scenarios, reload any of them later, and move them between devices. This guide covers both, plus how to compare scenarios side by side and what is actually worth comparing.</p>
+<aside class="cta-box cta-soft">
+  <p>Want to see how a comparison looks before you build your own? The interactive demo includes a sample plan you can explore phase by phase, with the taxes and healthcare costs already modeled.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li><strong>Auto-save is not a permanent copy.</strong> Your work is auto-saved in the browser as you go, but to keep a distinct version you save it to a slot or export it to a file.</li>
+<li><strong>Name every scenario.</strong> A descriptive title (like "Retire at 62, ACA-optimized") is the difference between a useful library and a folder of files you cannot tell apart.</li>
+<li><strong>Use saved-plan slots for quick A/B comparison.</strong> Up to three snapshots live on your device and can be compared against your current plan in one view.</li>
+<li><strong>Export to JSON for an unlimited, portable library.</strong> Files live on your computer, work as backups, and move between devices. Slots do not travel inside an export.</li>
+<li><strong>Compare, do not guess.</strong> Enter an alternative, calculate it, and put it next to your baseline instead of wondering whether it would have been better.</li>
+</ul>
+<h2 id="auto-save-is-not-the-same-as-saving-a-copy">Auto-Save Is Not the Same as Saving a Copy</h2>
+<p>The first thing to understand is the difference between the plan auto-saving and you saving a copy of it.</p>
+<p>As you work, the planner auto-saves to your browser so nothing is lost if you close the tab and come back. That is a convenience, not a filing system. It keeps your <em>current</em> plan, not a named version you can return to. The moment you start changing numbers, that auto-saved state changes with them.</p>
+<p>To keep a specific version, so you can come back to exactly this plan after changing your mind, you either save it to a <strong>Saved plans</strong> slot or export it as a JSON file. Both are covered below, and most people end up using each for a different purpose. This is the natural next step once you have built a first plan in the <a href="/blog/how-to-set-up-a-retirement-income-plan.html">step-by-step setup guide</a>.</p>
+<h2 id="name-each-scenario-so-you-know-what-it-is">Name Each Scenario So You Know What It Is</h2>
+<p>Before you save anything, name it. The plan's subtitle is editable: click it and describe what this scenario represents. A few seconds spent here saves a lot of confusion later.</p>
+<p>Good scenario names describe the decision, not just the date:</p>
+<ul>
+<li>"Retire at 62, ACA-optimized"</li>
+<li>"Delay Social Security to 67"</li>
+<li>"UK tax resident from 65"</li>
+<li>"Downsize house in Phase 1"</li>
+<li>"Work part time to 65"</li>
+</ul>
+<p>When you later have several plans side by side, these names are what let you tell them apart at a glance. The name is part of the plan itself, so it is kept when the plan auto-saves, written into an exported file, and shown on the plan's tile in the Saved plans panel.</p>
+<h2 id="save-plans-to-slots-for-quick-comparison">Save Plans to Slots for Quick Comparison</h2>
+<p>The <strong>Saved plans</strong> panel keeps up to three plan snapshots in your browser. Think of them as quick-access A/B/C slots for the versions you are actively weighing against each other.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/save-load-compare-retirement-scenarios-2.webp" alt="The planner's Saved plans panel showing up to three plan slots, each with a name and a status badge, with save, reload, and compare controls." width="777" height="645" loading="lazy">
+</figure>
+
+<p>From the panel you can:</p>
+<ul>
+<li><strong>Save</strong> your current plan into a slot, capturing its complete state.</li>
+<li><strong>Reload</strong> any slot to bring that plan back as your working plan.</li>
+<li><strong>Compare</strong> a slot against your current plan in a single side-by-side view.</li>
+</ul>
+<p>Two things are worth knowing. First, these snapshots live on <strong>this device only</strong> and are deliberately <strong>not</strong> written into exported files, so a JSON export you send to another computer will not carry your slots with it. Second, three slots is intentionally a small, focused set for the decision in front of you. When you want to keep more than three versions, that is what JSON export is for.</p>
+<h2 id="export-to-json-for-an-unlimited-library">Export to JSON for an Unlimited Library</h2>
+<p>Exporting a plan writes it to a JSON file in your downloads folder. This is your permanent, portable copy.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/save-load-compare-retirement-scenarios-4.webp" alt="The planner toolbar showing the Export and Import controls used to save a plan to a JSON file and reload it later." width="704" height="54" loading="lazy">
+</figure>
+
+<p>Because each export is a complete snapshot of the plan, you can keep as many as you like, one file per scenario, and reload any of them later with <strong>Import</strong>. That makes JSON export the right tool for:</p>
+<ul>
+<li><strong>A full library of scenarios</strong> beyond the three quick slots.</li>
+<li><strong>Backups</strong> you keep on your own computer.</li>
+<li><strong>Moving a plan between devices</strong>, or keeping a copy somewhere safe.</li>
+</ul>
+<p>A typical rhythm is to build a plan, name it, export it, then reset and build the next one. Later you import whichever plans you want to revisit and fine-tune them from there. Everything stays on your machine; the file is yours.</p>
+<h2 id="reset-to-a-clean-baseline-for-a-new-scenario">Reset to a Clean Baseline for a New Scenario</h2>
+<p>When you want to plan something genuinely different from scratch, the <strong>Reset</strong> control returns the dashboard to its default values. That is a good starting point for a brand-new scenario rather than editing your way out of an existing one.</p>
+<p>Resetting only changes your current working plan. Anything you have already exported to a file is untouched, so you can reset with confidence and import a previous plan whenever you want it back. If you reset and then wish you had not, importing your last export restores exactly where you were.</p>
+<h2 id="compare-scenarios-side-by-side">Compare Scenarios Side by Side</h2>
+<p>This is the part that turns saved plans into better decisions. Once you have a plan in a slot, the <strong>Compare</strong> view puts it next to your current plan and shows how they differ, so you can see the effect of a change on income, tax, and the ending balance in each phase rather than trying to hold two sets of numbers in your head.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/save-load-compare-retirement-scenarios-3.webp" alt="The compare view showing a saved plan and the current plan side by side, with the differences in income, tax, and ending balance highlighted." width="778" height="872" loading="lazy">
+</figure>
+
+<p>If you want to look at more than two scenarios at the same time, there is a simple alternative: open the planner in several browser tabs and load a different scenario in each one. Each tab is completely independent, so you can save or import in one tab without affecting the others and flick between them to compare. It is a low-tech approach that works well when you are weighing three or four options at once.</p>
+<p>However you do it, the goal is the same. Instead of wondering whether an idea would have been better, you put the two plans next to each other and read the answer.</p>
+<h2 id="what-is-worth-comparing">What Is Worth Comparing</h2>
+<p>The value of comparison comes from asking the right questions. A few that tend to change a plan the most:</p>
+<ul>
+<li><strong>Working part time for a few years.</strong> Adding part-time income raises your total income, but in the years before Medicare it also raises your modified adjusted gross income, which can cost you <a href="/blog/aca-silver-plan-cost-sharing-reductions.html">ACA cost-sharing reductions</a> if it crosses a threshold. Comparing a <a href="/blog/working-part-time-in-retirement.html">part-time scenario</a> against your baseline shows how much you can earn before a subsidy is affected, and whether the extra income is worth it.</li>
+<li><strong>A one-time lump sum.</strong> Selling a property, an inheritance, or a maturing bond can be modeled as a lump sum in a specific phase, which changes how much you need to withdraw from your accounts around it. A "downsize the house" scenario often reshapes the whole plan.</li>
+<li><strong>Moving abroad.</strong> Displaying a plan in another currency and switching residency can change the tax and healthcare picture significantly, which is worth <a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">comparing directly against staying put</a>.</li>
+<li><strong>Spending more, or retiring earlier.</strong> Both raise the income you draw and lower later balances. Seeing the trade-off next to your baseline is more honest than guessing, and it connects directly to <a href="/blog/how-much-can-i-spend-in-retirement.html">how much you can safely spend</a>.</li>
+</ul>
+<p>In each case the workflow is the same: save your baseline, make one change, and compare. Changing one thing at a time is what makes the comparison readable.</p>
+<h2 id="ask-ai-about-the-comparison">Ask AI About the Comparison</h2>
+<p>If you have connected an API key, the compare view includes an "Ask AI about this comparison" button. It sends the two plans' outcomes to the AI and asks for a plain-English read on the trade-off, so you get an explanation of <em>why</em> one plan ends with a higher balance or a lower tax bill rather than just the raw numbers. This is optional and covered in more depth in the guide on <a href="/blog/compare-retirement-plans-with-ai.html">comparing plans with AI</a>. The comparison itself works fully without it.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the demo and look at a complete sample plan. It shows the kind of finished scenario you would save, name, and later compare against an alternative.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-is-the-difference-between-saved-plan-slots-and-exporting-to-json">What is the difference between saved-plan slots and exporting to JSON?</h3>
+<p>Saved-plan slots keep up to three snapshots in your browser for quick side-by-side comparison on that device, and they are not included in exports. Exporting to JSON writes a plan to a file on your computer, which you can keep in unlimited numbers, use as a backup, and move between devices. Slots are for the decision in front of you; exports are your permanent library.</p>
+<h3 id="does-resetting-the-planner-delete-my-saved-plans">Does resetting the planner delete my saved plans?</h3>
+<p>Resetting changes only your current working plan back to defaults. Any plan you have exported to a JSON file is a separate copy on your computer and is untouched, so you can import it again at any time. It is good practice to export a plan before a big change so you always have a way back.</p>
+<h3 id="how-many-scenarios-can-i-compare-at-once">How many scenarios can I compare at once?</h3>
+<p>The built-in compare view puts one saved plan next to your current plan. To look at several at the same time, open the planner in multiple browser tabs and load a different scenario in each, since each tab is independent. For most decisions, comparing two plans that differ by a single change is the clearest approach.</p>
+<h3 id="will-my-plans-be-uploaded-anywhere-when-i-save-them">Will my plans be uploaded anywhere when I save them?</h3>
+<p>No. Saved-plan slots live in your browser on that device, and JSON exports are files saved to your own computer. There is no planner account and nothing is uploaded to the developer. You control where your exported files go.</p>
+<h3 id="why-should-i-compare-scenarios-instead-of-just-building-one-good-plan">Why should I compare scenarios instead of just building one good plan?</h3>
+<p>A single plan only tells you whether one set of assumptions works. It cannot tell you whether a different choice would have been better. Comparing a baseline against alternatives, one change at a time, is how you see the actual trade-off behind a decision like when to claim Social Security or whether to retire two years earlier.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>Social Security Administration, Retirement Benefits: https://www.ssa.gov/benefits/retirement/</li>
+<li>HealthCare.gov, Health Coverage If You Retire Before 65: https://www.healthcare.gov/retirees/</li>
+<li>IRS, Required Minimum Distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, Social Security, Medicare, estate, or retirement advice. It does not provide personalized recommendations. Projections produced by any planning tool are estimates based on the assumptions entered. Rules, tax law, and costs change. Consult qualified financial, tax, and legal professionals before making significant financial decisions.</p>
+        </div>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner lets you save up to three plans for side-by-side comparison, export unlimited scenarios as JSON files, and see the trade-offs between them across five phases. One-time purchase, no subscription, no account, and your plans stay in your own browser.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/how-to-set-up-a-retirement-income-plan.html">How to Set Up a Retirement Income Plan: A Step-by-Step Planner Guide</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/taxes-aca-healthcare-early-retirement.html">Taxes, ACA Subsidies, and Healthcare in Early Retirement: How Income Choices Change the Cost</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">How to Use Plan Health in the AI Retirement Income Planner</a> <span class="post-meta">· Planner How-To</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/contact.html#share">Share your experience</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
