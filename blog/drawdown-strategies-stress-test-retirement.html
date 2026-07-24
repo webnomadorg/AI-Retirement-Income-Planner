@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe | AI Retirement Income Planner Blog</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="How to pressure-test a retirement plan from six angles using the Drawdown strategies tab and the stress test in the AI Retirement Income Planner, from the 4% rule and guardrails to Monte Carlo.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/drawdown-strategies-stress-test-retirement.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe">
+<meta property="og:description" content="How to pressure-test a retirement plan from six angles using the Drawdown strategies tab and the stress test in the AI Retirement Income Planner, from the 4% rule and guardrails to Monte Carlo.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/drawdown-strategies-stress-test-retirement-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/drawdown-strategies-stress-test-retirement.html">
+<meta property="article:published_time" content="2026-07-24">
+<meta property="article:modified_time" content="2026-07-24">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe", "description": "How to pressure-test a retirement plan from six angles using the Drawdown strategies tab and the stress test in the AI Retirement Income Planner, from the 4% rule and guardrails to Monte Carlo.", "datePublished": "2026-07-24", "dateModified": "2026-07-24", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/drawdown-strategies-stress-test-retirement.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/drawdown-strategies-stress-test-retirement-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To"}, {"@type": "ListItem", "position": 4, "name": "Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe", "item": "https://airetirementincomeplanner.com/blog/drawdown-strategies-stress-test-retirement.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between the drawdown strategies and the stress test?", "acceptedAnswer": {"@type": "Answer", "text": "The Drawdown strategies tab answers \"what can I safely spend?\" by running your plan through six withdrawal frameworks and comparing each against your plan's income. The stress test answers \"what happens if conditions turn bad?\" by running your plan across twelve combined return and inflation scenarios. One calibrates your spending; the other checks resilience. Used together they give a fuller picture than either alone."}}, {"@type": "Question", "name": "Do I have to enter my numbers separately for each strategy?", "acceptedAnswer": {"@type": "Answer", "text": "No. Both tools run entirely on the plan you have already built. Each strategy pulls your portfolio, guaranteed income floor, and assumptions automatically, and compares its result against your plan's average net monthly income. You just switch between strategies and read the results."}}, {"@type": "Question", "name": "What is a good Monte Carlo success rate?", "acceptedAnswer": {"@type": "Answer", "text": "Above about 80% is generally considered a strong result, and above 90% is exceptional. Between roughly 65% and 80% is moderate, and below about 65% is a signal to reduce withdrawals, delay retirement, or build a larger guaranteed income floor before relying on the plan. The figure is an educational estimate, not a guarantee."}}, {"@type": "Question", "name": "Which drawdown strategy should I actually use?", "acceptedAnswer": {"@type": "Answer", "text": "The tool is not built to pick one for you. Its value is showing whether the strategies agree. If the 4% rule says your spending is safe, floor coverage is solid, buckets are funded, and Monte Carlo clears 80%, that convergence matters more than which single framework you nominally follow. Where they disagree, you have a clear signal about what to adjust."}}, {"@type": "Question", "name": "Why does a bigger guaranteed income floor make my plan look safer?", "acceptedAnswer": {"@type": "Answer", "text": "Because guaranteed income, Social Security and pensions, does not move with the market. The more of your spending it covers, the less your portfolio has to do under pressure. In the stress test, the floor is what stabilizes your income even when returns are poor, and in floor-and-upside a coverage ratio above 60% means the majority of your income is effectively untouchable."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>Drawdown Strategies and Stress Tests: How to Know Your Number Is Safe</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published July 24, 2026 · 10 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#quick-answer">Quick Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#where-these-tools-live-and-how-they-read-your-plan">Where These Tools Live, and How They Read Your Plan</a></li>
+      <li><a href="#strategy-1-the-4-rule">Strategy 1: The 4% Rule</a></li>
+      <li><a href="#strategy-2-variable-percentage-withdrawal">Strategy 2: Variable Percentage Withdrawal</a></li>
+      <li><a href="#strategy-3-the-three-bucket-approach">Strategy 3: The Three-Bucket Approach</a></li>
+      <li><a href="#strategy-4-floor-and-upside">Strategy 4: Floor and Upside</a></li>
+      <li><a href="#strategy-5-guyton-klinger-guardrails">Strategy 5: Guyton-Klinger Guardrails</a></li>
+      <li><a href="#strategy-6-monte-carlo">Strategy 6: Monte Carlo</a></li>
+      <li><a href="#the-stress-test-bad-markets-and-high-inflation">The Stress Test: Bad Markets and High Inflation</a></li>
+      <li><a href="#reading-all-six-together">Reading All Six Together</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="quick-answer">Quick Answer</h2>
+<p>Most retirement advice hands you a single number: a withdrawal rate, a savings target, a magic percentage. But what if your plan looks solid by one measure and shaky by another? Real confidence does not come from one number. It comes from <strong>the same plan agreeing with itself across several independent tests.</strong></p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/drawdown-strategies-stress-test-retirement-1.webp" alt="Editorial illustration of a single retirement plan being examined through several different lenses that all converge on the same conclusion." width="1400" height="876" loading="lazy">
+</figure>
+
+<p>The AI Retirement Income Planner has two tabs built for this. The <strong>Drawdown strategies</strong> tab runs your plan through six of the most tested withdrawal frameworks at once. The <strong>Stress test</strong> tab throws bad markets and high inflation at it. When the 4% rule, variable withdrawals, buckets, floor-and-upside, guardrails, and a Monte Carlo simulation all point the same way, and the plan survives the stress grid, you move from <em>hoping</em> your plan works to <em>knowing</em> it does. This guide shows how to use both.</p>
+<aside class="cta-box cta-soft">
+  <p>Want to see a plan tested from six angles at once? The interactive demo includes a sample plan you can run through the drawdown strategies and stress test.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li><strong>One test is not enough.</strong> A plan can pass the 4% rule but fail Monte Carlo, or vice versa. Convergence across several frameworks is the real signal.</li>
+<li><strong>Everything runs on your actual numbers.</strong> There is no separate data entry. Each strategy compares itself against your plan's average net monthly income.</li>
+<li><strong>The key reading is "versus your plan."</strong> When a strategy's suggested spending lands close to your plan's income, you are calibrated. A consistent gap tells you which way to adjust.</li>
+<li><strong>A guaranteed floor changes everything.</strong> The more of your income that comes from Social Security and pensions, the less the market can hurt you, and the better most of these strategies look.</li>
+<li><strong>Stress-test before you commit.</strong> A plan that only works in good markets is not a plan. The stress grid shows where it is fragile before that fragility becomes real.</li>
+</ul>
+<h2 id="where-these-tools-live-and-how-they-read-your-plan">Where These Tools Live, and How They Read Your Plan</h2>
+<p>Both tools sit in the planner's tab row: <strong>Drawdown strategies</strong> and <strong>Stress test</strong>. The important thing to understand is that neither asks you to re-enter anything. They both run on the plan you have already built, so once you have a baseline (see the <a href="/blog/how-to-set-up-a-retirement-income-plan.html">step-by-step setup guide</a>), you can pressure-test it immediately.</p>
+<p>At the top of the Drawdown tab is a summary of the inputs driving the analysis: your total investable portfolio by account type, your guaranteed income floor (Social Security, pensions, anything that does not depend on markets), and your key assumptions. And critically, your plan's <strong>average net monthly income</strong> becomes the benchmark every strategy is measured against. The most useful number on every screen is "versus your plan": when it reads close to zero, your plan is calibrated to that framework.</p>
+<h2 id="strategy-1-the-4-rule">Strategy 1: The 4% Rule</h2>
+<p>The most cited number in retirement planning. Drawn from the Trinity study and William Bengen's research, it says that withdrawing 4% of your portfolio in year one and adjusting that dollar amount for inflation thereafter has historically survived 30-year retirements around 95% of the time.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/drawdown-strategies-stress-test-retirement-2.webp" alt="The Drawdown strategies tab showing the strategy selector and the 4% rule result compared against the plan's average monthly income." width="1400" height="943" loading="lazy">
+</figure>
+
+<p>In the planner, the 4% rule tells you whether your plan's spending is inside that safe zone. If your plan withdraws more than the rule suggests, it flags by how much; if less, it tells you that you may be planning conservatively and could spend more. There is a slider to test other rates: run it until the "versus your plan" card reads close to zero, and that is the rate the research says matches your income target. If that rate is at or below about 4.5%, your plan is historically safe by this benchmark.</p>
+<h2 id="strategy-2-variable-percentage-withdrawal">Strategy 2: Variable Percentage Withdrawal</h2>
+<p>The 4% rule has one known weakness: it is rigid and ignores what markets actually do. Variable Percentage Withdrawal (VPW) fixes that by withdrawing a percentage of your <em>remaining</em> portfolio each year, calibrated to your growth rate and remaining years. As you age, the percentage rises, and the math is designed so the portfolio reaches roughly zero at your life expectancy: no money left unspent, no risk of outliving it.</p>
+<p>VPW income tends to rise over time, which reflects reality for many retirees whose costs shift later in life. It is self-correcting, a strong year raises next year's income, a poor year trims it, so it suits people who can be flexible about spending but feels uncomfortable if you need the exact same amount every month. Your guaranteed floor cushions the variable part.</p>
+<h2 id="strategy-3-the-three-bucket-approach">Strategy 3: The Three-Bucket Approach</h2>
+<p>Less about math, more about behavior, and that is exactly why it works. You divide the portfolio into three time-segmented buckets: bucket one holds a few years of expenses in cash and is the only one you draw from; bucket two holds medium-term money and refills bucket one; bucket three is long-term growth that you do not touch for years.</p>
+<p>The planner maps your existing balances to these buckets, cash to bucket one, and shows how fully funded each is against its target. The genius is psychological: when markets crash 30% in your first year, you draw from cash rather than selling growth assets at the worst possible moment. If bucket one is underfunded, that is the most urgent thing to address before retiring, because that cash buffer is your protection against a bad sequence of returns early on.</p>
+<h2 id="strategy-4-floor-and-upside">Strategy 4: Floor and Upside</h2>
+<p>This is the strategy most aligned with how the planner is already built. It splits your income into two tiers: a <strong>floor</strong> that never depends on markets (Social Security, pensions, guaranteed income) and <strong>upside</strong> that your portfolio must supply to reach your target.</p>
+<p>The key metric is the <strong>coverage ratio</strong>: what percentage of your average monthly income is genuinely guaranteed. Above about 60% is strong downside protection; above 80% is exceptional. The planner shows this per phase, and because Social Security and pensions activate at different points, the coverage typically rises as retirement progresses, so the plan gets stronger over time, not weaker. Building that reliable floor is one of the most valuable moves in a plan, closely related to <a href="/blog/retirement-ending-balance-that-carries-the-plan.html">which accounts you rely on and when</a>.</p>
+<h2 id="strategy-5-guyton-klinger-guardrails">Strategy 5: Guyton-Klinger Guardrails</h2>
+<p>Guardrails solve a real problem: the 4% rule often leaves large sums unspent because it is too conservative, but simply raising the rate adds risk. Guardrails thread the needle by starting higher, around 5%, with two automatic safety valves. If markets fall enough that your withdrawal rate climbs above a ceiling, you cut spending by 10%. If they rise enough that your rate drops below a floor, you give yourself a 10% raise.</p>
+<p>The planner shows what you would receive at the start, after a maximum cut, and after a raise, plus how many cuts and raises each simulated market path triggers. If even the worst-case cut keeps your income within about 15% of your plan average, your spending is flexible enough for guardrails to work comfortably. This dynamic-spending idea has <a href="/blog/retirement-withdrawal-guardrails.html">its own deeper guide</a>.</p>
+<h2 id="strategy-6-monte-carlo">Strategy 6: Monte Carlo</h2>
+<p>Monte Carlo ties everything together. Instead of assuming one fixed return, it runs your full plan hundreds of times with randomized return sequences drawn from historical volatility, the way markets actually behave, with good years and bad years in unpredictable order.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/drawdown-strategies-stress-test-retirement-3.webp" alt="The Monte Carlo view showing a fan chart of possible outcomes and a probability-of-success figure." width="1400" height="920" loading="lazy">
+</figure>
+
+<p>The fan chart shows the full range of outcomes: a median line, bands for the middle 50% and 80%, and a bottom-10% line that is your realistic worst case. The headline number is the <strong>probability of success</strong>, the share of runs that end with money still in the pot. Above about 80% is a strong result; below about 65% is a signal to reduce withdrawals or extend your timeline. Monte Carlo pairs naturally with a <a href="/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">historical backtest that replays real market sequences</a>, and the two together are stronger than either alone.</p>
+<h2 id="the-stress-test-bad-markets-and-high-inflation">The Stress Test: Bad Markets and High Inflation</h2>
+<p>The Drawdown strategies ask "what can I safely spend?" The <strong>Stress test</strong> tab asks the harder question: "what happens when conditions turn against me?"</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/drawdown-strategies-stress-test-retirement-4.webp" alt="The stress test tab showing a grid of combined return and inflation scenarios and how the plan holds up in each." width="1400" height="750" loading="lazy">
+</figure>
+
+<p>It runs your plan across <strong>twelve combined scenarios</strong>, pairing lower and higher return assumptions with a range of inflation levels, and shows your average net monthly income and ending portfolio in each. Your current base case is the reference point. What you are watching for is not whether every scenario is comfortable, some will show reduced late-life balances, but whether the plan's income floor stays intact throughout. A plan whose guaranteed income holds up even when the portfolio suffers is the definition of a resilient plan. That is the payoff of building a strong floor: the moment Social Security activates, the income picture stabilizes even in a bad market.</p>
+<h2 id="reading-all-six-together">Reading All Six Together</h2>
+<p>The point of running six strategies is not more numbers. It is <strong>convergent evidence</strong> from independent frameworks all pointing to the same conclusion. A practical order to use them:</p>
+<ol>
+<li><strong>Start with the 4% rule.</strong> Find the rate that matches your income target. Below about 4.5% is historically safe.</li>
+<li><strong>Check floor and upside.</strong> A coverage ratio above 50% means guaranteed income is meaningfully reducing your market risk.</li>
+<li><strong>Fund your buckets.</strong> If bucket one is short, address that before retiring.</li>
+<li><strong>Run Monte Carlo.</strong> Above about 80% probability and the other strategies are telling a consistent story.</li>
+<li><strong>Use VPW and guardrails</strong> as optional refinements for flexibility.</li>
+</ol>
+<p>When all six broadly agree, the safe rate is sustainable, the floor is solid, the buckets are funded, and Monte Carlo clears 80%, that agreement is what confidence actually looks like. This is the same idea as <a href="/blog/check-your-retirement-plan-from-several-angles.html">checking a plan from several angles</a>, and it complements the deeper look at <a href="/blog/comparing-retirement-withdrawal-strategies.html">comparing withdrawal strategies</a>. The planner also rolls these signals into its <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">Plan Health checks and confidence score</a>, which flag the same risks automatically as you edit and rate each drawdown strategy against your plan. None of it predicts the future. Its value is showing where a plan is fragile before that fragility becomes a real problem, and telling you, when everything lines up, that you can move from hoping to knowing.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the demo and switch through the drawdown strategies on a sample plan. It shows how the same plan reads against the 4% rule, buckets, floor-and-upside, guardrails, and a Monte Carlo simulation.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-is-the-difference-between-the-drawdown-strategies-and-the-stress-test">What is the difference between the drawdown strategies and the stress test?</h3>
+<p>The Drawdown strategies tab answers "what can I safely spend?" by running your plan through six withdrawal frameworks and comparing each against your plan's income. The stress test answers "what happens if conditions turn bad?" by running your plan across twelve combined return and inflation scenarios. One calibrates your spending; the other checks resilience. Used together they give a fuller picture than either alone.</p>
+<h3 id="do-i-have-to-enter-my-numbers-separately-for-each-strategy">Do I have to enter my numbers separately for each strategy?</h3>
+<p>No. Both tools run entirely on the plan you have already built. Each strategy pulls your portfolio, guaranteed income floor, and assumptions automatically, and compares its result against your plan's average net monthly income. You just switch between strategies and read the results.</p>
+<h3 id="what-is-a-good-monte-carlo-success-rate">What is a good Monte Carlo success rate?</h3>
+<p>Above about 80% is generally considered a strong result, and above 90% is exceptional. Between roughly 65% and 80% is moderate, and below about 65% is a signal to reduce withdrawals, delay retirement, or build a larger guaranteed income floor before relying on the plan. The figure is an educational estimate, not a guarantee.</p>
+<h3 id="which-drawdown-strategy-should-i-actually-use">Which drawdown strategy should I actually use?</h3>
+<p>The tool is not built to pick one for you. Its value is showing whether the strategies agree. If the 4% rule says your spending is safe, floor coverage is solid, buckets are funded, and Monte Carlo clears 80%, that convergence matters more than which single framework you nominally follow. Where they disagree, you have a clear signal about what to adjust.</p>
+<h3 id="why-does-a-bigger-guaranteed-income-floor-make-my-plan-look-safer">Why does a bigger guaranteed income floor make my plan look safer?</h3>
+<p>Because guaranteed income, Social Security and pensions, does not move with the market. The more of your spending it covers, the less your portfolio has to do under pressure. In the stress test, the floor is what stabilizes your income even when returns are poor, and in floor-and-upside a coverage ratio above 60% means the majority of your income is effectively untouchable.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>Investor.gov, Retirement Planning: https://www.investor.gov/introduction-investing/general-resources/retirement-toolkit</li>
+<li>Bogleheads, Variable Percentage Withdrawal: https://www.bogleheads.org/wiki/Variable_percentage_withdrawal</li>
+<li>Investor.gov, Save and Invest: https://www.investor.gov/financial-tools-calculators/calculators</li>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, Social Security, Medicare, estate, or retirement advice. It does not provide personalized recommendations. All withdrawal strategies, simulations, and stress tests are illustrative estimates based on the assumptions entered, not predictions or guarantees of future results. Markets are uncertain. Consult qualified financial professionals before making significant financial decisions.</p>
+        </div>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner runs your plan through six drawdown strategies and a twelve-scenario stress test, plus Monte Carlo and historical backtesting, so you can see whether your plan holds up from every angle. One-time purchase, no subscription, no account, and your plan stays in your own browser.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        <nav class="related-posts series-nav" aria-label="Articles in this series">
+  <h2>The full series: Master the AI Retirement Income Planner</h2>
+  <p class="series-intro">A step-by-step tutorial series. Read in order, or jump to what you need:</p>
+  <ol class="series-list">
+      <li><a href="/blog/how-to-set-up-a-retirement-income-plan.html">How to Set Up a Retirement Income Plan: A Step-by-Step Planner Guide</a></li>
+      <li><a href="/blog/save-load-compare-retirement-scenarios.html">How to Save, Load, and Compare Retirement Scenarios Side by Side</a></li>
+      <li><a href="/blog/taxes-aca-healthcare-early-retirement.html">Taxes, ACA Subsidies, and Healthcare in Early Retirement: How Income Choices Change the Cost</a></li>
+      <li><a href="/blog/when-to-take-social-security-62-67-70.html">When to Take Social Security: How to Model 62 vs 67 vs 70 in Your Plan</a></li>
+      <li aria-current="true"><span class="series-current">Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe <span class="series-here">(you are here)</span></span></li>
+      <li><a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">How to Use Plan Health in the AI Retirement Income Planner</a></li>
+      <li><a href="/blog/retirement-planner-ai-prompts.html">The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)</a></li>
+      <li><a href="/blog/how-to-update-tax-rates-retirement-plan.html">How to Keep Your Retirement Plan's Tax Rates Current in Two Minutes</a></li>
+      <li><a href="/blog/multi-year-roth-conversion-optimizer.html">The Multi-Year Roth Conversion Optimizer: Plan Your Conversions Year by Year</a></li>
+      <li><a href="/blog/retirement-planning-case-studies.html">Retirement Planning Case Studies: Early Retirees, Expats, and Digital Nomads</a></li>
+  </ol>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/contact.html#share">Share your experience</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

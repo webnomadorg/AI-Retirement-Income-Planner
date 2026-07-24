@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals) | AI Retirement Income Planner Blog</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="A hands-on walkthrough of the six built-in AI prompts in the AI Retirement Income Planner, what each one checks, how to read the answers, and how to apply the AI's proposed changes with one click.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/retirement-planner-ai-prompts.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)">
+<meta property="og:description" content="A hands-on walkthrough of the six built-in AI prompts in the AI Retirement Income Planner, what each one checks, how to read the answers, and how to apply the AI's proposed changes with one click.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/retirement-planner-ai-prompts-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/retirement-planner-ai-prompts.html">
+<meta property="article:published_time" content="2026-07-24">
+<meta property="article:modified_time" content="2026-07-24">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)", "description": "A hands-on walkthrough of the six built-in AI prompts in the AI Retirement Income Planner, what each one checks, how to read the answers, and how to apply the AI's proposed changes with one click.", "datePublished": "2026-07-24", "dateModified": "2026-07-24", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/retirement-planner-ai-prompts.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/retirement-planner-ai-prompts-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To"}, {"@type": "ListItem", "position": 4, "name": "The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)", "item": "https://airetirementincomeplanner.com/blog/retirement-planner-ai-prompts.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do the AI prompts see my actual plan or just general information?", "acceptedAnswer": {"@type": "Answer", "text": "Each of the six prompts automatically attaches your complete plan, every phase, balance, withdrawal, and tax parameter, so the AI answers about your real numbers, not a generic example. It even knows your exact headroom to the next tax bracket, the IRMAA threshold, and the ACA cliff, and treats your passing Plan Health checks as constraints."}}, {"@type": "Question", "name": "Will the AI change my plan on its own?", "acceptedAnswer": {"@type": "Answer", "text": "No. The AI proposes changes as a panel of exact edits with checkboxes. You choose which to keep and click apply; nothing changes until you approve it. Every proposal is run through the planner's own calculation engine first, so the resulting numbers are the planner's, not the AI's estimate."}}, {"@type": "Question", "name": "Which prompt should I start with?", "acceptedAnswer": {"@type": "Answer", "text": "Start with \"Summarise & flag risks\" for a 60-second sanity check on the whole plan. Then use the more specific prompts, tax bracket check, ACA/CSR check, withdrawal strategy, to dig into anything it surfaced, and \"Propose optimisations\" or \"Roth conversion advice\" when you want concrete changes you can apply."}}, {"@type": "Question", "name": "Why does the AI refuse to just tell me the single best plan?", "acceptedAnswer": {"@type": "Answer", "text": "Because some goals genuinely trade off against each other. In early retirement you often cannot both fill low tax brackets and keep income low enough for the best ACA cost-sharing, since more withdrawals raise your MAGI. The AI shows you both paths and the trade-off rather than silently sacrificing one, because the right choice depends on your priorities. It is educational assistance, not advice."}}, {"@type": "Question", "name": "Can I use the AI features without paying for an API key?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The built-in AI Chat needs your own key (a few cents per conversation), but the planner also generates a copy-and-paste prompt containing your plan summary that you can paste into any free or paid AI assistant you already use. The core planner and all its calculations work with no key at all."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>The Six One-Click AI Prompts in the Retirement Planner</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published July 24, 2026 · 9 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#quick-answer">Quick Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#how-the-prompts-work">How the Prompts Work</a></li>
+      <li><a href="#the-six-prompts-one-by-one">The Six Prompts, One by One</a></li>
+      <li><a href="#applying-the-ais-proposed-changes">Applying the AI's Proposed Changes</a></li>
+      <li><a href="#the-trade-off-the-ai-will-show-you">The Trade-Off the AI Will Show You</a></li>
+      <li><a href="#ask-your-own-questions-and-the-ai-keeps-up">Ask Your Own Questions, and the AI Keeps Up</a></li>
+      <li><a href="#no-api-key-use-the-copy-and-paste-prompt">No API Key? Use the Copy-and-Paste Prompt</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="quick-answer">Quick Answer</h2>
+<p>The planner's AI Chat tab is not a blank box you have to know what to type into. It comes with <strong>six one-click prompts</strong>, each a carefully written question that automatically includes your entire plan as context. Click one and the AI reads every phase, balance, withdrawal, and tax figure in your plan, then answers about <em>your</em> numbers rather than in generalities.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-ai-prompts-1.webp" alt="Editorial illustration of a person clicking a single button and a retirement plan lighting up with insights and flagged risks." width="1400" height="876" loading="lazy">
+</figure>
+
+<p>Better still, when you ask for changes, the AI does not just talk. It returns a <strong>proposed-changes panel</strong> with exact field edits: you tick the ones you want, click apply, and your plan recalculates. This guide walks through what each of the six prompts does, when to use it, how to apply the proposals safely, and how to use the AI even without an API key. If you have not set AI up yet, the guide on <a href="/blog/using-ai-in-the-retirement-planner.html">using AI in the planner</a> covers providers and keys, and the <a href="/blog/how-to-use-the-ai-co-pilot.html">AI co-pilot walkthrough</a> covers the two AI surfaces in general.</p>
+<aside class="cta-box cta-soft">
+  <p>Curious what the AI actually says about a plan? The interactive demo includes a sample plan you can explore, with the same phases and figures the AI prompts read.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li><strong>Every prompt includes your whole plan.</strong> The AI is not guessing; it reads your actual phases, balances, and tax figures automatically.</li>
+<li><strong>Six prompts cover the big questions.</strong> Risk summary, tax bracket, ACA, withdrawal strategy, optimizations, and Roth conversions, each a single click.</li>
+<li><strong>Proposals are apply-with-one-click, but always yours to approve.</strong> The AI returns exact edits; you tick which to keep and apply them. Nothing changes until you say so.</li>
+<li><strong>Some goals trade off against each other.</strong> You often cannot optimize for both ACA subsidies and tax efficiency at once, and the AI will show you the choice rather than making it for you.</li>
+<li><strong>You do not need an API key to benefit.</strong> A copy-and-paste prompt sends your plan summary to any external AI assistant.</li>
+</ul>
+<h2 id="how-the-prompts-work">How the Prompts Work</h2>
+<p>The six buttons sit under the chat box in the AI Chat tab. What makes them powerful is that each one automatically attaches your complete plan, all the phases, every balance and withdrawal, your tax parameters, so the AI is reading your real situation, not a generic example.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-ai-prompts-2.webp" alt="The AI Chat tab showing the six one-click conversation starter buttons beneath the chat box." width="1400" height="695" loading="lazy">
+</figure>
+
+<p>Using the built-in AI Chat requires your own API key from a supported provider (a few cents per conversation), which the <a href="/blog/using-ai-in-the-retirement-planner.html">AI setup guide</a> covers. If you would rather not connect a key, skip to the copy-and-paste method at the end, which works in every version. Either way, the AI is plan-aware: it knows your dollar headroom to the next tax bracket, the IRMAA threshold, and the ACA cliff, and it treats your passing <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">Plan Health checks</a> as constraints it should not break.</p>
+<h2 id="the-six-prompts-one-by-one">The Six Prompts, One by One</h2>
+<h3 id="summarise-flag-risks">Summarise &amp; flag risks</h3>
+<p>This is your start-every-session prompt. It gives a 60-second sanity check: the AI summarizes what your plan is doing and flags the top three or four things worth worrying about. You will often discover risks you did not know were there. Begin here, then dig into specifics with the others.</p>
+<h3 id="tax-bracket-check">Tax bracket check</h3>
+<p>Answers one question with precision: in every phase, am I staying inside the 12% bracket, and if not, by how much? The AI reports your headroom phase by phase, which is exactly the information you need to decide whether to do a Roth conversion or take an extra 401(k) withdrawal while the low brackets have room.</p>
+<h3 id="aca-csr-check">ACA / CSR check</h3>
+<p>For anyone retiring before 65, this is the prompt that prevents expensive mistakes. It tells you, phase by phase, whether you are eligible for premium subsidies and cost-sharing reductions, and how close you are to the 400% federal poverty level cliff. It connects directly to the mechanics in <a href="/blog/taxes-aca-healthcare-early-retirement.html">taxes, ACA, and healthcare in early retirement</a>.</p>
+<h3 id="withdrawal-strategy">Withdrawal strategy</h3>
+<p>Asks the AI to look at how you draw across all phases, 401(k) versus cash versus Roth versus brokerage, and suggest improvements to tax efficiency and account-depletion timing. Most retirees get one of those right and miss the other; the AI is asked to consider both at once.</p>
+<h3 id="propose-optimisations">Propose optimisations</h3>
+<p>This is the action prompt. It proposes specific numeric changes to optimize your plan, aiming to keep you in the 12% bracket and preserve ACA cost-sharing eligibility where possible. Its output is what feeds the proposed-changes panel described below.</p>
+<h3 id="roth-conversion-advice">Roth conversion advice</h3>
+<p>Answers the question many retirees eventually reach: should I convert, in which phases, and how much? The AI sizes conversions to fill a bracket without spilling into the next one, respecting every cliff and threshold, and returns phase-specific dollar amounts you can apply. For a deeper treatment, the planner also has a dedicated Roth conversion tool.</p>
+<h2 id="applying-the-ais-proposed-changes">Applying the AI's Proposed Changes</h2>
+<p>When a prompt returns changes, they arrive as a <strong>proposed-changes panel</strong>: a list of exact field edits, each with a checkbox.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-ai-prompts-3.webp" alt="An AI response with a proposed-changes panel of checkboxes and an apply-selected button." width="1400" height="694" loading="lazy">
+</figure>
+
+<p>The workflow is simple and safe:</p>
+<ol>
+<li><strong>Read the proposals.</strong> Each one names the phase and the exact change, and the panel confirms which Plan Health checks it preserves.</li>
+<li><strong>Tick the ones you want, untick the rest.</strong> You are never forced to take all of them.</li>
+<li><strong>Click apply selected.</strong> The plan recalculates immediately with only the changes you approved.</li>
+</ol>
+<p>This is the heart of the design: the AI can propose, but <strong>you approve</strong>. Every proposal is dry-run through the planner's own calculation engine before it is applied, so the numbers you see are the planner's, not the AI's guesswork. The <a href="/blog/how-to-use-the-ai-co-pilot.html">user-approved proposal workflow</a> is covered in more depth in the co-pilot guide.</p>
+<h2 id="the-trade-off-the-ai-will-show-you">The Trade-Off the AI Will Show You</h2>
+<p>One of the most valuable things the AI does is surface a choice rather than pretend there is a single right answer. A common example: in the pre-Medicare phases you often <strong>cannot</strong> both fill your low tax brackets <em>and</em> keep your income low enough for the best ACA cost-sharing reductions. Withdrawing more to use cheap bracket space raises your MAGI and can cost you the subsidy.</p>
+<p>When this comes up, the AI lays out both paths, more tax arbitrage versus more ACA benefit, and tells you it is a decision only you can make based on your expected medical costs and priorities. That honesty is the point. A tool that quietly optimized one and silently sacrificed the other would be doing you a disservice. Here, you see the fork and choose.</p>
+<h2 id="ask-your-own-questions-and-the-ai-keeps-up">Ask Your Own Questions, and the AI Keeps Up</h2>
+<p>You are not limited to the six buttons. You can type any question: "What is my effective tax rate in each phase?" or "What happens if my 401(k) grows at 4% instead of 7%?" The AI answers against your real plan.</p>
+<p>And if you change your plan after asking something, the chat notices. It shows a note that the plan has been updated and will be included in your next reply, and once you send that message it confirms the AI is up to date with your plan. So you can ask, adjust a number, ask again, and trust that the AI is always reasoning about your current plan rather than a stale copy. This makes a natural loop: ask, adjust, re-check, improve.</p>
+<h2 id="no-api-key-use-the-copy-and-paste-prompt">No API Key? Use the Copy-and-Paste Prompt</h2>
+<p>If you prefer not to connect an API key, or you are using a version without the built-in chat, the planner still gives you an AI-ready prompt. It builds a prompt containing your plan's key figures that you copy and paste into any AI assistant, such as Claude, ChatGPT, or Gemini.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-ai-prompts-4.webp" alt="The copy-prompt area used to send a plan summary to an external AI assistant when no API key is connected." width="1129" height="130" loading="lazy">
+</figure>
+
+<p>A good question to paste alongside it:</p>
+<div class="prompt-card">
+  <div class="prompt-card-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Prompt to copy
+  </div>
+  <div class="prompt-card-body">
+    <p>Review my withdrawal strategy, identify any optimisation opportunities, flag risks I may have missed, and tell me whether my assumptions look realistic. Do not choose for me; explain the trade-offs.</p>
+  </div>
+</div>
+
+<p>The AI reads your plan summary and returns feedback on what you are doing well and what could be improved. You then take the suggestions back to the planner, enter the changes yourself, and recalculate. It is a few more steps than the one-click flow, but it needs no key and works with whichever AI you already use.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the demo and look at the sample plan the AI would analyze. It shows the phases, balances, and tax figures that each one-click prompt reads automatically.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="do-the-ai-prompts-see-my-actual-plan-or-just-general-information">Do the AI prompts see my actual plan or just general information?</h3>
+<p>Each of the six prompts automatically attaches your complete plan, every phase, balance, withdrawal, and tax parameter, so the AI answers about your real numbers, not a generic example. It even knows your exact headroom to the next tax bracket, the IRMAA threshold, and the ACA cliff, and treats your passing Plan Health checks as constraints.</p>
+<h3 id="will-the-ai-change-my-plan-on-its-own">Will the AI change my plan on its own?</h3>
+<p>No. The AI proposes changes as a panel of exact edits with checkboxes. You choose which to keep and click apply; nothing changes until you approve it. Every proposal is run through the planner's own calculation engine first, so the resulting numbers are the planner's, not the AI's estimate.</p>
+<h3 id="which-prompt-should-i-start-with">Which prompt should I start with?</h3>
+<p>Start with "Summarise &amp; flag risks" for a 60-second sanity check on the whole plan. Then use the more specific prompts, tax bracket check, ACA/CSR check, withdrawal strategy, to dig into anything it surfaced, and "Propose optimisations" or "Roth conversion advice" when you want concrete changes you can apply.</p>
+<h3 id="why-does-the-ai-refuse-to-just-tell-me-the-single-best-plan">Why does the AI refuse to just tell me the single best plan?</h3>
+<p>Because some goals genuinely trade off against each other. In early retirement you often cannot both fill low tax brackets and keep income low enough for the best ACA cost-sharing, since more withdrawals raise your MAGI. The AI shows you both paths and the trade-off rather than silently sacrificing one, because the right choice depends on your priorities. It is educational assistance, not advice.</p>
+<h3 id="can-i-use-the-ai-features-without-paying-for-an-api-key">Can I use the AI features without paying for an API key?</h3>
+<p>Yes. The built-in AI Chat needs your own key (a few cents per conversation), but the planner also generates a copy-and-paste prompt containing your plan summary that you can paste into any free or paid AI assistant you already use. The core planner and all its calculations work with no key at all.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>OpenAI, ChatGPT Help and FAQ: https://help.openai.com/en/articles/6783457-what-is-chatgpt</li>
+<li>Anthropic, Claude Documentation: https://docs.anthropic.com/</li>
+<li>Investor.gov, Protect Your Money From Fraud: https://www.investor.gov/protect-your-investments</li>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, Social Security, Medicare, estate, or retirement advice. It does not provide personalized recommendations. The AI features provide educational assistance and plan review, not advice, and AI output can be incomplete or wrong and must be reviewed. Projections are estimates based on the assumptions entered. Consult qualified professionals before making significant financial decisions.</p>
+        </div>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner includes six one-click AI prompts that read your whole plan, propose exact changes you apply with a click, and respect every tax, ACA, and Medicare threshold. AI is optional and uses your own key; the full planner works without it. One-time purchase, no subscription, no account.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        <nav class="related-posts series-nav" aria-label="Articles in this series">
+  <h2>The full series: Master the AI Retirement Income Planner</h2>
+  <p class="series-intro">A step-by-step tutorial series. Read in order, or jump to what you need:</p>
+  <ol class="series-list">
+      <li><a href="/blog/how-to-set-up-a-retirement-income-plan.html">How to Set Up a Retirement Income Plan: A Step-by-Step Planner Guide</a></li>
+      <li><a href="/blog/save-load-compare-retirement-scenarios.html">How to Save, Load, and Compare Retirement Scenarios Side by Side</a></li>
+      <li><a href="/blog/taxes-aca-healthcare-early-retirement.html">Taxes, ACA Subsidies, and Healthcare in Early Retirement: How Income Choices Change the Cost</a></li>
+      <li><a href="/blog/when-to-take-social-security-62-67-70.html">When to Take Social Security: How to Model 62 vs 67 vs 70 in Your Plan</a></li>
+      <li><a href="/blog/drawdown-strategies-stress-test-retirement.html">Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe</a></li>
+      <li><a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">How to Use Plan Health in the AI Retirement Income Planner</a></li>
+      <li aria-current="true"><span class="series-current">The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals) <span class="series-here">(you are here)</span></span></li>
+      <li><a href="/blog/how-to-update-tax-rates-retirement-plan.html">How to Keep Your Retirement Plan's Tax Rates Current in Two Minutes</a></li>
+      <li><a href="/blog/multi-year-roth-conversion-optimizer.html">The Multi-Year Roth Conversion Optimizer: Plan Your Conversions Year by Year</a></li>
+      <li><a href="/blog/retirement-planning-case-studies.html">Retirement Planning Case Studies: Early Retirees, Expats, and Digital Nomads</a></li>
+  </ol>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/contact.html#share">Share your experience</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

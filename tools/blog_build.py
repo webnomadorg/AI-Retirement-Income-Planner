@@ -107,6 +107,23 @@ SERIES = [
             "questions-to-ask-your-retirement-plan",
         ],
     },
+    {
+        "label": "Master the AI Retirement Income Planner",
+        "heading": "The full series: Master the AI Retirement Income Planner",
+        "intro": "A step-by-step tutorial series. Read in order, or jump to what you need:",
+        "slugs": [
+            "how-to-set-up-a-retirement-income-plan",
+            "save-load-compare-retirement-scenarios",
+            "taxes-aca-healthcare-early-retirement",
+            "when-to-take-social-security-62-67-70",
+            "drawdown-strategies-stress-test-retirement",
+            "how-to-use-plan-health-ai-retirement-income-planner",
+            "retirement-planner-ai-prompts",
+            "how-to-update-tax-rates-retirement-plan",
+            "multi-year-roth-conversion-optimizer",
+            "retirement-planning-case-studies",
+        ],
+    },
 ]
 
 # H2 sections that are production notes, not reader content (lowercased). Includes the
@@ -526,7 +543,7 @@ def series_related_html(post, series, by_slug):
     items = "\n".join(lis)
     return ('<nav class="related-posts series-nav" aria-label="Articles in this series">\n'
             f'  <h2>{esc_attr(series["heading"])}</h2>\n'
-            '  <p class="series-intro">Read in order for the full framework:</p>\n'
+            f'  <p class="series-intro">{esc_attr(series.get("intro", "Read in order for the full framework:"))}</p>\n'
             f'  <ol class="series-list">\n{items}\n  </ol>\n</nav>')
 
 
