@@ -44,7 +44,7 @@ This is the second article in our framework series drawn from the free companion
 - Common age milestones (59½, 62, 65, 67, 70, 73) mark points where the plan may change. They do not tell you what to do; they tell you *when the question changes*.
 - Each phase has its own **job**: bridge to Social Security, keep income under an ACA threshold, use a low-tax window before required minimum distributions, protect a reliable income floor.
 - The **ending balance** of one phase is the starting balance of the next, so the phases form a chain of trade-offs.
-- The planner builds this timeline for you: the Overview tab shows retirement as **phase cards** with editable age boundaries, and it recalculates the later phases whenever you change something.
+- The planner builds this timeline for you: the Overview tab shows retirement as **phase cards** with editable age boundaries, and it recalculates the later phases whenever you change something. If you are new to it, the [step-by-step setup guide](/blog/how-to-set-up-a-retirement-income-plan.html) walks through building this from scratch.
 
 ## Why One Number Cannot Tell You How to Produce the Income
 
