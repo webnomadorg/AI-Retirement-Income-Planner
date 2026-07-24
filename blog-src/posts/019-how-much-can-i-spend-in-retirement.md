@@ -109,7 +109,7 @@ The useful question is "After taxes and healthcare, can this plan support the sp
 
 ## A Practical Retirement Spending Method
 
-Here is a practical way to estimate how much you can spend.
+Here is a practical way to estimate how much you can spend. It sits inside the wider job of [preparing for retirement](/blog/prepare-for-retirement.html), where spending is one of several decisions that interact.
 
 ### Step 1: Estimate Essential Spending
 

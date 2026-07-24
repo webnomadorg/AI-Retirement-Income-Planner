@@ -61,7 +61,7 @@ A savings total by itself cannot answer any of these. Neither can a rough monthl
 
 Two "one number" answers are especially common, and both leave out too much.
 
-**The savings total.** "I have $600,000" tells you what you have, not what it produces. The same $600,000 can generate very different spendable income depending on the account mix (a dollar in a traditional IRA is taxed differently from a dollar in a Roth or in cash), when Social Security starts, and how healthcare is handled before Medicare.
+**The savings total.** "I have $600,000" tells you what you have, not what it produces, which is why [preparing for retirement](/blog/prepare-for-retirement.html) is really about designing the income those balances have to deliver. The same $600,000 can generate very different spendable income depending on the account mix (a dollar in a traditional IRA is taxed differently from a dollar in a Roth or in cash), when Social Security starts, and how healthcare is handled before Medicare.
 
 **The probability score.** Many calculators reduce a plan to a single "chance of success" percentage. That can be reassuring, but a high score can hide a weak phase: a tight stretch before Social Security, a future tax spike when required minimum distributions begin, or income that looks fine in dollars but erodes in real terms. A percentage tells you *whether* a plan tends to survive; it does not tell you *where* it is fragile or *what* to change. That is also why it helps to understand [how a single Monte Carlo or backtest number is built](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html) before you lean on it.
 
