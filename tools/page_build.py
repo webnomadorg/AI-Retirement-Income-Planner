@@ -33,6 +33,7 @@ PAGES = {
     "getting-started.html": "START",
     "sessions.html": "SESSIONS",
     "technical.html": "",
+    "updates.html": "",
     "faq.html": "FAQ",
     "contact.html": "",
     "affiliates.html": "",
