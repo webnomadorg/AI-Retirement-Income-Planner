@@ -32,6 +32,18 @@
 
 **Image 9 alt:** The net income block of a phase card showing nominal income of 2,959 dollars a month in amber and real income of 1,663 dollars a month in red after 19.5 years of inflation.
 
+**Image 10 alt:** An amber IRMAA proximity warning on a pre-Medicare phase card, explaining that this phase's MAGI will determine a later phase's Medicare premiums, that it is a set amount below the surcharge threshold, and that a Roth conversion is a factor.
+
+**Image 11 alt:** A pre-59 and a half phase card for ages 55 to 59.5 showing the 401k withdrawal line locked at zero dollars a month with a padlock, while cash and equity withdrawals of 1,000 dollars a month each fund the phase.
+
+**Image 12 alt:** The ending balances of a healthy phase card with 401k, equity and Roth balances all substantial, a greyed cash balance of zero with no warning icon, and a grey italic note reading cash not included in this scenario.
+
+**Image 13 alt:** A later phase card showing a cash withdrawal of 100 dollars a month with an amber note underneath reading that the achievable amount is zero because the account has been empty since age 69.
+
+**Image 14 alt:** A phase card showing ACA subsidy eligible ticked but Silver cost-sharing marked with a red cross above 250 percent FPL, with an amber warning that MAGI is 5,609 dollars below the 400 percent FPL subsidy cliff.
+
+**Image 15 alt:** An income goal pill from the planner's summary strip showing an amber 88 percent status with income of 3,070 dollars against a target of 3,500 dollars a month.
+
 **Primary keyword:** retirement plan guardrails
 
 **Secondary keywords:** ACA subsidy cliff warning, IRMAA threshold warning, RMD shortfall, retirement account depletion, MAGI headroom, retirement plan warning signs
@@ -78,15 +90,25 @@ Notice what the warning does *not* do: it does not rewrite your number. Your $10
 
 In a later phase the wording shifts from "ran out at age 69" to "empty since 69" — the same shortfall, but telling you the money was already gone before this phase began. That is your cue to look earlier in the plan, not here.
 
+[IMAGE cash withdrawal empty since an earlier age 13]
+
 **Nothing could cover a one-time expense.** A new roof, a car, a year of long-term care. A plan draws these from cash first, then equity, then tax-deferred accounts. When the expense exceeds every account combined, the remainder has to be reported as unfunded.
 
 [IMAGE ending balances all depleted with an unfunded expense pill 3]
 
 This is the hardest failure a plan can report, and notice it never appears alone. Every account has been drained to zero to try to cover the bill, so the same card carries a depletion flag for each one. That crowding is the honest picture: an unfunded expense is not one problem, it is the moment a plan runs out of options.
 
-**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty, so a plan modelling early retirement should show that account as locked rather than let you spend from it and quietly understate your costs. Worth stating plainly: this is a guardrail that stops you from *planning* a penalty, which is the cheapest possible moment to catch one.
+**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty, so a plan modelling early retirement should show that account as locked rather than let you spend from it and quietly understate your costs.
 
-**And zero can be a choice.** If you have no brokerage account, a zero equity line is simply a fact about your plan. If your withdrawals emptied one, that is news. A plan that renders both the same way is throwing away the distinction — so a deliberately-empty account should read as *not included in this scenario*, in grey, with no warning icon at all. The absence of red is the message.
+[IMAGE pre-59 and a half phase card with the 401k line locked 11]
+
+Note what that forces: retiring at 55 means the first four and a half years have to be funded from cash and taxable accounts, and here they are — $1,000 a month from each. That constraint is the whole reason early retirement needs a bridge, and it is visible before you have committed to anything. This is a guardrail that stops you from *planning* a penalty, which is the cheapest possible moment to catch one.
+
+**And zero can be a choice.** If you have no brokerage account, a zero equity line is simply a fact about your plan. If your withdrawals emptied one, that is news. A plan that renders both the same way is throwing away the distinction.
+
+[IMAGE healthy plan with cash deliberately absent 12]
+
+Compare that with the image two above it. Both show a zero balance. This one has healthy six-figure balances beside it, the zero is greyed rather than red, there is no warning icon, and a quiet italic note says *not included in this scenario*. The absence of red is the message.
 
 The deeper point is that solvency is not one number at the end. It is a question you can ask of every account in every phase, which is the whole argument for [reading a plan as a timeline of phases](/blog/retirement-income-timeline-phases.html) rather than a single sustainable-withdrawal figure. Ending balances are what carry a plan forward, and they [deserve reading in their own right](/blog/retirement-ending-balance-that-carries-the-plan.html).
 
@@ -103,6 +125,10 @@ So the useful guardrails are a status pair — are you above the 100% FPL floor,
 That amber line is doing the real work. Both statuses are green; nothing is wrong. But MAGI is $3,595 under the ceiling, and $3,595 is not much. A year-end capital-gains distribution from a fund you do not control, a slightly larger dividend, a bit of taxable rebalancing — any of them could tip you over and forfeit the cost-sharing help for the whole year. You cannot see that risk in a status badge. You can see it in a dollar figure.
 
 There are several of these boundaries stacked up — the 150% and 200% FPL steps where cost-sharing gets less generous, the 250% ceiling, the 400% cliff — and only the one you are currently sitting under is worth flagging. Warning about all four at once is noise.
+
+[IMAGE headroom warning below the 400 percent FPL subsidy cliff 14]
+
+Here the same guardrail has moved up a boundary. Cost-sharing is already gone — MAGI is above 250% FPL — so the flag now measures the distance to the *next* edge, the 400% cliff, with $5,609 of headroom. The stakes are higher at this one: crossing 250% costs you cost-sharing help, crossing 400% costs you the premium subsidy entirely.
 
 When you are over a line, the tone should change from caution to fact:
 
@@ -136,7 +162,11 @@ The trap here is subtle. RMDs catch people who *did not need the money*. If your
 
 Note that the surcharge is shown as a real cost — `+$99/mo added to healthcare` — not merely flagged. That distinction matters. A warning badge that does not change your net income lets you dismiss it as a technicality; a surcharge that actually reduces the money you have to spend is a number you will weigh properly.
 
-The lookback is what makes this hard to plan without help. At 63 you are pre-Medicare, deciding on a Roth conversion, and there is no Medicare premium in front of you to be affected. The consequence lands two years later. So the more valuable guardrail is the earlier one: a flag on the *pre-Medicare* phase saying, in effect, this year's income is the figure Medicare will read, and you are close. Ours also notes when a Roth conversion is part of what is pushing you there — because that is the input you were about to adjust anyway.
+The lookback is what makes this hard to plan without help. At 63 you are pre-Medicare, deciding on a Roth conversion, and there is no Medicare premium in front of you to be affected. The consequence lands two years later. So the more valuable guardrail is the earlier one: a flag on the *pre-Medicare* phase saying, in effect, this year's income is the figure Medicare will read, and you are close.
+
+[IMAGE IRMAA proximity warning on a pre-Medicare phase 10]
+
+Read what that warning actually does. It appears on the phase where you can still act, names the *later* phase whose premiums it will set, gives the distance to the threshold, and points at the Roth conversion as a contributing factor — which is the input you were about to adjust anyway. Compare it with the red warning above: that one reports a surcharge you are already paying. This one describes a decision still in front of you. Same rule, and the amber version is worth far more.
 
 ## Guardrail Family 4: Is This Really Enough?
 
@@ -148,7 +178,11 @@ Two figures from the same phase. Nominal $2,959 a month — the dollars that arr
 
 That gap is not a rounding error. It is nearly half the purchasing power of the headline figure, and it is the single most common blind spot in a homemade retirement plan, because nominal dollars are what a spreadsheet naturally produces. A plan built on nominal figures does not fail suddenly; it works fine for a decade and then slowly stops being enough. This is why we treat [gross, net, and real income as three different questions](/blog/gross-net-real-retirement-income.html).
 
-Thresholds like these are necessarily generic — a monthly figure that is comfortable in one place is tight in another. Which is why a plan should also let you set your own income target and check every phase against it, then colour the result by the *worst* phase rather than the average. An average hides exactly the phase you needed to see.
+Thresholds like these are necessarily generic — a monthly figure that is comfortable in one place is tight in another. Which is why a plan should also let you set your own income target and check every phase against it.
+
+[IMAGE income goal status at 88 percent of target 15]
+
+$3,070 against a $3,500 target — 88%, amber. The important design decision is invisible here: that status follows the *worst* phase, not the average. An average would let a comfortable early retirement paper over a thin phase at 80, which is precisely the phase you needed to see.
 
 ## Reading Guardrails Without Drowning in Them
 

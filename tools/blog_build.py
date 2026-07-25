@@ -29,7 +29,7 @@ already present in the drafted posts:
                          noindex and excluded from sitemap.xml and feed.xml
   **Image source base:** basename of images in the images dir (defaults to
                          the .md filename); image n = "<base> <n>.png|jpg|jpeg|webp"
-  **Image <n> alt:**     alt text for image n
+  **Image <n> alt:**     alt text for image n  (n is not capped — 1, 2, ... 10, 11, ...)
 
 Body markers:
   [IMAGE <anything> <n>]        -> <figure> with assets/img/blog/<slug>-<n>.webp
@@ -270,7 +270,7 @@ def parse_post(md_path):
         sys.exit(f"{md_path.name}: missing/invalid **Published:** YYYY-MM-DD")
 
     lead = meta.get("lead image", "").strip()
-    card = int(lead) if lead.isdigit() and 1 <= int(lead) <= 9 else 1
+    card = int(lead) if lead.isdigit() and int(lead) >= 1 else 1
 
     return {
         "path": md_path,
@@ -394,10 +394,18 @@ def prepare_images(post, images_dir):
     are skipped and any stale output from a previously-used image is pruned (so dropping
     an image from a post also removes its webp). Returns {n: (rel_url, w, h)}."""
     referenced = {int(x) for x in re.findall(
-        r"\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d)\]", post["body"])}
+        r"\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d+)\]", post["body"])}
     referenced.add(post["card"])  # the landing-card / OG image is always built
+    # Image numbers are not capped at 9. The prune sweep must therefore cover every number
+    # ALREADY on disk for this slug as well as the ones now referenced, or dropping a
+    # high-numbered image would orphan its .webp.
+    on_disk = set()
+    for p in IMG_OUT.glob(f"{post['slug']}-*.webp"):
+        m = re.fullmatch(re.escape(post["slug"]) + r"-(\d+)(?:-thumb)?\.webp", p.name)
+        if m:
+            on_disk.add(int(m.group(1)))
     out = {}
-    for n in range(1, 10):
+    for n in range(1, max([9] + list(referenced) + list(on_disk)) + 1):
         dest = IMG_OUT / f"{post['slug']}-{n}.webp"
         thumb = IMG_OUT / f"{post['slug']}-{n}-thumb.webp"
         is_card = (n == post["card"])
@@ -505,7 +513,7 @@ def replace_image_markers(md_text, post, images):
                 f'<img src="{url}" alt="{esc_attr(alt)}" width="{w}" height="{h}" loading="lazy">\n'
                 f"</figure>\n")
 
-    md_text = re.sub(r"(?m)^\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d)\]\s*$", figure, md_text)
+    md_text = re.sub(r"(?m)^\[IMAGE (?!PLACEHOLDER)[^\]]*?(\d+)\]\s*$", figure, md_text)
     md_text = re.sub(
         r"(?m)^\[IMAGE PLACEHOLDER - ([^\]]*)\]\s*$",
         lambda m: "\n<!-- IMAGE PLACEHOLDER: " + m.group(1).replace("--", "-").strip() + " -->\n",
