@@ -126,6 +126,67 @@ SERIES = [
     },
 ]
 
+# Companion YouTube tutorials, keyed by post slug: (youtube id, title, description).
+# These mirror the planner's own VIDEO_LIBRARY (src/03-app.js) — each of these posts was written from
+# the matching video's transcript, so this is an exact pairing rather than loose "related content".
+# Thumbnails link OUT to YouTube; nothing is embedded, so there are no iframes and no third-party
+# cookies before a deliberate click (same approach as the tutorial grid on how-it-works.html).
+# Capped at 2 per post to keep the block light. A slug absent from this map renders no section at all.
+POST_VIDEOS = {
+    "how-to-set-up-a-retirement-income-plan": [
+        ("mxwFwxY--S8", "First Time Retirement Scenario Setup",
+         "Walks through the initial setup process for entering retirement ages, balances, income sources, and assumptions."),
+        ("2Fi9xEA7oCM", "Full Scenario Walkthrough",
+         "Runs through a complete example scenario from setup through analysis."),
+    ],
+    "save-load-compare-retirement-scenarios": [
+        ("DVYW3oksW30", "Save and Load Scenarios",
+         "How to save a retirement plan scenario and reload it later for continued planning."),
+        ("rh-D1GpdvP4", "Compare Different Retirement Scenarios",
+         "Demonstrates how to compare multiple retirement scenarios side by side."),
+    ],
+    "taxes-aca-healthcare-early-retirement": [
+        ("7P7CUQzv7rg", "Tax and ACA Notes",
+         "Explains the built-in notes for taxes, ACA subsidies, FPL, IRMAA, inflation, and related planning assumptions."),
+    ],
+    "when-to-take-social-security-62-67-70": [
+        ("67OoVrQiCEI", "What Age Should I Take Social Security? (62 vs 67 vs 70)",
+         "Compares Social Security claiming ages and explains the practical trade-offs between claiming at 62, 67, or 70."),
+        ("6lKM14D7--c", "Model Claiming Social Security at Different Ages",
+         "How to test different Social Security claiming ages inside the planner."),
+    ],
+    "drawdown-strategies-stress-test-retirement": [
+        ("UPv6QS_aoig", "Drawdown Strategy Comparison — Know Your Number Is Safe",
+         "Introduces the drawdown strategy comparison feature for checking whether your planned income level is sustainable."),
+        ("mxoWUVqRYwQ", "Six Stress Tests for Your Retirement Portfolio",
+         "Tests one retirement plan against multiple withdrawal and stress-test methods."),
+    ],
+    "how-to-use-plan-health-ai-retirement-income-planner": [
+        ("k7XeKOJccw4", "Plan Health & Confidence Score",
+         "Explains the Plan Health checks and the 0-100 Confidence Score, and why a plan can be complete without every check green."),
+    ],
+    "retirement-planner-ai-prompts": [
+        ("EyAQQ-tGywM", "AI Chat Tutorial",
+         "The full walkthrough of the AI Chat tab. Every message includes your complete plan; ask for optimizations and apply suggested edits with one click."),
+        ("iVa_oJVmo94", "How to Use an Anthropic API Key",
+         "A quick overview of the planner with and without an API key, and the simple process for obtaining your own."),
+    ],
+    "how-to-update-tax-rates-retirement-plan": [
+        ("6CAJy2TfdDE", "Keep Your Retirement Plan Accurate Every Year",
+         "How the planner can be kept current as tax rates, thresholds, and planning assumptions change."),
+    ],
+    "multi-year-roth-conversion-optimizer": [
+        ("hyBWQH1yOHQ", "Roth Conversion Optimizer Walkthrough",
+         "A walkthrough of the companion Roth Conversion Optimizer app and how its exported plan imports into the planner."),
+    ],
+    "retirement-planning-case-studies": [
+        ("EdxtycWPnII", "Sell Everything and Move to Thailand",
+         "A retirement relocation scenario focused on moving to Thailand and adjusting income, expenses, and assumptions."),
+        ("M2cfNKW2SSc", "Digital Nomad Income Planner",
+         "A digital-nomad-style scenario: age 55, part-time income until 65, Social Security at 67."),
+    ],
+}
+
 # H2 sections that are production notes, not reader content (lowercased). Includes the
 # heading variants used by the older 'Process Later' drafts (e.g. "internal link
 # suggestions", "suggested article schema") so their trailers are stripped too.
@@ -547,6 +608,36 @@ def series_related_html(post, series, by_slug):
             f'  <ol class="series-list">\n{items}\n  </ol>\n</nav>')
 
 
+def videos_html(post):
+    """Companion-video cards for posts listed in POST_VIDEOS; '' for every other post.
+
+    Markup mirrors the tutorial grid on how-it-works.html so it inherits the existing .vid-* styles
+    (already dark-mode aware). Thumbnails are plain <img> links to YouTube — deliberately NOT iframes,
+    so no third-party embed loads until the reader chooses to click. maxresdefault isn't generated for
+    every upload, hence the onerror fallback to mqdefault.
+    """
+    vids = POST_VIDEOS.get(post["slug"])
+    if not vids:
+        return ""
+    cards = []
+    for yt, title, desc in vids:
+        cards.append(
+            f'    <a class="vid-card" href="https://www.youtube.com/watch?v={yt}" target="_blank" rel="noopener">\n'
+            f'      <div class="vid-thumb"><img src="https://img.youtube.com/vi/{yt}/maxresdefault.jpg"'
+            f' onerror="this.onerror=null;this.src=\'https://img.youtube.com/vi/{yt}/mqdefault.jpg\';"'
+            f' alt="" loading="lazy"><span class="vid-play">&#9654;</span></div>\n'
+            f'      <div class="vid-card-body"><div class="vid-card-title">{esc_attr(title)}</div>'
+            f'<div class="vid-card-desc">{esc_attr(desc)}</div>'
+            f'<div class="vid-card-foot">&#9654; Watch on YouTube &#8599;</div></div>\n'
+            f'    </a>')
+    lead = ("This tutorial is also on video, walked through on screen." if len(vids) == 1
+            else "These tutorials are also on video, walked through on screen.")
+    return ('<section class="post-videos" aria-label="Companion video tutorials">\n'
+            '  <h2>Prefer to watch?</h2>\n'
+            f'  <p class="series-intro">{lead}</p>\n'
+            f'  <div class="vid-grid">\n' + "\n".join(cards) + '\n  </div>\n</section>')
+
+
 def related_html(post, all_posts):
     by_slug = {p["slug"]: p for p in all_posts}
     series = series_for(post["slug"])
@@ -651,6 +742,7 @@ def render_post(post, all_posts, templates, partials, images):
         "{{CTA_PRODUCT}}": ctas.get("product",
             "The AI Retirement Income Planner models income, taxes, Social Security, "
             "healthcare and withdrawals month by month, privately in your browser."),
+        "{{VIDEOS}}": videos_html(post),
         "{{RELATED}}": related_html(post, all_posts),
     }
     html_page = templates["post"]
