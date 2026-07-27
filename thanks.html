@@ -256,7 +256,7 @@
         var emailedTo = safeEmail
           ? 'We’ve also emailed this link to <strong>' + safeEmail + '</strong>, so you can book later if now isn’t convenient.'
           : 'We’ve also emailed this link to you, so you can book later if now isn’t convenient.';
-        body.innerHTML = 'Your session isn’t scheduled yet — pick a time that suits you. A Google Meet link is added automatically, and you’ll leave with a starter scenario file. ' + emailedTo;
+        body.innerHTML = 'Your session isn’t scheduled yet — pick a time that suits you. A Google Meet link is added automatically, and you’ll leave with a starter scenario file plus a code for 50% off any future session. ' + emailedTo;
         card.appendChild(head);
         card.appendChild(body);
         if (url) {
