@@ -113,6 +113,9 @@ SERIES = [
         "intro": "A step-by-step tutorial series. Read in order, or jump to what you need:",
         "slugs": [
             "how-to-set-up-a-retirement-income-plan",
+            # Sits at step 2 deliberately: you have just been shown where the fields are, and the very
+            # next question is which of your own income goes in which of them.
+            "where-to-enter-retirement-income",
             "save-load-compare-retirement-scenarios",
             "taxes-aca-healthcare-early-retirement",
             "when-to-take-social-security-62-67-70",
