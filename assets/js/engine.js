@@ -142,11 +142,18 @@ const D_USD={
   //         usPension = monthly USD at base age (0 = stream off). Activates at usPensionBaseAge
   //         like CPP/OAS (no phase split). usPensionColaRate null/blank ⇒ track general inflation;
   //         0 ⇒ flat nominal; any % ⇒ that COLA. usPensionTaxable true ⇒ ordinary income
-  //         (employer pension); false ⇒ tax-free (e.g. VA-style disability). ──
-  usPension:0, usPensionBaseAge:65, usPensionColaRate:null, usPensionTaxable:true,
+  //         (employer pension); false ⇒ tax-free (e.g. VA-style disability).
+  //   ── v13: usPensionEndAge — the age the stream STOPS (last payment is the month before it).
+  //         null/'' ⇒ paid for life, which is the default and what every pre-v13 plan gets, so this
+  //         addition cannot change an existing projection. It exists because employer/private
+  //         long-term disability almost always terminates at 65 or SS full retirement age: without
+  //         it the planner paid such a benefit to the end of the plan, stacked on top of Social
+  //         Security, overstating income by hundreds of thousands. SSDI is NOT this — it carries the
+  //         SS COLA and converts to the retirement benefit at FRA, so it belongs in s.uss. ──
+  usPension:0, usPensionBaseAge:65, usPensionEndAge:null, usPensionColaRate:null, usPensionTaxable:true,
   // ── v9: optional SECOND US pension/disability stream — lets a TAXABLE employer pension and a
   //         TAX-FREE disability (e.g. VA) coexist with independent amount/start age/COLA/tax flag. ──
-  usPension2:0, usPension2BaseAge:65, usPension2ColaRate:null, usPension2Taxable:false,
+  usPension2:0, usPension2BaseAge:65, usPension2EndAge:null, usPension2ColaRate:null, usPension2Taxable:false,
   // ── v6: Non-US-taxpayer mode (default true preserves existing behaviour).
   // When false, US federal tax / IRMAA / ACA / SS-provisional are all zeroed
   // and US-specific UI surfaces (MFJ toggle, std-ded inputs, etc.) hide.
@@ -766,13 +773,18 @@ function simPhase(o){
       hasSS,hasUKP,hasCPP,hasOAS,hasAgePension,
       phaseStartAge,ssColaRate,spouseSSColaRate,tripleLockRate,cppColaRate,oasColaRate,agePensionColaRate,
       equityCostBasis,ssBaseAge,ukpBaseAge,cppBaseAge,oasBaseAge,agePensionBaseAge,spouseSSBaseAge,spouseAgeDelta,
-      usPensionBase,usPensionColaRate,usPensionBaseAge,
-      usPension2Base,usPension2ColaRate,usPension2BaseAge}=o;
+      usPensionBase,usPensionColaRate,usPensionBaseAge,usPensionEndAge,
+      usPension2Base,usPension2ColaRate,usPension2BaseAge,usPension2EndAge}=o;
   const ssBA=ssBaseAge||62,ukpBA=ukpBaseAge||67,spBA=spouseSSBaseAge||62;
   const spDelta=spouseAgeDelta||0; // primary age - spouse age; 0 = same age (back-compat)
   const cppBA=cppBaseAge||65,oasBA=oasBaseAge||65,apBA=agePensionBaseAge||67;
   const usPenBA=usPensionBaseAge||65; // v9: US pension/disability activation age (like CPP/OAS)
   const usPen2BA=usPension2BaseAge||65; // v9: second US pension/disability stream
+  // v13: age each stream STOPS. Absent ⇒ Infinity ⇒ paid for life (the pre-v13 behaviour, so an old
+  // plan is untouched). Comparison is `age < end`, i.e. "ends at 65" pays its last month at 64y11m —
+  // matching how a policy that "ends at 65" and how the phase boundaries both read.
+  const usPenEA=(usPensionEndAge!=null&&usPensionEndAge!=='')?usPensionEndAge:Infinity;
+  const usPen2EA=(usPension2EndAge!=null&&usPension2EndAge!=='')?usPension2EndAge:Infinity;
   bEquity=bEquity||0; wEquity=wEquity||0;
   bRoth=bRoth||0; wRoth=wRoth||0;
   bSuper=bSuper||0; wSuper=wSuper||0;
@@ -831,8 +843,8 @@ function simPhase(o){
   let curOAS=hasOAS&&oasBase>0&&phaseStartAge>=oasBA?colaUSS(oasBase,phaseStartAge-oasBA,oasColaRate||2.6):0;
   let curAP=hasAgePension&&agePensionBase>0&&phaseStartAge>=apBA?colaUSS(agePensionBase,phaseStartAge-apBA,agePensionColaRate||2.6):0;
   // v9: US pension/disability — escalates at its own COLA (0 ⇒ flat). Activates at usPenBA like CPP/OAS.
-  let curUsPen=usPensionBase>0&&phaseStartAge>=usPenBA?colaUSS(usPensionBase,phaseStartAge-usPenBA,usPensionColaRate||0):0;
-  let curUsPen2=usPension2Base>0&&phaseStartAge>=usPen2BA?colaUSS(usPension2Base,phaseStartAge-usPen2BA,usPension2ColaRate||0):0;
+  let curUsPen=usPensionBase>0&&phaseStartAge>=usPenBA&&phaseStartAge<usPenEA?colaUSS(usPensionBase,phaseStartAge-usPenBA,usPensionColaRate||0):0;
+  let curUsPen2=usPension2Base>0&&phaseStartAge>=usPen2BA&&phaseStartAge<usPen2EA?colaUSS(usPension2Base,phaseStartAge-usPen2BA,usPension2ColaRate||0):0;
   let sumSS=0,sumSpSS=0,sumUKP=0,sumCPP=0,sumOAS=0,sumAP=0,sumUsPen=0,sumUsPen2=0,sumTaxableEquity=0;
   // Actual (balance-capped) withdrawals, accumulated monthly. These can fall short of the configured
   // amounts once a bucket runs dry — see the capping note in the loop.
@@ -848,15 +860,19 @@ function simPhase(o){
       if(hasCPP&&cppBase>0)curCPP=ageNow>=cppBA?colaUSS(cppBase,ageNow-cppBA,cppColaRate||2.6):0;
       if(hasOAS&&oasBase>0)curOAS=ageNow>=oasBA?colaUSS(oasBase,ageNow-oasBA,oasColaRate||2.6):0;
       if(hasAgePension&&agePensionBase>0)curAP=ageNow>=apBA?colaUSS(agePensionBase,ageNow-apBA,agePensionColaRate||2.6):0;
-      if(usPensionBase>0)curUsPen=ageNow>=usPenBA?colaUSS(usPensionBase,ageNow-usPenBA,usPensionColaRate||0):0;
-      if(usPension2Base>0)curUsPen2=ageNow>=usPen2BA?colaUSS(usPension2Base,ageNow-usPen2BA,usPension2ColaRate||0):0;
+      if(usPensionBase>0)curUsPen=(ageNow>=usPenBA&&ageNow<usPenEA)?colaUSS(usPensionBase,ageNow-usPenBA,usPensionColaRate||0):0;
+      if(usPension2Base>0)curUsPen2=(ageNow>=usPen2BA&&ageNow<usPen2EA)?colaUSS(usPension2Base,ageNow-usPen2BA,usPension2ColaRate||0):0;
     } else if(i>0){
       // Mid-year activation check: if pension just crossed base age this month, switch on
       if(hasCPP&&cppBase>0&&curCPP===0&&ageNow>=cppBA)curCPP=cppBase;
       if(hasOAS&&oasBase>0&&curOAS===0&&ageNow>=oasBA)curOAS=oasBase;
       if(hasAgePension&&agePensionBase>0&&curAP===0&&ageNow>=apBA)curAP=agePensionBase;
-      if(usPensionBase>0&&curUsPen===0&&ageNow>=usPenBA)curUsPen=usPensionBase;
-      if(usPension2Base>0&&curUsPen2===0&&ageNow>=usPen2BA)curUsPen2=usPension2Base;
+      if(usPensionBase>0&&curUsPen===0&&ageNow>=usPenBA&&ageNow<usPenEA)curUsPen=usPensionBase;
+      if(usPension2Base>0&&curUsPen2===0&&ageNow>=usPen2BA&&ageNow<usPen2EA)curUsPen2=usPension2Base;
+      // v13: mid-year STOP — a benefit ending at 65 must stop that month, not at the next year
+      // boundary. Without this a phase running 62–67 would keep paying it for up to 11 extra months.
+      if(curUsPen>0&&ageNow>=usPenEA)curUsPen=0;
+      if(curUsPen2>0&&ageNow>=usPen2EA)curUsPen2=0;
       // v6: spouse SS mid-year activation — turns on the month spouse crosses claim age
       if(hasSS&&spouseSSBase>0&&curSpSS===0&&(ageNow-spDelta)>=spBA)curSpSS=spouseSSBase;
     }
@@ -985,7 +1001,9 @@ function calcPhase(p){
     cppBaseAge:p.cppBaseAge||65,oasBaseAge:p.oasBaseAge||65,agePensionBaseAge:p.agePensionBaseAge||67,
     spouseSSBaseAge:p.spouseSSBaseAge||62,
     usPensionBase:p.usPensionBase||0,usPensionColaRate:p.usPensionColaRate,usPensionBaseAge:p.usPensionBaseAge||65,
-    usPension2Base:p.usPension2Base||0,usPension2ColaRate:p.usPension2ColaRate,usPension2BaseAge:p.usPension2BaseAge||65});
+    usPensionEndAge:p.usPensionEndAge,
+    usPension2Base:p.usPension2Base||0,usPension2ColaRate:p.usPension2ColaRate,usPension2BaseAge:p.usPension2BaseAge||65,
+    usPension2EndAge:p.usPension2EndAge});
   // ACHIEVABLE withdrawals — what the accounts could actually supply. The config values above are the
   // user's intent and are preserved (never mutated) so the UI can show "set → actual" and so reverting
   // an experimental early-phase change restores everything automatically.
@@ -1580,9 +1598,11 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       cppColaRate:s.cppColaRate||2.6,oasColaRate:s.oasColaRate||2.6,agePensionColaRate:s.agePensionColaRate||2.6,
       // v9: US pension/disability — COLA null/'' ⇒ track general inflation (single source of truth here)
       usPensionBase:s.usPension||0,usPensionBaseAge:s.usPensionBaseAge||65,
+      usPensionEndAge:(s.usPensionEndAge!=null&&s.usPensionEndAge!=='')?s.usPensionEndAge:null, // null ⇒ for life
       usPensionColaRate:(s.usPensionColaRate!=null&&s.usPensionColaRate!=='')?s.usPensionColaRate:s.inflation,
       usPensionTaxable:s.usPensionTaxable!==false,
       usPension2Base:s.usPension2||0,usPension2BaseAge:s.usPension2BaseAge||65,
+      usPension2EndAge:(s.usPension2EndAge!=null&&s.usPension2EndAge!=='')?s.usPension2EndAge:null,
       usPension2ColaRate:(s.usPension2ColaRate!=null&&s.usPension2ColaRate!=='')?s.usPension2ColaRate:s.inflation,
       usPension2Taxable:s.usPension2Taxable!==false,
       lumpCash:lTotal,lumpOut:lTotalOut,lumpItems:lItems,lumpInItems:lIn,lumpOutItems:lOut,
