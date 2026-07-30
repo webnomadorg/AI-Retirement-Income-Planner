@@ -124,12 +124,37 @@ def theme_problem_in(path):
     return "no theme bootstrap — page will ignore the visitor's dark/theme choice"
 
 
+def engine_problem():
+    """Is assets/js/engine.js stale against the mobile build?
+
+    retire-abroad.html runs the SAME calc engine as the paid planner, generated from
+    src/03-app.js by mobile/build-engine.mjs. That script writes both copies in one pass, so
+    they can only diverge if someone rebuilt one without the other (or hand-edited a copy).
+    A stale website copy means a public page quietly disagreeing with the product people paid
+    for — the one failure mode worth blocking a push over.
+
+    Returns a message on drift, else None. Skips silently when mobile/ is absent (the Website
+    repo can be cloned on its own) — there is nothing to compare against then.
+    """
+    web = WEBSITE / "assets" / "js" / "engine.js"
+    ref = WEBSITE.parent / "mobile" / "www" / "engine.js"
+    if not ref.exists():
+        return None
+    if not web.exists():
+        return "assets/js/engine.js is MISSING — retire-abroad.html will not calculate"
+    if web.read_bytes() != ref.read_bytes():
+        return ("assets/js/engine.js differs from mobile/www/engine.js — "
+                "run `npm run build:engine` in mobile/ (it writes both), then `npm run test:engine`")
+    return None
+
+
 def check():
     """Verify every generated page still matches the partials. Exit 1 on drift.
 
     Covers BOTH consumers: the root pages (rebuilt by this script) and the blog pages
     (rebuilt by blog_build.py), since a partial edit invalidates both. Also checks the
-    inline theme bootstrap in every page's <head>, which nothing else guards.
+    inline theme bootstrap in every page's <head>, which nothing else guards, and that the
+    shared calc engine bundle has not gone stale.
     """
     footer = (PARTIALS / "footer.html").read_text(encoding="utf-8").strip()
     stale_root, stale_blog, themeless = [], [], []
@@ -158,10 +183,17 @@ def check():
             themeless.append("%s — %s" % (f.name, t))
 
     total = len(PAGES) + len(blog_pages)
-    if not stale_root and not stale_blog and not themeless:
-        print("page_build --check: OK — %d page(s) match the partials "
-              "and restore the saved theme." % total)
+    engine = engine_problem()
+
+    if not stale_root and not stale_blog and not themeless and not engine:
+        print("page_build --check: OK — %d page(s) match the partials, restore the saved "
+              "theme, and the calc engine bundle is current." % total)
         return 0
+
+    if engine:
+        print("page_build --check: CALC ENGINE STALE — %s\n" % engine)
+        if not stale_root and not stale_blog and not themeless:
+            return 1
 
     if themeless:
         print("page_build --check: THEME BOOTSTRAP MISSING — %d page(s) will ignore the "

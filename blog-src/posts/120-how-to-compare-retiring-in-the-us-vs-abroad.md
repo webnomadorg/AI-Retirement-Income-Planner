@@ -32,6 +32,8 @@ The best way to compare retiring in the US versus abroad is to build both plans 
 
 The cheaper-looking plan is not always the stronger plan. The stronger plan is the one that still works after healthcare, taxes, exchange rates, and relocation risks are modeled.
 
+<div class="callout"><p><strong>Want the short version first?</strong> Our free <a href="/retire-abroad.html">Retire Abroad comparison</a> takes one set of savings and withdrawals and shows what your net monthly income becomes as a resident of the US, UK, Canada or Australia — income tax, healthcare and the US–UK treaty Foreign Tax Credit included. No sign-up. It runs the same calculations as the planner, so the numbers agree. The rest of this article covers the parts a single comparison cannot settle: currency risk, housing, family travel, and the return-home case.</p></div>
+
 ## Key Takeaways
 
 - Start with a US baseline before building the abroad scenario.

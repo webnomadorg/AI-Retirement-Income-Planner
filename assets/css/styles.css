@@ -1379,7 +1379,11 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 /* Footnote under the grid — states plainly that these are capabilities, not customer quotes. */
 .scenario-note{ margin:1.8rem auto 0; max-width:64ch; text-align:center; font-size:.9rem; }
 .on-ink .scenario-note{ color:#B9CADA; }
-.cta-trust{ margin:0; font-size:.82rem; color:var(--ink-faint); }
+.cta-trust{ font-size:.82rem; color:var(--ink-faint); }
+/* Breathing room above the reassurance line so it does not crowd the buttons. This MUST be scoped
+   to .cta-box: `.cta-box p` (class + element) outranks a bare `.cta-trust` (one class), so setting
+   the margin on .cta-trust alone is silently discarded. */
+.cta-box .cta-trust{ margin:1.1rem 0 0; }
 .related-posts{ margin-top:2.6rem; padding-top:1.6rem; border-top:1px solid var(--line); }
 .related-posts h2{ font-size:1.3rem; }
 .related-posts ul{ list-style:none; padding:0; margin:0; }
