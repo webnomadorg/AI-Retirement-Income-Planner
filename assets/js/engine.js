@@ -271,6 +271,10 @@ const D_USD={
   p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   // ── v5: SS-split secondary slots (only active when ssStartAge falls mid-phase) ──
+  //   v13: p0b joins them. It can only ever appear for SSDI — a retirement benefit cannot start before
+  //   62 and p0 ends at 59.5, so p0 never splits without ssdiMode. 401k stays 0: it is inaccessible
+  //   before 59½ on both sides of the split. ──
+  p0b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   p1b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   p2b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   p3b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
@@ -398,12 +402,10 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // Apply ssAge: derive hasSS per phase, splitting mid-phase if needed
   const allPhases=[];
   for(const ph of rawPhases){
-    // p0 (pre-59½) never splits — there is no p0b slot to hold the second half — so it takes SS only
-    // when the benefit is already running at the phase's start. For a retirement benefit that is
-    // always false (p0 ends at 59.5, well before the 62 floor), so this is a no-op for every plan
-    // without SSDI. For SSDI it correctly pays the common case: already on SSDI when the plan begins.
-    // ⚠ Known limit: SSDI that STARTS inside p0 (retire at 55, disabled at 57) shows no SS until 59.5.
-    if(ph.phaseKey==='p0'){allPhases.push({...ph,hasSS:ssAge<=ph.startAge});continue;}
+    // v13: p0 (pre-59½) now goes through the same split logic as every other phase — it has a p0b slot.
+    // This only ever fires for SSDI: a retirement benefit cannot start before 62 and p0 ends at 59.5,
+    // so for every non-SSDI plan the `endAge<=ssAge` branch below returns hasSS:false exactly as the
+    // old hardcode did. SSDI starting mid-p0 (retire at 55, disabled at 57) now splits properly.
     if(ph.endAge<=ssAge){
       // Entire phase ends before SS starts
       allPhases.push({...ph,hasSS:false});
@@ -425,12 +427,19 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     const effStart=Math.max(p.startAge,curAge);
     const months=Math.max(1,Math.round((p.endAge-effStart)*12));
     // v13: apply the early-Medicare override AFTER trimming, so a replanned phase that now starts at
-    // the user's real current age is judged on that age, not on the phase's original boundary. With
-    // medAge null this is a no-op and the phase-index defaults above stand — existing plans untouched.
-    // Granularity is the phase boundary: Medicare turns on for phases that START at or after medAge,
-    // so a user wanting the exact month sets a custom phase boundary at that age (the hint says so).
-    const hasMed=(medAge!=null)?(effStart>=medAge):p.hasMedicare;
-    result.push({...p,startAge:effStart,months,hasMedicare:hasMed});
+    // the user's real current age is judged on that age, not on the phase's original boundary.
+    // medicareFrac is the SHARE OF THE PHASE spent on Medicare, so a phase the age falls inside is
+    // priced part ACA / part Medicare instead of being forced entirely one way — Medicare at 57 in a
+    // 55–59.5 phase is 2.5 of 4.5 years, not "all of it" or "none of it".
+    // With medAge null this is exactly the old behaviour: frac is 1 or 0 straight off the phase-index
+    // default, so every existing plan is untouched.
+    let medFrac;
+    if(medAge==null) medFrac=p.hasMedicare?1:0;
+    else{
+      const span=Math.max(1e-9,p.endAge-effStart);
+      medFrac=Math.max(0,Math.min(1,(p.endAge-Math.max(effStart,medAge))/span));
+    }
+    result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0,medicareFrac:medFrac});
   }
   return result;
 }
@@ -443,7 +452,7 @@ function syncSplitState(){
   const phs=buildPhaseConfig(S.startAge,p5EndAge,curAge,S);
   const splitSec=phs.find(p=>p.isSplitSecond);
   const activeBKey=splitSec?splitSec.phaseKey:null;
-  ['p1b','p2b','p3b','p4b','p5b'].forEach(bk=>{
+  ['p0b','p1b','p2b','p3b','p4b','p5b'].forEach(bk=>{
     if(bk===activeBKey){
       // Active b-slot: initialize from parent if untouched (all zeros)
       if(!S[bk])S[bk]={...D_USD[bk]};
@@ -1451,6 +1460,9 @@ function calcPhase(p){
     tax_a+=niit_a; usTaxBeforeFTC+=niit_a; tax_mo=tax_a/12;
   }
   let health_mo,acaVal=null;
+  // v13: share of this phase spent on Medicare (1 = all, 0 = none, between = it starts mid-phase).
+  // Absent ⇒ derive from hasMedicare, so any caller predating this field behaves exactly as before.
+  const medFrac=(p.medicareFrac!=null?p.medicareFrac:(p.hasMedicare?1:0));
   const adjMedicare=Math.round(p.medicare*hcInflMult*100)/100;
   const adjMedicareD=Math.round((p.medicareD||0)*hcInflMult*100)/100;
   // v10: IRMAA Tier-1 surcharge (Part B+D), inflated like the base premiums. Applied to
@@ -1466,13 +1478,30 @@ function calcPhase(p){
         note:'Not modelled for this residency — this is your own private or national healthcare cost.'});
     }
   }
-  else if(p.hasMedicare){
+  else if(medFrac>=1){
     health_mo=adjMedicare+adjMedicareD;
     {const g=_trGroup(T,'medicare','How your Medicare cost is estimated','tg-irmaa','medicare');
       _trRow(g,'Part B premium',adjMedicare,'usd/mo',{kind:'in',base:p.medicare,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
       _trRow(g,'Part D premium',adjMedicareD,'usd/mo',{kind:'in',skipZero:true,base:p.medicareD,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
       _trRow(g,'= Medicare cost before any surcharge',health_mo,'usd/mo',{kind:'total'});
     }
+  }
+  // v13: Medicare starts PART-WAY through this phase (only reachable via an early-Medicare age, i.e.
+  // SSDI). Price both regimes and weight them by the share of the phase each covers, rather than
+  // forcing the whole phase onto one — which would either invent ACA subsidies the user has lost or
+  // charge Medicare premiums years before they begin.
+  else if(medFrac>0){
+    const _gA=_trGroup(T,'aca','How your healthcare cost is estimated','tg-aca','acaSubsidy');
+    acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);
+    const acaCost=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
+    const medCost=adjMedicare+adjMedicareD;
+    health_mo=medFrac*medCost+(1-medFrac)*acaCost;
+    _trRow(_gA,'ACA premium for the pre-Medicare part',acaCost,'usd/mo',{kind:'in'});
+    _trRow(_gA,'Medicare premium once it starts',medCost,'usd/mo',{kind:'in'});
+    _trRow(_gA,'Share of this phase on Medicare',medFrac,'mult',{kind:'rate',
+      formula:'months from your Medicare age to the end of the phase ÷ months in the phase'});
+    _trRow(_gA,'= blended healthcare cost',health_mo,'usd/mo',{kind:'total',
+      note:'Medicare begins part-way through this phase, so the cost is the two regimes weighted by how long each applies.'});
   }
   else{
     const _gA=_trGroup(T,'aca','How your ACA premium is estimated','tg-aca','acaSubsidy');
@@ -1540,14 +1569,16 @@ function calcPhase(p){
     _trRow(g,'= in today’s money',net_real,'usd/mo',{kind:'total',id:'netreal',
       formula:'net ÷ (1 + inflation) ^ years — what this would buy at today’s prices'});
   }
-  const acaSubsidyEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&!p.hasMedicare&&magi>adjFpl100;
-  const acaCsrEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&!p.hasMedicare&&magi>adjFpl100&&magi<=adjFpl250;
+  // v13: medFrac<1 rather than !hasMedicare — a phase Medicare starts part-way through still has
+  // ACA months before it, and the subsidy applies to those. Identical when medFrac is 1 or 0.
+  const acaSubsidyEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&medFrac<1&&magi>adjFpl100;
+  const acaCsrEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&medFrac<1&&magi>adjFpl100&&magi<=adjFpl250;
   return{
     trace:_trFinish(T), // "under the hood" working — see _trNew for the shape and rules
     end:{b401k:sim.b401k,bcash:sim.bCash,bEquity:sim.bEquity,bRoth:sim.bRoth,bSuper:sim.bSuper,costBasis:sim.costBasis},
     ti,tax_a,usTaxBeforeFTC,tax_mo,ukTax_a,ukTax_mo,ftc_a,ftc_mo,cadTax_a,ausTax_a,niit_a,stateTax_a,stateTax_mo,isUkRes,isCanadian,isAustralian,
     magi,aca:acaVal,health_mo,total_mo,net_mo,net_real,
-    sp,hasMedicare:p.hasMedicare,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
+    sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
     // the tax that funding it created and whether that spike would cross an ACA/IRMAA threshold.
     lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpEqGain:sim.lumpEqGain||0,
@@ -1657,6 +1688,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       subjectToUsTax:s.subjectToUsTax!==false,
       hasSS:pc.hasSS,hasUKP:pc.hasUKP,
       hasCPP,hasOAS,hasAgePension,hasMedicare:pc.hasMedicare,
+      medicareFrac:(pc.medicareFrac!=null?pc.medicareFrac:(pc.hasMedicare?1:0)), // v13: part-year Medicare
       isCanadian,isAustralian,
       phaseStartAge:pc.startAge,retireStartAge:curAge||s.startAge,
       ssColaRate:s.ssColaRate,tripleLockRate:s.triplelock,inflationRate:s.inflation,
