@@ -170,6 +170,17 @@ const D_USD={
   //         100 = joint-and-survivor / preserves prior behaviour; 50 = typical J&S election;
   //         0 = single-life pension or disability that ends at death. Only used in the survivor projection. ──
   usPensionSurvivorPct:100, usPension2SurvivorPct:100,
+  // ── v13: SSDI (Social Security Disability). When true, s.uss is an SSDI benefit already in payment:
+  //         ssStartAge may drop below 62 (SSDI has no earliest-claim age and no actuarial reduction —
+  //         it pays the FRA/PIA amount), and it carries the ordinary SS COLA and SS tax treatment,
+  //         which is exactly what the engine already does with s.uss. So this flag only unlocks the
+  //         age floor; it changes no maths. At FRA the benefit converts to the retirement benefit at
+  //         the same amount, which is why one figure covers both sides of that boundary.
+  //   medicareStartAge — SSDI recipients qualify for Medicare 24 months after entitlement regardless
+  //         of age. null ⇒ the untouched phase-index behaviour (Medicare from phase 3, i.e. 65).
+  //         Set ⇒ a phase has Medicare when it STARTS at or after this age, which also switches off
+  //         ACA subsidies and switches on IRMAA for those phases. ──
+  ssdiMode:false, medicareStartAge:null,
   // ── v2: filing status + spouse SS ──
   filingStatus:'single', // 'single' | 'mfj'
   spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,
@@ -371,7 +382,10 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   const curAge=currentAge&&currentAge>startAge?currentAge:startAge;
   const p5mo=Math.max(1,Math.round((p5End-a4)*12));
   // v5: SS claiming age — determines when hasSS turns on; may split a phase
-  const ssAge=Math.max(62,Math.min(70,pa.ssStartAge||62));
+  // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
+  const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
+  // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age). null ⇒ untouched.
+  const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:null;
   // Build raw phases without hasSS (derived below from ssAge)
   const rawPhases=[
     ...(earlyRetire?[{label:'Pre 59½',startAge,endAge:59.5,hasUKP:false,hasMedicare:false,phaseKey:'p0',color:PHASE0_COLOR}]:[]),
@@ -384,7 +398,12 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // Apply ssAge: derive hasSS per phase, splitting mid-phase if needed
   const allPhases=[];
   for(const ph of rawPhases){
-    if(ph.phaseKey==='p0'){allPhases.push({...ph,hasSS:false});continue;}
+    // p0 (pre-59½) never splits — there is no p0b slot to hold the second half — so it takes SS only
+    // when the benefit is already running at the phase's start. For a retirement benefit that is
+    // always false (p0 ends at 59.5, well before the 62 floor), so this is a no-op for every plan
+    // without SSDI. For SSDI it correctly pays the common case: already on SSDI when the plan begins.
+    // ⚠ Known limit: SSDI that STARTS inside p0 (retire at 55, disabled at 57) shows no SS until 59.5.
+    if(ph.phaseKey==='p0'){allPhases.push({...ph,hasSS:ssAge<=ph.startAge});continue;}
     if(ph.endAge<=ssAge){
       // Entire phase ends before SS starts
       allPhases.push({...ph,hasSS:false});
@@ -405,7 +424,13 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     if(curAge>=p.endAge) continue;
     const effStart=Math.max(p.startAge,curAge);
     const months=Math.max(1,Math.round((p.endAge-effStart)*12));
-    result.push({...p,startAge:effStart,months});
+    // v13: apply the early-Medicare override AFTER trimming, so a replanned phase that now starts at
+    // the user's real current age is judged on that age, not on the phase's original boundary. With
+    // medAge null this is a no-op and the phase-index defaults above stand — existing plans untouched.
+    // Granularity is the phase boundary: Medicare turns on for phases that START at or after medAge,
+    // so a user wanting the exact month sets a custom phase boundary at that age (the hint says so).
+    const hasMed=(medAge!=null)?(effStart>=medAge):p.hasMedicare;
+    result.push({...p,startAge:effStart,months,hasMedicare:hasMed});
   }
   return result;
 }
@@ -436,10 +461,49 @@ function syncSplitState(){
   });
 }
 
+// v13: SSDI toggle. Unlocks the sub-62 claiming age, relabels the field, and reveals the Medicare
+// start age (prefilled at entitlement + 2 years, the statutory waiting period) the first time it is
+// switched on. Turning it back off restores the retirement-benefit rules and clears the override, so
+// nothing is left behind to surprise the user later.
+function setSsdiMode(on){
+  S.ssdiMode=!!on;
+  const ageEl=document.getElementById('e-ssStartAge');
+  if(S.ssdiMode){
+    if(ageEl)ageEl.min=40;
+    if(S.medicareStartAge==null){
+      // 24-month waiting period from entitlement, capped at 65 — past that the normal age governs.
+      const ent=S.ssStartAge||62;
+      S.medicareStartAge=Math.min(65,Math.round((ent+2)*2)/2);
+    }
+  } else {
+    if(ageEl)ageEl.min=62;
+    if((S.ssStartAge||62)<62){S.ssStartAge=62;S.ssBaseAge=62;}
+    S.medicareStartAge=null; // the override only exists to serve SSDI; don't strand it
+  }
+  syncSsdiUI();populateInputsFromUSD();updateEditLabels();updatePhaseCardVisibility();liveCalc();
+}
+// Reflect ssdiMode into the surrounding labels/rows (called on load and on toggle).
+function syncSsdiUI(){
+  const cb=document.getElementById('e-ssdiMode');if(cb)cb.checked=!!S.ssdiMode;
+  const row=document.getElementById('row-medicare-start');if(row)row.style.display=S.ssdiMode?'':'none';
+  const lbl=document.getElementById('lbl-ssStartAge');
+  if(lbl)lbl.innerHTML=S.ssdiMode
+    ?'Age SSDI started <span style="font-size:11px;color:var(--text-tertiary);">(no 62 minimum — SSDI pays the full FRA amount)</span>'
+    :'SS claiming age <span style="font-size:11px;color:var(--text-tertiary);">(62 · 70 max · FRA varies)</span>';
+  const ageEl=document.getElementById('e-ssStartAge');if(ageEl)ageEl.min=S.ssdiMode?40:62;
+}
 // v5: handle SS claiming age change — sync ssBaseAge, show user note, refresh everything
 function onSSStartAgeChange(el){
-  const newAge=Math.max(62,Math.min(70,parseFloat(el.value)||62));
+  const newAge=Math.max(S.ssdiMode?40:62,Math.min(70,parseFloat(el.value)||62)); // v13: SSDI has no 62 floor
   const prevAge=S.ssStartAge||62;
+  // v13: keep the SSDI Medicare suggestion (entitlement + 24 months) in step with the age above, but
+  // ONLY while it still holds the value auto-derived from the previous age — never clobber a figure
+  // the user typed themselves. Without this, ticking SSDI then correcting the start age leaves a
+  // stale Medicare age behind (prefilled 64 from the default 62, still 64 after changing it to 55).
+  if(S.ssdiMode){
+    const auto=a=>Math.min(65,Math.round((a+2)*2)/2);
+    if(S.medicareStartAge==null||S.medicareStartAge===auto(prevAge))S.medicareStartAge=auto(newAge);
+  }
   S.ssStartAge=newAge;
   // Sync ssBaseAge so the entered amount IS the benefit at the chosen claiming age
   // (replan overrides this separately when currentAge >= ssStartAge)
@@ -448,7 +512,11 @@ function onSSStartAgeChange(el){
   const hint=document.getElementById('ss-claim-hint');
   if(hint&&newAge!==prevAge&&S.uss>0){
     hint.style.display='block';
-    hint.innerHTML=`💡 Note: ${fmtC(S.uss)} is now treated as your age-${newAge} benefit. Use the SS Optimizer tab to see equivalents at other claiming ages.`;
+    // v13: never point an SSDI recipient at the claiming-age optimizer — SSDI has no claiming choice
+    // and no early-claiming reduction, so "equivalents at other ages" is advice they cannot act on.
+    hint.innerHTML=S.ssdiMode
+      ? `💡 Note: ${fmtC(S.uss)} is treated as your SSDI benefit from age ${newAge} — the full FRA amount, with no early-claiming reduction. It carries on as your retirement benefit at FRA, unchanged.`
+      : `💡 Note: ${fmtC(S.uss)} is now treated as your age-${newAge} benefit. Use the SS Optimizer tab to see equivalents at other claiming ages.`;
   } else if(hint){
     hint.style.display='none';
   }
