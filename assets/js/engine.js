@@ -106,9 +106,12 @@ function traceGroup(p,id){
 //   Ages & horizon: startAge, currentAge (0 unless replanned), birthYear, phaseAge*end.
 //     (Plan END age `p5EndAge` is a SEPARATE global, not stored on S.)
 //   Per-phase objects p0..p5b: { w401k, wcash, wEquity, wRoth, wSuper (monthly $), rothConversion
-//     ($/yr), partTime ($/yr), rentalAnn ($/yr), uss, ukp (per-phase overrides) }.
+//     ($/yr), partTime ($/yr), rentalAnn ($/yr), uss/ukp (v13: always null — see below) }.
 //   Social Security / pensions: uss, ssBaseAge, ssStartAge, ssColaRate; spouseSS + spouse* ;
 //     ukp + triplelock; cpp/oas (Canada); agePension + superBal (Australia).
+//     ⚠ uss and ukp are SINGLE figures set once in Income streams. The phase objects keep a null
+//       uss/ukp purely for backward compatibility — the engine reads s.uss / s.ukp and the phase
+//       flags hasSS/hasUKP decide which phases they reach. Never write a per-phase amount again.
 //   US tax params: stdDed, seniorDed, brk10/brk12/brk22, irmaa, fpl100/250/400, medicare(+D),
 //     niitThreshold(+Mfj), stateTaxRate/stateName/stateSSExempt/statePensionExempt; mfj* variants;
 //     filingStatus; subjectToUsTax.
@@ -237,18 +240,24 @@ const D_USD={
   //         effective mode resolves to '$' for legacy plans that only set goalSurvivorMo. ──
   goalsEnabled:false, goalNetMo:0, goalLegacy:0, goalFloorMo:0, goalSurvivorMo:0,
   goalSurvivorMode:'%', goalSurvivorPct:0,
-  p0:{w401k:0,wcash:100,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p1:{w401k:100,wcash:100,uss:0,ukp:0,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p2:{w401k:100,wcash:100,uss:1000,ukp:0,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p3:{w401k:100,wcash:100,uss:1000,ukp:0,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p4:{w401k:100,wcash:100,uss:1000,ukp:1000,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p5:{w401k:100,wcash:100,uss:1000,ukp:1000,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  // ── uss / ukp are `null` in EVERY phase on purpose (v13). Social Security and the UK State
+  //    Pension are single figures set once in Income streams (s.uss / s.ukp); WHEN they start is
+  //    decided by ssStartAge / ukpBaseAge, not by a per-phase amount. A number here used to
+  //    override the global and win, which meant the Edit tab had two controls for one figure and
+  //    zeroing the visible one didn't turn the income off. _migrateSingleIncomeFigures() folds any
+  //    legacy per-phase number back into the global on load; nothing writes these again. ──
+  p0:{w401k:0,wcash:100,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p1:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p2:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p3:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
   // ── v5: SS-split secondary slots (only active when ssStartAge falls mid-phase) ──
-  p1b:{w401k:0,wcash:0,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p2b:{w401k:0,wcash:0,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p3b:{w401k:0,wcash:0,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p4b:{w401k:0,wcash:0,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p5b:{w401k:0,wcash:0,uss:0,ukp:0,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0}
+  p1b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p2b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p3b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p4b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p5b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0}
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -272,8 +281,9 @@ const D_USD={
  * @property {number} rothConversion  401k→Roth conversion /yr
  * @property {number} partTime        part-time earned income /yr
  * @property {number} rentalAnn       rental/passive income /yr
- * @property {number} [uss]  per-phase SS override /mo
- * @property {number} [ukp]  per-phase UK pension override /mo
+ * @property {?number} [uss]  always null (v13) — SS is one figure, s.uss. Legacy plans carried a
+ *                            per-phase amount here that outranked the global; the loader folds it back.
+ * @property {?number} [ukp]  always null (v13) — same story for the UK State Pension, s.ukp.
  */
 /**
  * Ending account balances for a phase (all USD).
@@ -409,7 +419,8 @@ function syncSplitState(){
       if(isFresh){
         const parentKey=bk.replace('b','');
         const parent=S[parentKey]||D_USD[parentKey];
-        S[bk]={...parent,uss:S.uss||0};
+        // v13: uss/ukp stay null — the split half is paid the same single figures as its parent
+        S[bk]={...parent,uss:null,ukp:null};
       }
     } else {
       // Not active: revert to defaults
@@ -1543,8 +1554,12 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       rEquity:s.rEquity||0,rRoth:s.rRoth||7,rSuper:s.rSuper||7,
       partTimeAnnual:pk.partTime||0,
       r401k:s.r401k,rCash:s.rCash,
-      ussBase:pc.hasSS?(pk.uss!=null?pk.uss:s.uss):0,
-      ukpBase:pc.hasUKP?(pk.ukp!=null?pk.ukp:s.ukp):0,
+      // v13: ONE figure each, straight off the plan — never a per-phase override. hasSS/hasUKP
+      // (from ssStartAge / age 67) decide WHEN they pay; s.uss / s.ukp decide how much. Reading a
+      // per-phase copy here is what let the Phases tab silently outrank Income streams, and it also
+      // made every clone-and-tweak caller (survivor scenario, AI dry-run) a no-op.
+      ussBase:pc.hasSS?(s.uss||0):0,
+      ukpBase:pc.hasUKP?(s.ukp||0):0,
       cppBase:hasCPP?(s.cpp||0):0,oasBase:hasOAS?(s.oas||0):0,
       agePensionBase:hasAgePension?(s.agePension||0):0,
       spouseSS:mfj&&pc.hasSS?(s.spouseSS||0):0,
@@ -1591,8 +1606,8 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       ausTaxFreeThreshold:s.ausTaxFreeThreshold||18200,
       ausBrk1:s.ausBrk1||45000,ausBrk2:s.ausBrk2||120000,ausBrk3:s.ausBrk3||180000,
       rmdStartAge:s.rmdStartAge||73});
-    const phaseUss=pk.uss!=null?pk.uss:s.uss;
-    const phaseUkp=pk.ukp!=null?pk.ukp:s.ukp;
+    const phaseUss=s.uss||0; // v13: same single figure the engine was handed above
+    const phaseUkp=s.ukp||0;
     const ssColaNote=pc.hasSS&&phaseUss>0&&s.ssColaRate>0?`COLA: ${fmtC(phaseUss)} → ${fmtC(r.uss_grown)}/mo`:'';
     const tlNote=pc.hasUKP&&phaseUkp>0?`Triple Lock: ${fmtC(phaseUkp)} → ${fmtC(r.ukp_grown)}/mo`:'';
     const cppNote=isCanadian&&hasCPP&&s.cpp>0?`CPP COLA: ${fmtC(s.cpp)} → ${fmtC(r.cpp_grown)}/mo`:'';
