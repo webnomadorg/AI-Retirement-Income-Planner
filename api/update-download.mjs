@@ -115,11 +115,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    // req.body is auto-parsed for JSON, but the app may send text/plain to dodge the
-    // CORS preflight, so accept a raw string too.
-    let body = req.body;
+    // req.body is a lazy getter that THROWS when the platform can't parse the declared
+    // Content-Type — so it needs its own try/catch, or a malformed body becomes a 500 for
+    // what is really a client error. It may also hand back a raw string, so parse that too.
+    let body;
+    try { body = req.body; } catch { body = null; }
     if (typeof body === 'string') {
-      try { body = JSON.parse(body); } catch { body = {}; }
+      try { body = JSON.parse(body); } catch { body = null; }
     }
     const email = String(body?.email || '').trim().toLowerCase();
 
