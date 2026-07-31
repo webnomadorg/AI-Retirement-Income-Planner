@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v250.html on 2026-07-30. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v251.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -5289,8 +5289,8 @@ html[data-theme="contrast"] .irow select:focus{
           <div class="wiz-field">
             <label>US Social Security at age 62 ($/mo) <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=2RsvEMggtFg','_blank','noopener');" title="Watch the Full Retirement Age &amp; claiming explainer">&#x25B6; FRA &amp; claiming &middot; 2 min</button></span></label>
             <input type="number" id="wiz-uss" min="0" step="50" placeholder="e.g. 1800"
-              oninput="S.uss=S.p2.uss=S.p3.uss=S.p4.uss=S.p5.uss=parseFloat(this.value)||0;liveCalc();">
-            <div class="wiz-field-hint">Find on ssa.gov — this is your age-62 estimate (default claiming age 62 — change later in Edit tab if needed)</div>
+              oninput="S.uss=parseFloat(this.value)||0;liveCalc();">
+            <div class="wiz-field-hint">Find on ssa.gov — this is your age-62 estimate (default claiming age 62 — change later in Edit tab if needed). <strong>On SSDI?</strong> Enter it here rather than in the disability field below — it is Social Security, and you can set the age it started in <strong>Edit values</strong>.</div>
           </div>
           <div class="wiz-field">
             <label>SS COLA rate (%/yr) <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=9MIu-WVOqYY','_blank','noopener');" title="Watch the Social Security COLA explainer">&#x25B6; SS COLA &middot; 90 sec</button></span></label>
@@ -5334,6 +5334,12 @@ html[data-theme="contrast"] .irow select:focus{
             <input type="number" id="wiz-uspension-age" min="40" max="90" step="1" placeholder="e.g. 65"
               oninput="S.usPensionBaseAge=parseFloat(this.value)||65;liveCalc();">
             <div class="wiz-field-hint">At or below your current age if it's already in payment</div>
+          </div>
+          <div class="wiz-field">
+            <label>US pension end age <span style="font-weight:400;opacity:.75;">(blank = paid for life)</span></label>
+            <input type="number" id="wiz-uspension-end" min="41" max="110" step="1" placeholder="blank = for life"
+              oninput="S.usPensionEndAge=(this.value===''?null:Math.max(41,Math.min(110,parseFloat(this.value)||41)));liveCalc();">
+            <div class="wiz-field-hint"><strong>Employer or private disability usually stops at 65</strong> — enter that age, or it is paid for the rest of the plan. A pension for life stays blank.</div>
           </div>
           <div class="wiz-field">
             <label>US pension COLA rate (%/yr)</label>
@@ -15276,6 +15282,7 @@ function openWizard(){
   setWiz('wiz-ukp',S.ukp);
   setWiz('wiz-uspension',S.usPension||0);
   setWiz('wiz-uspension-age',S.usPensionBaseAge||65);
+  setWiz('wiz-uspension-end',(S.usPensionEndAge==null||S.usPensionEndAge==='')?null:S.usPensionEndAge); // null ⇒ blank = for life
   setWiz('wiz-uspension-cola',(S.usPensionColaRate==null||S.usPensionColaRate==='')?null:S.usPensionColaRate); // null ⇒ leave blank = track inflation
   setWiz('wiz-inflation',S.inflation);
   setWiz('wiz-rmdage',S.rmdStartAge||73);
