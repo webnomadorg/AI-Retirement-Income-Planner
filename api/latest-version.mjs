@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 253, released: '2026-07-31', headline: 'Check for updates from inside the planner.' }; /* __LATEST__ */
+const LATEST = { build: 256, released: '2026-07-31', headline: 'Check for updates from inside the planner.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
