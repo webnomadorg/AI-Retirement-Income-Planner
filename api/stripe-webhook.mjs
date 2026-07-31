@@ -1,10 +1,13 @@
 /* Stripe webhook — POST /api/stripe-webhook
 
-   Fires on `checkout.session.completed`. Does two things:
+   Fires on `checkout.session.completed`. Does three things:
      1. Always emails dev@webnomad.org an owner alert (product, amount, buyer email).
      2. If the purchase includes a bookable session (product metadata.book set),
         emails the BUYER their booking directions (Calendly link) — the reliable
         safety net so a buyer who never opens thanks.html still learns how to book.
+     3. Records the purchase in the email→sessions lookup index (see lib/purchase-log.mjs)
+        so the buyer can later pull updated files from inside the planner itself,
+        knowing only the address they bought with.
 
    Signature is verified manually (no Stripe SDK — this project uses fetch only)
    against STRIPE_WEBHOOK_SECRET. Raw body is required for that, so body parsing
@@ -14,10 +17,12 @@
      STRIPE_WEBHOOK_SECRET — signing secret from the Stripe webhook endpoint (whsec_…)
      STRIPE_VERIFY_KEY     — restricted read-only key, used to expand line items
      RESEND_API_KEY        — already set; used for both emails
+     UPDATE_LOOKUP_PEPPER  — secret for hashing emails into blob keys (step 3)
 
    NOTE: classic Node (req, res) signature — same as the other functions here. */
 
 import crypto from 'node:crypto';
+import { appendPurchase } from '../lib/purchase-log.mjs';
 
 export const config = { api: { bodyParser: false } };
 
@@ -129,11 +134,37 @@ export default async function handler(req, res) {
         const full = await r.json();
         const items = full.line_items?.data ?? [];
         products = items
-          .map((li) => ({ name: li.price?.product?.name ?? li.description, book: li.price?.product?.metadata?.book }));
+          .map((li) => ({
+            name: li.price?.product?.name ?? li.description,
+            book: li.price?.product?.metadata?.book,
+            zip: li.price?.product?.metadata?.zip,
+          }));
         sessions = products.filter((p) => p.book);
       } else {
         console.error('stripe-webhook: could not expand session', r.status);
       }
+    }
+
+    // Record this purchase against the buyer's email so they can re-download later from
+    // inside the planner. Only downloadable products (those with a zip) are worth indexing;
+    // a session booking has nothing to fetch.
+    //
+    // Deliberately isolated: a Blob outage must never cost the owner their purchase alert,
+    // and must never make this handler return non-200 (Stripe would then retry the whole
+    // webhook and re-send the emails). Log and carry on.
+    const downloadables = products.filter((p) => p.zip);
+    if (buyerEmail && downloadables.length && process.env.UPDATE_LOOKUP_PEPPER) {
+      try {
+        await appendPurchase(buyerEmail, {
+          id: sessionId,
+          ts: new Date().toISOString(),
+          products: downloadables.map((p) => ({ name: p.name, zip: p.zip })),
+        });
+      } catch (e) {
+        console.error('stripe-webhook: purchase-log write failed (emails unaffected)', e);
+      }
+    } else if (buyerEmail && downloadables.length) {
+      console.warn('stripe-webhook: UPDATE_LOOKUP_PEPPER not set — purchase not indexed for in-app updates');
     }
 
     const productNames = products.length
