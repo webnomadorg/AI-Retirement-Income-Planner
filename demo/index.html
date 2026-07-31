@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v251.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v252.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -3313,6 +3313,7 @@ html[data-theme="contrast"] .irow select:focus{
         <div class="sect-hd">Monthly withdrawals</div>
         <div class="irow" data-key="p0.wcash"><label>Cash withdrawal /mo</label><input id="e-p0-cash" type="number" step="50" oninput="liveCalcDebounced()"/></div>
         <div class="irow" data-key="p0.wEquity"><label>Equity withdrawal /mo</label><input id="e-p0-equity" type="number" step="50" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="p0.wRoth"><label>Roth IRA withdrawal /mo</label><input id="e-p0-roth" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Your own <strong>contributions</strong> come out at any age, tax- and penalty-free — which is what makes Roth a bridge before 59½. Earnings are the part with the age rule.</span></div>
         <div class="sect-hd">Part-time work</div>
         <div class="irow" data-key="p0.partTime"><label>Additional annual income (USD)</label><input id="e-p0-parttime" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
       </div>
@@ -3499,6 +3500,7 @@ html[data-theme="contrast"] .irow select:focus{
         </div>
         <div class="sect-hd">Annual rental / annuity / passive income per phase</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="irow" id="row-p0-rental" style="margin:0;display:none;"><label>Pre 59½ /yr</label><input id="e-p0-rental" type="number" step="500" oninput="S.p0.rentalAnn=toUSD(parseFloat(this.value)||0);liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;"><label>Phase 1 /yr</label><input id="e-p1-rental" type="number" step="500" oninput="S.p1.rentalAnn=toUSD(parseFloat(this.value)||0);liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;"><label>Phase 2 /yr</label><input id="e-p2-rental" type="number" step="500" oninput="S.p2.rentalAnn=toUSD(parseFloat(this.value)||0);liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;"><label>Phase 3 /yr</label><input id="e-p3-rental" type="number" step="500" oninput="S.p3.rentalAnn=toUSD(parseFloat(this.value)||0);liveCalcDebounced()" placeholder="0"/></div>
@@ -3640,6 +3642,7 @@ html[data-theme="contrast"] .irow select:focus{
         <div class="sect-hd" style="margin-top:12px;">Roth conversions (annual, taxable)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('rothConversion',this)" title="What is this?" aria-label="What is this?">i</button></div>
         <p style="font-size:11px;color:var(--text-tertiary);margin:2px 0 8px;line-height:1.5;">Each conversion is taxed as ordinary income in its phase and raises MAGI (impacts ACA &amp; IRMAA). Try the <a href="#" onclick="showTab('whatif');return false;" style="color:var(--blue-text);text-decoration:underline;">What-if explorer</a> to see the size impact before committing.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="irow" id="row-p0-conv" style="margin:0;display:none;" data-key="p0.rothConversion"><label>Pre 59½ /yr</label><input id="e-p0-conv" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;" data-key="p1.rothConversion"><label>Phase 1 /yr</label><input id="e-p1-conv" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;" data-key="p2.rothConversion"><label>Phase 2 /yr</label><input id="e-p2-conv" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
           <div class="irow" style="margin:0;" data-key="p3.rothConversion"><label>Phase 3 /yr</label><input id="e-p3-conv" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
@@ -5300,7 +5303,7 @@ html[data-theme="contrast"] .irow select:focus{
           </div>
         </div>
 
-        <div class="wiz-field">
+        <div class="wiz-field" style="margin-top:14px;">
           <label>Birth year</label>
           <input type="number" id="wiz-birthyear" min="1930" max="2010" step="1" placeholder="e.g. 1960 (optional)"
             oninput="S.birthYear=parseInt(this.value)||0;liveCalc();">
@@ -8535,7 +8538,11 @@ function populateInputsFromUSD(){
   {const tb=document.getElementById('uspen2-taxable-btn'),nb=document.getElementById('uspen2-nontax-btn');
    if(tb)tb.classList.toggle('active',S.usPension2Taxable!==false);
    if(nb)nb.classList.toggle('active',S.usPension2Taxable===false);}
-  if(S.p0){s('e-p0-cash',S.p0.wcash||0);s('e-p0-equity',S.p0.wEquity||0);s('e-p0-parttime',S.p0.partTime||0);}
+  // v13: p0 gains Roth withdrawal / Roth conversion / rental. The engine always honoured pk.wRoth,
+  // pk.rothConversion and pk.rentalAnn for p0 — there was simply no way to enter them, so an early
+  // retiree's conversion ladder and rental income were silently modelled as zero.
+  if(S.p0){s('e-p0-cash',S.p0.wcash||0);s('e-p0-equity',S.p0.wEquity||0);s('e-p0-parttime',S.p0.partTime||0);
+    s('e-p0-roth',S.p0.wRoth||0);s('e-p0-conv',S.p0.rothConversion||0);s('e-p0-rental',S.p0.rentalAnn||0);}
   s('e-p1-401k',S.p1.w401k);s('e-p1-cash',S.p1.wcash);
   s('e-p1-equity',S.p1.wEquity||0);s('e-p1-parttime',S.p1.partTime||0);
   s('e-p2-401k',S.p2.w401k);s('e-p2-cash',S.p2.wcash);
@@ -10939,6 +10946,9 @@ function updatePhaseCardVisibility(){
   if(p0card){
     const p0phase=phases.find(p=>p.phaseKey==='p0');
     p0card.style.display=p0phase?'':'none';
+    // v13: the pre-59½ rental and Roth-conversion rows live in their own cards' phase grids, so they
+    // need the same show/hide as the p0 card itself — otherwise they'd offer a phase that isn't there.
+    ['row-p0-rental','row-p0-conv'].forEach(id=>{const r=document.getElementById(id);if(r)r.style.display=p0phase?'':'none';});
     if(p0phase){
       const p0hdr=document.getElementById('edit-hdr-p0');
       // endAge, not a literal 59.5 — an SSDI split ends this half early (p0b covers the rest)
@@ -16948,6 +16958,12 @@ function _aiFingerprint(){
       seniorDed:S.seniorDed,equityGainPct:S.equityGainPct,rentalTaxable:S.rentalTaxable!==false,rmdStartAge:S.rmdStartAge||73,
       triplelock:S.triplelock,ssBaseAge:S.ssBaseAge,ukpBaseAge:S.ukpBaseAge,spSSCola:S.spouseSSColaRate||2.6,
       ssdiMode:!!S.ssdiMode,medicareStartAge:(S.medicareStartAge==null?'65':S.medicareStartAge),
+      // v13: currentAge (a Replan moves it) plus the Monte Carlo / backtest settings. A Replan also
+      // changes balances, so the cache busted anyway — but the simulation settings did not appear
+      // anywhere, so re-running Monte Carlo at a different volatility and then asking the AI about it
+      // could be answered from a cache built under the old settings.
+      currentAge:S.currentAge||0,
+      mc:JSON.stringify([S.mcRuns,S.mcSigma,S.mcSigmaCash,S.mcInflSigma,S.btStockPct,S.mspendMcTarget,S.mspendBtTarget]),
       usPension:S.usPension||0,usPensionBaseAge:S.usPensionBaseAge||65,usPensionEndAge:(S.usPensionEndAge==null?'life':S.usPensionEndAge),usPensionCola:(S.usPensionColaRate==null?'infl':S.usPensionColaRate),usPensionTaxable:S.usPensionTaxable!==false,
       usPension2:S.usPension2||0,usPension2BaseAge:S.usPension2BaseAge||65,usPension2EndAge:(S.usPension2EndAge==null?'life':S.usPension2EndAge),usPension2Cola:(S.usPension2ColaRate==null?'infl':S.usPension2ColaRate),usPension2Taxable:S.usPension2Taxable!==false,
       phaseAges:JSON.stringify([S.phaseAge1end,S.phaseAge2end,S.phaseAge3end,S.phaseAge4end]),
