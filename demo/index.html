@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v253.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v257.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -73,9 +73,13 @@
      A user-entered "Custom (OpenAI-compatible)" endpoint at any other host is intentionally NOT allow-listed
      here (a locked single-file build can't pre-know it) — such a Custom host would be blocked by CSP unless
      this line is edited. Chart.js is inlined, so no CDN is needed in script-src. img-src also allows YouTube's
-     cookieless thumbnail hosts (img.youtube.com / i.ytimg.com) used by the video-tutorials tab. -->
+     cookieless thumbnail hosts (img.youtube.com / i.ytimg.com) used by the video-tutorials tab.
+     airetirementincomeplanner.com is allow-listed for the update checker only (see 'UPDATE CHECKER' in the
+     app script): a once-a-day GET of /api/latest-version carrying no data, and — only if the user asks for
+     it — a POST of the email they purchased with to /api/update-download. No plan data ever leaves the
+     machine. The ZIP download itself is a window.open navigation, which CSP fetch directives don't cover. -->
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://img.youtube.com https://i.ytimg.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 https://open.er-api.com; object-src 'none'; base-uri 'self'; form-action 'none'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://img.youtube.com https://i.ytimg.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 https://open.er-api.com https://airetirementincomeplanner.com; object-src 'none'; base-uri 'self'; form-action 'none'"/>
 <style>
   :root {
     /* Light theme — paper-like off-white family (was pure #ffffff which read too
@@ -393,6 +397,37 @@
   .plan-status-chip.stage-signed_off{background:var(--green-bg);color:var(--green-text);border-color:#639922;}
   .plan-status-chip.overdue{background:var(--amber-bg);color:var(--amber-text);border-color:#BA7517;}
   .plan-status-chip.edited{background:var(--amber-bg);color:var(--amber-text);border-color:#BA7517;}
+  /* "Update available" chip — same pill shape as .plan-status-chip, teal so it reads as news
+     rather than a warning. Hidden until the update checker finds a newer build (see
+     'UPDATE CHECKER' in the app script), so the toolbar stays clean when there's nothing to say. */
+  .update-chip{display:none;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;border:0.5px solid #0F8C7B;background:var(--teal-bg);color:var(--teal-text);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;transition:filter .12s;}
+  .update-chip.show{display:inline-flex;}
+  .update-chip:hover{filter:brightness(0.97);}
+  /* Updates help-pane: version banner + the email lookup form. */
+  .upd-status{border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:16px;border:0.5px solid var(--border-mid);background:var(--bg-secondary);}
+  .upd-status.avail{background:var(--teal-bg);border-color:#0F8C7B;}
+  .upd-status-h{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:4px;}
+  .upd-status.avail .upd-status-h{color:var(--teal-text);}
+  .upd-status-sub{font-size:13px;line-height:1.55;color:var(--text-secondary);}
+  .upd-status.avail .upd-status-sub{color:var(--teal-text);}
+  /* Links inherit the banner's own text colour instead of the browser default (#0000EE), which
+     scored ~1.3:1 against the dark-mode teal banner. Inheriting guarantees AA everywhere, because
+     the surrounding text is already contrast-checked against that background; the underline keeps
+     them identifiable as links without relying on colour alone. */
+  .upd-status a,.upd-msg a{color:inherit;text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+  .upd-status a:hover,.upd-msg a:hover{opacity:.8;}
+  .upd-checked{font-size:12px;color:var(--text-tertiary);margin:-8px 0 14px 2px;}
+  .upd-checked a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+  .upd-checked a:hover{color:var(--text-secondary);}
+  .upd-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 6px;}
+  .upd-input{flex:1;min-width:220px;padding:9px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border-mid);background:var(--bg-primary);color:var(--text-primary);font-size:13.5px;font-family:var(--font);}
+  .upd-input:focus{outline:2px solid #0F8C7B;outline-offset:1px;}
+  .upd-btn{padding:9px 16px;border-radius:var(--radius-md);border:0.5px solid #0F8C7B;background:var(--teal-bg);color:var(--teal-text);font-size:13.5px;font-weight:600;font-family:var(--font);cursor:pointer;}
+  .upd-btn:hover{filter:brightness(0.97);}
+  .upd-btn:disabled{opacity:.55;cursor:default;}
+  .upd-msg{font-size:13px;line-height:1.55;padding:10px 12px;border-radius:var(--radius-md);margin-top:10px;}
+  .upd-msg.err{background:var(--amber-bg);color:var(--amber-text);}
+  .upd-msg.ok{background:var(--green-bg);color:var(--green-text);}
   .ps-stages{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
   .ps-stage-btn{flex:1;min-width:120px;padding:9px 12px;border-radius:8px;border:0.5px solid var(--border-mid);background:var(--bg-secondary);color:var(--text-primary);font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;}
   .ps-stage-btn:hover{background:var(--bg-tertiary);}
@@ -2966,6 +3001,8 @@ html[data-theme="contrast"] .irow select:focus{
       <!-- Destructive + help -->
       <button class="tool-btn danger" onclick="resetDefaults()">&#x21BA; Reset</button>
       <button type="button" id="plan-status-chip" class="plan-status-chip" onclick="openPlanStatus()" title="Plan status — mark this plan as a draft, under review, or signed off">🔧 Draft</button>
+      <!-- Hidden until checkForUpdate() finds a newer build on the server. -->
+      <button type="button" id="update-chip" class="update-chip" onclick="openUpdatesTab()" title="A newer version of the planner is available — click to get it">&#x2B06;&#xFE0F; Update available</button>
       <button class="help-fab" onclick="openHelp()" title="Help — how to use this dashboard" aria-label="Open help">?</button>
     </div>
   </div>
@@ -4305,6 +4342,7 @@ html[data-theme="contrast"] .irow select:focus{
       <button class="help-tab-btn"        data-tab="glossary"   onclick="switchHelpTab('glossary')">📖 Glossary</button>
       <button class="help-tab-btn"        data-tab="videos"     onclick="switchHelpTab('videos')">📺 Video tutorials</button>
       <button class="help-tab-btn"        data-tab="downloads"  onclick="switchHelpTab('downloads')">📚 Downloads</button>
+      <button class="help-tab-btn"        data-tab="updates"    onclick="switchHelpTab('updates')">🆕 Updates</button>
       <button class="help-tab-btn"        data-tab="sessions"   onclick="switchHelpTab('sessions')">👤 1‑on‑1 Sessions</button>
     </div>
 
@@ -5032,6 +5070,11 @@ html[data-theme="contrast"] .irow select:focus{
         </div>
       </div>
 
+      <!-- ─── UPDATES ───────────────────────────────────────────── -->
+      <!-- Body is rendered by _renderHelpPane('updates') in the app script, because it depends on
+           the live version check. Left empty here so there is only one place that builds it. -->
+      <div class="help-pane" id="hp-updates"></div>
+
     </div><!-- /help-body -->
   </div><!-- /help-modal -->
 </div><!-- /help-overlay -->
@@ -5625,6 +5668,13 @@ html[data-theme="contrast"] .irow select:focus{
 // ═══════════════════════════════════════════════════════════════
 // 1. CONSTANTS
 // ═══════════════════════════════════════════════════════════════
+// Build number of THIS file, used by the update checker (see 'UPDATE CHECKER' below) to
+// tell whether a newer version has shipped. The literal is rewritten by python/build.py
+// at assemble time — keep the line shape byte-identical (build.py's BUILD_STAMP_RE matches
+// it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
+// file); the checker then falls back to the filename, and stays silent if that fails too,
+// so an unknown version never nags the user.
+const APP_BUILD = 257; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -15081,6 +15131,102 @@ function renderExampleShowcase(){
     '<div class="ex-matrix-wrap"><table class="ex-matrix">'+head+rows+'</table></div>';
 }
 function _loadExampleFromHelp(i){demoToast("Loading example plans is available in the full version — this demo is fixed to the retire-at-62 sample.");}
+// ═══════════════════════════════════════════════════════════════
+// UPDATE CHECKER
+// ═══════════════════════════════════════════════════════════════
+// Tells the user when a newer build has shipped, and lets them pull the current files knowing
+// only the email address they bought with. Two endpoints on the marketing site (both allow-listed
+// in the CSP in <head> — see the comment there):
+//   GET  /api/latest-version   public constant {build,released,headline,notesUrl}. Sends NOTHING
+//                              about the user or their plan. Asked at most once a day.
+//   POST /api/update-download  {email} → download links for that purchase. Only ever called when
+//                              the user types their address and clicks the button.
+// Plan data never leaves the machine. Every failure here is silent by design: this planner is
+// routinely used offline, so a missed check must never interrupt, warn, or block anything.
+const UPDATE_API='https://airetirementincomeplanner.com';
+const UPDATE_CHECK_INTERVAL=24*60*60*1000; // once a day — this is a desktop file, not a web app
+
+let _updLatest=null;  // last {build,released,headline,notesUrl} seen (also cached in localStorage)
+let _updBusy=false;   // a lookup is in flight
+let _updResult=null;  // {products:[…]} or {error:'…'} from the most recent lookup
+
+/** Which build is this file? APP_BUILD is stamped by python/build.py; fall back to the filename
+    for a renamed or hand-assembled copy. 0 = genuinely unknown, and the checker then stays quiet
+    rather than guessing and nagging. */
+function _appBuild(){
+  if(typeof APP_BUILD==='number'&&APP_BUILD>0)return APP_BUILD;
+  const m=/Retirement-Planner-v7-v(\d+)\.html/i.exec(location.pathname||'');
+  return m?parseInt(m[1],10):0;
+}
+function _updateAvailable(){
+  const mine=_appBuild();
+  return !!(_updLatest&&mine&&_updLatest.build>mine);
+}
+/** Reveal/hide the header chip, and keep an open Updates pane in step. */
+function _updApplyChip(){
+  const chip=document.getElementById('update-chip');
+  if(chip)chip.classList.toggle('show',_updateAvailable());
+  if(typeof _activeHelpTab==='function'&&_activeHelpTab()==='updates')renderUpdatesPane();
+}
+
+/** Ask the site whether a newer build exists. Cached for a day; never throws, never blocks. */
+async function checkForUpdate(force){}
+
+function openUpdatesTab(){openHelp();switchHelpTab('updates');}
+
+/** Opening the Updates tab is an explicit "tell me now", so it ignores the once-a-day throttle
+    and asks again. Without this, anyone whose last background check happened shortly BEFORE a
+    release keeps being told they are up to date for up to 24 hours — on the very screen they
+    opened to find out otherwise. (Exactly that happened in testing: a cached pre-release build
+    number made two different versions both report "up to date".) */
+let _updChecking=false;
+async function _updRecheck(){}
+
+/** "just now" / "6 minutes ago" / "3 days ago" for the last successful version check. */
+function _updCheckedAgo(){
+  const t=parseInt(localStorage.getItem('rp_upd_checked')||'0',10)||0;
+  if(!t)return null;
+  const s=Math.max(0,Math.round((Date.now()-t)/1000));
+  if(s<60)return 'just now';
+  const m=Math.round(s/60); if(m<60)return m+(m===1?' minute ago':' minutes ago');
+  const h=Math.round(m/60); if(h<24)return h+(h===1?' hour ago':' hours ago');
+  const d=Math.round(h/24); return d+(d===1?' day ago':' days ago');
+}
+
+/** Friendly, non-alarming wording for a failed lookup. Mirrors _aiFriendlyError's approach:
+    name the likely cause, and always reassure that the plan itself is unaffected. */
+function _updFriendlyError(err){
+  const raw=((err&&err.message)||'').toString();
+  if(err&&(err.name==='TimeoutError'||err.name==='AbortError'))
+    return '⏱ The request timed out. Check your connection and try again — your plan is unaffected.';
+  if((err&&err.name==='TypeError')||/NetworkError|Failed to fetch|load failed/i.test(raw))
+    return '🔌 Couldn’t reach airetirementincomeplanner.com. Check your internet connection. Your plan, and every calculation in it, works fully offline.';
+  return raw||'Something went wrong. Please try again, or email dev@webnomad.org with your receipt.';
+}
+
+/** Look up what this email bought and show the download links. */
+function requestUpdateDownload(){demoToast("Downloading your files is available in the full version — updates are free for life once you own the planner.");}
+
+/** Build the Updates pane. Rebuilt on every show because it depends on the live check. */
+function renderUpdatesPane(){
+  const pane=document.getElementById('hp-updates');
+  if(!pane)return;
+  pane.innerHTML=
+    '<div class="upd-status"><div class="upd-status-h">Free updates, for as long as you own it</div>'
+    +'<div class="upd-status-sub">Buy the planner once and every later version is free. Your copy checks quietly, about once a day, whether a newer one exists — it sends nothing about you or your plan, and it never needs to be online to do its actual job. When there is a newer version, an <strong>Update available</strong> button appears at the top of the planner and brings you straight to this tab.'
+    +'<br><a href="https://airetirementincomeplanner.com/updates.html" target="_blank" rel="noopener">See what has changed recently ↗</a></div></div>'
+    +'<div class="dl-conn-note">🌐 This is the only tab that would use the internet — everything else in the planner works offline.</div>'
+    +'<div class="dl-section">'
+    +'<div class="dl-section-label">📥 Get the latest files</div>'
+    +'<div class="dl-section-sub">In the full version you type the email address you bought with and your files come straight back — no receipt to hunt for, no link to have kept. Your new copy arrives as a fresh file, so you use <strong>Export</strong> in the old one and <strong>Import</strong> in the new one to bring your plan across.</div>'
+    +'<div class="upd-form">'
+    +'<input type="email" class="upd-input" placeholder="you@example.com" disabled aria-label="The email address you purchased with (disabled in this demo)"/>'
+    +'<button type="button" class="upd-btn" onclick="requestUpdateDownload()">Find my files</button>'
+    +'</div>'
+    +'<div class="upd-status-sub" style="font-size:12px;">Your address would be sent only when you press the button, and only to look up which files your purchase includes. Nothing about your plan is ever sent.</div>'
+    +'</div>';
+}
+
 initTheme();
 initTextSize(); // v6: restore saved text-size preference
 initAmountColorMode(); // v6: restore saved phase-card amount color preference
@@ -15112,6 +15258,9 @@ _undoStack.length=0;_redoStack.length=0;_undoLast=_planSnapshot();_updateUndoBut
 _loadPhaseUndo(); // restore the phase-card undo/redo history persisted from the previous session (or seed fresh)
 // First-run welcome — only when there was no saved plan to load.
 if(!didLoad)setTimeout(maybeShowWelcome,350);
+// Is there a newer build? Deferred so it can never delay first paint, and silent on failure
+// (offline is a completely normal way to run this app). See 'UPDATE CHECKER' above.
+setTimeout(function(){try{checkForUpdate();}catch(e){}},1200);
 
 // ═══════════════════════════════════════════════════════════════
 // 18. HELP MODAL
@@ -15257,6 +15406,9 @@ function _renderHelpPane(t){
   if(t==='converter'){if(!fxcReady)initConverter();else renderConverter();}
   if(t==='calcs'){if(!cfReady)initCalcs();else{renderInflCalc();renderSwr();renderHeadroom();}}
   if(t==='features')renderExampleShowcase();
+  // Re-render, then re-check: the pane reflects a live result that can land after the modal opens,
+  // and opening the tab deliberately overrides the once-a-day throttle (see _updRecheck).
+  if(t==='updates'){renderUpdatesPane();_updRecheck();}
 }
 /** The tab currently showing in the help modal ('start' when nothing is marked active). */
 function _activeHelpTab(){

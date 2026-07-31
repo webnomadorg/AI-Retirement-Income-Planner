@@ -45,7 +45,15 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'Purchase not found. If you believe this is a mistake, contact dev@webnomad.org with your receipt.' });
     }
     const session = await verify.json();
-    if (session.payment_status !== 'paid') {
+    // A 100%-off coupon produces a completed session with NO PaymentIntent, and Stripe reports it
+    // as "no_payment_required" rather than "paid". Without this it would be refused as unpaid — so
+    // anyone using a free promo code would be told their purchase doesn't exist. The extra
+    // status==='complete' guard is what stops an abandoned zero-total session from qualifying;
+    // the "paid" path is untouched, since a paid session is always complete.
+    const settled =
+      session.payment_status === 'paid' ||
+      (session.payment_status === 'no_payment_required' && session.status === 'complete');
+    if (!settled) {
       return res.status(403).json({ error: 'This purchase has not completed payment yet. Refresh in a minute, or contact dev@webnomad.org.' });
     }
 

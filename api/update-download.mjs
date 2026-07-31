@@ -71,7 +71,11 @@ async function sessionsFromStripe(email, stripeKey) {
     return [];
   }
   const list = await listRes.json();
-  const paid = (list.data ?? []).filter((s) => s.payment_status === 'paid');
+  // "no_payment_required" is what a 100%-off (zero-total) order reports instead of "paid" — see the
+  // same note in download.mjs. The list call already filters status=complete, so no extra guard.
+  const paid = (list.data ?? []).filter(
+    (s) => s.payment_status === 'paid' || s.payment_status === 'no_payment_required',
+  );
 
   // The list response doesn't carry line items, so each session is re-fetched expanded —
   // the same call api/download.mjs makes. Capped above at 20 sessions.
