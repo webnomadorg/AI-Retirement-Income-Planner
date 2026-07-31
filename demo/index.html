@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v252.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v253.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -1208,6 +1208,12 @@
   .info-tbl th,.info-tbl td{text-align:left;padding:5px 8px;border-bottom:0.5px solid var(--border-mid);vertical-align:top;}
   .info-tbl th{font-weight:600;color:var(--text-primary);white-space:nowrap;}
   .info-tbl tr:last-child td{border-bottom:none;}
+  /* v13: links inside educational copy (glossary entries + info popovers). Without this they fall back
+     to the browser default #0000EE, which sits at 2.23:1 on the dark panel — unreadable. Everywhere
+     else in the app links are hand-styled with var(--blue-text); this makes that automatic for any
+     link in EDU_CONTENT, so the next one added can't repeat the mistake. */
+  .glossary-def a,.info-popover-body a{color:var(--blue-text);text-decoration:underline;}
+  .glossary-def a:hover,.info-popover-body a:hover{text-decoration-thickness:2px;}
   .info-popover-body strong{color:var(--text-primary);font-weight:600;}
   .info-popover-foot{margin-top:10px;padding-top:9px;border-top:0.5px solid var(--border-light);display:flex;align-items:center;gap:10px;}
   .info-popover-readmore{font-size:11px;color:var(--blue-text);background:none;border:none;cursor:pointer;font-family:var(--font);text-decoration:underline;text-underline-offset:2px;padding:0;}
