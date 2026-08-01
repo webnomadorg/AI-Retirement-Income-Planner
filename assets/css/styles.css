@@ -389,7 +389,13 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
 .site-footer{ background:#12283F; color:#AFC1D3; padding-block:3.2rem 2rem; margin-top:0; }
 .site-footer a{ color:#CFDDEA; text-decoration:none; }
 .site-footer a:hover{ color:#fff; }
-.footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:2rem; }
+/* Five children: brand + Explore + Retire Abroad + Buy + Support. The column count is explicit, so
+   adding a footer column means updating this line too — otherwise the extra child spills into a
+   second row. Brand trimmed 1.6fr → 1.2fr: a fifth column narrows the others, and at 1.4fr
+   "Share your experience" started wrapping. 1.2fr gives ~184px, which clears every link in all
+   five visual styles (they use different fonts) in both light and dark. Check that before
+   lengthening any footer label. */
+.footer-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr 1fr; gap:2rem; }
 @media (max-width:780px){ .footer-grid{ grid-template-columns:1fr 1fr; gap:1.6rem; } }
 @media (max-width:460px){ .footer-grid{ grid-template-columns:1fr; } }
 .footer-brand .brand-name{ color:#fff; }
