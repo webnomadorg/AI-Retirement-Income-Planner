@@ -150,11 +150,14 @@
         <p class="lead center" style="margin-inline:auto;">Newest first. Version numbers match the build name in your download, so you can tell at a glance whether the copy you are running is current.</p>
       </div>
 
-      <div class="upd-month reveal">
+      <!-- The reveal sits on each entry below, not on this wrapper: a month is one very tall
+           element, so animating it as a unit meant a single 6,500px opacity transition that also
+           had to be fully triggered before ANY entry became readable. -->
+      <div class="upd-month">
         <h3 class="upd-month-h">July 2026</h3>
         <ul class="upd-list">
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v259</span>
             <div class="upd-body">
               <h4>Tooltips now match the planner, whichever browser you use <span class="upd-date">· 1 August</span></h4>
@@ -164,7 +167,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v257</span>
             <div class="upd-body">
               <h4>The planner now tells you when there is a newer version <span class="upd-date">· 31 July</span></h4>
@@ -175,7 +178,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v252</span>
             <div class="upd-body">
               <h4>Retiring before 59½? Three things you could not enter, you now can <span class="upd-date">· 30 July</span></h4>
@@ -185,7 +188,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v251</span>
             <div class="upd-body">
               <h4>The setup wizard now asks when disability stops <span class="upd-date">· 30 July</span></h4>
@@ -194,7 +197,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v249</span>
             <div class="upd-body">
               <h4>Two rough edges on the SSDI update, smoothed <span class="upd-date">· 30 July</span></h4>
@@ -205,7 +208,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v244</span>
             <div class="upd-body">
               <h4>If you're on SSDI, the planner now fits your situation <span class="upd-date">· 30 July</span></h4>
@@ -216,7 +219,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v239</span>
             <div class="upd-body">
               <h4>Disability that stops at 65 <span class="upd-date">· 30 July</span></h4>
@@ -227,7 +230,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v236</span>
             <div class="upd-body">
               <h4>The UK State Pension now has one off switch <span class="upd-date">· 30 July</span></h4>
@@ -237,7 +240,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">Website</span>
             <div class="upd-body">
               <h4>A free way to compare retiring in four countries <span class="upd-date">· 29 July</span></h4>
@@ -247,7 +250,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v230</span>
             <div class="upd-body">
               <h4>How close a one-off takes you to the line <span class="upd-date">· 27 July</span></h4>
@@ -255,7 +258,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v229</span>
             <div class="upd-body">
               <h4>A warning where you'd actually look for it <span class="upd-date">· 27 July</span></h4>
@@ -263,7 +266,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v228</span>
             <div class="upd-body">
               <h4>Every one-off expense shown separately in the working <span class="upd-date">· 27 July</span></h4>
@@ -271,7 +274,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v218–v227</span>
             <div class="upd-body">
               <h4>You choose which account pays for a one-off expense <span class="upd-date">· 27 July</span></h4>
@@ -279,7 +282,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v218–v227</span>
             <div class="upd-body">
               <h4>What that expense really costs, before you commit to it <span class="upd-date">· 27 July</span></h4>
@@ -287,7 +290,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v217</span>
             <div class="upd-body">
               <h4>Your total tax figure now explains itself <span class="upd-date">· 26 July</span></h4>
@@ -295,7 +298,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v210–v216</span>
             <div class="upd-body">
               <h4>Under the hood: every calculation, shown in full <span class="upd-date">· 26 July</span></h4>
@@ -303,7 +306,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v213</span>
             <div class="upd-body">
               <h4>Three explanation panels put right <span class="upd-date">· 26 July</span></h4>
@@ -311,7 +314,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v208–v209</span>
             <div class="upd-body">
               <h4>An account that runs dry now stops paying out <span class="upd-date">· 25 July</span></h4>
@@ -319,7 +322,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v205</span>
             <div class="upd-body">
               <h4>State pension-deduction caps <span class="upd-date">· 23 July</span></h4>
@@ -327,7 +330,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v202–v203</span>
             <div class="upd-body">
               <h4>See how any figure was calculated <span class="upd-date">· 23 July</span></h4>
@@ -335,7 +338,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v201</span>
             <div class="upd-body">
               <h4>Medicare IRMAA surcharges count as a real cost <span class="upd-date">· 23 July</span></h4>
@@ -343,7 +346,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v199</span>
             <div class="upd-body">
               <h4>Phases now split at RMD age 73 <span class="upd-date">· 20 July</span></h4>
@@ -351,7 +354,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v198</span>
             <div class="upd-body">
               <h4>Clearer survivor-benefit guidance <span class="upd-date">· 19 July</span></h4>
@@ -359,7 +362,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v197</span>
             <div class="upd-body">
               <h4>Ask the AI about a plan comparison <span class="upd-date">· 18 July</span></h4>
@@ -367,7 +370,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v196</span>
             <div class="upd-body">
               <h4>Euro added as a seventh currency <span class="upd-date">· 15 July</span></h4>
@@ -375,7 +378,7 @@
             </div>
           </li>
 
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v191–v194</span>
             <div class="upd-body">
               <h4>AI chat refinements <span class="upd-date">· 2 July</span></h4>
@@ -386,10 +389,11 @@
         </ul>
       </div>
 
-      <div class="upd-month reveal" style="margin-top:2.4rem;">
+      <!-- reveal sits on the entries, not the wrapper — see the note on the block above. -->
+      <div class="upd-month" style="margin-top:2.4rem;">
         <h3 class="upd-month-h">June 2026</h3>
         <ul class="upd-list">
-          <li class="upd-item">
+          <li class="upd-item reveal">
             <span class="upd-ver">v188</span>
             <div class="upd-body">
               <h4>Use the AI provider you already have <span class="upd-date">· 29 June</span></h4>

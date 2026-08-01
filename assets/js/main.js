@@ -41,11 +41,17 @@
         if (child.classList.contains("reveal")) child.style.transitionDelay = (i * 0.07) + "s";
       });
     });
+    // threshold must stay 0, and the bottom inset must stay in PIXELS. A ratio threshold is a
+    // proportion of the element, so on a tall block it becomes a huge scroll distance: the changelog
+    // on updates.html is one 6,500px .reveal, where the old threshold of 0.12 demanded 784px of it
+    // on screen before the text faded in — you scrolled into a long blank stretch. A percentage
+    // rootMargin had the same flaw in miniature. Fixed pixels make the trigger height-independent,
+    // so every element reveals just as it reaches the viewport, whatever its size.
     var io = new IntersectionObserver(function (entries, obs) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add("is-visible"); obs.unobserve(en.target); }
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -60px 0px" });
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
