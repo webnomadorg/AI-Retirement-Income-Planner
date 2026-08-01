@@ -1,0 +1,21 @@
+residence,phase,start_age,end_age,net_monthly_usd,tax_monthly_usd,healthcare_monthly_usd
+United States,1,60,65,6176,367,457
+United States,2,65,67,6128,373,499
+United States,3,67,73,6437,361,312
+United States,4,73,80,6378,377,378
+United States,5,80,90,7155,359,486
+United Kingdom,1,60,65,6368,632,0
+United Kingdom,2,65,67,6314,686,0
+United Kingdom,3,67,73,6749,361,0
+United Kingdom,4,73,80,6755,377,0
+United Kingdom,5,80,90,7641,359,0
+Canada,1,60,65,6152,848,0
+Canada,2,65,67,6080,920,0
+Canada,3,67,73,5928,1182,0
+Canada,4,73,80,5855,1277,0
+Canada,5,80,90,6625,1375,0
+Australia,1,60,65,6352,648,0
+Australia,2,65,67,6298,702,0
+Australia,3,67,73,6098,1012,0
+Australia,4,73,80,6105,1028,0
+Australia,5,80,90,7020,980,0

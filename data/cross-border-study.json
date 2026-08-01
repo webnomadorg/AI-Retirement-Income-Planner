@@ -1,0 +1,641 @@
+{
+  "generated": "2026-08-01",
+  "engine": "mobile/www/engine.js (extracted from src/03-app.js)",
+  "planEndAge": 90,
+  "note": "All figures are net monthly income in USD, in nominal (not inflation-adjusted) dollars, single filer, no state income tax.",
+  "baseCase": {
+    "inputs": {
+      "age": 60,
+      "ss": 2800,
+      "ssAge": 67,
+      "b401k": 800000,
+      "bEquity": 300000,
+      "bCash": 100000,
+      "w401k": 4000,
+      "wEquity": 2000,
+      "wCash": 1000
+    },
+    "boundaries": [
+      65,
+      67,
+      73,
+      80
+    ],
+    "residences": [
+      {
+        "key": "us",
+        "label": "United States",
+        "phases": [
+          {
+            "startAge": 60,
+            "endAge": 65,
+            "ages": "60–65",
+            "netMo": 6176,
+            "taxMo": 367,
+            "healthMo": 457,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 65,
+            "endAge": 67,
+            "ages": "65–67",
+            "netMo": 6128,
+            "taxMo": 373,
+            "healthMo": 499,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 67,
+            "endAge": 73,
+            "ages": "67–73",
+            "netMo": 6437,
+            "taxMo": 361,
+            "healthMo": 312,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 73,
+            "endAge": 80,
+            "ages": "73–80",
+            "netMo": 6378,
+            "taxMo": 377,
+            "healthMo": 378,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 80,
+            "endAge": 90,
+            "ages": "80–90",
+            "netMo": 7155,
+            "taxMo": 359,
+            "healthMo": 486,
+            "ftcMo": 0
+          }
+        ]
+      },
+      {
+        "key": "uk",
+        "label": "United Kingdom",
+        "phases": [
+          {
+            "startAge": 60,
+            "endAge": 65,
+            "ages": "60–65",
+            "netMo": 6368,
+            "taxMo": 632,
+            "healthMo": 0,
+            "ftcMo": 367
+          },
+          {
+            "startAge": 65,
+            "endAge": 67,
+            "ages": "65–67",
+            "netMo": 6314,
+            "taxMo": 686,
+            "healthMo": 0,
+            "ftcMo": 373
+          },
+          {
+            "startAge": 67,
+            "endAge": 73,
+            "ages": "67–73",
+            "netMo": 6749,
+            "taxMo": 361,
+            "healthMo": 0,
+            "ftcMo": 283
+          },
+          {
+            "startAge": 73,
+            "endAge": 80,
+            "ages": "73–80",
+            "netMo": 6755,
+            "taxMo": 377,
+            "healthMo": 0,
+            "ftcMo": 246
+          },
+          {
+            "startAge": 80,
+            "endAge": 90,
+            "ages": "80–90",
+            "netMo": 7641,
+            "taxMo": 359,
+            "healthMo": 0,
+            "ftcMo": 146
+          }
+        ]
+      },
+      {
+        "key": "ca",
+        "label": "Canada",
+        "phases": [
+          {
+            "startAge": 60,
+            "endAge": 65,
+            "ages": "60–65",
+            "netMo": 6152,
+            "taxMo": 848,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 65,
+            "endAge": 67,
+            "ages": "65–67",
+            "netMo": 6080,
+            "taxMo": 920,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 67,
+            "endAge": 73,
+            "ages": "67–73",
+            "netMo": 5928,
+            "taxMo": 1182,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 73,
+            "endAge": 80,
+            "ages": "73–80",
+            "netMo": 5855,
+            "taxMo": 1277,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 80,
+            "endAge": 90,
+            "ages": "80–90",
+            "netMo": 6625,
+            "taxMo": 1375,
+            "healthMo": 0,
+            "ftcMo": 0
+          }
+        ]
+      },
+      {
+        "key": "au",
+        "label": "Australia",
+        "phases": [
+          {
+            "startAge": 60,
+            "endAge": 65,
+            "ages": "60–65",
+            "netMo": 6352,
+            "taxMo": 648,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 65,
+            "endAge": 67,
+            "ages": "65–67",
+            "netMo": 6298,
+            "taxMo": 702,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 67,
+            "endAge": 73,
+            "ages": "67–73",
+            "netMo": 6098,
+            "taxMo": 1012,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 73,
+            "endAge": 80,
+            "ages": "73–80",
+            "netMo": 6105,
+            "taxMo": 1028,
+            "healthMo": 0,
+            "ftcMo": 0
+          },
+          {
+            "startAge": 80,
+            "endAge": 90,
+            "ages": "80–90",
+            "netMo": 7020,
+            "taxMo": 980,
+            "healthMo": 0,
+            "ftcMo": 0
+          }
+        ]
+      }
+    ],
+    "rankings": [
+      {
+        "phase": 1,
+        "ages": "60–65",
+        "order": [
+          {
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6368
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6352
+          },
+          {
+            "key": "us",
+            "label": "United States",
+            "netMo": 6176
+          },
+          {
+            "key": "ca",
+            "label": "Canada",
+            "netMo": 6152
+          }
+        ],
+        "orderKeys": [
+          "uk",
+          "au",
+          "us",
+          "ca"
+        ],
+        "changedFromFirst": false
+      },
+      {
+        "phase": 2,
+        "ages": "65–67",
+        "order": [
+          {
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6314
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6298
+          },
+          {
+            "key": "us",
+            "label": "United States",
+            "netMo": 6128
+          },
+          {
+            "key": "ca",
+            "label": "Canada",
+            "netMo": 6080
+          }
+        ],
+        "orderKeys": [
+          "uk",
+          "au",
+          "us",
+          "ca"
+        ],
+        "changedFromFirst": false
+      },
+      {
+        "phase": 3,
+        "ages": "67–73",
+        "order": [
+          {
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6749
+          },
+          {
+            "key": "us",
+            "label": "United States",
+            "netMo": 6437
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6098
+          },
+          {
+            "key": "ca",
+            "label": "Canada",
+            "netMo": 5928
+          }
+        ],
+        "orderKeys": [
+          "uk",
+          "us",
+          "au",
+          "ca"
+        ],
+        "changedFromFirst": true
+      },
+      {
+        "phase": 4,
+        "ages": "73–80",
+        "order": [
+          {
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6755
+          },
+          {
+            "key": "us",
+            "label": "United States",
+            "netMo": 6378
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6105
+          },
+          {
+            "key": "ca",
+            "label": "Canada",
+            "netMo": 5855
+          }
+        ],
+        "orderKeys": [
+          "uk",
+          "us",
+          "au",
+          "ca"
+        ],
+        "changedFromFirst": true
+      },
+      {
+        "phase": 5,
+        "ages": "80–90",
+        "order": [
+          {
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 7641
+          },
+          {
+            "key": "us",
+            "label": "United States",
+            "netMo": 7155
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 7020
+          },
+          {
+            "key": "ca",
+            "label": "Canada",
+            "netMo": 6625
+          }
+        ],
+        "orderKeys": [
+          "uk",
+          "us",
+          "au",
+          "ca"
+        ],
+        "changedFromFirst": true
+      }
+    ],
+    "movements": [
+      {
+        "key": "us",
+        "label": "United States",
+        "positions": [
+          3,
+          3,
+          2,
+          2,
+          2
+        ],
+        "from": 3,
+        "to": 2
+      },
+      {
+        "key": "au",
+        "label": "Australia",
+        "positions": [
+          2,
+          2,
+          3,
+          3,
+          3
+        ],
+        "from": 2,
+        "to": 3
+      }
+    ]
+  },
+  "retirementAgeGrid": [
+    {
+      "retireAge": 60,
+      "ssAge": 67,
+      "firstPhaseDegenerate": false,
+      "rankFirst": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "spreadFirst": 216,
+      "spreadLast": 1016
+    },
+    {
+      "retireAge": 62,
+      "ssAge": 67,
+      "firstPhaseDegenerate": false,
+      "rankFirst": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "spreadFirst": 209,
+      "spreadLast": 1036
+    },
+    {
+      "retireAge": 65,
+      "ssAge": 67,
+      "firstPhaseDegenerate": false,
+      "rankFirst": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "spreadFirst": 205,
+      "spreadLast": 1103
+    },
+    {
+      "retireAge": 67,
+      "ssAge": 68,
+      "firstPhaseDegenerate": false,
+      "rankFirst": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "spreadFirst": 201,
+      "spreadLast": 1095
+    }
+  ],
+  "portfolioSizeGrid": [
+    {
+      "portfolio": 600000,
+      "rankFirst": [
+        "au",
+        "uk",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "netFirst": {
+        "au": 3430,
+        "uk": 3327,
+        "us": 3313,
+        "ca": 3271
+      },
+      "netLast": {
+        "uk": 5073,
+        "au": 4745,
+        "us": 4587,
+        "ca": 4487
+      }
+    },
+    {
+      "portfolio": 900000,
+      "rankFirst": [
+        "au",
+        "uk",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "netFirst": {
+        "au": 4935,
+        "uk": 4847,
+        "us": 4746,
+        "ca": 4712
+      },
+      "netLast": {
+        "uk": 6435,
+        "us": 5949,
+        "au": 5834,
+        "ca": 5519
+      }
+    },
+    {
+      "portfolio": 1200000,
+      "rankFirst": [
+        "uk",
+        "au",
+        "us",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "netFirst": {
+        "uk": 6368,
+        "au": 6352,
+        "us": 6176,
+        "ca": 6152
+      },
+      "netLast": {
+        "uk": 7641,
+        "us": 7155,
+        "au": 7020,
+        "ca": 6625
+      }
+    },
+    {
+      "portfolio": 1800000,
+      "rankFirst": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "au",
+        "ca"
+      ],
+      "netFirst": {
+        "uk": 9173,
+        "us": 9044,
+        "au": 9025,
+        "ca": 9017
+      },
+      "netLast": {
+        "uk": 10180,
+        "us": 9694,
+        "au": 9012,
+        "ca": 8836
+      }
+    },
+    {
+      "portfolio": 2500000,
+      "rankFirst": [
+        "us",
+        "ca",
+        "uk",
+        "au"
+      ],
+      "rankLast": [
+        "uk",
+        "us",
+        "ca",
+        "au"
+      ],
+      "netFirst": {
+        "us": 12286,
+        "ca": 12230,
+        "uk": 12185,
+        "au": 12184
+      },
+      "netLast": {
+        "uk": 13065,
+        "us": 12579,
+        "ca": 11337,
+        "au": 11335
+      }
+    }
+  ]
+}

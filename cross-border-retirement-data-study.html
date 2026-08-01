@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The same $1.2M retirement, modelled in four countries — a data study | AI Retirement Income Planner</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
+     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="assets/js/consent.js" defer></script>
+<meta name="description" content="We ran one $1.2M retirement plan as a tax resident of the US, UK, Canada and Australia, year by year to age 90. The country that comes out ahead at 60 is not the one that comes out ahead at 80 — and the reason is not the one most people expect. Full dataset free to download.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/cross-border-retirement-data-study.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The same $1.2M retirement, modelled in four countries">
+<meta property="og:description" content="One plan, four tax systems, to age 90. The best country at 60 is not the best one at 80, and after Social Security starts the UK's advantage stops being tax at all. Full dataset free to download.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
+<meta property="og:url" content="https://airetirementincomeplanner.com/cross-border-retirement-data-study.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Dataset","name":"Cross-border retirement income: one plan modelled in four countries","description":"Net monthly retirement income for an identical $1.2M portfolio held by a tax resident of the United States, United Kingdom, Canada and Australia, modelled month by month from age 60 to 90, including income tax, healthcare cost and the US-UK treaty Foreign Tax Credit. Includes retirement-age and portfolio-size sensitivity grids.","url":"https://airetirementincomeplanner.com/cross-border-retirement-data-study.html","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"keywords":["retirement income","cross-border retirement","expat retirement","income tax","Foreign Tax Credit","Medicare","retiring abroad"],"creator":{"@type":"Organization","name":"WebNomad Studio","url":"https://airetirementincomeplanner.com"},"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://airetirementincomeplanner.com/data/cross-border-base-case.csv"},{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://airetirementincomeplanner.com/data/cross-border-study.json"}]}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-head band">
+    <div class="container narrow center">
+      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Data study</p>
+      <span class="eyebrow" style="justify-content:center;">Original research</span>
+      <h1>The same $1.2M retirement, modelled in four countries</h1>
+      <p class="lead center" style="margin-inline:auto;">We took one retirement plan and ran it, month by month to age 90, as a tax resident of the <strong>United States</strong>, <strong>United Kingdom</strong>, <strong>Canada</strong> and <strong>Australia</strong>. Same savings, same withdrawals, same Social Security — only the tax system and the healthcare bill change.</p>
+      <p class="center" style="margin-top:1rem;"><a href="#data" style="font-weight:600;text-decoration:underline;text-underline-offset:3px;">Download the full dataset →</a> <span class="muted">— free, CC BY 4.0.</span></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-top:.4rem;">Three things the numbers say</h2>
+
+      <div class="grid cols-3" data-stagger>
+        <div class="card reveal" style="padding:1.3rem;">
+          <h3 style="margin-top:0;">The order changes</h3>
+          <p>The country that is best the year you retire is often not the one that is best at 80. In the base case the United States climbs from 3rd to 2nd, and Australia slips from 2nd to 3rd, without either of them doing anything differently.</p>
+        </div>
+        <div class="card reveal" style="padding:1.3rem;">
+          <h3 style="margin-top:0;">After 67, tax stops being the story</h3>
+          <p>Once Social Security starts, the UK resident's total tax bill converges on the US figure <em>exactly</em>. Everything the UK is still winning by from that point is healthcare, not tax.</p>
+        </div>
+        <div class="card reveal" style="padding:1.3rem;">
+          <h3 style="margin-top:0;">It depends how much you have</h3>
+          <p>At $600k Australia starts ahead. At $2.5M the United States does. The UK finishes ahead in every single case we ran — but it is not always in front at the start.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band">
+    <div class="container">
+      <h2 style="margin-top:.4rem;">The plan we modelled</h2>
+      <p>A single filer retiring at 60 with <strong>$1,200,000</strong> — $800,000 in a 401(k), $300,000 in a taxable brokerage account and $100,000 in cash — drawing <strong>$7,000 a month</strong> across the three, and claiming <strong>$2,800/month</strong> of Social Security at 67. Once Social Security starts, portfolio withdrawals are trimmed by what it replaces, so total income stays level rather than stepping up.</p>
+      <p>The plan is then run four times. The only thing that changes is where the person is tax resident. Phase boundaries land on the events that actually change the arithmetic: <strong>Medicare at 65</strong>, the <strong>Social Security claim at 67</strong>, <strong>Required Minimum Distributions at 73</strong>, and 80.</p>
+
+      <h3>Net monthly income, by country and age</h3>
+      <div class="cmp-matrix-wrap">
+        <table class="cmp-table">
+          <caption class="sr-only">Net monthly income in US dollars by country of residence and age band</caption>
+          <thead>
+            <tr><th scope="col">Age</th><th scope="col">United Kingdom</th><th scope="col">United States</th><th scope="col">Australia</th><th scope="col">Canada</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">60–65</th><td><strong>$6,368</strong></td><td>$6,176</td><td>$6,352</td><td>$6,152</td></tr>
+            <tr><th scope="row">65–67</th><td><strong>$6,314</strong></td><td>$6,128</td><td>$6,298</td><td>$6,080</td></tr>
+            <tr><th scope="row">67–73</th><td><strong>$6,749</strong></td><td>$6,437</td><td>$6,098</td><td>$5,928</td></tr>
+            <tr><th scope="row">73–80</th><td><strong>$6,755</strong></td><td>$6,378</td><td>$6,105</td><td>$5,855</td></tr>
+            <tr><th scope="row">80–90</th><td><strong>$7,641</strong></td><td>$7,155</td><td>$7,020</td><td>$6,625</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:.92rem;">Net monthly income in US dollars, nominal. Australia is ahead of the US for the first seven years and behind it for the next twenty-three.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-top:.4rem;">Why the order changes</h2>
+      <p>The interesting part is not that the UK leads. It is <em>what</em> it leads with, and how that changes at 67.</p>
+
+      <h3>Income tax, per month</h3>
+      <div class="cmp-matrix-wrap">
+        <table class="cmp-table">
+          <caption class="sr-only">Total income tax per month by country of residence and age band</caption>
+          <thead>
+            <tr><th scope="col">Age</th><th scope="col">United States</th><th scope="col">United Kingdom</th><th scope="col">Australia</th><th scope="col">Canada</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">60–65</th><td>$367</td><td>$632</td><td>$648</td><td>$848</td></tr>
+            <tr><th scope="row">65–67</th><td>$373</td><td>$686</td><td>$702</td><td>$920</td></tr>
+            <tr><th scope="row">67–73</th><td>$361</td><td>$361</td><td>$1,012</td><td>$1,182</td></tr>
+            <tr><th scope="row">73–80</th><td>$377</td><td>$377</td><td>$1,028</td><td>$1,277</td></tr>
+            <tr><th scope="row">80–90</th><td>$359</td><td>$359</td><td>$980</td><td>$1,375</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Before 65, the UK resident pays more income tax than the American — and still comes out ahead.</strong> $632 against $367. What settles it is the other column: the American is buying insurance on the ACA marketplace at $457/month, and the UK resident is not. The tax gap is $265; the healthcare gap is $457.</p>
+
+      <p><strong>From 67, the two tax bills become identical to the dollar.</strong> That is not a coincidence and it is not a rounding artefact. Under the US–UK treaty, US Social Security is taxable only in the UK, while 401(k) withdrawals stay taxable in both — and the Foreign Tax Credit then offsets the US bill by whatever the UK charged. Once the UK's own liability falls below the US liability, the credit stops being able to absorb all of it, and the total you pay settles at the higher of the two figures. Which is the American's.</p>
+
+      <div class="callout" style="margin-top:1.8rem;">
+        <p style="margin:0;"><strong>So from 67 onwards, the UK's entire remaining advantage is healthcare.</strong> Not tax policy, not the treaty — the fact that one of these four people is paying Medicare Part B, Part D and an IRMAA surcharge, and the other three are not. That is worth $312–$486 a month in this plan, and it is the single largest cross-border variable in the whole model.</p>
+      </div>
+
+      <p style="margin-top:1.6rem;">Canada is behind from the first year and falls further every phase — $848/month of tax at 60 becoming $1,375 by 80, because Canadian tax applies to the full 401(k) withdrawal and to Social Security, with no treaty carve-out of the kind the UK gets. Australia starts well, on the strength of its tax-free threshold, and then loses ground once Social Security lands and is taxed as ordinary income.</p>
+    </div>
+  </section>
+
+  <section class="section band">
+    <div class="container">
+      <h2 style="margin-top:.4rem;">Does it depend on how much you have? Yes.</h2>
+      <p>We re-ran the whole thing across portfolio sizes, scaling withdrawals with the balance. The ranking in the <em>first</em> phase changes three times:</p>
+
+      <div class="cmp-matrix-wrap">
+        <table class="cmp-table">
+          <caption class="sr-only">Ranking by portfolio size in the first and last phase</caption>
+          <thead>
+            <tr><th scope="col">Portfolio</th><th scope="col">Ahead at 60–65</th><th scope="col">Ahead at 80–90</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">$600k</th><td><strong>Australia</strong> › UK › US › Canada</td><td><strong>UK</strong> › Australia › US › Canada</td></tr>
+            <tr><th scope="row">$900k</th><td><strong>Australia</strong> › UK › US › Canada</td><td><strong>UK</strong> › US › Australia › Canada</td></tr>
+            <tr><th scope="row">$1.2M</th><td><strong>UK</strong> › Australia › US › Canada</td><td><strong>UK</strong> › US › Australia › Canada</td></tr>
+            <tr><th scope="row">$1.8M</th><td><strong>UK</strong> › US › Australia › Canada</td><td><strong>UK</strong> › US › Australia › Canada</td></tr>
+            <tr><th scope="row">$2.5M</th><td><strong>US</strong> › Canada › UK › Australia</td><td><strong>UK</strong> › US › Canada › Australia</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Three different countries lead at the start depending on the size of the pot — Australia when it is small, the UK in the middle, the United States when it is large. At $2.5M the American is drawing enough that healthcare is a small fraction of income and the US brackets look favourable; at $600k, Australia's tax-free threshold shelters most of a modest income.</p>
+      <p><strong>The last phase never changes.</strong> The UK finishes first at every portfolio size we tested.</p>
+
+      <h3 style="margin-top:2rem;">Retiring later doesn't reorder it — it just widens the gap</h3>
+      <p>Retiring at 60, 62, 65 or 67 produces the same ordering in both the first and last phase. What changes is the size of the difference: the spread between best and worst country grows from about <strong>$205/month at the start to roughly $1,100/month by the eighties</strong>. Whatever the decision is worth on the day you make it, it is worth about five times that later.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-top:.4rem;">How this was produced</h2>
+      <p>Every figure comes from the same calculation engine that powers the paid <a href="products.html">AI Retirement Income Planner</a> and the free <a href="retire-abroad.html">Retire Abroad comparison tool</a> — not a spreadsheet approximation built for this article. Income is simulated month by month and averaged over each phase.</p>
+      <p>The generating script refuses to publish numbers it cannot stand behind: it re-derives a documented twenty-value cross-check against the paid planner before writing any output, and asserts the engine's own identity — net income equals gross minus tax minus healthcare — on every phase of every country.</p>
+
+      <div class="grid cols-2">
+        <div class="card" style="padding:1.2rem;">
+          <h3 style="margin-top:0;">What is modelled</h3>
+          <ul class="checklist">
+            <li>US federal income tax — brackets, standard and senior deductions, the taxable-Social-Security calculation, capital gains, NIIT.</li>
+            <li>US healthcare — ACA premiums and the subsidy cliff before 65, then Medicare Part B/D and IRMAA surcharges.</li>
+            <li>UK personal allowance and rates, the Article 17 treatment of Social Security, and the Foreign Tax Credit.</li>
+            <li>Canadian federal brackets, the basic personal amount and a provincial rate.</li>
+            <li>Australian tax-free threshold, marginal rates and the Medicare levy.</li>
+            <li>Required Minimum Distributions from 73, on the IRS Uniform Lifetime Table.</li>
+            <li>Inflation on brackets, deductions, thresholds and healthcare costs, per phase.</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:1.2rem;">
+          <h3 style="margin-top:0;">What is not — read this before quoting it</h3>
+          <ul class="checklist">
+            <li><strong>No healthcare cost outside the US.</strong> The UK, Canadian and Australian figures assume the public system covers you at no direct premium. Since healthcare turns out to be the largest single lever here, this assumption is doing a great deal of work. Private cover, an insurance requirement attached to a visa, or a surcharge for new residents would all reduce those columns.</li>
+            <li><strong>US state income tax is set to zero</strong> — a no-tax state. That flatters the US column, so any overseas advantage shown is understated.</li>
+            <li><strong>No local social-security entitlements</strong> — no CPP, OAS, Age Pension or UK State Pension. This compares the same savings under different tax systems, not different working lives.</li>
+            <li><strong>Nominal dollars,</strong> not inflation-adjusted, and <strong>no currency risk</strong> — everything is priced in USD.</li>
+            <li><strong>Nothing about visas, residency eligibility or domicile.</strong> Being allowed to live somewhere is a separate question from what it would cost you.</li>
+            <li><strong>Retirement ages below 60 are excluded.</strong> Before 59½ a 401(k) is effectively locked, and the model opens a phase where almost nothing can be drawn — identical in all four countries, so there is nothing to compare. Bridging that gap needs a taxable account, a Roth ladder or a 72(t), which is a different study.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" id="data">
+    <div class="container narrow center">
+      <h2 style="margin-top:.4rem;">Take the data</h2>
+      <p>Free to use with attribution (CC BY 4.0). If you are writing about cross-border retirement, a link back to this page is all we ask.</p>
+      <p style="margin-top:1.4rem;">
+        <a class="btn btn-primary" href="data/cross-border-base-case.csv" download>Base case (CSV)</a>
+        <a class="btn btn-secondary" href="data/cross-border-study.json" download>Full study incl. grids (JSON)</a>
+      </p>
+      <p class="muted" style="font-size:.92rem;margin-top:1.2rem;">The CSV carries net income, income tax and healthcare cost per country per phase. The JSON adds the retirement-age and portfolio-size grids and the exact inputs used.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow center">
+      <div class="cta-box">
+        <h2 style="margin-top:0;">Run it with your own numbers</h2>
+        <p>The comparison tool is free, needs no sign-up and does not ask for your email. Put your own balances and withdrawals in and see where you land.</p>
+        <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="retire-abroad.html">Open the Retire Abroad comparison →</a></p>
+      </div>
+      <p class="muted" style="font-size:.9rem;margin-top:1.6rem;">This is an educational model, not financial, tax or legal advice, and not a personalised recommendation. Every figure is an estimate produced from the stated assumptions. Cross-border tax is genuinely complicated — treaty position, domicile and residency tests can all change the answer. Talk to a qualified cross-border adviser before acting on any of it.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/retire-abroad.html">Retire Abroad Comparison</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/contact.html#share">Share your experience</a></li>
+          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+</footer>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

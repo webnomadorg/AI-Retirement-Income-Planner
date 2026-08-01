@@ -53,6 +53,7 @@ PAGES = {
     "newsletter.html": "",
     "demo.html": "",
     "retire-abroad.html": "",
+    "cross-border-retirement-data-study.html": "",
     "about.html": "",
     "thanks.html": "",
     "404.html": "",
