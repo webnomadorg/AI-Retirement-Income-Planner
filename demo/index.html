@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v257.html on 2026-07-31. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v259.html on 2026-08-01. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -403,6 +403,27 @@
   .update-chip{display:none;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;border:0.5px solid #0F8C7B;background:var(--teal-bg);color:var(--teal-text);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;transition:filter .12s;}
   .update-chip.show{display:inline-flex;}
   .update-chip:hover{filter:brightness(0.97);}
+  /* ═══ Hover tooltips (replaces the native `title` bubble) ═══════════════════
+     Native tooltips are drawn by the browser/OS chrome and cannot be styled at all — which is
+     why the same tooltip looked white-on-dark in Edge and dark-on-white elsewhere. The engine in
+     'TOOLTIPS' (app script) suppresses them and renders this element instead.
+     Built ONLY from theme tokens, so all five visual styles × light/dark work with no per-theme
+     rules and no JavaScript. Surface styling rather than the inverted look `#rp-toast` uses:
+     these carry 60–250 characters of prose, and an inverted block that long is heavy to read. */
+  #rp-tip{
+    position:absolute; z-index:1050; max-width:320px; box-sizing:border-box;
+    padding:8px 11px; border-radius:var(--radius-md);
+    background:var(--bg-secondary); color:var(--text-primary);
+    border:0.5px solid var(--border-mid);
+    box-shadow:0 4px 16px rgba(0,0,0,0.18);
+    font-family:var(--font); font-size:12.5px; line-height:1.5; font-weight:400;
+    white-space:normal; overflow-wrap:break-word;
+    pointer-events:none;            /* must never sit between the pointer and its own anchor */
+    opacity:0; transition:opacity .12s ease;
+  }
+  #rp-tip.show{opacity:1;}
+  @media (prefers-reduced-motion: reduce){ #rp-tip{transition:none;} }
+
   /* Updates help-pane: version banner + the email lookup form. */
   .upd-status{border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:16px;border:0.5px solid var(--border-mid);background:var(--bg-secondary);}
   .upd-status.avail{background:var(--teal-bg);border-color:#0F8C7B;}
@@ -5585,6 +5606,8 @@ html[data-theme="contrast"] .irow select:focus{
     // and refresh the picker so its swatch previews + AA chips reflect the new theme's card bg.
     if (typeof applyAmtPalette === 'function') applyAmtPalette();
     if (typeof renderAppearancePicker === 'function') renderAppearancePicker();
+    // Canvas tooltips can't use var() — re-read the new theme's tokens BEFORE the redraw below.
+    if (typeof _applyChartTooltipTheme === 'function') _applyChartTooltipTheme();
     if (window.Chart && window.Chart.instances){
       try { Object.values(window.Chart.instances).forEach(ch => { try { ch.update('none'); } catch(e){} }); } catch(e){}
     }
@@ -5674,7 +5697,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 257; /* __BUILD__ */
+const APP_BUILD = 259; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -9738,7 +9761,7 @@ function renderPhasesOnly(){const p=calcAllPhases(S,p5EndAge,lumps);renderSummar
 let _lcT=null;
 function liveCalcDebounced(){clearTimeout(_lcT);_lcT=setTimeout(function(){_lcT=null;liveCalc();},150);}
 function liveCalcFlush(){if(_lcT){clearTimeout(_lcT);_lcT=null;liveCalc();}}
-function render(){const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);if(document.getElementById('tab-chart').classList.contains('active'))renderCharts(p);if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
+function render(){if(typeof _tipHideAll==='function')_tipHideAll();/* a hovered node about to be replaced never fires mouseout — see TOOLTIPS */const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);if(document.getElementById('tab-chart').classList.contains('active'))renderCharts(p);if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
 function setFilingStatus(val){S.filingStatus=val;document.getElementById('mfj-single-btn').classList.toggle('active',val==='single');document.getElementById('mfj-mfj-btn').classList.toggle('active',val==='mfj');const spRow=document.getElementById('spouse-ss-row');if(spRow)spRow.style.display=val==='mfj'?'':'none';const mfjCard=document.getElementById('mfj-brackets-card');if(mfjCard)mfjCard.style.display=(val==='mfj'&&S.subjectToUsTax!==false)?'':'none';liveCalc();}
 // v6: US tax obligation toggle — when false, all US tax / IRMAA / ACA calcs zero
 // out and US-specific UI surfaces hide. Re-applies filing-status side effects too.
@@ -12029,6 +12052,8 @@ function toggleTheme(){
   updateThemeLabel();
   // Appearance picker swatch previews + AA chips are mode-dependent — refresh them.
   if(typeof renderAppearancePicker==='function')renderAppearancePicker();
+  // Canvas tooltip colours are baked in at paint time, so refresh them before the charts redraw.
+  if(typeof _applyChartTooltipTheme==='function')_applyChartTooltipTheme();
   // Charts color their gridlines/ticks from the app dark class — re-render the active tab's chart.
   if(typeof render==='function')render();
 }
@@ -14844,6 +14869,159 @@ function _flashToast(msg){
   if(!t){t=document.createElement('div');t.id='rp-toast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:1100;background:var(--text-primary);color:var(--bg-primary);font-size:13px;padding:9px 16px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.18s;pointer-events:none;';document.body.appendChild(t);}
   t.textContent=msg; t.style.opacity='1'; clearTimeout(_toastT); _toastT=setTimeout(()=>{t.style.opacity='0';},1400);
 }
+
+// ═══════════════════════════════════════════════════════════════
+// TOOLTIPS
+// ═══════════════════════════════════════════════════════════════
+// Replaces the native `title` bubble everywhere (294 of them, 78 of which are generated at
+// runtime). Native tooltips are painted by the browser/OS chrome, so CSS cannot touch them —
+// which is why the same tooltip rendered white-on-dark in Edge and dark-on-white elsewhere.
+//
+// Delegated on document, so it covers markup that does not exist yet and needs NO changes at any
+// call site: the `title` attribute stays the single source of truth.
+//
+// ⚠ The load-bearing detail: the only way to stop the native bubble is to REMOVE the attribute
+// while hovering, then put it back. Every hide path must restore it or that tooltip is gone for
+// good. The original text also stays in _tipStore after restore, so even a missed restore leaves
+// the text recoverable on the next hover rather than lost. Screen readers never hover, so they
+// only ever see the attribute present.
+const TIP_DELAY=350;                 // long enough not to flash while the pointer crosses the page
+const TIP_WARM=250;                  // grace window in which the next tooltip appears instantly
+const _tipStore=new WeakMap();       // element → its original title text
+let _tipEl=null,_tipTimer=null,_tipAnchor=null,_tipShown=false,_tipLastHidden=0;
+
+function _tipNode(){
+  if(!_tipEl){
+    _tipEl=document.createElement('div');
+    _tipEl.id='rp-tip';
+    _tipEl.setAttribute('role','tooltip');
+    _tipEl.setAttribute('aria-hidden','true');
+    document.body.appendChild(_tipEl);
+  }
+  return _tipEl;
+}
+/** Take the title off the element (suppressing the native bubble) and remember it. */
+function _tipSteal(el){
+  const t=el.getAttribute('title');
+  if(t!==null){_tipStore.set(el,t);el.removeAttribute('title');}
+  const stored=_tipStore.get(el);
+  return stored===undefined?'':stored;
+}
+/** Put it back. Safe to call twice, and on a node that has since been detached. */
+function _tipRestore(el){
+  if(!el)return;
+  const t=_tipStore.get(el);
+  if(t!==undefined&&!el.hasAttribute('title')){try{el.setAttribute('title',t);}catch(e){}}
+}
+// Positioning mirrors openCustomPopover() exactly, including its zoom handling: under body{zoom}
+// getBoundingClientRect() and innerWidth are both in VISUAL space (so the clamping math below is
+// correct on raw values), but a written left/top is multiplied by zoom — hence the /z on the way
+// out. Get this wrong and tooltips look perfect at the default text size and drift at every other.
+function _tipPosition(el){
+  const tip=_tipNode(),r=el.getBoundingClientRect(),z=_currentZoom();
+  const w=tip.offsetWidth*z,h=tip.offsetHeight*z;
+  let left=r.left+window.scrollX+(r.width-w)/2;      // centred on the anchor
+  if(left+w>window.innerWidth-12)left=window.innerWidth-w-12;
+  if(left<12)left=12;
+  let top=r.bottom+window.scrollY+8;                  // below by default…
+  if(r.bottom+h+16>window.innerHeight)top=r.top+window.scrollY-h-8;  // …flipped above if it would overflow
+  tip.style.left=(left/z)+'px';
+  tip.style.top=(top/z)+'px';
+}
+function _tipRender(el,text){
+  _tipTimer=null;
+  if(!el||!el.isConnected){_tipHide();return;}        // re-rendered out from under us
+  const tip=_tipNode();
+  tip.textContent=text;                               // textContent, never innerHTML — el.title is
+  tip.style.visibility='hidden';                      // already entity-decoded plain text
+  tip.classList.add('show');
+  _tipPosition(el);                                   // measure before revealing to avoid a flash
+  tip.style.visibility='';
+  tip.setAttribute('aria-hidden','false');
+  _tipShown=true;
+}
+/** Hide, and restore the attribute we borrowed. The single exit point for every dismissal. */
+function _tipHide(){
+  if(_tipTimer){clearTimeout(_tipTimer);_tipTimer=null;}
+  if(_tipAnchor){_tipRestore(_tipAnchor);_tipAnchor=null;}
+  if(_tipEl){_tipEl.classList.remove('show');_tipEl.setAttribute('aria-hidden','true');}
+  if(_tipShown)_tipLastHidden=Date.now();   // opens the warm window — see _tipBegin
+  _tipShown=false;
+}
+// Defensive: render() destroys and rebuilds large parts of the DOM, and a node removed mid-hover
+// never fires mouseout — which would strand the tooltip and lose the borrowed title.
+function _tipHideAll(){_tipHide();}
+
+/** Read one of the theme's CSS custom properties. Charts paint to canvas and can't use var(). */
+function _themeVar(name,fallback){
+  const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v||fallback;
+}
+// Chart.js draws its tooltips on canvas, so they can't inherit #rp-tip's styling — but they sit
+// right beside it and were using Chart.js's built-in dark grey in every theme. Setting the shared
+// defaults themes every chart at once, present and future, instead of editing each chart config.
+// Must be re-run whenever the theme changes, since canvas colours are baked in at paint time.
+function _applyChartTooltipTheme(){
+  if(!window.Chart||!Chart.defaults||!Chart.defaults.plugins)return;
+  const t=Chart.defaults.plugins.tooltip;
+  if(!t)return;
+  t.backgroundColor=_themeVar('--bg-secondary','#efeee8');
+  t.titleColor=_themeVar('--text-primary','#1a1a18');
+  t.bodyColor=_themeVar('--text-primary','#1a1a18');
+  t.borderColor=_themeVar('--border-mid','rgba(0,0,0,0.22)');
+  t.borderWidth=1;
+  t.padding=9;
+  t.cornerRadius=8;
+  t.displayColors=false;          // the label already names the series
+  t.titleFont={size:12,weight:'600'};
+  t.bodyFont={size:12.5,weight:'400'};
+}
+
+function _tipBegin(el,instant){
+  const text=_tipSteal(el);
+  if(!text||!text.trim())return;                      // nothing worth showing; leave it stolen-and-restored
+  _tipAnchor=el;
+  // Moving to a neighbouring element swaps immediately — re-delaying every hop makes dense rows
+  // (the backtest strip is 64 adjacent bars) feel broken.
+  // The warm window is what makes that work: the browser fires mouseout on the OLD element before
+  // mouseover on the new one, so _tipShown has already been cleared by _tipHide() before we get
+  // here. Testing _tipShown alone therefore never matches, and every neighbour would re-wait.
+  const warm=(Date.now()-_tipLastHidden)<TIP_WARM;
+  if(instant||_tipShown||warm)_tipRender(el,text);
+  else{clearTimeout(_tipTimer);_tipTimer=setTimeout(function(){_tipRender(el,text);},TIP_DELAY);}
+}
+
+document.addEventListener('mouseover',function(e){
+  const t=e.target;
+  if(!t||!t.closest)return;
+  if(_tipAnchor&&_tipAnchor.contains(t))return;       // still inside the current anchor — the title
+  const el=t.closest('[title]');                      // is already removed, so closest() won't match it
+  if(!el){_tipHide();return;}
+  _tipHide();                                          // restores the previous anchor first
+  _tipBegin(el,false);
+},true);
+document.addEventListener('mouseout',function(e){
+  if(!_tipAnchor)return;
+  const to=e.relatedTarget;
+  if(!to||!_tipAnchor.contains(to))_tipHide();
+},true);
+// Keyboard parity — no delay, since focusing something is already deliberate.
+document.addEventListener('focusin',function(e){
+  const t=e.target;
+  if(!t||!t.closest)return;
+  const el=t.closest('[title]');
+  if(!el||el===_tipAnchor)return;
+  _tipHide();
+  _tipBegin(el,true);
+});
+document.addEventListener('focusout',function(){_tipHide();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')_tipHide();},true);
+// A tooltip is anchored to a point that scrolling moves, and clicking usually opens something
+// (several titled elements also fire openBadgePopover) — both must dismiss it.
+document.addEventListener('scroll',_tipHide,{capture:true,passive:true});
+document.addEventListener('click',_tipHide,true);
+window.addEventListener('blur',_tipHide);
+document.addEventListener('visibilitychange',_tipHide);
 document.addEventListener('keydown',function(e){
   if(!(e.ctrlKey||e.metaKey))return; const k=(e.key||'').toLowerCase();
   const t=e.target, inField=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable);
@@ -15228,6 +15406,7 @@ function renderUpdatesPane(){
 }
 
 initTheme();
+_applyChartTooltipTheme(); // before the first render() below builds any chart
 initTextSize(); // v6: restore saved text-size preference
 initAmountColorMode(); // v6: restore saved phase-card amount color preference
 initAmtPalette(); // v7: apply saved amount-color palette + build the Appearance picker
