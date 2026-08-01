@@ -637,7 +637,10 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav-links{ gap:.2rem; }
   .nav-links a{ padding-inline:.62rem; }
   .nav-cta{ padding-inline-end:.85rem; }
-  .brand{ padding-inline-start:.85rem; }
+  /* Header only. Unscoped, this also indented the FOOTER logo by .85rem, leaving it visibly out of
+     line with the paragraph, social row and byline beneath it — all of which sit flush at the
+     column edge. Everything else in this block is header-nav spacing; .brand just missed its prefix. */
+  .site-header .brand{ padding-inline-start:.85rem; }
   .nav-panel{ background:rgba(20,48,75,.13); border-radius:9px; padding-inline:.4rem; }
   html.dark .nav-panel{ background:rgba(255,255,255,.07); }
   .nav{ min-height:80px; }
