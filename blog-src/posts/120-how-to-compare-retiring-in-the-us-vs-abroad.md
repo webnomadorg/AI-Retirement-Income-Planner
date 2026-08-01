@@ -132,6 +132,10 @@ Compare:
 
 Some foreign tax systems may be favorable to retirees. Others may tax income differently than expected. Do not assume the local cost-of-living article has answered the tax question, and use [a retirement calculator that models taxes and healthcare together](/blog/best-retirement-calculator-with-taxes-and-healthcare.html) rather than a single spending estimate.
 
+The Foreign Tax Credit line above is the one most people carry the wrong mental model into. It is not a discount, and the two tax bills do not add together. The credit is capped at your US liability, so once the arithmetic settles you end up paying **the higher of the two countries' bills, not the sum**. That has a consequence worth planning around: if the foreign bill is the larger one, your US tax effectively disappears into the credit, and if it is smaller, you top up to the US figure and the move stops being a tax decision at all. We set out the exact formula, and the point where it flips, on the [cross-border methodology page](/cross-border-methodology.html).
+
+<div class="callout"><p><strong>This is not theoretical.</strong> In our <a href="/cross-border-retirement-data-study.html">cross-border data study</a>, a US citizen living in the UK pays noticeably more income tax than they would at home before Social Security starts — and then, from 67, the two bills become <em>identical to the dollar</em> for the rest of the plan. Everything they are still ahead by after that point is healthcare, not tax.</p></div>
+
 ## Step 4: Compare Healthcare
 
 Healthcare is often the swing factor.
@@ -284,6 +288,18 @@ Abroad stress case:
 - Survivor returns to the United States at 79.
 
 The abroad base case may look better. The abroad stress case tells whether that better-looking plan is durable.
+
+## What Happened When We Ran The Numbers
+
+Everything above is a method. We also ran it, and published the result: one $1.2M plan, modelled month by month to age 90 as a tax resident of the US, UK, Canada and Australia. Three findings are worth carrying into your own comparison.
+
+**The ranking does not hold still.** The country that comes out ahead the year you retire is often not the one ahead at 80. In the base case the United States climbs from third to second and Australia slips from second to third — neither of them doing anything differently. Medicare replacing marketplace insurance at 65, Social Security starting at 67 and RMDs beginning at 73 are enough to reorder the table on their own. A comparison run only for your first year of retirement can point you at the wrong country.
+
+**After Social Security starts, the difference stops being tax.** Because of the credit mechanism described in Step 3, the US and UK tax bills converge exactly. From that point the entire remaining gap is healthcare — which means the question you are really answering is not "which country taxes me less" but "who is paying my Medicare premiums".
+
+**The answer depends on how much you have.** Across portfolio sizes the early leader changed three times: Australia at the smaller end, the UK in the middle, the United States at $2.5M. The last phase, though, was won by the same country at every size we tested. So a friend's conclusion does not transfer to your balance sheet, even with identical assumptions.
+
+One caveat we would rather state than bury: those figures assume the public system covers you at no direct premium outside the US. That assumption is doing more work than any other in the result — from 67 it *is* the margin — so it is the first thing to challenge against your own situation. The [full dataset is free to download](/cross-border-retirement-data-study.html), including what is and is not modelled.
 
 ## FAQ
 
