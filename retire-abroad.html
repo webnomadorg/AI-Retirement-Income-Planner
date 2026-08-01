@@ -456,7 +456,14 @@
           label: r.label,
           phases: phs.map(function (p) {
             return {
-              net: p.net_mo || 0, tax: p.tax_mo || 0,
+              net: p.net_mo || 0,
+              // Total income tax = US federal AFTER the Foreign Tax Credit (tax_mo) + UK tax
+              // (ukTax_mo) + state tax (stateTax_mo). tax_mo alone is only the US federal part, so
+              // using it on its own reported the UK's income tax as $0 — while this page's own
+              // methodology says UK tax applies to 401(k) withdrawals. Verified against the engine:
+              // total_mo - net_mo - health_mo equals this sum for every country and phase, with a
+              // state rate both on and off.
+              tax: (p.tax_mo || 0) + (p.ukTax_mo || 0) + (p.stateTax_mo || 0),
               health: p.health_mo || 0, ftc: p.ftc_mo || 0
             };
           })
