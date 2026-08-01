@@ -1138,7 +1138,10 @@ html.dark .form-notice{ background:rgba(224,85,72,.08); border-color:rgba(224,85
 html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--teal); }
 
 /* ---- Version comparison (features page) — themes automatically via tokens ---- */
-.cmp-matrix-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); }
+/* margin-bottom matters: the site spaces blocks with bottom margins only (p{margin:0 0 1rem}), so a
+   table wrapper with no bottom margin leaves whatever follows it sitting flush against the border —
+   a 0px gap. Set here rather than per page so every table on every page inherits the rhythm. */
+.cmp-matrix-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); margin-bottom:1.6rem; }
 .cmp-table{ width:100%; border-collapse:collapse; font-size:.94rem; }
 .cmp-table th,.cmp-table td{ padding:.62rem .55rem; text-align:center; border-bottom:1px solid var(--line-soft); vertical-align:middle; }
 .cmp-table thead th{ background:var(--surface); border-bottom:2px solid var(--line); padding-top:.9rem; padding-bottom:.7rem; }
