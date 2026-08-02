@@ -928,7 +928,28 @@ function simPhase(o){
   let sumW401k=0,sumWCash=0,sumWEquity=0,sumWRoth=0,sumWSuper=0,sumConv=0;
   // First age each bucket hit zero WHILE it was being drawn from (null = never / not drawn from).
   const dep={b401k:null,cash:null,equity:null,roth:null,super:null};
+  // ─── Annual snapshots (Year-By-Year-Schedule Phase 2) ───────────────────────────────────────────
+  // Purely ADDITIVE: `yearRows` records what the loop already computes, sliced into 12-month segments
+  // from the phase start, so the UI can show a year at a time instead of only a phase total. Nothing
+  // below feeds back into the simulation — remove it and every number is unchanged.
+  // Segments run from the PHASE start age, not from January, because phases can begin at a half age
+  // (the 59½ split). A trailing partial segment keeps its true `months` so a caller never assumes 12.
+  // What genuinely varies inside a phase — and is therefore the whole point of these rows — is the
+  // balance trajectory, COLA'd income streams, mid-phase stream activation, and withdrawals that get
+  // capped once a bucket empties. Tax is NOT here: it is computed once per phase on annualised
+  // income, so a per-year tax figure would be a fabrication (see the plan doc).
+  const yearRows=[];
+  let yr=null;
+  const _yrNew=age=>({ageStart:age,months:0,w401k:0,wCash:0,wEquity:0,wRoth:0,wSuper:0,conv:0,
+    ss:0,spSS:0,ukp:0,cpp:0,oas:0,ap:0,usPen:0,usPen2:0});
+  const _yrClose=()=>{if(!yr)return;
+    yr.ageEnd=yr.ageStart+yr.months/12;
+    yr.end={b401k,bcash:bCash,bEquity,bRoth,bSuper};
+    yr.drawn=yr.w401k+yr.wCash+yr.wEquity+yr.wRoth+yr.wSuper;
+    yr.income=yr.ss+yr.spSS+yr.ukp+yr.cpp+yr.oas+yr.ap+yr.usPen+yr.usPen2;
+    yearRows.push(yr);yr=null;};
   for(let i=0;i<months;i++){
+    if(i%12===0){_yrClose();yr=_yrNew(phaseStartAge+i/12);}
     const ageNow=phaseStartAge+i/12;
     if(i>0&&i%12===0){
       if(hasSS&&ussBase>0)curSS=colaUSS(ussBase,ageNow-ssBA,ssColaRate);
@@ -955,6 +976,8 @@ function simPhase(o){
     }
     sumSS+=curSS; sumSpSS+=curSpSS; sumUKP+=curUKP;
     sumCPP+=curCPP; sumOAS+=curOAS; sumAP+=curAP; sumUsPen+=curUsPen; sumUsPen2+=curUsPen2;
+    yr.months++; yr.ss+=curSS; yr.spSS+=curSpSS; yr.ukp+=curUKP;
+    yr.cpp+=curCPP; yr.oas+=curOAS; yr.ap+=curAP; yr.usPen+=curUsPen; yr.usPen2+=curUsPen2;
     // Every withdrawal is capped at what the account can actually supply (the taxable-equity line
     // below has always worked this way; the others used to subtract unconditionally and floor at 0).
     // Without the cap the planner keeps paying income out of a $0 account, and a phantom 401k draw
@@ -965,10 +988,11 @@ function simPhase(o){
     const actConv=Math.min(rothConvMo,Math.max(0,g401k-act401k));
     b401k=g401k-act401k-actConv; if(b401k<0)b401k=0;
     sumW401k+=act401k; sumConv+=actConv;
+    yr.w401k+=act401k; yr.conv+=actConv;
     const gCash=bCash*(1+m2);
     const actCash=Math.min(wCash,gCash);
     bCash=gCash-actCash; if(bCash<0)bCash=0;
-    sumWCash+=actCash;
+    sumWCash+=actCash; yr.wCash+=actCash;
     bEquity=bEquity+bEquity*m3;
     const actualW=Math.min(wEquity,bEquity);
     if(actualW>0&&bEquity>0){
@@ -978,25 +1002,26 @@ function simPhase(o){
       sumTaxableEquity+=taxableW;
     }
     bEquity-=actualW; if(bEquity<0)bEquity=0;
-    sumWEquity+=actualW;
+    sumWEquity+=actualW; yr.wEquity+=actualW;
     // The conversion lands in the Roth before that month's Roth withdrawal is taken.
     const gRoth=bRoth*(1+m4)+actConv;
     const actRoth=Math.min(wRoth,gRoth);
     bRoth=gRoth-actRoth; if(bRoth<0)bRoth=0;
-    sumWRoth+=actRoth;
+    sumWRoth+=actRoth; yr.wRoth+=actRoth;
     const gSuper=bSuper*(1+m5);
     const actSuper=Math.min(wSuper,gSuper);
     bSuper=gSuper-actSuper; if(bSuper<0)bSuper=0;
-    sumWSuper+=actSuper;
+    sumWSuper+=actSuper; yr.wSuper+=actSuper;
     if(dep.b401k==null&&w401k>0&&b401k<=0)dep.b401k=ageNow;
     if(dep.cash==null&&wCash>0&&bCash<=0)dep.cash=ageNow;
     if(dep.equity==null&&wEquity>0&&bEquity<=0)dep.equity=ageNow;
     if(dep.roth==null&&wRoth>0&&bRoth<=0)dep.roth=ageNow;
     if(dep.super==null&&wSuper>0&&bSuper<=0)dep.super=ageNow;
   }
+  _yrClose(); // the trailing segment (a phase of 30 months closes 12, 12, then 6)
   const avgTaxableEquity=months?sumTaxableEquity/months:0;
   const _avg=s=>months?s/months:0;
-  return{b401k,bCash,bEquity,bRoth,bSuper,costBasis,lumpUnfunded,lumpDrawn,lumpAdded,lumpDetail,lumpEqGain,
+  return{b401k,bCash,bEquity,bRoth,bSuper,costBasis,lumpUnfunded,lumpDrawn,lumpAdded,lumpDetail,lumpEqGain,yearRows,
     // Achievable monthly withdrawals (≤ the configured amounts). calcPhase taxes and reports THESE.
     avgW401k:_avg(sumW401k),avgWCash:_avg(sumWCash),avgWEquity:_avg(sumWEquity),
     avgWRoth:_avg(sumWRoth),avgWSuper:_avg(sumWSuper),
@@ -1591,6 +1616,9 @@ function calcPhase(p){
     wSet:{w401k:p.w401k||0,wCash:p.wCash||0,wEquity:wEquity_mo,wRoth:wRoth_mo,wSuper:wSuper_mo,rothConvAnn},
     wActual:{w401k:aW401k,wCash:aWCash,wEquity:aWEquity_mo,wRoth:aWRoth_mo,wSuper:aWSuper_mo,rothConvAnn:sim.convActualAnn},
     depletedAt:sim.depletedAt,
+    // Per-12-month slices of this phase — balances, withdrawals and COLA'd streams only. Carries NO
+    // tax figure by design; tax is a phase-level quantity (see simPhase's yearRows comment).
+    yearRows:sim.yearRows||[],
     rothConvAnn,taxableEquity_ann,partTime_mo,partTimeAnnual:p.partTimeAnnual||0,
     acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjStatePensionCap,foreign,mfj,subjectUS,
     rmdEst,rmdShortfall,rentalAnn,rental_mo,
