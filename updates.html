@@ -154,8 +154,21 @@
            element, so animating it as a unit meant a single 6,500px opacity transition that also
            had to be fully triggered before ANY entry became readable. -->
       <div class="upd-month">
-        <h3 class="upd-month-h">July 2026</h3>
+        <h3 class="upd-month-h">August 2026</h3>
         <ul class="upd-list">
+
+          <li class="upd-item reveal">
+            <span class="upd-ver">v269</span>
+            <div class="upd-body">
+              <h4>See your plan year by year — by account, or by income <span class="upd-date">· 2 August</span></h4>
+              <p>The planner has always shown you a phase at a time: five or six cards, each covering a stretch of years. That is the right way to <em>design</em> a plan, but it is an awkward way to answer questions like &ldquo;what is left in the Roth when I am 78?&rdquo; or &ldquo;which year does the cash actually run out?&rdquo;</p>
+              <p>There is now a table at the bottom of the <strong>Balance</strong> tab with two switches. <strong>Account view</strong> gives you a column per account and shows the balance each one ends on, with the money that moved through it underneath — what you drew, what was paid in, anything converted, and how much it grew. <strong>Income view</strong> turns it round to show where the money came from: what you took from the portfolio, your Social Security, other pensions, any work or rental income, then what tax and healthcare took and what was left.</p>
+              <p>The second switch sets the rows. <strong>By phase</strong> gives you one line per phase. <strong>By year</strong> opens it out to a line per year, which is where it earns its keep: you can watch balances compound, see the exact year a pension starts and what it is worth by then, and spot the year an account empties. Where a withdrawal was more than the account could actually supply, the table says so rather than quietly showing the figure you asked for.</p>
+              <p><strong>Download CSV</strong> saves whatever you are looking at, ready to open in a spreadsheet or hand to your accountant.</p>
+              <p>One thing we want to be straight about, and you will find it written up in full under <strong>Under the hood</strong>. The planner works out tax once per phase, on that phase's income, rather than separately for each year. When your income holds steady through a phase those are the same number exactly. When it moves around inside a phase — a conversion ladder running for a few years, or an account emptying partway through — the phase figure comes out slightly <em>low</em>, never high. We have now put numbers on it: nothing at all if your income stays inside one tax band, around 5–6% of the tax if it drifts up through one, and up to about 20% in the lumpiest cases. That is why the year-by-year table shows tax as a phase figure spanning its years instead of inventing one for each year. We would rather tell you where the estimate is soft than let it look more precise than it is.</p>
+              <p>Two smaller things. If you use <strong>Fit all phases</strong> to get every card on one row, the Nominal and Real income figures were running past the edge of their boxes and the last card was cutting off mid-number — they now sit one above the other and fit properly. And the disclaimer has been expanded to cover the things it should have all along, including that AI answers can be wrong about tax figures and need checking.</p>
+            </div>
+          </li>
 
           <li class="upd-item reveal">
             <span class="upd-ver">v259</span>
@@ -166,6 +179,12 @@
               <p>The same goes for the little labels that appear when you hover a chart — those now match too, instead of staying grey in every theme.</p>
             </div>
           </li>
+        </ul>
+      </div>
+
+      <div class="upd-month">
+        <h3 class="upd-month-h">July 2026</h3>
+        <ul class="upd-list">
 
           <li class="upd-item reveal">
             <span class="upd-ver">v257</span>
