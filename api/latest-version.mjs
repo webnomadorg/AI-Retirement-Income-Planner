@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 272, released: '2026-08-02', headline: 'See your plan year by year, by account or by income — and download it as a spreadsheet.' }; /* __LATEST__ */
+const LATEST = { build: 273, released: '2026-08-02', headline: 'See your plan year by year, by account or by income — and download it as a spreadsheet.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
