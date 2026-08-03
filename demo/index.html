@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v273.html on 2026-08-03. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v274.html on 2026-08-03. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -5189,7 +5189,25 @@ html[data-theme="contrast"] .irow select:focus{
                 <div class="dl-card-title">Refactored Code</div>
                 <div class="dl-card-desc">A significant architectural and operational maturity program. While the application remains a single self-contained HTML file for deployment simplicity and privacy, the underlying platform evolved from a powerful retirement calculator into a governed planning system with enterprise-style validation, lifecycle management, accessibility controls, automated testing, and engineering safeguards.</div>
               </div>
-              <a class="dl-open" href="https://drive.proton.me/urls/A3V7BGA7H8#QfwHDQqT0VK7" target="_blank" rel="noopener">Open&nbsp;↗</a>
+              <a class="dl-open" href="https://airetirementincomeplanner.com/assets/downloads/Code_Refactor_CIO_Report.pdf" target="_blank" rel="noopener">Open&nbsp;↗</a>
+            </div>
+
+            <div class="dl-card">
+              <div class="dl-card-icon amber">📐</div>
+              <div class="dl-card-body">
+                <div class="dl-card-title">Methodology &amp; Assumptions</div>
+                <div class="dl-card-desc">What the engine assumes and why — the modelling choices behind the phases, growth, inflation, tax and healthcare figures.</div>
+              </div>
+              <a class="dl-open" href="https://airetirementincomeplanner.com/assets/downloads/Retirement_Planner_Methodology.pdf" target="_blank" rel="noopener">Open&nbsp;↗</a>
+            </div>
+
+            <div class="dl-card">
+              <div class="dl-card-icon amber">🛡️</div>
+              <div class="dl-card-body">
+                <div class="dl-card-title">Calculation Validation</div>
+                <div class="dl-card-desc">The engine checked against authoritative references — bracket maths, Social Security taxation, ACA and IRMAA thresholds, line by line.</div>
+              </div>
+              <a class="dl-open" href="https://airetirementincomeplanner.com/assets/downloads/Retirement_Planner_Validation.pdf" target="_blank" rel="noopener">Open&nbsp;↗</a>
             </div>
 
             <div class="dl-card">
@@ -5811,7 +5829,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 273; /* __BUILD__ */
+const APP_BUILD = 274; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
