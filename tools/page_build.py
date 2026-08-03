@@ -50,6 +50,7 @@ PAGES = {
     "affiliates.html": "",
     "privacy.html": "",
     "terms.html": "",
+    "software-terms.html": "",
     "newsletter.html": "",
     "demo.html": "",
     "retire-abroad.html": "",
