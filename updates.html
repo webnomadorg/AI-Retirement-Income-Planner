@@ -158,6 +158,17 @@
         <ul class="upd-list">
 
           <li class="upd-item reveal">
+            <span class="upd-ver">v272</span>
+            <div class="upd-body">
+              <h4>Correcting what we said about capital gains <span class="upd-date">· 2 August</span></h4>
+              <p>A customer asked how the planner handles capital gains when you are living off a brokerage account in early retirement. Checking the answer properly, we found the help text was wrong — in three places it said equity gains were <em>not</em> treated as ordinary income and got a lower rate. The calculations have never worked that way, and the help text has now been corrected to match what the planner actually does.</p>
+              <p>What it actually does: when the plan sells from your taxable account, <strong>only the gain inside that sale is taxed</strong> — getting your own money back is not income. The split comes from the <strong>Pre-plan taxable gain %</strong> on the Edit tab, so it is worth setting that from your broker's cost-basis report; left at zero, the planner assumes there is no gain to tax.</p>
+              <p>That gain is then taxed at ordinary income rates. Real long-term gains usually qualify for the lower 0% / 15% / 20% rates, so <strong>the planner shows more capital-gains tax than you would actually pay, never less</strong>. We would rather err that way, but you should know it is there — the gap is widest if your income is low enough that your real rate would be 0%, which is common when you are bridging to Medicare on taxable savings. It is written up in full under <strong>Under the hood</strong>, alongside the note about tax being worked out per phase.</p>
+              <p>The part that usually matters more was already right: gains count in full toward your MAGI, so they drive ACA subsidies, the Silver cost-sharing band, the subsidy cliff and the Medicare IRMAA lookback exactly as they would in reality.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
             <span class="upd-ver">v271</span>
             <div class="upd-body">
               <h4>See your plan year by year — by account, or by income <span class="upd-date">· 2 August</span></h4>
