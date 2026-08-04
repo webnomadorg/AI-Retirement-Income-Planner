@@ -104,11 +104,18 @@ then commit, push (auto-deploys), and make sure the right env vars exist.
 ## Verification (after any deploy)
 
 The function + external APIs only run on Vercel (not the local static preview), so test live:
-1. Submit `https://airetirementincomeplanner.com/newsletter.html` with a throwaway email.
-2. Page shows the green "Check your inbox!" state (no red error).
-3. **Mode A:** subscriber appears in the MailerLite group; MailerLite welcome email + eBook arrive.
+1. Submit any `/get/*` page or `newsletter.html` with a throwaway email.
+2. You land on `/thank-you.html`, naming the download you asked for (no red error).
+3. **Mode A:** subscriber appears in the MailerLite group; the automation's email + PDF arrive.
    **Mode B:** the welcome email + eBook arrive directly.
-4. Both modes: `dev@webnomad.org` receives the "New newsletter signup" notification.
+4. Both modes: `dev@webnomad.org` receives the signup notification.
+
+⚠ **The two emails do NOT arrive together — give it time before diagnosing.** The
+`dev@webnomad.org` notification is sent by this function directly, so it lands in seconds. The
+subscriber's own email comes from a MailerLite *automation*, which is queued and routinely runs
+several minutes behind. "Admin notification arrived, subscriber email did not" therefore looks
+identical to a broken automation for the first few minutes, and on 2026-08-04 it sent us hunting
+a fault that did not exist. Wait ~10 minutes before concluding anything is wrong.
 5. If anything fails, check **Vercel → project → deployment → Logs/Functions** for the
    `/api/newsletter` entry (it logs the upstream status code).
 
