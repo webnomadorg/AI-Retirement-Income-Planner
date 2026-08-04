@@ -1,0 +1,36 @@
+# Binary assets must never have their line endings rewritten.
+#
+# This repo is cloned on Windows with core.autocrlf=true. Git guesses text-vs-binary by looking
+# for NUL bytes near the start of a file, and some PDFs — the reportlab-generated lead magnets
+# in assets/downloads/ among them — have none, so Git classified them as TEXT and warned it
+# would convert LF to CRLF on checkout. That silently corrupts the file: the committed blob is
+# fine, but a fresh clone writes a broken PDF, and these are files people download.
+#
+# Marking the types explicitly removes the guesswork.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.zip   binary
+*.docx  binary
+*.xlsx  binary
+*.mp4   binary
+
+# Keep the web sources normalised in the repo regardless of who commits them.
+*.html  text
+*.css   text
+*.js    text
+*.mjs   text
+*.json  text
+*.md    text
+*.py    text
+*.svg   text
+*.xml   text
+*.txt   text

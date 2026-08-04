@@ -33,12 +33,47 @@ The eBook PDF lives at
   the function AND enable double opt-in on the group AND update the `#nl-success` copy in
   `newsletter.html` to tell users to confirm first.
 
+### Four lead magnets, one endpoint (added 2026-08-04)
+
+`/api/newsletter` no longer delivers only the eBook. The posted `magnet` field selects the
+MailerLite group, and therefore which automation — and which PDF — the subscriber receives.
+The keys live in `MAGNETS` at the top of `api/newsletter.js`; the forms declare them with
+`data-magnet="…"`.
+
+| `magnet` | Offered on | PDF to link from the automation |
+| --- | --- | --- |
+| `ebook` (default) | `newsletter.html`, `/get/ebook.html`, most blog posts | `/assets/downloads/Build-a-Retirement-Plan-You-Can-Question-eBook.pdf` |
+| `checklist` | `/get/checklist.html`, Planner How-To posts | `/assets/downloads/Retirement-Planning-Input-Checklist.pdf` |
+| `questions` | `/get/questions.html`, the Appendix B post | `/assets/downloads/Questions-To-Ask-Your-Retirement-Plan.pdf` |
+| `abroad` | `/get/abroad.html`, cross-border posts | `/assets/downloads/What-Retiring-Abroad-Does-To-Your-Income.pdf` |
+
+Prefix each with `https://airetirementincomeplanner.com`. The three new PDFs are generated —
+edit the eBook or the study data and re-run **`python tools/lead-magnets/build_magnets.py`**
+(desktop repo) rather than editing the PDFs by hand.
+
+**Setup still to do in the MailerLite UI** — until it is done, all four magnets fall back to
+the eBook group, so signups keep working but everyone receives the eBook:
+
+1. Create three groups, e.g. "Free — Input checklist", "Free — Plan questions",
+   "Free — Retiring abroad".
+2. Give each an automation: trigger *"when a subscriber joins the group"*, one email with a
+   **Download** button pointing at that magnet's PDF above. Set each one **Active**.
+3. Copy each group ID into the matching Vercel env var below and redeploy.
+
 ### Vercel environment variables (Project → Settings → Environment Variables, all environments)
 | Variable | Used by | Notes |
 | --- | --- | --- |
 | `MAILERLITE_API_KEY` | Mode A | the secret MailerLite token |
-| `MAILERLITE_GROUP_ID` | Mode A | `188987074019329204` |
+| `MAILERLITE_GROUP_ID` | Mode A | `188987074019329204` — also the fallback for any magnet below that is unset |
+| `MAILERLITE_GROUP_ID_CHECKLIST` | Mode A | group ID for the input checklist |
+| `MAILERLITE_GROUP_ID_QUESTIONS` | Mode A | group ID for the plan questions |
+| `MAILERLITE_GROUP_ID_ABROAD` | Mode A | group ID for the cross-border guide |
 | `RESEND_API_KEY` | Both modes + the contact form | leave set; needed for dev notification (A) and everything (B) |
+| `META_PIXEL_ID` | Conversions API | `2106222783607307` (not secret) |
+| `META_CAPI_TOKEN` | Conversions API | **secret** — Events Manager → Settings → Conversions API → Generate access token. Unset = log-only, no events sent |
+| `META_APP_SECRET` | Lead Ads webhook | **secret** — verifies `X-Hub-Signature-256` |
+| `META_PAGE_ACCESS_TOKEN` | Lead Ads webhook | **secret** — Page token with `leads_retrieval` |
+| `META_LEADGEN_VERIFY_TOKEN` | Lead Ads webhook | any string you choose; type the same one into Meta's webhook UI |
 
 Env-var changes only take effect on the **next deployment** — redeploy after editing them.
 
