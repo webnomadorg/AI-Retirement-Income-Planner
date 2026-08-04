@@ -58,8 +58,21 @@ PAGES = {
     "cross-border-methodology.html": "",
     "about.html": "",
     "thanks.html": "",
+    "thank-you.html": "",
     "404.html": "",
 }
+
+# Landing pages for the free downloads. Deliberately NOT in PAGES: membership forces the full
+# header and footer in, and the whole point of these is a single exit. But an unregistered page
+# is also a page nothing ever checks, which is how updates.html silently shipped without the
+# theme bootstrap. So they are registered here instead — skipped for chrome propagation, still
+# verified for THEME_BOOTSTRAP by --check.
+BARE_PAGES = [
+    "get/ebook.html",
+    "get/checklist.html",
+    "get/questions.html",
+    "get/abroad.html",
+]
 
 NAV_KEYS = ["HOME", "PRODUCTS", "FEATURES", "HOW", "START", "SESSIONS", "BLOG", "FAQ"]
 
@@ -185,7 +198,20 @@ def check():
         if t:
             themeless.append("%s — %s" % (f.name, t))
 
-    total = len(PAGES) + len(blog_pages)
+    # Bare landing pages carry no shared chrome to drift, but they DO need the theme
+    # bootstrap — and being outside PAGES is exactly what would otherwise leave them
+    # unexamined.
+    bare_pages = []
+    for name in BARE_PAGES:
+        f = WEBSITE / name
+        if not f.exists():
+            sys.exit("page_build --check: missing landing page %s" % name)
+        bare_pages.append(f)
+        t = theme_problem_in(f)
+        if t:
+            themeless.append("%s — %s" % (name, t))
+
+    total = len(PAGES) + len(blog_pages) + len(bare_pages)
     engine = engine_problem()
 
     if not stale_root and not stale_blog and not themeless and not engine:
@@ -251,6 +277,8 @@ def main():
         else:
             print("  unchanged: %s" % name)
     print("Done. %d of %d page(s) updated." % (changed, len(PAGES)))
+    print("  (%d bare landing page(s) skipped by design — chrome-free, "
+          "theme-checked by --check)" % len(BARE_PAGES))
     if changed:
         print("NOTE: blog pages share these partials — run "
               "`python Website/tools/blog_build.py` too if a partial changed.")

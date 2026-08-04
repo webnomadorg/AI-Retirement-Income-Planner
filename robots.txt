@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /thanks.html
+Disallow: /thank-you.html
+Disallow: /get/
 
 Sitemap: https://airetirementincomeplanner.com/sitemap.xml

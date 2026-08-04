@@ -319,52 +319,87 @@
   if (location.hash === '#share') prefill(false);
 }());
 
-/* ---- Newsletter signup form (newsletter.html) ---- */
+/* ---- Free-download signup forms ----
+   Binds every form carrying data-newsletter, not one hard-coded id: the same handler serves
+   newsletter.html, the /get/* landing pages and the capture card on all 54 blog posts.
+
+   Each form declares:
+     data-newsletter          marks it for this handler
+     data-magnet="<key>"      which download to send (see MAGNETS in api/newsletter.js)
+   Fields are found WITHIN the form, so several can coexist on one page without colliding.
+
+   On success we leave for /thank-you.html instead of swapping in an inline panel. That gives
+   a real URL to fire the Lead conversion on — which is what Facebook optimises against, and
+   what an inline div can never provide. The inline #nl-success panel stays as the fallback
+   for the case where the redirect is blocked. */
 (function () {
-  var form = document.getElementById('newsletterForm');
-  if (!form) return;
-  var notice = document.getElementById('nl-notice');
-  var success = document.getElementById('nl-success');
+  var forms = document.querySelectorAll('form[data-newsletter]');
+  if (!forms.length) return;
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var btn = form.querySelector('button[type="submit"]');
-    if (notice) { notice.textContent = ''; notice.classList.remove('visible'); }
+  // Pairs the browser's fbq Lead with the server's Conversions API Lead so Meta counts one
+  // conversion, not two. randomUUID needs a secure context; the fallback is only for
+  // http:// previews and old browsers, where uniqueness matters less than not throwing.
+  function newEventId() {
+    try {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    } catch (e) { /* fall through */ }
+    return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2, 10);
+  }
 
-    var name  = (document.getElementById('nl-name')  || {}).value || '';
-    var email = (document.getElementById('nl-email') || {}).value || '';
-    var honey = (document.getElementById('nl-honey') || {}).value || '';
-    var origHtml = btn.innerHTML;
+  Array.prototype.forEach.call(forms, function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
 
-    btn.disabled = true;
-    btn.innerHTML = 'Sending…';
+      var magnet = form.getAttribute('data-magnet') || 'ebook';
+      var btn    = form.querySelector('button[type="submit"]');
+      // Scoped to this form so multiple capture points on one page stay independent.
+      var notice  = form.querySelector('[data-nl-notice]')  || document.getElementById('nl-notice');
+      var success = form.parentNode.querySelector('[data-nl-success]') || document.getElementById('nl-success');
 
-    fetch('/api/newsletter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, email: email, _honey: honey }),
-    })
-      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
-      .then(function (res) {
-        if (res.ok && res.data.ok) {
-          form.style.display = 'none';
-          if (success) success.classList.add('visible');
-        } else {
-          if (notice) {
-            notice.textContent = (res.data && res.data.error) || 'Something went wrong. Please try again.';
-            notice.classList.add('visible');
-          }
-          btn.disabled = false;
-          btn.innerHTML = origHtml;
-        }
+      if (notice) { notice.textContent = ''; notice.classList.remove('visible'); }
+
+      var name  = (form.querySelector('[name="name"]')   || {}).value || '';
+      var email = (form.querySelector('[name="email"]')  || {}).value || '';
+      var honey = (form.querySelector('[name="_honey"]') || {}).value || '';
+      var eventId = newEventId();
+      var origHtml = btn ? btn.innerHTML : '';
+
+      if (btn) { btn.disabled = true; btn.innerHTML = 'Sending…'; }
+
+      function fail(msg) {
+        if (notice) { notice.textContent = msg; notice.classList.add('visible'); }
+        if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+      }
+
+      fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name, email: email, _honey: honey,
+          magnet: magnet, eventId: eventId,
+        }),
       })
-      .catch(function () {
-        if (notice) {
-          notice.textContent = 'Could not connect. Please check your internet connection and try again.';
-          notice.classList.add('visible');
-        }
-        btn.disabled = false;
-        btn.innerHTML = origHtml;
-      });
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+        .then(function (res) {
+          if (res.ok && res.data.ok) {
+            // Trust the server's echo — it decides the real magnet after validating.
+            var served = (res.data && res.data.magnet) || magnet;
+            var eid    = (res.data && res.data.eventId) || eventId;
+            try {
+              window.location.assign(
+                '/thank-you.html?m=' + encodeURIComponent(served) + '&eid=' + encodeURIComponent(eid)
+              );
+              return;
+            } catch (navErr) { /* fall through to the inline panel */ }
+            form.style.display = 'none';
+            if (success) success.classList.add('visible');
+          } else {
+            fail((res.data && res.data.error) || 'Something went wrong. Please try again.');
+          }
+        })
+        .catch(function () {
+          fail('Could not connect. Please check your internet connection and try again.');
+        });
+    });
   });
 }());

@@ -139,9 +139,9 @@
             <h3 style="margin-bottom:.3rem;">Send me the free eBook</h3>
             <p class="muted" style="margin-top:0;">Enter your details and we'll email your copy right away.</p>
 
-            <div id="nl-notice" class="form-notice" role="alert"></div>
+            <div id="nl-notice" class="form-notice" role="alert" data-nl-notice></div>
 
-            <form id="newsletterForm" novalidate>
+            <form id="newsletterForm" novalidate data-newsletter data-magnet="ebook">
               <!-- Honeypot — hidden from real users, filled by bots -->
               <div class="sr-only" aria-hidden="true">
                 <label for="nl-honey">Leave this blank</label>
@@ -162,7 +162,8 @@
               <p class="muted mt-2" style="font-size:.85rem;text-align:center;">No spam. Unsubscribe anytime. We never share your details.</p>
             </form>
 
-            <div id="nl-success" class="form-success" role="status" aria-live="polite">
+            <!-- Fallback only: the handler normally leaves for /thank-you.html on success. -->
+            <div id="nl-success" class="form-success" role="status" aria-live="polite" data-nl-success>
               <div class="success-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
               </div>

@@ -81,6 +81,131 @@ CLUSTER_TO_CATEGORY = {
 }
 CATEGORY_LABEL_TO_SLUG = {label: slug for slug, label in CLUSTER_TO_CATEGORY.values()}
 
+# Which free download each post offers, by category slug. Before this existed only 15 of the
+# 54 posts carried any email capture at all, so most search traffic arrived, read, and left
+# with no way to stay in touch.
+#
+# The offer is matched to what the reader is already reading — someone working through a
+# tutorial wants the input checklist, someone reading about retiring abroad wants the
+# cross-border guide. A generic "join our newsletter" on all 54 converts worse than a
+# relevant one, and costs the same to serve.
+#
+# Keys are category slugs from CLUSTER_TO_CATEGORY; values are magnet keys from MAGNETS in
+# api/newsletter.js. Anything unlisted falls back to CAPTURE_DEFAULT.
+CAPTURE_DEFAULT = "ebook"
+CAPTURE_BY_CATEGORY = {
+    "planner-howto": "checklist",     # mid-tutorial: the next question is "what do I need?"
+    "expat": "abroad",
+    "planning-framework": "ebook",    # these posts ARE the eBook's chapters
+}
+# Per-post overrides where the post's own subject beats its category. Slug -> magnet key.
+# Validated against the real posts at build time (see check_capture_config) — a slug typo here
+# would otherwise do nothing at all, silently, and look exactly like working config.
+CAPTURE_BY_SLUG = {
+    # Cross-border content filed under other categories.
+    "retirement-planning-case-studies": "abroad",   # expats + digital nomads
+    # The posts these magnets were made from — offering the PDF of what they just read.
+    "questions-to-ask-your-retirement-plan": "questions",
+    "your-first-retirement-planning-session": "checklist",
+}
+
+# Copy for each magnet's capture card: (kicker, headline, one-line pitch, button).
+CAPTURE_COPY = {
+    "ebook": (
+        "Free eBook",
+        "Build a Retirement Plan You Can Question",
+        "Thirteen short chapters on building a plan whose numbers you can actually check "
+        "— free, straight to your inbox.",
+        "Send me the eBook",
+    ),
+    "checklist": (
+        "Free checklist",
+        "What you need before you start planning",
+        "One page listing every figure a retirement projection needs, and where to find it.",
+        "Send me the checklist",
+    ),
+    "questions": (
+        "Free guide",
+        "50+ questions to ask your retirement plan",
+        "A plan that survives these questions is worth trusting. Fifteen review themes, free.",
+        "Send me the guide",
+    ),
+    "abroad": (
+        "Free guide",
+        "What retiring abroad does to your income",
+        "The same retirement modelled in the US, UK, Canada and Australia — with the method, "
+        "so you can check it.",
+        "Send me the guide",
+    ),
+}
+
+
+def check_capture_config(posts):
+    """Fail the build on capture config that silently does nothing.
+
+    Both failure modes look identical to working config from the outside: the pages still
+    build, every post still shows a card, and the only symptom is the wrong magnet being
+    offered forever. Cheap to check, invisible otherwise.
+    """
+    known = {p["slug"] for p in posts}
+    bad_slugs = sorted(set(CAPTURE_BY_SLUG) - known)
+    if bad_slugs:
+        sys.exit("blog_build: CAPTURE_BY_SLUG names %d post(s) that do not exist — the "
+                 "override does nothing:\n    %s"
+                 % (len(bad_slugs), "\n    ".join(bad_slugs)))
+
+    bad_cats = sorted(set(CAPTURE_BY_CATEGORY) - set(CATEGORY_LABEL_TO_SLUG.values()))
+    if bad_cats:
+        sys.exit("blog_build: CAPTURE_BY_CATEGORY names unknown category slug(s): %s"
+                 % ", ".join(bad_cats))
+
+    magnets = ({CAPTURE_DEFAULT} | set(CAPTURE_BY_SLUG.values())
+               | set(CAPTURE_BY_CATEGORY.values()))
+    missing = sorted(magnets - set(CAPTURE_COPY))
+    if missing:
+        sys.exit("blog_build: no CAPTURE_COPY for magnet(s): %s" % ", ".join(missing))
+
+
+def capture_for(post):
+    """Which magnet key this post should offer."""
+    return (CAPTURE_BY_SLUG.get(post["slug"])
+            or CAPTURE_BY_CATEGORY.get(post["cat_slug"])
+            or CAPTURE_DEFAULT)
+
+
+def capture_html(post):
+    """The inline email-capture card rendered near the end of every post.
+
+    Posts to the same /api/newsletter endpoint as the landing pages; assets/js/main.js binds
+    it by the data-newsletter attribute, so nothing here needs its own script. Field ids are
+    namespaced per post because the blog landing page never shows two at once, but a post
+    already carries other forms' ids in the shared footer.
+    """
+    magnet = capture_for(post)
+    kicker, headline, pitch, button = CAPTURE_COPY[magnet]
+    sid = post["slug"][:40]
+    return f"""<aside class="post-capture">
+  <p class="post-capture-kicker">{kicker}</p>
+  <h2>{headline}</h2>
+  <p class="post-capture-pitch">{pitch}</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="{magnet}">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-{sid}">Leave this blank</label>
+      <input type="text" id="pc-honey-{sid}" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-{sid}">Email address</label>
+    <input type="email" id="pc-email-{sid}" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">{button}</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>"""
+
+
 # Ordered blog series. A post whose slug is in a series gets a numbered "read in
 # order" list of the WHOLE series as its related-articles block (the current post
 # is shown in place but NOT linked) instead of the generic 3-pick related list.
@@ -755,6 +880,7 @@ def render_post(post, all_posts, templates, partials, images):
             "healthcare and withdrawals month by month, privately in your browser."),
         "{{VIDEOS}}": videos_html(post),
         "{{RELATED}}": related_html(post, all_posts),
+        "{{EMAIL_CAPTURE}}": capture_html(post),
     }
     html_page = templates["post"]
     for k, v in tokens.items():
@@ -936,6 +1062,7 @@ def main():
     if dupes:
         sys.exit(f"Duplicate slugs: {dupes}")
     posts.sort(key=lambda p: p["published"], reverse=True)
+    check_capture_config(posts)
 
     square_dir = images_dir / "square images"
 

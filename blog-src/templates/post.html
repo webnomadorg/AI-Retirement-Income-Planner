@@ -44,6 +44,10 @@
         <div class="post-body">
 {{CONTENT}}
         </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+{{EMAIL_CAPTURE}}
         <div class="cta-band">
           <h2 class="cta-band-title">Test this with your own numbers</h2>
           <p>{{CTA_PRODUCT}}</p>

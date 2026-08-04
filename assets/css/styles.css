@@ -1447,3 +1447,72 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
 .post-videos{ margin-top:clamp(3.4rem,7vw,5.2rem); }
 .post-videos > h2{ margin-bottom:.2rem; }
 .post-videos .vid-grid{ grid-template-columns:repeat(auto-fill,minmax(280px,360px)); justify-content:start; }
+
+/* ── Free-download landing pages (/get/*) ──────────────────────────────────────
+   Deliberately chrome-free: no nav, no footer link farm, one thing to do. These pages are
+   where ad and social traffic lands, and every extra link is another way to leave without
+   converting. That is also why they are outside PAGES in page_build.py — the propagation
+   step would put the full header and footer straight back in.
+
+   Everything below reuses the existing tokens, so the pages follow the visitor's saved
+   dark-mode and colour-theme choice for free. */
+.lp-top{ padding:clamp(1.4rem,3vw,2.1rem) 0; border-bottom:1px solid var(--line-soft); }
+/* Wordmark only. Not a link back to the site: on a landing page the logo is reassurance
+   that you are somewhere real, not an invitation to go browsing. */
+.lp-brand{ display:flex; align-items:center; gap:.6rem; color:var(--ink); }
+.lp-brand .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:1.15rem; }
+
+.lp-main{ padding-block:clamp(2.4rem,6vw,4.4rem); }
+.lp-grid{ display:grid; gap:clamp(1.8rem,4vw,3rem); align-items:start;
+  grid-template-columns:1fr; }
+@media (min-width:900px){ .lp-grid{ grid-template-columns:1.05fr .95fr; } }
+
+.lp-kicker{ font-family:var(--font-sans); font-size:.82rem; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--teal); margin-bottom:.7rem; }
+.lp-copy h1{ margin-bottom:.7rem; }
+.lp-lede{ font-size:1.08rem; color:var(--ink-soft); margin-bottom:1.4rem; }
+.lp-points{ list-style:none; padding:0; margin:0 0 1.6rem; display:grid; gap:.85rem; }
+.lp-points li{ display:flex; gap:.7rem; align-items:flex-start; }
+.lp-points svg{ flex:none; width:20px; height:20px; margin-top:.18rem; color:var(--teal); }
+
+/* Sticky so the form stays reachable while the copy scrolls — the single action should never
+   be off-screen. Static below the breakpoint, where the form already sits after the copy. */
+.lp-form-card{ border:1.5px solid var(--teal); }
+@media (min-width:900px){ .lp-form-card{ position:sticky; top:1.6rem; } }
+
+.lp-foot{ border-top:1px solid var(--line-soft); padding:clamp(1.4rem,3vw,2rem) 0 clamp(2rem,4vw,3rem);
+  font-size:.86rem; color:var(--ink-faint); }
+.lp-foot p{ margin:0 0 .5rem; }
+.lp-foot a{ color:var(--ink-faint); text-decoration:underline; }
+.lp-foot a:hover{ color:var(--teal); }
+
+/* ── Blog: inline email capture (post-capture) ─────────────────────────────────
+   Sits between the article and the product CTA on every post. Visually distinct from
+   .cta-box (which is a mid-article nudge) and from .cta-band (the paid offer below it), so a
+   reader can tell the free ask apart from the sales pitch at a glance.
+
+   Single-field by design: name is optional on the landing pages, but mid-blog every extra
+   field costs completions, and the email alone is enough to deliver the download. */
+.post-capture{ margin-top:clamp(2.6rem,5vw,3.6rem); padding:clamp(1.5rem,3.5vw,2.2rem);
+  background:var(--surface-soft); border:1px solid var(--line);
+  border-left:3px solid var(--teal); border-radius:var(--radius-sm,8px); }
+.post-capture-kicker{ font-family:var(--font-sans); font-size:.78rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--teal); margin:0 0 .4rem; }
+.post-capture h2{ font-size:1.35rem; margin:0 0 .5rem; }
+.post-capture-pitch{ color:var(--ink-soft); margin:0 0 1.1rem; max-width:56ch; }
+
+/* Row on desktop, stacked on phones. The input takes the slack so the button keeps its
+   natural width instead of stretching to something comical on a wide article. */
+.post-capture-form{ display:flex; flex-wrap:wrap; gap:.7rem; align-items:stretch; }
+.post-capture-form input[type=email]{ flex:1 1 16rem; min-width:0; margin:0; }
+.post-capture-form .btn{ flex:0 0 auto; }
+@media (max-width:520px){
+  .post-capture-form{ flex-direction:column; }
+  .post-capture-form .btn{ width:100%; justify-content:center; }
+}
+
+.post-capture-fine{ font-size:.82rem; color:var(--ink-faint); margin:.8rem 0 0; }
+/* The shared .form-success starts hidden and is revealed by the handler's .visible class;
+   inside this card it should not inherit the centred landing-page treatment. */
+.post-capture .form-success{ text-align:left; }
+.post-capture .form-success p{ margin:0; }
