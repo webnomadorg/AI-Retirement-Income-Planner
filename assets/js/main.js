@@ -346,6 +346,37 @@
     return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2, 10);
   }
 
+  function readCookie(name) {
+    var m = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[2]) : '';
+  }
+
+  /* Facebook's own browser identifiers, forwarded so the server-side event can be matched.
+
+     Sending only a hashed email leaves Meta guessing which person (and which ad click) a
+     signup belongs to — event match quality sat at 5/10, and Events Manager flags weak fbc
+     coverage as its top recommendation. `_fbp` identifies the browser; `_fbc` carries the ad
+     click that brought them here. With those, a conversion can actually be attributed to the
+     ad that caused it, which is what campaign optimisation runs on.
+
+     Both are set by the Meta Pixel, which does not run until the visitor accepts the cookie
+     banner — so for anyone who declined, these are simply absent and the event goes with the
+     basics only. That is deliberate: declining should mean less is sent, not the same amount
+     by another route. The fbclid fallback below is likewise gated on consent. */
+  function fbIdentifiers() {
+    var out = { fbp: readCookie('_fbp'), fbc: readCookie('_fbc') };
+    if (!out.fbc) {
+      // Arrived on an ad click but the pixel hasn't written _fbc yet (it lags the first
+      // pageview). Meta's documented format is fb.1.<timestamp>.<fbclid>.
+      var consented = false;
+      try { consented = localStorage.getItem('wn-consent') === 'granted'; } catch (e) {}
+      var clickId = '';
+      try { clickId = new URLSearchParams(location.search).get('fbclid') || ''; } catch (e) {}
+      if (consented && clickId) out.fbc = 'fb.1.' + Date.now() + '.' + clickId;
+    }
+    return out;
+  }
+
   Array.prototype.forEach.call(forms, function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -362,6 +393,7 @@
       var email = (form.querySelector('[name="email"]')  || {}).value || '';
       var honey = (form.querySelector('[name="_honey"]') || {}).value || '';
       var eventId = newEventId();
+      var fbIds = fbIdentifiers();
       var origHtml = btn ? btn.innerHTML : '';
 
       if (btn) { btn.disabled = true; btn.innerHTML = 'Sending…'; }
@@ -377,6 +409,7 @@
         body: JSON.stringify({
           name: name, email: email, _honey: honey,
           magnet: magnet, eventId: eventId,
+          fbp: fbIds.fbp, fbc: fbIds.fbc,
         }),
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })

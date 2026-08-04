@@ -91,10 +91,17 @@ async function sendCapiLead(opts) {
               action_source: 'website',
               // Meta requires the email pre-hashed, lowercased and trimmed. The raw
               // address never leaves this function.
+              //
+              // fbp/fbc are Meta's own browser and ad-click identifiers, forwarded from the
+              // form. They are sent AS-IS — hashing them, unlike the email, would make them
+              // unmatchable and silently waste the whole point of collecting them. Both are
+              // absent for visitors who declined the cookie banner, which is intended.
               user_data: {
                 em: [sha256(String(opts.email).trim().toLowerCase())],
                 client_ip_address: opts.clientIp,
                 client_user_agent: opts.userAgent,
+                ...(opts.fbp ? { fbp: opts.fbp } : {}),
+                ...(opts.fbc ? { fbc: opts.fbc } : {}),
               },
               custom_data: { content_name: opts.magnet },
             },
@@ -149,7 +156,10 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, _honey, magnet, eventId } = req.body || {};
+  const { name, email, _honey, magnet, eventId, fbp, fbc } = req.body || {};
+
+  // Client-supplied, so bound the length rather than forwarding whatever arrives.
+  const cookieVal = (v) => (typeof v === 'string' && v ? v.slice(0, 256) : undefined);
 
   // Honeypot spam trap — bots fill hidden fields, humans don't
   if (_honey) return res.status(400).json({ error: 'Bad request' });
@@ -212,6 +222,8 @@ module.exports = async function handler(req, res) {
         sourceUrl: req.headers.referer || 'https://airetirementincomeplanner.com/',
         clientIp: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || undefined,
         userAgent: req.headers['user-agent'],
+        fbp: cookieVal(fbp),
+        fbc: cookieVal(fbc),
       });
       return res.status(200).json({ ok: true, magnet: chosen.key, eventId: leadEventId });
     }
