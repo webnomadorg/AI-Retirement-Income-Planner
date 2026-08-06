@@ -108,11 +108,17 @@ function traceGroup(p,id){
 /** v14: share of a phase spent on Medicare, 0..1. A missing medicareFrac derives from hasMedicare,
  *  so any caller predating that field behaves exactly as before. */
 function medFracOf(p){return (p&&p.medicareFrac!=null)?p.medicareFrac:((p&&p.hasMedicare)?1:0);}
+/** People on Medicare in a phase, 0..2, weighted by months. Falls back through medicareFrac to
+ *  hasMedicare so callers predating per-person pricing (frozen demo data) still read sensibly. */
+function medUnitsOf(p){return (p&&p.medicareUnits!=null)?p.medicareUnits:medFracOf(p);}
+/** Household size the ACA premium is spread over: 2 for a couple both eligible, else 1. */
+function medHeadsOf(p){return (p&&p.medicareHeads)||1;}
 /** True when the phase buys ACA cover for at least part of itself. This is the correct test for
  *  "does ACA apply here" — `!hasMedicare` is NOT, because hasMedicare goes true the moment Medicare
  *  starts anywhere in the phase, hiding ACA information from a phase that is mostly still on ACA.
- *  Only reachable via an early-Medicare age (SSDI), which is why it went unnoticed for so long. */
-function phaseHasAcaMonths(p){return medFracOf(p)<1;}
+ *  v14: measured in PEOPLE, not just months — a couple where one spouse is on Medicare and the
+ *  other is not is still buying ACA cover, and was previously told it wasn't. */
+function phaseHasAcaMonths(p){return medUnitsOf(p)<medHeadsOf(p);}
 
 // ── STATE OBJECT `S` — schema (these are the defaults; `S` is built from this) ───────
 // S is the single source of truth for a plan. autoLoad merges a saved plan OVER D_USD, so
@@ -203,15 +209,38 @@ const D_USD={
   // ── v6: spouse current age (used to gate spouse SS by spouse's actual age,
   //         not the primary's). If unset, falls back to primary's currentAge → same-age assumption preserved.
   spouseCurrentAge:0,
+  // ── v14: the spouse's Medicare start age. null ⇒ the same rule as you (65, or your early age),
+  //         so an MFJ plan charges Part B + Part D for BOTH of you — which is what a couple both
+  //         on Medicare actually pays. 'never' ⇒ only one of you is enrolled. Ignored for single
+  //         filers, where it can never make a difference. ──
+  spouseMedicareStartAge:null,
   // ── v2: Roth IRA ──
   balRoth:0,rRoth:7,
   // Single filer brackets
   stdDed:15000,seniorDed:2050,
   brk10:12400,brk12:49000,brk22:104000,
   irmaa:109000,
-  // ── v10: IRMAA Tier-1 monthly surcharge (Part B + Part D combined, USD/mo, before healthcare
-  //         inflation). Added to Medicare-phase healthcare cost when the 2-year-lookback MAGI
-  //         exceeds the threshold. ~$74 Part B + ~$14 Part D (2025). 0 = flag-only (pre-v10 behaviour).
+  // ── v14: the FULL IRMAA ladder. IRMAA has six income brackets, not one, and the surcharge at the
+  //         top is several hundred dollars a month per person — anyone running sizeable Roth
+  //         conversions lands in the middle of it. Amounts here are SURCHARGES OVER the standard
+  //         premium, not total premiums, so S.medicare stays the single source for the base and the
+  //         ladder is purely additive. Figures are CMS 2026 (standard Part B $202.90).
+  //         `frozen: true` on the top tier is not a detail — tiers 1-4 are CPI-adjusted each year but
+  //         the $500k/$750k bracket is fixed in statute (through at least 2028), so it binds harder
+  //         every year exactly like the Social Security provisional-income thresholds already do. ──
+  irmaaPartBStd:202.90,
+  irmaaTiers:[
+    {thrSingle:109000, thrMfj:218000, partB: 81.20, partD:14.50},
+    {thrSingle:137000, thrMfj:274000, partB:202.90, partD:37.50},
+    {thrSingle:171000, thrMfj:342000, partB:324.60, partD:60.40},
+    {thrSingle:205000, thrMfj:410000, partB:446.30, partD:83.30},
+    {thrSingle:500000, thrMfj:750000, partB:487.00, partD:91.00, frozen:true}
+  ],
+  // ── v10: IRMAA Tier-1 monthly surcharge. v14 SUPERSEDED it with the full irmaaTiers ladder above,
+  //         which now sets the amount. This field survives for one job only: **0 means flag-only** —
+  //         warn that the threshold was crossed without costing it. That was a documented escape
+  //         hatch and old plans rely on it, so it keeps working. Any non-zero value simply means
+  //         "cost it", and the ladder decides how much. ──
   irmaaSurcharge:88,
   // ── v8: Net Investment Income Tax (3.8% surtax on investment income above the MAGI threshold) ──
   niitThreshold:200000, niitThresholdMfj:250000,
@@ -406,6 +435,21 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
   // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age). null ⇒ untouched.
   const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:null;
+  // v14: the SPOUSE's Medicare, as a share of each phase, so a married couple is charged Part B and
+  // Part D for two people rather than one. Expressed in the PRIMARY's age line, because every phase
+  // boundary is: the spouse turns 65 when the primary is 65 + (primary age − spouse age).
+  //   spouseMedicareStartAge: null ⇒ same rule as the primary; 'never' ⇒ not enrolled (one premium).
+  // Only ever non-zero for MFJ — a single filer is unchanged by construction.
+  const _mfjHere=(pa.filingStatus==='mfj');
+  const _spAgeDelta=(pa.spouseCurrentAge>0)?((currentAge||startAge)-pa.spouseCurrentAge):0;
+  const _spMedRaw=pa.spouseMedicareStartAge;
+  const _spNever=(_spMedRaw==='never');
+  // The spouse's DEFAULT is the ordinary Medicare boundary (a2), never the primary's early age.
+  // SSDI is personal: if you qualify at 57 your spouse does not, so inheriting medAge here would
+  // have handed a healthy spouse eight free years of Medicare. Shifted by the age gap so a younger
+  // spouse joins later, which is the whole reason this is an age rather than a boolean.
+  const spMedAge=(!_mfjHere||_spNever)?null
+    :((_spMedRaw!=null&&_spMedRaw!=='')?(+_spMedRaw+_spAgeDelta):(a2+_spAgeDelta));
   // Build raw phases without hasSS (derived below from ssAge)
   const rawPhases=[
     ...(earlyRetire?[{label:'Pre 59½',startAge,endAge:59.5,hasUKP:false,hasMedicare:false,phaseKey:'p0',color:PHASE0_COLOR}]:[]),
@@ -449,13 +493,22 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     // 55–59.5 phase is 2.5 of 4.5 years, not "all of it" or "none of it".
     // With medAge null this is exactly the old behaviour: frac is 1 or 0 straight off the phase-index
     // default, so every existing plan is untouched.
-    let medFrac;
-    if(medAge==null) medFrac=p.hasMedicare?1:0;
-    else{
+    const _fracFrom=(age)=>{
+      if(age==null) return p.hasMedicare?1:0;
       const span=Math.max(1e-9,p.endAge-effStart);
-      medFrac=Math.max(0,Math.min(1,(p.endAge-Math.max(effStart,medAge))/span));
-    }
-    result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0,medicareFrac:medFrac});
+      return Math.max(0,Math.min(1,(p.endAge-Math.max(effStart,age))/span));
+    };
+    const medFrac=_fracFrom(medAge);
+    // v14: the spouse's own share. Defaults to the primary's rule when this is an MFJ plan and the
+    // spouse is the same age, which is the common case — hence a couple is charged twice, and the
+    // phase card says so. `never` opts a spouse out (one on Medicare, one not).
+    const spMedFrac=(!_mfjHere||_spNever)?0:_fracFrom(spMedAge);
+    // medicareUnits is the whole point: 0..2 people enrolled, weighted by months. For a single filer
+    // it equals medicareFrac exactly, so every existing single-filer number is untouched by
+    // construction — that is the property the self-test asserts.
+    result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0||spMedFrac>0,
+      medicareFrac:medFrac,spouseMedicareFrac:spMedFrac,medicareUnits:medFrac+spMedFrac,
+      medicareHeads:_mfjHere&&!_spNever?2:1});
   }
   return result;
 }
@@ -511,6 +564,31 @@ function setSsdiMode(on){
  *  entitlement. Several labels hardcoded "starts age 65" and were rewritten on every render by
  *  updateEditLabels, so an SSDI user was told 65 while the engine charged from 57. One helper so
  *  the answer is in a single place. */
+/** v14: the IRMAA bracket table in the Edit tab. Rendered rather than hand-written markup because
+ *  the ladder is data (and refreshable via Fetch current rates), and the thresholds shown must follow
+ *  the filing status. Amounts are per person, in the display currency like every other money field. */
+function renderIrmaaTierGrid(){
+  const host=document.getElementById('irmaa-tier-grid'); if(!host)return;
+  const tiers=Array.isArray(S.irmaaTiers)&&S.irmaaTiers.length?S.irmaaTiers:(D_USD.irmaaTiers||[]);
+  const mfj=S.filingStatus==='mfj';
+  // Keep the three header cells, replace the rows.
+  while(host.children.length>3)host.removeChild(host.lastChild);
+  tiers.forEach((t,i)=>{
+    const thr=mfj?(t.thrMfj||t.thrSingle):t.thrSingle;
+    const mk=(html)=>{const d=document.createElement('div');d.innerHTML=html;host.appendChild(d);};
+    mk(`<span style="color:var(--text-secondary);">${fmtC(toDisplay(thr))}${t.frozen?' <span style="font-size:10px;color:var(--text-tertiary);">fixed</span>':''}</span>`);
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}" style="width:100%;"
+         oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}" style="width:100%;"
+         oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
+  });
+}
+function _setIrmaaTier(i,key,val){
+  if(!Array.isArray(S.irmaaTiers)||!S.irmaaTiers.length)S.irmaaTiers=JSON.parse(JSON.stringify(D_USD.irmaaTiers));
+  if(!S.irmaaTiers[i])return;
+  S.irmaaTiers[i][key]=toUSD(parseFloat(val)||0);
+  liveCalcDebounced();
+}
 function medicareStartLabel(){
   const a=S.medicareStartAge;
   return (S.ssdiMode&&a!=null&&a!=='')?`starts age ${a}`:'starts age 65';
@@ -1547,11 +1625,27 @@ function calcPhase(p){
   // v13: share of this phase spent on Medicare (1 = all, 0 = none, between = it starts mid-phase).
   // Absent ⇒ derive from hasMedicare, so any caller predating this field behaves exactly as before.
   const medFrac=(p.medicareFrac!=null?p.medicareFrac:(p.hasMedicare?1:0));
+  // v14: how many PEOPLE are on Medicare in this phase, 0..2, weighted by months. Part B and Part D
+  // are charged per beneficiary — a married couple both enrolled pays two of each, which the planner
+  // used to charge once. Absent ⇒ medFrac, so a single filer (and every caller predating this) is
+  // bit-identical. `heads` is the household size the ACA premium is spread over.
+  const medUnits=(p.medicareUnits!=null?p.medicareUnits:medFrac);
+  const medHeads=p.medicareHeads||1;
   const adjMedicare=Math.round(p.medicare*hcInflMult*100)/100;
   const adjMedicareD=Math.round((p.medicareD||0)*hcInflMult*100)/100;
   // v10: IRMAA Tier-1 surcharge (Part B+D), inflated like the base premiums. Applied to
   // health_mo AFTER the 2-year-lookback pass in calcAllPhases finalises irmaaOver — not here.
   const adjIrmaaSurch=Math.round((p.irmaaSurcharge!=null?p.irmaaSurcharge:88)*hcInflMult*100)/100;
+  // v14: the inflated IRMAA ladder for this phase. Thresholds grow with general inflation, amounts
+  // with healthcare inflation — matching how the plain threshold and the base premiums already
+  // behave. EXCEPT the top bracket, which is frozen in statute: leaving it uninflated is the honest
+  // model, and it is the same "stealth tax" behaviour the SS provisional thresholds already have.
+  const adjIrmaaTiers=Array.isArray(p.irmaaTiers)&&p.irmaaTiers.length?p.irmaaTiers.map(t=>({
+    thr:Math.round((mfj?(t.thrMfj||t.thrSingle):t.thrSingle)*(t.frozen?1:inflMult)),
+    partB:Math.round((t.partB||0)*hcInflMult*100)/100,
+    partD:Math.round((t.partD||0)*hcInflMult*100)/100,
+    frozen:!!t.frozen
+  })):null;
   if(foreign||isUkRes||isCanadian||isAustralian||!subjectUS){
     health_mo=(p.expatHealthcare||0)*hcInflMult;
     {const g=_trGroup(T,'medicare','How your healthcare cost is estimated',null,'expatHealthcare');
@@ -1562,49 +1656,46 @@ function calcPhase(p){
         note:'Not modelled for this residency — this is your own private or national healthcare cost.'});
     }
   }
-  else if(medFrac>=1){
-    health_mo=adjMedicare+adjMedicareD;
-    {const g=_trGroup(T,'medicare','How your Medicare cost is estimated','tg-irmaa','medicare');
-      _trRow(g,'Part B premium',adjMedicare,'usd/mo',{kind:'in',base:p.medicare,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
-      _trRow(g,'Part D premium',adjMedicareD,'usd/mo',{kind:'in',skipZero:true,base:p.medicareD,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
-      _trRow(g,'= Medicare cost before any surcharge',health_mo,'usd/mo',{kind:'total'});
-    }
-  }
-  // v13: Medicare starts PART-WAY through this phase (only reachable via an early-Medicare age, i.e.
-  // SSDI). Price both regimes and weight them by the share of the phase each covers, rather than
-  // forcing the whole phase onto one — which would either invent ACA subsidies the user has lost or
-  // charge Medicare premiums years before they begin.
-  // v14: emit TWO groups, not one. This phase genuinely has both regimes in it, and each group
-  // carries its own methodology link and glossary key (a group can only hold one of each), so the
-  // ACA working keeps tg-aca/acaSubsidy while the Medicare side keeps tg-irmaa/medicare. It also
-  // fixes a real defect: the card wires this phase to the 'medicarecalc' popover (hasMedicare is
-  // true whenever medFrac>0), which reads the 'medicare' group — when the blend emitted only 'aca',
-  // that popover rendered its intro and no working at all, and every trace row the IRMAA lookback
-  // pass appends was silently dropped while the surcharge was still charged. TRACE_ORDER already
-  // places 'aca' before 'medicare', so no ordering change is needed.
-  else if(medFrac>0){
-    const _gA=_trGroup(T,'aca','How your ACA premium is estimated (the pre-Medicare months)','tg-aca','acaSubsidy');
-    acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);
-    const acaCost=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
-    if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
-      formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
-    const medCost=adjMedicare+adjMedicareD;
-    health_mo=medFrac*medCost+(1-medFrac)*acaCost;
-    const _gM=_trGroup(T,'medicare','How your Medicare cost is estimated','tg-irmaa','medicare');
-    _trRow(_gM,'Part B premium',adjMedicare,'usd/mo',{kind:'in',base:p.medicare,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
-    _trRow(_gM,'Part D premium',adjMedicareD,'usd/mo',{kind:'in',skipZero:true,base:p.medicareD,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
-    _trRow(_gM,'= Medicare cost once it starts',medCost,'usd/mo',{kind:'total'});
-    _trRow(_gM,'ACA premium for the pre-Medicare months',acaCost,'usd/mo',{kind:'in'});
-    _trRow(_gM,'Share of this phase on Medicare',medFrac,'mult',{kind:'rate',
-      formula:'months from your Medicare age to the end of the phase ÷ months in the phase'});
-    _trRow(_gM,'= blended healthcare cost',health_mo,'usd/mo',{kind:'total',
-      note:'Medicare begins part-way through this phase, so the cost is the two regimes weighted by how long each applies.'});
-  }
+  // v14: ONE formula for every US-resident case, replacing the three branches this used to have.
+  //   healthcare = (people on Medicare) x (Part B + Part D)  +  (household share still on ACA) x ACA
+  // For a single filer medHeads is 1 and medUnits is medicareFrac, so this reduces EXACTLY to the
+  // old arithmetic — that identity is what the single-filer fixtures assert. For a couple both
+  // enrolled it charges two sets of premiums, which is what they actually pay and what the planner
+  // used to miss. The ACA side is deliberately NOT multiplied: acaPrem models one household premium
+  // against 1-person FPL figures, and a couple's marketplace premium is not twice a single's, so we
+  // scale it by the share of the household not yet on Medicare rather than pretending otherwise.
   else{
-    const _gA=_trGroup(T,'aca','How your ACA premium is estimated','tg-aca','acaSubsidy');
-    acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);health_mo=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
-    if(acaVal===-1)_trRow(_gA,'= estimated full premium',health_mo,'usd/mo',{kind:'total',
-      formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
+    const medCostPer=adjMedicare+adjMedicareD;
+    const acaShare=Math.max(0,Math.min(1,(medHeads-medUnits)/medHeads));
+    const needsAca=acaShare>1e-9;
+    const perPerson=medHeads>1;
+    let acaCost=0,_gA=null;
+    if(needsAca){
+      _gA=_trGroup(T,'aca',medUnits>0?'How your ACA premium is estimated (the months before Medicare)':'How your ACA premium is estimated','tg-aca','acaSubsidy');
+      acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);
+      acaCost=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
+      if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
+        formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
+    }
+    health_mo=medUnits*medCostPer+acaShare*acaCost;
+    if(medUnits>0){
+      const g=_trGroup(T,'medicare','How your Medicare cost is estimated','tg-irmaa','medicare');
+      _trRow(g,'Part B premium'+(perPerson?' (each)':''),adjMedicare,'usd/mo',{kind:'in',base:p.medicare,baseAs:'from',formula:'base premium x healthcare inflation multiplier'});
+      _trRow(g,'Part D premium'+(perPerson?' (each)':''),adjMedicareD,'usd/mo',{kind:'in',skipZero:true,base:p.medicareD,baseAs:'from',formula:'base premium x healthcare inflation multiplier'});
+      if(perPerson||medUnits<1){
+        _trRow(g,'= Medicare cost per person',medCostPer,'usd/mo',{kind:'total'});
+        _trRow(g,'People on Medicare in this phase',medUnits,'num',{kind:'rate',
+          formula:medUnits<medHeads?'counted month by month, so someone joining part-way counts only for the months they are covered':'both of you, all phase',
+          note:perPerson?'Part B and Part D are charged per person, so a couple both on Medicare pays two of each.':undefined});
+      }
+      if(needsAca){
+        _trRow(g,'ACA premium for the rest',acaCost,'usd/mo',{kind:'in'});
+        _trRow(g,'Share of the household still on ACA',acaShare,'mult',{kind:'rate',
+          note:'The ACA figure is one household premium, so it is scaled by how much of the household is not yet on Medicare.'});
+      }
+      _trRow(g,'= healthcare before any surcharge',health_mo,'usd/mo',{kind:'total',
+        note:needsAca?'Medicare covers part of this phase, so the cost blends the two regimes by how long and for how many each applies.':undefined});
+    }
   }
   const irmaaOver=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&irmaaMagi>adjIrmaaEff;
   // RMD (US 401k only)
@@ -1676,7 +1767,7 @@ function calcPhase(p){
     end:{b401k:sim.b401k,bcash:sim.bCash,bEquity:sim.bEquity,bRoth:sim.bRoth,bSuper:sim.bSuper,costBasis:sim.costBasis},
     ti,tax_a,usTaxBeforeFTC,tax_mo,ukTax_a,ukTax_mo,ftc_a,ftc_mo,cadTax_a,ausTax_a,niit_a,stateTax_a,stateTax_mo,isUkRes,isCanadian,isAustralian,
     magi,irmaaMagi,taxExemptInt:taxExemptInt_ann,aca:acaVal,health_mo,total_mo,net_mo,net_real,
-    sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
+    sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,medicareUnits:medUnits,medicareHeads:medHeads,spouseMedicareFrac:p.spouseMedicareFrac||0,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
     // the tax that funding it created and whether that spike would cross an ACA/IRMAA threshold.
     lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpEqGain:sim.lumpEqGain||0,
@@ -1693,7 +1784,7 @@ function calcPhase(p){
     // tax figure by design; tax is a phase-level quantity (see simPhase's yearRows comment).
     yearRows:sim.yearRows||[],
     rothConvAnn,taxableEquity_ann,partTime_mo,partTimeAnnual:p.partTimeAnnual||0,
-    acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjStatePensionCap,foreign,mfj,subjectUS,
+    acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjIrmaaTiers,adjStatePensionCap,foreign,mfj,subjectUS,
     rmdEst,rmdShortfall,rentalAnn,rental_mo,
     usPension_mo:sim.avgUsPen,usPension_ann,usPensionTaxable, // v9: US pension/disability
     usPension2_mo:sim.avgUsPen2,usPension2_ann,usPension2Taxable, // v9: second US pension/disability
@@ -1791,6 +1882,9 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       hasSS:pc.hasSS,hasUKP:pc.hasUKP,
       hasCPP,hasOAS,hasAgePension,hasMedicare:pc.hasMedicare,
       medicareFrac:(pc.medicareFrac!=null?pc.medicareFrac:(pc.hasMedicare?1:0)), // v13: part-year Medicare
+      spouseMedicareFrac:pc.spouseMedicareFrac||0,                               // v14: per-person pricing
+      medicareUnits:(pc.medicareUnits!=null?pc.medicareUnits:(pc.medicareFrac!=null?pc.medicareFrac:(pc.hasMedicare?1:0))),
+      medicareHeads:pc.medicareHeads||1,
       isCanadian,isAustralian,
       phaseStartAge:pc.startAge,retireStartAge:curAge||s.startAge,
       ssColaRate:s.ssColaRate,tripleLockRate:s.triplelock,inflationRate:s.inflation,
@@ -1810,6 +1904,8 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       lumpCash:lTotal,lumpOut:lTotalOut,lumpItems:lItems,lumpInItems:lIn,lumpOutItems:lOut,
       stdDed:s.stdDed,seniorDed:s.seniorDed,brk10:s.brk10,brk12:s.brk12,brk22:s.brk22,irmaa:s.irmaa,
       irmaaSurcharge:(s.irmaaSurcharge!=null?s.irmaaSurcharge:88), // v10: 0 = flag-only
+      irmaaTiers:(Array.isArray(s.irmaaTiers)&&s.irmaaTiers.length?s.irmaaTiers:null),  // v14: full ladder
+      irmaaPartBStd:s.irmaaPartBStd||202.90,
       mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:s.mfjSeniorDed||3200,
       mfjBrk10:s.mfjBrk10||24800,mfjBrk12:s.mfjBrk12||98000,mfjBrk22:s.mfjBrk22||208000,mfjIrmaa:s.mfjIrmaa||218000,
       fpl100:s.fpl100,fpl250:s.fpl250,fpl400:s.fpl400,medicare:s.medicare,medicareD:s.medicareD||0,expatHealthcare:s.expatHealthcare||0,
@@ -1897,22 +1993,49 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
           formula:'Medicare uses your income from 2 years before, not this year’s'});
         _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold'});
       }
-      // v10: the Tier-1 surcharge is a real cost, not just a flag — add it to the phase's
-      // healthcare cost and take it out of net income (irmaaSurcharge=0 restores flag-only).
-      if(r.irmaaOver&&(r.adjIrmaaSurch||0)>0){
+      // v14: which BRACKET the lookback lands in. IRMAA has six, and the top adds several hundred
+      // dollars a month per person — pricing every crossing at tier 1 understated a Roth-conversion
+      // plan badly. Highest tier whose threshold is cleared wins; tier 0 means no surcharge.
+      let _tierB=0,_tierD=0;
+      if(r.adjIrmaaTiers){
+        for(let ti=0;ti<r.adjIrmaaTiers.length;ti++){
+          if(lookbackMagi>r.adjIrmaaTiers[ti].thr){
+            r.irmaaTier=ti+1; _tierB=r.adjIrmaaTiers[ti].partB; _tierD=r.adjIrmaaTiers[ti].partD;
+          }
+        }
+      }
+      // The ladder sets the amount; irmaaSurcharge survives only as the flag-only switch (0 = warn
+      // without costing), which was documented behaviour that old plans deliberately rely on.
+      const _costed=(r.adjIrmaaSurch||0)>0;
+      const _ladder=r.adjIrmaaTiers?(_tierB+_tierD):(r.adjIrmaaSurch||0);
+      if(r.irmaaOver&&_costed&&_ladder>0){
         // v14: IRMAA is only payable in the months you are actually enrolled. On a phase Medicare
         // starts part-way through (SSDI only), charging the full surcharge overstated the cost for
         // the pre-Medicare months — the base premiums were already weighted this way in calcPhase.
-        const _mu=(r.medicareFrac!=null?r.medicareFrac:1);
-        r.irmaaSurch_mo=r.adjIrmaaSurch*_mu;
+        // v14: units, not just the primary's fraction — IRMAA is assessed per beneficiary, so a
+        // couple both on Medicare each owe it. Falls back to medicareFrac, then 1, for any caller
+        // predating per-person pricing (frozen demo data, survivor rerun).
+        const _mu=(r.medicareUnits!=null?r.medicareUnits:(r.medicareFrac!=null?r.medicareFrac:1));
+        r.irmaaSurchB_mo=_tierB*_mu; r.irmaaSurchD_mo=_tierD*_mu;
+        r.irmaaSurch_mo=_ladder*_mu;
         r.health_mo+=r.irmaaSurch_mo;
         r.net_mo-=r.irmaaSurch_mo;
         r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
         if(_gM){
-          _trRow(_gM,'+ IRMAA Tier-1 surcharge',r.irmaaSurch_mo,'usd/mo',{kind:'flag',
-            note:_mu<1
-              ?'Applied because the lookback MAGI above crossed the threshold — charged only for the months of this phase you are on Medicare.'
-              :'Applied because the lookback MAGI above crossed the threshold. Set the surcharge amount on the Edit values tab.'});
+          if(r.adjIrmaaTiers&&r.irmaaTier){
+            const _t=r.adjIrmaaTiers[r.irmaaTier-1];
+            _trRow(_gM,'IRMAA bracket reached',r.irmaaTier,'num',{kind:'threshold',
+              formula:'highest bracket your lookback MAGI clears (there are '+r.adjIrmaaTiers.length+')'});
+            _trRow(_gM,'This bracket starts at',_t.thr,'usd/yr',{kind:'threshold',
+              note:_t.frozen?'The top bracket is fixed in statute rather than rising with inflation, so it catches more people every year.':undefined});
+            _trRow(_gM,'+ Part B surcharge',r.irmaaSurchB_mo,'usd/mo',{kind:'minus',skipZero:true});
+            _trRow(_gM,'+ Part D surcharge',r.irmaaSurchD_mo,'usd/mo',{kind:'minus',skipZero:true,
+              note:'Paid to Medicare on top of whatever your drug plan charges.'});
+          }
+          _trRow(_gM,'+ IRMAA surcharge in total',r.irmaaSurch_mo,'usd/mo',{kind:'flag',
+            note:_mu<(r.medicareHeads||1)
+              ?'Charged per person, and only for the months each of you is actually on Medicare.'
+              :'Applied because the lookback MAGI above crossed the threshold.'});
           _trRow(_gM,'= total healthcare',r.health_mo,'usd/mo',{kind:'total'});
         }
         const _gN=traceGroup(r,'net'),_rH=_trFindRow(_gN,'health'),_rNet=_trFindRow(_gN,'net'),_rRe=_trFindRow(_gN,'netreal');

@@ -158,6 +158,55 @@
         <ul class="upd-list">
 
           <li class="upd-item reveal">
+            <span class="upd-ver">v285</span>
+            <div class="upd-body">
+              <h4>If you are married and both on Medicare, your costs just went up <span class="upd-date">· 6 August</span></h4>
+              <p><strong>Read this one before you open the update, because your numbers will change.</strong> The planner has been charging <em>one</em> set of Medicare premiums per household, even when you told it you were married filing jointly and you are both over 65. Part B and Part D are billed per person. A couple pays two of each, and we were showing you one.</p>
+              <p>That is a real hole and it went the wrong way — it made retirement look cheaper than it is, by roughly $250 a month today and more once IRMAA is involved. It is fixed. The phase cards now show <strong>Medicare Part B est. ×2</strong> with a line underneath saying both of you are counted, so the figure explains itself rather than just quietly moving.</p>
+              <p>If only one of you is on Medicare, say so — there is a tick-box under the married-filing-jointly settings. If your spouse is younger, put their age in and they will join at their own 65, counted month by month rather than jumping a whole phase at a time.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
+            <span class="upd-ver">v285</span>
+            <div class="upd-body">
+              <h4>IRMAA has six brackets, not one <span class="upd-date">· 6 August</span></h4>
+              <p>The Medicare high-income surcharge came in as a single figure — one bracket, one amount. In reality there are six, and the gap between the bottom and the top is enormous: about $95 a month against about $640. If you are running Roth conversions of any size, or selling a business, or taking a big year of withdrawals, you land in the middle of that table, and we were quoting you the bottom of it.</p>
+              <p>All six brackets are now in the planner, with <strong>Part B and Part D listed separately</strong> because they are separate bills. You can see which bracket a phase lands in, and what each part costs, under <strong>Under the hood</strong>. The bracket amounts sit on the Edit tab if you want to check them against your own notice, and <strong>Fetch current rates</strong> refreshes them when CMS resets them each autumn.</p>
+              <p>One detail worth knowing because it works against you slowly: the top bracket is <strong>fixed in law</strong> rather than rising with inflation, so it catches more people every year. The planner models it that way rather than pretending it drifts upward.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
+            <span class="upd-ver">v280</span>
+            <div class="upd-body">
+              <h4>Tax-free bond interest can still raise your tax bill <span class="upd-date">· 6 August</span></h4>
+              <p>You can now enter <strong>tax-exempt interest</strong> — municipal bonds — phase by phase, next to rental income. It is not taxed, and the planner does not tax it.</p>
+              <p>But it is not invisible either, and this is the part that catches people out. That interest counts toward the income test that decides how much of your Social Security is taxable. On a test plan, adding $30,000 of tax-free bond interest took the tax bill from <strong>nothing to $1,645 a year</strong> — not by taxing the bonds, but by dragging the taxable share of Social Security from 8% up to 85%. Buying municipal bonds to reduce a tax bill can increase it. Leaving the interest out of your plan hid that entirely.</p>
+              <p>It also counts toward the income figures behind your ACA subsidy and your IRMAA bracket, so putting it in makes those warnings honest.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
+            <span class="upd-ver">v280</span>
+            <div class="upd-body">
+              <h4>The IRMAA check was reading the wrong income figure <span class="upd-date">· 6 August</span></h4>
+              <p>&ldquo;MAGI&rdquo; is not one number. The health insurance marketplace counts your Social Security in full; Medicare counts only the part that is actually taxable, because it reads your tax return. The planner had one figure doing both jobs, and used the larger one for Medicare.</p>
+              <p>That overstated the income IRMAA sees, and it hurt exactly the people it should not have: anyone living mainly on Social Security or SSDI, whose benefit is barely taxable. On one test plan the figure being checked was <strong>$32,462 when the real one was $1,675</strong> — enough to charge a surcharge in every Medicare year that should never have applied. Both figures are now shown separately under <strong>Under the hood</strong>, so you can see which is which.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
+            <span class="upd-ver">v277</span>
+            <div class="upd-body">
+              <h4>Fixes for plans where Medicare starts mid-phase <span class="upd-date">· 6 August</span></h4>
+              <p>If you are on SSDI, Medicare starts 24 months after your benefits do, whatever your age — so it often begins part-way through one of your phases rather than neatly at 65. Three things were wrong for those plans.</p>
+              <p>The healthcare box on the phase card opened <strong>completely empty</strong> when you clicked it for the working. The IRMAA surcharge was charged for the <strong>whole</strong> phase, including the months before your Medicare had actually started. And the ACA subsidy and cliff warnings vanished from a phase that was still mostly on ACA cover, because one month of Medicare at the end was enough to hide them.</p>
+              <p>All three are fixed, and the same mistake turned out to be in a dozen other places — the PDF, the plan health check, the conversion explorer — so those are corrected too.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
             <span class="upd-ver">v274</span>
             <div class="upd-body">
               <h4>Correcting what we said about capital gains <span class="upd-date">· 2 August</span></h4>
