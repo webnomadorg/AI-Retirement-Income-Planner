@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 292, released: '2026-08-06', headline: 'Ask Medicare to use this year’s income after a life change, plus a warning if work earnings could affect SSDI.' }; /* __LATEST__ */
+const LATEST = { build: 296, released: '2026-08-06', headline: 'Phase cards stay readable when you have six or seven of them, plus the SSA-44 and SSDI earnings work.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
