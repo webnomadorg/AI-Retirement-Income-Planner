@@ -280,22 +280,22 @@ const D_USD={
   //    override the global and win, which meant the Edit tab had two controls for one figure and
   //    zeroing the visible one didn't turn the income off. _migrateSingleIncomeFigures() folds any
   //    legacy per-phase number back into the global on load; nothing writes these again. ──
-  p0:{w401k:0,wcash:100,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p1:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p2:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p3:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
+  p0:{w401k:0,wcash:100,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p1:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p2:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p3:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
   // ── v5: SS-split secondary slots (only active when ssStartAge falls mid-phase) ──
   //   v13: p0b joins them. It can only ever appear for SSDI — a retirement benefit cannot start before
   //   62 and p0 ends at 59.5, so p0 never splits without ssdiMode. 401k stays 0: it is inaccessible
   //   before 59½ on both sides of the split. ──
-  p0b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p1b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p2b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p3b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p4b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0},
-  p5b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,wSuper:0}
+  p0b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p1b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p2b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p3b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p4b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p5b:{w401k:0,wcash:0,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0}
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -563,10 +563,15 @@ function realNetCalc(nom,yrs,infl){return yrs<=0?nom:nom/Math.pow(1+infl/100,yrs
 // Returns the EFFECTIVE taxable fraction of Social Security (0–0.85) using the IRS
 // provisional-income worksheet — a gradual phase-in, not a flat jump to 50%/85%.
 // otherIncome_a = all other ordinary income; ukp_a kept for the legacy call signature.
+// v14: taxExempt_a is MUNICIPAL-BOND style interest — untaxed, but it counts here in full. It is a
+// separate parameter rather than being folded into otherIncome_a so the trace can show it on its own
+// line; that surprise (untaxed income raising your Social Security tax) is the whole point of showing
+// the working. Defaults to 0, so every existing 4-argument call behaves exactly as before.
 // Thresholds are fixed in statute (NOT inflation-indexed), matching real "stealth tax" behaviour.
-function ssPct(otherIncome_a,ukp_a,uss_a,mfj,_tg){
+function ssPct(otherIncome_a,ukp_a,uss_a,mfj,_tg,taxExempt_a){
   if(!uss_a)return 0;
-  const prov=otherIncome_a+ukp_a+uss_a*0.5;
+  const _te=taxExempt_a||0;
+  const prov=otherIncome_a+ukp_a+_te+uss_a*0.5;
   const lo=mfj?TAX_CONST.SS_PROV_LOW_MFJ:TAX_CONST.SS_PROV_LOW;
   const hi=mfj?TAX_CONST.SS_PROV_HIGH_MFJ:TAX_CONST.SS_PROV_HIGH;
   let taxable;
@@ -575,6 +580,8 @@ function ssPct(otherIncome_a,ukp_a,uss_a,mfj,_tg){
   else taxable=Math.min(0.85*uss_a, 0.85*(prov-hi)+Math.min(0.5*uss_a, 0.5*(hi-lo)));
   if(_tg){
     _trRow(_tg,'Other ordinary income',otherIncome_a+ukp_a,'usd/yr',{kind:'in',formula:'401k + part-time + UK pension + conversions + taxable equity + pensions'});
+    _trRow(_tg,'+ tax-exempt interest',_te,'usd/yr',{skipZero:true,
+      note:'Municipal-bond interest is not taxed, but it still counts here — so it can push more of your Social Security into tax without appearing on your tax bill itself.'});
     _trRow(_tg,'+ half your Social Security',uss_a*0.5,'usd/yr',{formula:'SS × 50%'});
     _trRow(_tg,'= provisional income',prov,'usd/yr',{kind:'total'});
     _trRow(_tg,(mfj?'MFJ ':'')+'lower threshold',lo,'usd/yr',{kind:'threshold',note:'Fixed in statute — NOT inflation-indexed, so more of your SS becomes taxable over time.'});
@@ -1146,7 +1153,8 @@ function calcPhase(p){
   const convIncome_ann=sim.convActualAnn; // capped at the 401k that was actually there to convert
   const totalSS_ann=uss_ann+spSS_ann;
   const _gSs=(isCanadian||isAustralian||!subjectUS||!totalSS_ann)?null:_trGroup(T,'ssprov','How much of your Social Security is taxable','tg-ssprov','ssProvisional');
-  const sp=isCanadian||isAustralian||!subjectUS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs);
+  const taxExemptInt_ann=p.taxExemptInt||0;   // v14: untaxed, but counts toward MAGI and SS provisional income
+  const sp=isCanadian||isAustralian||!subjectUS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
   // Ordinary income varies by country:
   const rentalIncome_ann=rentalTaxable?rentalAnn:0;
   // Canada: CPP + OAS are taxable; SS/UKP also included as ordinary income (treaty nuance not modelled — taxed at full CA rate)
@@ -1179,6 +1187,8 @@ function calcPhase(p){
     _trRow(g,'US pension / disability',usPensionTaxableInc_ann,'usd/yr',{kind:'in',skipZero:true,
       formula:'both streams, each counted only when taxable'});
     _trRow(g,'= gross taxable income',gross,'usd/yr',{kind:'total'});
+    if(taxExemptInt_ann>0)_trRow(g,'Tax-exempt interest (excluded)',taxExemptInt_ann,'usd/yr',{kind:'flag',
+      note:'Municipal-bond interest is not taxable income, so it is not in the figure above — but it DOES count toward your MAGI and toward the provisional income that decides how much of your Social Security is taxed.'});
     if(aWRoth_mo>0)_trRow(g,'Roth withdrawals (excluded)',aWRoth_mo*12,'usd/yr',{kind:'flag',
       note:'Roth money is not taxable income and does not count toward MAGI — the main lever for ACA and IRMAA.'});
     if(isAustralian&&aWSuper_mo>0)_trRow(g,'Super withdrawals (excluded)',aWSuper_mo*12,'usd/yr',{kind:'flag',
@@ -1357,7 +1367,16 @@ function calcPhase(p){
   const ftc_mo=ftc_a/12;
   const wEquity_ann=wEquity_mo*12;
   // MAGI for ACA: 401k + SS (full, both spouses) + UKP + part-time + taxable equity + Roth conversion + taxable rental (US only)
-  const magi=w_ann+uss_ann+spSS_ann+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann;
+  const magi=w_ann+uss_ann+spSS_ann+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann;
+  // v14: ONE MAGI cannot serve both ACA and IRMAA — the two definitions genuinely differ.
+  //   ACA MAGI   = AGI + tax-exempt interest + the UNTAXED part of Social Security (added back)
+  //   IRMAA MAGI = AGI + tax-exempt interest  ... and AGI holds only the TAXABLE share of SS
+  // Using the ACA figure for IRMAA overstated it by the untaxed remainder — up to the whole benefit
+  // in a low-income phase, and worst for the person whose income is mostly Social Security or SSDI.
+  // `sp` (the taxable share, from the provisional-income worksheet) is already computed above, so
+  // this is a second view of the same income, not new maths.
+  const ssUntaxed_ann=(uss_ann+spSS_ann)*(1-sp);
+  const irmaaMagi=Math.max(0,magi-ssUntaxed_ann);
   if(subjectUS&&!isCanadian&&!isAustralian&&!foreign&&!isUkRes){// TRACE: MAGI drives ACA and IRMAA
     const g=_trGroup(T,'magi','What goes into your MAGI',null,'magi');
     _trRow(g,'401k withdrawals',w_ann,'usd/yr',{kind:'in',skipZero:true});
@@ -1369,7 +1388,13 @@ function calcPhase(p){
     _trRow(g,'Roth conversion',convIncome_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'Rental income',rentalIncome_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'US pension / disability',usPensionTaxableInc_ann,'usd/yr',{kind:'in',skipZero:true});
-    _trRow(g,'= MAGI',magi,'usd/yr',{kind:'total'});
+    _trRow(g,'Tax-exempt interest',taxExemptInt_ann,'usd/yr',{kind:'in',skipZero:true,
+      note:'Municipal-bond interest is added back for BOTH the ACA and IRMAA, even though you pay no income tax on it.'});
+    _trRow(g,'= MAGI for the ACA',magi,'usd/yr',{kind:'total'});
+    _trRow(g,'− the untaxed part of your Social Security',ssUntaxed_ann,'usd/yr',{kind:'minus',skipZero:true,
+      base:uss_ann+spSS_ann,baseAs:'of',formula:'total Social Security × (1 − taxable share)',
+      note:'IRMAA reads your tax return, which contains only the taxable part of Social Security. The ACA adds the untaxed part back, so the two figures differ.'});
+    _trRow(g,'= MAGI for IRMAA',irmaaMagi,'usd/yr',{kind:'total',skipZero:true});
     _trRow(g,'Roth and cash withdrawals',0,'flagv',{kind:'flag',
       note:'Neither counts toward MAGI — this is the main lever for controlling ACA cost and IRMAA.'});
   }
@@ -1422,9 +1447,13 @@ function calcPhase(p){
       // `crosses` says whether it actually goes over. A near miss matters too: selling from a taxable
       // account only adds the GAIN, so it often lands just under the line, and without this the user
       // has no way to see their headroom shrink from comfortable to almost nothing.
+      // v14: an IRMAA threshold must be compared against the IRMAA MAGI, an ACA one against the
+      // ACA MAGI. The spike itself is taxable income, so it lands in both the same way.
       const thr=p.hasMedicare?adjIrmaaEff:adjFpl400;
-      if(magi<=thr)lumpTaxSpike={kind:p.hasMedicare?'irmaa':'aca',thresh:thr,magi,spike,
-        crosses:spike>thr,headroom:Math.max(0,thr-spike)};
+      const baseMagi=p.hasMedicare?irmaaMagi:magi;
+      const spikeM=baseMagi+(spike-magi);
+      if(baseMagi<=thr)lumpTaxSpike={kind:p.hasMedicare?'irmaa':'aca',thresh:thr,magi:baseMagi,spike:spikeM,
+        crosses:spikeM>thr,headroom:Math.max(0,thr-spikeM)};
     }
   }
   // Share the phase's lump tax across the events that caused it, in proportion to the taxable money
@@ -1499,11 +1528,17 @@ function calcPhase(p){
   if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
     const niitThr=Math.round((mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000))*inflMult);
     const netInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
-    niit_a=0.038*Math.min(netInv,Math.max(0,magi-niitThr));
+    // v14: NIIT MAGI is AGI-based, so tax-exempt interest does NOT belong in it. Without this,
+    // adding a muni-bond ladder to a plan would invent NIIT out of income that cannot be taxed.
+    // Collapses to `magi` whenever the field is 0, so no existing plan moves.
+    // (Strictly this should drop the untaxed part of Social Security too, exactly as irmaaMagi
+    //  does — deliberately left for its own change, since that one DOES move existing numbers.)
+    const niitMagi=magi-taxExemptInt_ann;
+    niit_a=0.038*Math.min(netInv,Math.max(0,niitMagi-niitThr));
     if(niit_a>0){const g=_trGroup(T,'niit','Net Investment Income Tax (NIIT)',null,'niit');
       _trRow(g,'Net investment income',netInv,'usd/yr',{kind:'in',formula:'taxable equity gains + taxable rental income'});
       _trRow(g,'NIIT threshold'+(mfj?' (MFJ)':''),niitThr,'usd/yr',{kind:'threshold',formula:'base × inflation multiplier'});
-      _trRow(g,'MAGI above the threshold',Math.max(0,magi-niitThr),'usd/yr',{});
+      _trRow(g,'MAGI above the threshold',Math.max(0,niitMagi-niitThr),'usd/yr',{});
       _trRow(g,'= NIIT at 3.8%',niit_a,'usd/yr',{kind:'total',formula:'3.8% × min(net investment income, MAGI − threshold)'});
     }
     tax_a+=niit_a; usTaxBeforeFTC+=niit_a; tax_mo=tax_a/12;
@@ -1571,7 +1606,7 @@ function calcPhase(p){
     if(acaVal===-1)_trRow(_gA,'= estimated full premium',health_mo,'usd/mo',{kind:'total',
       formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
   }
-  const irmaaOver=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&magi>adjIrmaaEff;
+  const irmaaOver=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&irmaaMagi>adjIrmaaEff;
   // RMD (US 401k only)
   const rmdStartAge=p.rmdStartAge||73;
   const phaseEndAge=p.phaseStartAge+(p.months/12);
@@ -1598,7 +1633,8 @@ function calcPhase(p){
     +sim.avgCPP+sim.avgOAS+sim.avgAP // v4: Canada/Australia government pensions
     +sim.avgUsPen+sim.avgUsPen2      // v9: US pension/disability streams (taxable or tax-free)
     +aWEquity_mo+aWRoth_mo+aWSuper_mo // v4: Super withdrawals (tax-free)
-    +partTime_mo+rental_mo;
+    +partTime_mo+rental_mo
+    +taxExemptInt_ann/12;             // v14: untaxed, but it is still money arriving
   const net_mo=total_mo-tax_mo-ukTax_mo-health_mo-stateTax_mo;
   const net_real=realNetCalc(net_mo,yrs,p.inflationRate);
   {// TRACE: what you SET vs what the accounts could actually supply. A configured draw larger than
@@ -1639,7 +1675,7 @@ function calcPhase(p){
     trace:_trFinish(T), // "under the hood" working — see _trNew for the shape and rules
     end:{b401k:sim.b401k,bcash:sim.bCash,bEquity:sim.bEquity,bRoth:sim.bRoth,bSuper:sim.bSuper,costBasis:sim.costBasis},
     ti,tax_a,usTaxBeforeFTC,tax_mo,ukTax_a,ukTax_mo,ftc_a,ftc_mo,cadTax_a,ausTax_a,niit_a,stateTax_a,stateTax_mo,isUkRes,isCanadian,isAustralian,
-    magi,aca:acaVal,health_mo,total_mo,net_mo,net_real,
+    magi,irmaaMagi,taxExemptInt:taxExemptInt_ann,aca:acaVal,health_mo,total_mo,net_mo,net_real,
     sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
     // the tax that funding it created and whether that spike would cross an ACA/IRMAA threshold.
@@ -1733,6 +1769,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       wEquity:pk.wEquity||0,wRoth:pk.wRoth||0,wSuper:pk.wSuper||0,
       rothConversionAnn:pk.rothConversion||0,
       rentalAnn:pk.rentalAnn||0,rentalTaxable:s.rentalTaxable!==false,
+      taxExemptInt:pk.taxExemptInt||0,   // v14: ||0 is load-bearing (shallow merge, see above)
       rEquity:s.rEquity||0,rRoth:s.rRoth||7,rSuper:s.rSuper||7,
       partTimeAnnual:pk.partTime||0,
       r401k:s.r401k,rCash:s.rCash,
@@ -1830,14 +1867,18 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
   // set irmaaOver from the same-phase MAGI; here we re-evaluate it against the MAGI two years earlier.
   (function(){
     if(!results.length)return;
+    // v14: IRMAA is priced off the IRMAA definition of MAGI (AGI + tax-exempt interest), which holds
+    // only the TAXABLE share of Social Security. `?? .magi` keeps this working against phase results
+    // captured before the split — notably the website demo's frozen data.
+    const _im=(r)=>(r.irmaaMagi!=null?r.irmaaMagi:r.magi);
     const magiAtAge=(age)=>{
       for(let i=0;i<results.length;i++){
-        if(age>=results[i].phaseStartAge && age<results[i].phaseEndAge) return results[i].magi;
+        if(age>=results[i].phaseStartAge && age<results[i].phaseEndAge) return _im(results[i]);
       }
       // Before the plan starts, approximate with the first phase's MAGI (pre-Medicare years are
       // usually inside the plan already, so this only matters if Medicare begins <2 yrs into the plan).
-      if(age<results[0].phaseStartAge) return results[0].magi;
-      return results[results.length-1].magi;
+      if(age<results[0].phaseStartAge) return _im(results[0]);
+      return _im(results[results.length-1]);
     };
     results.forEach(r=>{
       r.irmaaSurch_mo=0;
@@ -1852,7 +1893,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // `net` group has to be patched in step or the trace would contradict the phase card.
       const _gM=traceGroup(r,'medicare');
       if(_gM){
-        _trRow(_gM,'MAGI from two years earlier',lookbackMagi,'usd/yr',{kind:'in',
+        _trRow(_gM,'IRMAA MAGI from two years earlier',lookbackMagi,'usd/yr',{kind:'in',
           formula:'Medicare uses your income from 2 years before, not this year’s'});
         _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold'});
       }
