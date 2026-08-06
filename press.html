@@ -46,6 +46,27 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<style>
+  /* Fact sheet. It borrows .cmp-table for the frame and type, but a comparison matrix centres its
+     cells for ticks and crosses — this is a key/value list, so it reads left-aligned with the rows
+     given room to breathe. Page-scoped on purpose: .cmp-table is shared with the comparison pages
+     and they should not inherit any of this. */
+  .factsheet th,.factsheet td{ text-align:left; vertical-align:top; padding:.95rem 1.15rem; line-height:1.65; }
+  .factsheet th{ width:28%; color:var(--ink); font-weight:600; background:var(--paper-2);
+    border-right:1px solid var(--line-soft); }
+  .factsheet td{ color:var(--ink-soft); }
+  .factsheet tr:last-child th,.factsheet tr:last-child td{ border-bottom:0; }
+  /* ⚠ .cmp-matrix-wrap is display:none below 820px — the comparison pages swap to a stacked
+     card view (#cmp-stack) at that width. This table has no stacked alternative, so without
+     this override the whole fact sheet simply disappears on a phone. */
+  @media (max-width:820px){ .factsheet-wrap{ display:block; } }
+  @media (max-width:640px){
+    /* Side by side stops working once the label column is squeezed — stack instead. */
+    .factsheet th,.factsheet td{ display:block; width:auto; border-right:0; }
+    .factsheet th{ padding-bottom:.2rem; border-bottom:0; }
+    .factsheet td{ padding-top:0; }
+  }
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -132,8 +153,8 @@
   <section class="section">
     <div class="container">
       <h2>Fact sheet</h2>
-      <div class="cmp-matrix-wrap">
-        <table class="cmp-matrix">
+      <div class="cmp-matrix-wrap factsheet-wrap">
+        <table class="cmp-table factsheet">
           <tbody>
             <tr><th scope="row">Product</th><td>AI Retirement Income Planner (version 7)</td></tr>
             <tr><th scope="row">What it is</th><td>A single self-contained HTML file that runs in any modern browser</td></tr>
