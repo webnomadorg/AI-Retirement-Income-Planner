@@ -91,12 +91,28 @@ function _trFinish(T){
   T.groups.sort((a,b)=>ix(a.id)-ix(b.id));
   return T;
 }
-/** Find a group on a phase result's trace. Returns null when absent (regime didn't emit it). */
+/** Find a group on a phase result's trace. Returns null when absent (regime didn't emit it).
+ *  v14: a missing group fails SILENTLY everywhere it is used — a popover renders its intro and no
+ *  working, and `if(g)`-guarded _trRow calls just evaporate. That is exactly how the part-year
+ *  Medicare phase went years showing an empty calculation popover while still charging the cost.
+ *  Under ?selftest=1 we shout about it, so the next branch that changes a group id gets caught. */
 function traceGroup(p,id){
   const T=p&&p.trace;if(!T||!T.groups)return null;
   for(let i=0;i<T.groups.length;i++)if(T.groups[i].id===id)return T.groups[i];
+  try{if(typeof location!=='undefined'&&/[?&]selftest=1/.test(location.search))
+    console.warn('[trace] group "'+id+'" missing on phase "'+((p&&p.label)||'?')+'" — a popover or trace row will be silently empty.');
+  }catch(e){}
   return null;
 }
+
+/** v14: share of a phase spent on Medicare, 0..1. A missing medicareFrac derives from hasMedicare,
+ *  so any caller predating that field behaves exactly as before. */
+function medFracOf(p){return (p&&p.medicareFrac!=null)?p.medicareFrac:((p&&p.hasMedicare)?1:0);}
+/** True when the phase buys ACA cover for at least part of itself. This is the correct test for
+ *  "does ACA apply here" — `!hasMedicare` is NOT, because hasMedicare goes true the moment Medicare
+ *  starts anywhere in the phase, hiding ACA information from a phase that is mostly still on ACA.
+ *  Only reachable via an early-Medicare age (SSDI), which is why it went unnoticed for so long. */
+function phaseHasAcaMonths(p){return medFracOf(p)<1;}
 
 // ── STATE OBJECT `S` — schema (these are the defaults; `S` is built from this) ───────
 // S is the single source of truth for a plan. autoLoad merges a saved plan OVER D_USD, so
@@ -490,6 +506,14 @@ function setSsdiMode(on){
     S.medicareStartAge=null; // the override only exists to serve SSDI; don't strand it
   }
   syncSsdiUI();populateInputsFromUSD();updateEditLabels();updatePhaseCardVisibility();liveCalc();
+}
+/** v14: Medicare does NOT always start at 65 — SSDI brings it forward, usually 24 months after
+ *  entitlement. Several labels hardcoded "starts age 65" and were rewritten on every render by
+ *  updateEditLabels, so an SSDI user was told 65 while the engine charged from 57. One helper so
+ *  the answer is in a single place. */
+function medicareStartLabel(){
+  const a=S.medicareStartAge;
+  return (S.ssdiMode&&a!=null&&a!=='')?`starts age ${a}`:'starts age 65';
 }
 // Reflect ssdiMode into the surrounding labels/rows (called on load and on toggle).
 function syncSsdiUI(){
@@ -1515,17 +1539,30 @@ function calcPhase(p){
   // SSDI). Price both regimes and weight them by the share of the phase each covers, rather than
   // forcing the whole phase onto one — which would either invent ACA subsidies the user has lost or
   // charge Medicare premiums years before they begin.
+  // v14: emit TWO groups, not one. This phase genuinely has both regimes in it, and each group
+  // carries its own methodology link and glossary key (a group can only hold one of each), so the
+  // ACA working keeps tg-aca/acaSubsidy while the Medicare side keeps tg-irmaa/medicare. It also
+  // fixes a real defect: the card wires this phase to the 'medicarecalc' popover (hasMedicare is
+  // true whenever medFrac>0), which reads the 'medicare' group — when the blend emitted only 'aca',
+  // that popover rendered its intro and no working at all, and every trace row the IRMAA lookback
+  // pass appends was silently dropped while the surcharge was still charged. TRACE_ORDER already
+  // places 'aca' before 'medicare', so no ordering change is needed.
   else if(medFrac>0){
-    const _gA=_trGroup(T,'aca','How your healthcare cost is estimated','tg-aca','acaSubsidy');
+    const _gA=_trGroup(T,'aca','How your ACA premium is estimated (the pre-Medicare months)','tg-aca','acaSubsidy');
     acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);
     const acaCost=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
+    if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
+      formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
     const medCost=adjMedicare+adjMedicareD;
     health_mo=medFrac*medCost+(1-medFrac)*acaCost;
-    _trRow(_gA,'ACA premium for the pre-Medicare part',acaCost,'usd/mo',{kind:'in'});
-    _trRow(_gA,'Medicare premium once it starts',medCost,'usd/mo',{kind:'in'});
-    _trRow(_gA,'Share of this phase on Medicare',medFrac,'mult',{kind:'rate',
+    const _gM=_trGroup(T,'medicare','How your Medicare cost is estimated','tg-irmaa','medicare');
+    _trRow(_gM,'Part B premium',adjMedicare,'usd/mo',{kind:'in',base:p.medicare,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
+    _trRow(_gM,'Part D premium',adjMedicareD,'usd/mo',{kind:'in',skipZero:true,base:p.medicareD,baseAs:'from',formula:'base premium × healthcare inflation multiplier'});
+    _trRow(_gM,'= Medicare cost once it starts',medCost,'usd/mo',{kind:'total'});
+    _trRow(_gM,'ACA premium for the pre-Medicare months',acaCost,'usd/mo',{kind:'in'});
+    _trRow(_gM,'Share of this phase on Medicare',medFrac,'mult',{kind:'rate',
       formula:'months from your Medicare age to the end of the phase ÷ months in the phase'});
-    _trRow(_gA,'= blended healthcare cost',health_mo,'usd/mo',{kind:'total',
+    _trRow(_gM,'= blended healthcare cost',health_mo,'usd/mo',{kind:'total',
       note:'Medicare begins part-way through this phase, so the cost is the two regimes weighted by how long each applies.'});
   }
   else{
@@ -1822,13 +1859,19 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // v10: the Tier-1 surcharge is a real cost, not just a flag — add it to the phase's
       // healthcare cost and take it out of net income (irmaaSurcharge=0 restores flag-only).
       if(r.irmaaOver&&(r.adjIrmaaSurch||0)>0){
-        r.irmaaSurch_mo=r.adjIrmaaSurch;
+        // v14: IRMAA is only payable in the months you are actually enrolled. On a phase Medicare
+        // starts part-way through (SSDI only), charging the full surcharge overstated the cost for
+        // the pre-Medicare months — the base premiums were already weighted this way in calcPhase.
+        const _mu=(r.medicareFrac!=null?r.medicareFrac:1);
+        r.irmaaSurch_mo=r.adjIrmaaSurch*_mu;
         r.health_mo+=r.irmaaSurch_mo;
         r.net_mo-=r.irmaaSurch_mo;
         r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
         if(_gM){
           _trRow(_gM,'+ IRMAA Tier-1 surcharge',r.irmaaSurch_mo,'usd/mo',{kind:'flag',
-            note:'Applied because the lookback MAGI above crossed the threshold. Set the surcharge amount on the Edit values tab.'});
+            note:_mu<1
+              ?'Applied because the lookback MAGI above crossed the threshold — charged only for the months of this phase you are on Medicare.'
+              :'Applied because the lookback MAGI above crossed the threshold. Set the surcharge amount on the Edit values tab.'});
           _trRow(_gM,'= total healthcare',r.health_mo,'usd/mo',{kind:'total'});
         }
         const _gN=traceGroup(r,'net'),_rH=_trFindRow(_gN,'health'),_rNet=_trFindRow(_gN,'net'),_rRe=_trFindRow(_gN,'netreal');
@@ -1854,15 +1897,18 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       if(lbMagi==null)return;
       const gap=thresh-lbMagi;
       if(gap<=0||gap>=thresh*0.20)return;   // over threshold (handled by irmaaOver) or not close enough
-      // Find the pre-Medicare source phase whose MAGI was used as the lookback
+      // Find the source phase whose MAGI was used as the lookback. v14: this used to require
+      // !hasMedicare, which silently dropped the warning whenever the lookback landed on a phase
+      // Medicare starts part-way through (SSDI) — those phases are mostly pre-Medicare and are a
+      // perfectly legitimate place to warn. Excluding only the Medicare phase itself is enough.
       const lbAge=med.phaseStartAge-2;
       let src=null;
       if(lbAge<results[0].phaseStartAge){
         src=results[0];   // before plan start → first phase (mirrors magiAtAge fallback)
       } else {
-        src=results.find(r=>!r.hasMedicare&&lbAge>=r.phaseStartAge&&lbAge<r.phaseEndAge);
+        src=results.find(r=>lbAge>=r.phaseStartAge&&lbAge<r.phaseEndAge);
       }
-      if(!src||src.hasMedicare||src.irmaaProximity)return;   // first Medicare phase wins
+      if(!src||src===med||src.irmaaProximity)return;   // first Medicare phase wins
       src.irmaaProximity={
         medicareLabel:med.label,
         medicareStartAge:med.phaseStartAge,
@@ -1885,7 +1931,11 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
   (function(){
     results.forEach(r=>{r.cliffProximity=null;});
     results.forEach(r=>{
-      const acaApplies=!r.foreign&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian&&r.subjectUS!==false&&!r.hasMedicare;
+      // v14: gate on medicareFrac<1, not !hasMedicare — a phase Medicare starts part-way through
+      // (SSDI) is still buying ACA cover for its earlier months, and the cliffs still apply to them.
+      // This matches acaSubsidyEligible/acaCsrEligible in calcPhase, which already used medFrac<1.
+      const _mf=(r.medicareFrac!=null?r.medicareFrac:(r.hasMedicare?1:0));
+      const acaApplies=!r.foreign&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian&&r.subjectUS!==false&&_mf<1;
       if(!acaApplies)return;
       const magi=r.magi||0,f100=r.fpl100||0,f250=r.fpl250||0,f400=r.fpl400||0;
       if(f100<=0||magi<=f100)return;            // below the 100% floor → handled by subsidy-eligibility rendering
