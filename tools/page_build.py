@@ -57,6 +57,7 @@ PAGES = {
     "cross-border-retirement-data-study.html": "",
     "cross-border-methodology.html": "",
     "about.html": "",
+    "press.html": "",
     "thanks.html": "",
     "thank-you.html": "",
     "404.html": "",
