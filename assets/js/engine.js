@@ -203,6 +203,12 @@ const D_USD={
   //         Set ⇒ a phase has Medicare when it STARTS at or after this age, which also switches off
   //         ACA subsidies and switches on IRMAA for those phases. ──
   ssdiMode:false, medicareStartAge:null,
+  // ── v14: substantial gainful activity. Earning above this while on SSDI can eventually END the
+  //         cash benefit (after the 9-month trial work period and the 36-month extended eligibility
+  //         period). The planner WARNS ONLY — it does not model cessation, because it has no
+  //         month-level earnings model and this is benefits administration, not income projection.
+  //         2026 figures; refreshable via Fetch current rates like every other annual number. ──
+  ssdiBlind:false, sgaLimitMo:1690, sgaLimitBlindMo:2830,
   // ── v2: filing status + spouse SS ──
   filingStatus:'single', // 'single' | 'mfj'
   spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,
@@ -242,6 +248,18 @@ const D_USD={
   //         hatch and old plans rely on it, so it keeps working. Any non-zero value simply means
   //         "cost it", and the ladder decides how much. ──
   irmaaSurcharge:88,
+  // ── v14: how IRMAA decides which year's income to use.
+  //   'lookback' — the rule as written: income from two years earlier. Default, and correct for
+  //                almost everyone.
+  //   'current'  — assume SSA granted relief after a life-changing event (form SSA-44) and used
+  //                this phase's own income instead. Retirement, stopping work, disability, divorce
+  //                and the death of a spouse all qualify. This matters most on SSDI, where the
+  //                return SSA would otherwise read reflects pre-disability earnings.
+  //   'manual'   — the user types the total Part B + D premium from their SSA notice; the ladder
+  //                is bypassed entirely. Stored per person, since the notice is per person.
+  // 'current' is an ASSUMPTION, not a guarantee — SSA decides case by case and re-determines every
+  // year. The UI copy has to say so. ──
+  irmaaRelief:'lookback', irmaaManualPremium:0,
   // ── v8: Net Investment Income Tax (3.8% surtax on investment income above the MAGI threshold) ──
   niitThreshold:200000, niitThresholdMfj:250000,
   // ── v8: US state income tax — flat-rate approximation (like the Canadian provincial proxy).
@@ -567,6 +585,26 @@ function setSsdiMode(on){
 /** v14: the IRMAA bracket table in the Edit tab. Rendered rather than hand-written markup because
  *  the ladder is data (and refreshable via Fetch current rates), and the thresholds shown must follow
  *  the filing status. Amounts are per person, in the display currency like every other money field. */
+/** v14: SSA-44 relief mode. Three buttons, one visible consequence each — and the amber warning
+ *  only appears on the two modes that are assumptions, never on the plain rule. */
+function setIrmaaRelief(mode){
+  S.irmaaRelief=(mode==='current'||mode==='manual')?mode:'lookback';
+  syncIrmaaReliefUI();
+  liveCalc();
+}
+function syncIrmaaReliefUI(){
+  const m=S.irmaaRelief||'lookback';
+  ['lookback','current','manual'].forEach(k=>{
+    const b=document.getElementById('irmaa-relief-'+k);
+    if(b)b.classList.toggle('active',k===m);
+  });
+  const row=document.getElementById('row-irmaa-manual');
+  if(row)row.style.display=(m==='manual')?'':'none';
+  const warn=document.getElementById('irmaa-relief-warn');
+  if(warn)warn.style.display=(m==='lookback')?'none':'';
+  const inp=document.getElementById('e-irmaaManualPremium');
+  if(inp&&document.activeElement!==inp)inp.value=S.irmaaManualPremium||'';
+}
 function renderIrmaaTierGrid(){
   const host=document.getElementById('irmaa-tier-grid'); if(!host)return;
   const tiers=Array.isArray(S.irmaaTiers)&&S.irmaaTiers.length?S.irmaaTiers:(D_USD.irmaaTiers||[]);
@@ -597,6 +635,8 @@ function medicareStartLabel(){
 function syncSsdiUI(){
   const cb=document.getElementById('e-ssdiMode');if(cb)cb.checked=!!S.ssdiMode;
   const row=document.getElementById('row-medicare-start');if(row)row.style.display=S.ssdiMode?'':'none';
+  const rb=document.getElementById('row-ssdi-blind');if(rb)rb.style.display=S.ssdiMode?'':'none';
+  const cbB=document.getElementById('e-ssdiBlind');if(cbB)cbB.checked=!!S.ssdiBlind;
   const lbl=document.getElementById('lbl-ssStartAge');
   if(lbl)lbl.innerHTML=S.ssdiMode
     ?'Age SSDI started <span style="font-size:11px;color:var(--text-tertiary);">(no 62 minimum — SSDI pays the full FRA amount)</span>'
@@ -1606,12 +1646,11 @@ function calcPhase(p){
   if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
     const niitThr=Math.round((mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000))*inflMult);
     const netInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
-    // v14: NIIT MAGI is AGI-based, so tax-exempt interest does NOT belong in it. Without this,
-    // adding a muni-bond ladder to a plan would invent NIIT out of income that cannot be taxed.
-    // Collapses to `magi` whenever the field is 0, so no existing plan moves.
-    // (Strictly this should drop the untaxed part of Social Security too, exactly as irmaaMagi
-    //  does — deliberately left for its own change, since that one DOES move existing numbers.)
-    const niitMagi=magi-taxExemptInt_ann;
+    // v14: NIIT has its own MAGI too, and it is AGI-based — so it excludes BOTH the untaxed part
+    // of Social Security (AGI never contained it) and tax-exempt interest (NIIT does not add it
+    // back the way IRMAA explicitly does). Using the ACA figure overstated the income NIIT sees and
+    // therefore the surtax itself. Equivalently: irmaaMagi minus the tax-exempt interest.
+    const niitMagi=Math.max(0,magi-ssUntaxed_ann-taxExemptInt_ann);
     niit_a=0.038*Math.min(netInv,Math.max(0,niitMagi-niitThr));
     if(niit_a>0){const g=_trGroup(T,'niit','Net Investment Income Tax (NIIT)',null,'niit');
       _trRow(g,'Net investment income',netInv,'usd/yr',{kind:'in',formula:'taxable equity gains + taxable rental income'});
@@ -1636,6 +1675,9 @@ function calcPhase(p){
   // v10: IRMAA Tier-1 surcharge (Part B+D), inflated like the base premiums. Applied to
   // health_mo AFTER the 2-year-lookback pass in calcAllPhases finalises irmaaOver — not here.
   const adjIrmaaSurch=Math.round((p.irmaaSurcharge!=null?p.irmaaSurcharge:88)*hcInflMult*100)/100;
+  // v14: the SSA-notice premium, grown like every other healthcare figure. Computed here because
+  // hcInflMult is local to calcPhase and the lookback pass cannot see it.
+  const adjIrmaaManual=Math.round((p.irmaaManualPremium||0)*hcInflMult*100)/100;
   // v14: the inflated IRMAA ladder for this phase. Thresholds grow with general inflation, amounts
   // with healthcare inflation — matching how the plain threshold and the base premiums already
   // behave. EXCEPT the top bracket, which is frozen in statute: leaving it uninflated is the honest
@@ -1784,7 +1826,7 @@ function calcPhase(p){
     // tax figure by design; tax is a phase-level quantity (see simPhase's yearRows comment).
     yearRows:sim.yearRows||[],
     rothConvAnn,taxableEquity_ann,partTime_mo,partTimeAnnual:p.partTimeAnnual||0,
-    acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjIrmaaTiers,adjStatePensionCap,foreign,mfj,subjectUS,
+    acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjIrmaaTiers,adjIrmaaManual,irmaaRelief:(p.irmaaRelief||'lookback'),adjStatePensionCap,foreign,mfj,subjectUS,
     rmdEst,rmdShortfall,rentalAnn,rental_mo,
     usPension_mo:sim.avgUsPen,usPension_ann,usPensionTaxable, // v9: US pension/disability
     usPension2_mo:sim.avgUsPen2,usPension2_ann,usPension2Taxable, // v9: second US pension/disability
@@ -1905,6 +1947,8 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       stdDed:s.stdDed,seniorDed:s.seniorDed,brk10:s.brk10,brk12:s.brk12,brk22:s.brk22,irmaa:s.irmaa,
       irmaaSurcharge:(s.irmaaSurcharge!=null?s.irmaaSurcharge:88), // v10: 0 = flag-only
       irmaaTiers:(Array.isArray(s.irmaaTiers)&&s.irmaaTiers.length?s.irmaaTiers:null),  // v14: full ladder
+      irmaaRelief:s.irmaaRelief||'lookback',
+      irmaaManualPremium:s.irmaaManualPremium||0,
       irmaaPartBStd:s.irmaaPartBStd||202.90,
       mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:s.mfjSeniorDed||3200,
       mfjBrk10:s.mfjBrk10||24800,mfjBrk12:s.mfjBrk12||98000,mfjBrk22:s.mfjBrk22||208000,mfjIrmaa:s.mfjIrmaa||218000,
@@ -1981,16 +2025,29 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       if(r.foreign||r.isUkRes||r.isCanadian||r.isAustralian||r.subjectUS===false){r.lookbackMagi=null;return;}
       // IRMAA only applies once on Medicare (65+); clear any pre-Medicare flag from calcPhase.
       if(!r.hasMedicare){r.irmaaOver=false;r.lookbackMagi=null;return;}
-      const lookbackMagi=magiAtAge(r.phaseStartAge-2);
-      r.lookbackMagi=lookbackMagi;
+      // v14: SSA-44. The rule reads your return from two years back, but SSA will use CURRENT
+      // income after a recognised life-changing event — stopping work, retirement, disability,
+      // divorce, the death of a spouse. That matters most on SSDI, where the two-year-old return
+      // reflects pre-disability earnings. 'current' models relief being granted; it is an
+      // assumption, not a guarantee, and the UI says so.
+      const _relief=s.irmaaRelief||'lookback';
+      const lookbackMagi=(_relief==='current')
+        ? (r.irmaaMagi!=null?r.irmaaMagi:r.magi)
+        : magiAtAge(r.phaseStartAge-2);
+      r.lookbackMagi=lookbackMagi; r.irmaaReliefMode=_relief;
       r.irmaaOver=lookbackMagi>(r.adjIrmaa||1e9);
       // TRACE: the lookback is resolved here, not in calcPhase, so these rows are appended rather
       // than emitted inline. The surcharge below mutates health_mo/net_mo, so the already-built
       // `net` group has to be patched in step or the trace would contradict the phase card.
       const _gM=traceGroup(r,'medicare');
       if(_gM){
-        _trRow(_gM,'IRMAA MAGI from two years earlier',lookbackMagi,'usd/yr',{kind:'in',
-          formula:'Medicare uses your income from 2 years before, not this year’s'});
+        _trRow(_gM,_relief==='current'?'IRMAA MAGI — this phase’s own income':'IRMAA MAGI from two years earlier',
+          lookbackMagi,'usd/yr',{kind:'in',
+          formula:_relief==='current'
+            ?'assumes SSA accepted an SSA-44 life-changing-event request and used current income'
+            :'Medicare uses your income from 2 years before, not this year’s',
+          note:_relief==='current'
+            ?'This is an assumption, not a guarantee — SSA decides case by case and reviews it every year.':undefined});
         _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold'});
       }
       // v14: which BRACKET the lookback lands in. IRMAA has six, and the top adds several hundred
@@ -2008,6 +2065,34 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // without costing), which was documented behaviour that old plans deliberately rely on.
       const _costed=(r.adjIrmaaSurch||0)>0;
       const _ladder=r.adjIrmaaTiers?(_tierB+_tierD):(r.adjIrmaaSurch||0);
+      // The `net` group was built in calcPhase before any of this ran, so anything that moves
+      // health_mo/net_mo has to patch it in step or the trace contradicts the card. Both the ladder
+      // path and the manual path below mutate them, hence one helper rather than two copies.
+      const _patchNet=()=>{
+        const _gN=traceGroup(r,'net'),_rH=_trFindRow(_gN,'health'),_rNet=_trFindRow(_gN,'net'),_rRe=_trFindRow(_gN,'netreal');
+        if(_rH)_rH.value=r.health_mo;
+        if(_rNet)_rNet.value=r.net_mo;
+        if(_rRe)_rRe.value=r.net_real;
+      };
+      // v14 SSA-44 'manual': the user typed the premium from their SSA notice, so it REPLACES the
+      // whole Medicare figure rather than adding to it — no ladder, no threshold test. Charged per
+      // enrolled person, since the notice is per person.
+      if(_relief==='manual'&&(r.adjIrmaaManual||0)>0){
+        const _mu=(r.medicareUnits!=null?r.medicareUnits:(r.medicareFrac!=null?r.medicareFrac:1));
+        const _was=(r.adjMedicare||0)+(r.adjMedicareD||0);
+        const _delta=(r.adjIrmaaManual-_was)*_mu;
+        r.health_mo+=_delta; r.net_mo-=_delta;
+        r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
+        r.irmaaSurch_mo=Math.max(0,_delta); r.irmaaOver=null; r.irmaaTier=null;
+        if(_gM){
+          _trRow(_gM,'Premium from your SSA notice',r.adjIrmaaManual,'usd/mo',{kind:'in',
+            base:s.irmaaManualPremium||0,baseAs:'from',formula:'the figure you entered x healthcare inflation to this phase',
+            note:'You told us the answer, so the bracket table above is not used. This one figure is applied to every Medicare phase, which is a simplification — SSA re-determines it each year.'});
+          _trRow(_gM,'= total healthcare',r.health_mo,'usd/mo',{kind:'total'});
+        }
+        _patchNet();
+        return;
+      }
       if(r.irmaaOver&&_costed&&_ladder>0){
         // v14: IRMAA is only payable in the months you are actually enrolled. On a phase Medicare
         // starts part-way through (SSDI only), charging the full surcharge overstated the cost for
@@ -2038,10 +2123,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
               :'Applied because the lookback MAGI above crossed the threshold.'});
           _trRow(_gM,'= total healthcare',r.health_mo,'usd/mo',{kind:'total'});
         }
-        const _gN=traceGroup(r,'net'),_rH=_trFindRow(_gN,'health'),_rNet=_trFindRow(_gN,'net'),_rRe=_trFindRow(_gN,'netreal');
-        if(_rH)_rH.value=r.health_mo;
-        if(_rNet)_rNet.value=r.net_mo;
-        if(_rRe)_rRe.value=r.net_real;
+        _patchNet();
       }else if(_gM&&r.hasMedicare){
         _trRow(_gM,'No IRMAA surcharge',0,'flagv',{kind:'flag',
           note:'Your lookback MAGI stayed below the threshold, so you pay the standard premium.'});
