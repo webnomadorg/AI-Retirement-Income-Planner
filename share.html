@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your download is on its way | WebNomad Studio</title>
-<meta name="robots" content="noindex,nofollow">
+<title>Share Your Experience — AI Retirement Income Planner | WebNomad Studio</title>
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
      Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
      the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
@@ -36,8 +35,15 @@
   fbq('track', 'PageView');
 </script>
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Your free download is on its way — check your inbox.">
+<meta name="description" content="Bought the planner? Tell us what it showed you and what it got wrong. Nothing is published unless you approve the exact wording first — and nothing is offered in exchange.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/share.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Share Your Experience — WebNomad Studio">
+<meta property="og:description" content="Tell us what the planner showed you and what it got wrong.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
+<meta property="og:url" content="https://airetirementincomeplanner.com/share.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
 </head>
@@ -84,48 +90,149 @@
 
 <main id="main">
 
-  <section class="section">
-    <div class="container narrow">
-
-      <div class="card" style="text-align:center;border:1.5px solid var(--teal);">
-        <div class="success-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <h1 style="margin-bottom:.4rem;">Check your inbox</h1>
-        <p class="muted" style="max-width:46ch;margin-inline:auto;">
-          <span id="ty-what">Your free download</span> is on its way. It usually arrives within a
-          couple of minutes.
-        </p>
-        <p class="muted" style="font-size:.92rem;max-width:48ch;margin-inline:auto;">
-          Nothing after five minutes? Check your spam or promotions folder — and if it still
-          hasn't landed, email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we'll
-          send it straight over.
-        </p>
-      </div>
-
+  <section class="section-tight band-ink on-ink">
+    <div class="container">
+      <h1>How are you getting on?</h1>
+      <p class="lede" style="max-width:60ch;">If you've had a few weeks with your own numbers in the planner, we'd genuinely
+      like to hear what it showed you — and just as much, what it got wrong. A real person reads every one.</p>
     </div>
   </section>
 
-  <section class="section band">
-    <div class="container narrow">
-      <h2>While you're waiting — try the planner itself</h2>
-      <p>
-        The download explains the thinking. The planner is where you actually run it: your own
-        numbers, phase by phase, with the tax, healthcare and withdrawal maths worked out for
-        every year rather than averaged into a single rule of thumb.
-      </p>
-      <p>
-        You don't have to decide anything now. The interactive demo runs a full worked plan in
-        your browser — no signup, nothing to install.
-      </p>
-      <p style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.4rem;">
-        <a class="btn btn-primary btn-lg" href="/demo.html">Open the free demo</a>
-        <a class="btn btn-lg" href="/products.html">See what it costs</a>
-      </p>
-      <p class="muted" style="font-size:.92rem;margin-top:1.2rem;">
-        Educational only — not financial, tax or legal advice. Every projection is an estimate
-        based on the assumptions you enter.
-      </p>
+  <section class="section">
+    <div class="container">
+      <div class="contact-layout">
+
+        <!-- Form -->
+        <div>
+          <div id="share-notice" class="form-notice" role="alert"></div>
+
+          <form id="shareForm" novalidate>
+            <!-- Honeypot — hidden from real users, filled by bots -->
+            <div class="sr-only" aria-hidden="true">
+              <label for="sf_honey">Leave this blank</label>
+              <input type="text" id="sf_honey" name="_honey" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="sf-name">Your name <span aria-hidden="true" style="color:var(--danger)">*</span></label>
+              <input type="text" id="sf-name" name="name" autocomplete="name" required placeholder="Jane Smith">
+            </div>
+
+            <div class="form-group">
+              <label for="sf-email">The email you bought with <span aria-hidden="true" style="color:var(--danger)">*</span></label>
+              <input type="email" id="sf-email" name="email" autocomplete="email" required placeholder="jane@example.com">
+              <p class="field-help">Used only to check your purchase against our records and to reply to you.
+              It is never published, and never shared with anyone.</p>
+            </div>
+
+            <h2 class="form-heading">Three questions</h2>
+            <p class="field-help" style="margin:-.4rem 0 1.2rem;">Answer whichever you like — one is plenty.</p>
+
+            <div class="form-group">
+              <label for="sf-a1">What were you trying to work out when you bought it?</label>
+              <textarea id="sf-a1" name="a1" placeholder="e.g. whether we could afford to stop work at 62, before Medicare…"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="sf-a2">What did it show you that you didn't already know?</label>
+              <textarea id="sf-a2" name="a2" placeholder="e.g. what the tax actually did in the years before Social Security started…"></textarea>
+              <p class="field-help">Most useful to us — and to other readers — is what you came to <em>understand</em>.
+              Please avoid specific money claims like &ldquo;it saved me $40,000&rdquo;: we have no way to verify
+              those, so we can't publish them.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="sf-a3">What frustrated you, or what would you change?</label>
+              <textarea id="sf-a3" name="a3" placeholder="Be blunt — this is the part that makes the planner better."></textarea>
+            </div>
+
+            <!-- Consent. Unchecked by default, and it only ever grants permission to ASK:
+                 the exact wording is approved separately (see api/feedback-approve.mjs). -->
+            <fieldset class="consent-box">
+              <legend class="form-heading">May we quote you?</legend>
+              <p class="field-help" style="margin-top:0;">Entirely optional. Your feedback is just as welcome without this.</p>
+
+              <label class="consent-check">
+                <input type="checkbox" id="sf-quote" name="quote_ok">
+                <span>Yes — you may quote me on the website.</span>
+              </label>
+
+              <div class="consent-detail" id="sf-consent-detail" hidden>
+                <div class="form-group">
+                  <label for="sf-display">Name to show</label>
+                  <input type="text" id="sf-display" name="display_name" placeholder="Dave R.">
+                </div>
+
+                <div class="form-group">
+                  <label for="sf-region">Roughly where you are (optional)</label>
+                  <input type="text" id="sf-region" name="region" placeholder="Colorado — or Kent, UK">
+                </div>
+
+                <div class="form-group">
+                  <span class="radio-legend">How would you like to be credited?</span>
+                  <label class="consent-check"><input type="radio" name="attribution_style" value="full_name"><span>My full name</span></label>
+                  <label class="consent-check"><input type="radio" name="attribution_style" value="first_initial" checked><span>First name and last initial — <em>Dave R.</em></span></label>
+                  <label class="consent-check"><input type="radio" name="attribution_style" value="first_name"><span>First name only — <em>Dave</em></span></label>
+                  <label class="consent-check"><input type="radio" name="attribution_style" value="initials"><span>Initials only — <em>D.R.</em></span></label>
+                  <label class="consent-check"><input type="radio" name="attribution_style" value="region_only"><span>No name — just where I live</span></label>
+                </div>
+
+                <label class="consent-check">
+                  <input type="checkbox" id="sf-social" name="social_ok">
+                  <span>You may also use it in social media posts. <em class="muted">(Separate permission — leave unticked for website only.)</em></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <input type="hidden" name="consent_version" value="share-consent-2026-08">
+            <input type="hidden" name="app_build" id="sf-build" value="">
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Send my feedback</button>
+            <p class="muted mt-2" style="font-size:.88rem;text-align:center;">Fields marked <span aria-hidden="true" style="color:var(--danger)">*</span> are required.</p>
+          </form>
+
+          <div id="share-success" class="form-success" role="status" aria-live="polite">
+            <div class="success-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h2 style="font-size:var(--fs-h3);margin-bottom:.5rem;">Thank you — that's genuinely useful</h2>
+            <p class="muted" style="max-width:46ch;margin-inline:auto;">We've sent you a confirmation. If you said we may quote you,
+            we'll email you the exact wording before anything appears — and it only goes up if you approve it.</p>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="contact-info">
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3>Nothing appears without your say-so</h3>
+            <p>Ticking the box above lets us <em>ask</em> — it doesn't publish anything. If we'd like to use
+            something you wrote, we email you the exact sentence and the name it would carry. It appears only
+            if you click Approve. Ignore the email and nothing happens.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="icon-chip gold" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+            <h3>We shorten, we never rewrite</h3>
+            <p>Three paragraphs might become one sentence — by cutting, never by putting words in your mouth.
+            You see the result before it goes anywhere, and what you originally wrote is kept alongside it.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="icon-chip sky" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <h3>Nothing is offered in exchange</h3>
+            <p>No discount, no refund, no free upgrade, no affiliate deal — not for feedback, and not for a
+            good review. That's deliberate: a paid-for opinion isn't worth reading.</p>
+          </div>
+
+          <div class="callout" style="font-size:.92rem;display:flex;align-items:flex-start;gap:.6rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="flex-shrink:0;margin-top:.15rem;color:var(--teal)" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Change your mind later? Email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we'll
+            take it down — including something already published.</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -206,65 +313,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js" defer></script>
-<script>
-/* Lead conversion.
-
-   This page exists so there IS a URL to fire this on. The signup form hands over the magnet
-   key and the event id it already sent to /api/newsletter, which fired the same Lead through
-   the Conversions API server-side. Matching event ids let Meta collapse the pair into one
-   conversion instead of counting it twice.
-
-   Consent mode still gates the browser half: a visitor who declined the cookie banner sends
-   nothing from here, and the server-side copy is what keeps the signup measurable.
-
-   ⚠ Timing matters, and gets this wrong silently. consent.js is deferred, so it re-grants
-   consent AFTER any inline script in the body has already run. Firing Lead synchronously
-   therefore queues it while consent is still revoked — and Meta drops it, including for
-   visitors who accepted the banner. Waiting for DOMContentLoaded (which fires only once every
-   deferred script has executed) puts the grant ahead of the event. thanks.html avoids this by
-   accident: its Purchase fires inside a fetch callback, long after consent.js has run. */
-var params = new URLSearchParams(location.search);
-var magnet = params.get('m') || 'ebook';
-var eid    = params.get('eid') || '';
-
-/* Naming the actual download reassures the visitor they got the thing they asked for.
-   Done synchronously — the element is directly above this script, and waiting would show
-   the generic wording first. Only the conversion event needs the deferred timing. */
-var LABELS = {
-  ebook:     'Build a Retirement Plan You Can Question',
-  checklist: 'The retirement input checklist',
-  questions: '50+ questions to ask your retirement plan',
-  abroad:    'The cross-border retirement guide',
-};
-if (LABELS[magnet]) {
-  var what = document.getElementById('ty-what');
-  if (what) what.textContent = LABELS[magnet];
-}
-
-function fireLead() {
-  // A refresh or a back-then-forward must not fire a second conversion.
-  try {
-    var key = 'wn-lead-' + (eid || magnet);
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, '1');
-  } catch (e) { /* private mode — worst case one duplicate, still better than none */ }
-
-  try {
-    if (typeof fbq === 'function') {
-      fbq('track', 'Lead', { content_name: magnet }, eid ? { eventID: eid } : undefined);
-    }
-    if (typeof gtag === 'function') {
-      gtag('event', 'generate_lead', { method: magnet });
-    }
-  } catch (e) { /* analytics must never break the page */ }
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', fireLead);
-} else {
-  fireLead();
-}
-</script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>

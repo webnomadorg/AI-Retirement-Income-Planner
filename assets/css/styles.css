@@ -1112,10 +1112,11 @@ html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#0000
 .form-group input:focus,
 .form-group textarea:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
 .form-group textarea{ min-height:140px; resize:vertical; }
-/* Opt-in taller variant. The contact form gets prefilled with a ~15-line feedback template
-   (see Plans/Testimonials-Pipeline.md), which is unreadable in the 140px default. Applied
-   per-textarea so the affiliates form — same .form-group markup, same #cf-message id — is
-   unaffected. */
+/* Opt-in taller variant for the contact form, where messages tend to run long and the 140px
+   default forces scrolling in a box you can't see the top of. Applied per-textarea so the
+   affiliates form — same .form-group markup, same #cf-message id — is unaffected.
+   (It was originally sized for a feedback template JS prefilled here; that moved to the
+   purpose-built share.html form, but the extra height still earns its place.) */
 .form-group textarea.textarea-tall{ min-height:280px; }
 
 .form-notice{
@@ -1138,6 +1139,42 @@ html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#0000
 }
 
 .sr-only{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+/* ---- Consent block (share.html) ----
+   The permission to be quoted is collected as real fields rather than free text, because a
+   structured answer is what makes an auditable record (Plans/Testimonials-Pipeline.md).
+   ⚠ Every block below carries its own margin-bottom: this site spaces with bottom margins
+   only (p{margin:0 0 1rem}), so anything relying on a neighbour's top margin sits flush. */
+.form-heading{
+  font-family:var(--font-display); font-size:1.22rem; line-height:1.3;
+  color:var(--ink); margin:2rem 0 .5rem; padding:0; border:0;
+}
+.field-help{ font-size:.88rem; color:var(--ink-soft); line-height:1.55; margin:.1rem 0 0; }
+
+.consent-box{
+  border:1.5px solid var(--line-cool); border-radius:var(--radius);
+  padding:1.1rem 1.2rem 1.3rem; margin:0 0 1.6rem; background:var(--surface-soft);
+}
+.consent-box .form-heading{ margin-top:0; }
+
+.consent-check{
+  display:flex; align-items:flex-start; gap:.6rem;
+  font-weight:400; font-size:.97rem; line-height:1.5; color:var(--ink);
+  margin:0 0 .55rem; cursor:pointer;
+}
+.consent-check input{
+  flex-shrink:0; width:1.05rem; height:1.05rem; margin:.22rem 0 0;
+  accent-color:var(--teal); cursor:pointer;
+}
+.consent-check em{ color:var(--ink-soft); font-style:italic; }
+.radio-legend{ font-weight:600; color:var(--ink); font-size:1rem; margin-bottom:.15rem; }
+
+/* Revealed only once "you may quote me" is ticked — asking how someone wants to be named
+   before they've agreed to be named at all is noise. */
+.consent-detail{ margin:1.1rem 0 0; padding:1.1rem 0 0; border-top:1px solid var(--line); }
+.consent-detail[hidden]{ display:none; }
+
+html.dark .consent-box{ background:var(--surface); border-color:var(--line); }
 
 html.dark .form-group input,
 html.dark .form-group textarea{ background:var(--surface); border-color:var(--line); color:var(--ink); }
@@ -1391,6 +1428,38 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 /* Footnote under the grid — states plainly that these are capabilities, not customer quotes. */
 .scenario-note{ margin:1.8rem auto 0; max-width:64ch; text-align:center; font-size:.9rem; }
 .on-ink .scenario-note{ color:#B9CADA; }
+
+/* ---- 21. Testimonials -------------------------------------------------------
+   Rendered into index.html by Website/tools/testimonials_build.py from approved
+   records only — the markup here is never hand-written (Plans/Testimonials-Pipeline.md).
+   Deliberately plain: real names, real words, no stock photography, no star ratings.
+   ⚠ .tm-grid carries its own margin-bottom. This site spaces with bottom margins only,
+   so a wrapper without one leaves the next block sitting flush against it. */
+.tm-grid{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(1.1rem,2.2vw,1.6rem); margin:0 0 1.6rem;
+}
+@media (max-width:980px){ .tm-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){ .tm-grid{ grid-template-columns:1fr; } }
+
+.tm-card{
+  display:flex; flex-direction:column; margin:0;
+  background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--teal); border-radius:var(--radius);
+  padding:clamp(1.2rem,2.4vw,1.6rem);
+  box-shadow:var(--shadow-sm);
+}
+.tm-quote{
+  font-family:var(--font-display); font-size:1.08rem; line-height:1.55;
+  color:var(--ink); margin:0 0 1rem; padding:0; border:0; quotes:none;
+}
+.tm-quote::before{ content:"\201C"; }
+.tm-quote::after{ content:"\201D"; }
+/* text-align is explicit: the global figcaption rule (§ "figcaption{…text-align:center}")
+   centres every caption on the site, which left the attribution centred while the build
+   line beneath it stayed left. */
+.tm-attrib{ font-size:.92rem; font-weight:600; color:var(--ink-soft); margin-top:auto; text-align:left; }
+.tm-meta{ font-size:.8rem; color:var(--ink-faint); margin:.3rem 0 0; }
 .cta-trust{ font-size:.82rem; color:var(--ink-faint); }
 /* Breathing room above the reassurance line so it does not crowd the buttons. This MUST be scoped
    to .cta-box: `.cta-box p` (class + element) outranks a bare `.cta-trust` (one class), so setting

@@ -5,6 +5,10 @@ Website Notes.txt
 # Local helper script (not part of the published site)
 sync.ps1
 
+# Dependencies. Vercel installs these itself from package.json — a local `npm install` here
+# must never reach the repo. ⚠ This repo is PUBLIC, and node_modules is thousands of files.
+node_modules/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db

@@ -274,51 +274,6 @@
   });
 }());
 
-/* ---- "Share your experience" prefill (contact.html#share) ----
-   The post-purchase thanks page tells buyers to come back after a few weeks of real use,
-   so the ask has to live somewhere permanent and findable — here, plus a footer link.
-   Fills the normal contact form with the feedback questions and the permission block
-   (see Plans/Testimonials-Pipeline.md — a quote is never published without that consent). */
-(function () {
-  var start = document.getElementById('shareStart');
-  var subject = document.getElementById('cf-subject');
-  var message = document.getElementById('cf-message');
-  if (!start || !subject || !message) return;
-
-  var TEMPLATE = [
-    '1. What I was trying to work out when I bought it:',
-    '',
-    '',
-    '2. What it showed me that I did not already know:',
-    '',
-    '',
-    "3. Anything that frustrated me, or that I'd change:",
-    '',
-    '',
-    '--- Happy to be quoted? (entirely optional) ---',
-    'Only fill this in if you are comfortable with your words appearing on the website:',
-    '',
-    'Name to show (e.g. Dave R., or just a first name):',
-    'Roughly where I am based (e.g. Colorado, or Kent UK):',
-    'You may quote me on the website: yes / no'
-  ].join('\n');
-
-  function prefill(focus) {
-    // never clobber something the visitor has already typed
-    if (!message.value.trim()) message.value = TEMPLATE;
-    if (!subject.value.trim()) subject.value = "How I'm getting on with the planner";
-    if (focus) {
-      message.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      message.focus({ preventScroll: true });
-      message.setSelectionRange(0, 0);
-    }
-  }
-
-  start.addEventListener('click', function (e) { e.preventDefault(); prefill(true); });
-  // deep link from the footer / thanks page: contact.html#share
-  if (location.hash === '#share') prefill(false);
-}());
-
 /* ---- Free-download signup forms ----
    Binds every form carrying data-newsletter, not one hard-coded id: the same handler serves
    newsletter.html, the /get/* landing pages and the capture card on all 54 blog posts.
@@ -434,5 +389,84 @@
           fail('Could not connect. Please check your internet connection and try again.');
         });
     });
+  });
+}());
+
+/* ---- Share your experience (share.html) ----
+   Posts to /api/feedback, which verifies the address against Stripe and writes an
+   auditable record. Ticking "you may quote me" grants permission to ASK — the exact
+   wording is approved separately by email (see Website/api/feedback-approve.mjs and
+   Plans/Testimonials-Pipeline.md). */
+(function () {
+  var form = document.getElementById('shareForm');
+  if (!form) return;
+
+  var notice  = document.getElementById('share-notice');
+  var success = document.getElementById('share-success');
+  var quote   = document.getElementById('sf-quote');
+  var detail  = document.getElementById('sf-consent-detail');
+
+  // Asking how someone wants to be credited before they've agreed to be named is noise.
+  function syncDetail() { if (detail && quote) detail.hidden = !quote.checked; }
+  if (quote) { quote.addEventListener('change', syncDetail); syncDetail(); }
+
+  // The in-app Updates tab links here as share.html?b=<build> so a quote can be tied to the
+  // version it was written about. Build number only — never an address in a query string.
+  var build = new URLSearchParams(location.search).get('b');
+  var buildField = document.getElementById('sf-build');
+  if (buildField && build && /^\d{1,6}$/.test(build)) buildField.value = build;
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+  function checked(id) { var el = document.getElementById(id); return !!(el && el.checked); }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    var origHtml = btn.innerHTML;
+    if (notice) { notice.textContent = ''; notice.classList.remove('visible'); }
+
+    var style = form.querySelector('input[name="attribution_style"]:checked');
+    var payload = {
+      name:    val('sf-name'),
+      email:   val('sf-email'),
+      a1:      val('sf-a1'),
+      a2:      val('sf-a2'),
+      a3:      val('sf-a3'),
+      quote_ok:  checked('sf-quote'),
+      social_ok: checked('sf-social'),
+      attribution_style: style ? style.value : 'first_initial',
+      display_name: val('sf-display'),
+      region:       val('sf-region'),
+      consent_version: (form.querySelector('input[name="consent_version"]') || {}).value || '',
+      app_build:       buildField ? buildField.value : '',
+      _honey:          (document.getElementById('sf_honey') || {}).value || ''
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+
+    function fail(msg) {
+      if (notice) { notice.textContent = msg; notice.classList.add('visible'); }
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
+    }
+
+    fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.data.ok) {
+          form.style.display = 'none';
+          if (success) success.classList.add('visible');
+        } else {
+          fail((res.data && res.data.error) || 'Something went wrong. Please try again.');
+        }
+      })
+      .catch(function () {
+        fail('Could not connect. Please check your internet connection and try again.');
+      });
   });
 }());

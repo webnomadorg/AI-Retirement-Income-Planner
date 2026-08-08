@@ -58,7 +58,13 @@ function rateLimited(ip) {
   return recent.length > RATE_MAX;
 }
 
-/** Ask Stripe directly which paid sessions belong to this address. */
+/** Ask Stripe directly which paid sessions belong to this address.
+ *
+ *  ⚠ lib/stripe-sessions.mjs holds a near-identical copy, used by api/feedback.mjs to stamp
+ *  a purchase verdict onto a feedback submission. It was deliberately NOT extracted from
+ *  here into a shared module: this endpoint delivers paid product, and feedback verification
+ *  is advisory by comparison, so the refactor wasn't worth the regression risk. If you
+ *  change the lookup below, check whether that copy needs the same change. */
 async function sessionsFromStripe(email, stripeKey) {
   const auth = { headers: { Authorization: `Bearer ${stripeKey}` } };
   const listUrl =
