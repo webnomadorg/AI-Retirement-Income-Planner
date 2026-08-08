@@ -180,16 +180,24 @@ export default async function handler(req, res) {
 
     // If the pepper is missing the record can't be made auditable. Do NOT throw the
     // customer's effort away over an env problem — mail it to the owner and shout about it.
+    // `failure` names WHICH problem, because "check one of these two things" cost a real
+    // debugging session the first time this fired.
     let stored = false;
-    if (isConfigured()) {
+    let failure = null;
+    if (!isConfigured()) {
+      failure = 'UPDATE_LOOKUP_PEPPER is not set on the Vercel project, so no auditable record '
+        + 'can be created (it derives the approval token). Set it in Settings → Environment '
+        + 'Variables and redeploy. Safe to set now ONLY while customers/ is empty — changing it '
+        + 'later orphans every indexed purchase.';
+      console.error('feedback: UPDATE_LOOKUP_PEPPER is not set — submission not recorded');
+    } else {
       try {
         await writeFeedback(record);
         stored = true;
       } catch (err) {
+        failure = `The Blob write failed (${err?.message || err}). Check BLOB_READ_WRITE_TOKEN / store access.`;
         console.error('feedback: blob write failed', err);
       }
-    } else {
-      console.error('feedback: UPDATE_LOOKUP_PEPPER is not set — submission not recorded');
     }
 
     if (!process.env.RESEND_API_KEY) {
@@ -207,9 +215,13 @@ export default async function handler(req, res) {
       from: 'WebNomad Feedback <noreply@webnomad.org>',
       to: [OWNER],
       reply_to: email,
-      subject: `Planner feedback — ${verdict} — ${consentLabel}`,
+      subject: `${stored ? '' : '[NOT RECORDED] '}Planner feedback — ${verdict} — ${consentLabel}`,
       html:
-        (stored ? '' : '<p style="background:#fee;padding:.8rem;border-left:3px solid #c00"><strong>NOT RECORDED</strong> — the submission could not be written to the store, so this email is the only copy. Check UPDATE_LOOKUP_PEPPER / BLOB_READ_WRITE_TOKEN.</p>') +
+        (stored ? '' : '<p style="background:#fee;padding:.8rem;border-left:3px solid #c00">'
+          + '<strong>NOT RECORDED — this email is the only copy.</strong><br>' + esc(failure)
+          + '<br><br>Nothing was stored, so there is no record to draft from, approve or withdraw. '
+          + 'Once the above is fixed, ask them to resubmit (or paste their words into a fresh '
+          + 'submission yourself) — a quote still needs their approval of the exact wording.</p>') +
         `<p><strong>${esc(name)}</strong> &lt;${esc(email)}&gt;</p>` +
         `<p><strong>Purchase:</strong> ${verification.verified
           ? `verified via ${esc(verification.method)} — ${esc(verification.product || 'unknown product')}, ${esc(verification.purchased_at || 'date unknown')}`
@@ -223,17 +235,21 @@ export default async function handler(req, res) {
         `<p><strong>What it showed them</strong><br><span style="white-space:pre-wrap">${esc(answers.showed) || '<em>(blank)</em>'}</span></p>` +
         `<p><strong>What frustrated them</strong><br><span style="white-space:pre-wrap">${esc(answers.friction) || '<em>(blank)</em>'}</span></p>` +
         '<hr style="border:none;border-top:1px solid #ddd;margin:1rem 0">' +
-        (quoteOk
-          ? `<p>To propose wording (trim only — never rewrite), open the admin page with <code>node tools/testimonials/cli.mjs serve</code>, or run:</p><pre style="background:#f4f4f4;padding:.7rem;white-space:pre-wrap">${esc(draftCmd)}</pre><p style="color:#666;font-size:.9rem">They still have to approve the exact wording before it can be published.</p>`
-          : '<p style="color:#666">No publication consent — nothing to do beyond reading it.</p>'),
+        // The draft command is offered ONLY when the record actually exists. Printing it for a
+        // submission that was never stored sends you chasing an id that cannot resolve.
+        (!quoteOk
+          ? '<p style="color:#666">No publication consent — nothing to do beyond reading it.</p>'
+          : stored
+            ? `<p>To propose wording (trim only — never rewrite), open the admin page with <code>node tools/testimonials/cli.mjs serve</code>, or run:</p><pre style="background:#f4f4f4;padding:.7rem;white-space:pre-wrap">${esc(draftCmd)}</pre><p style="color:#666;font-size:.9rem">They still have to approve the exact wording before it can be published.</p>`
+            : '<p style="color:#666">They gave permission to be quoted, but with nothing stored there is no record to draft from.</p>'),
       text:
         `${name} <${email}>\n` +
         `Purchase: ${verification.verified ? `verified (${verification.method}) — ${verification.product || 'unknown'}` : 'NOT FOUND'}\n` +
         `Consent: ${quoteOk ? 'may be quoted' : 'NOT for publication'}\n` +
         `App build: ${record.app_build ?? 'not reported'}\n` +
-        `${stored ? '' : 'WARNING: NOT RECORDED — this email is the only copy.\n'}\n` +
+        `${stored ? '' : `WARNING: NOT RECORDED — this email is the only copy.\n${failure}\nThere is no record to draft from, approve or withdraw.\n`}\n` +
         `Working out:\n${answers.goal || '(blank)'}\n\nShowed them:\n${answers.showed || '(blank)'}\n\nFrustrated:\n${answers.friction || '(blank)'}\n\n` +
-        (quoteOk ? `Draft with:\n${draftCmd}\n` : ''),
+        (quoteOk && stored ? `Draft with:\n${draftCmd}\n` : ''),
     });
 
     if (!notify.ok) {
