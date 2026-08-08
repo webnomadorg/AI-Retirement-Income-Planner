@@ -419,6 +419,29 @@
   function val(id) { var el = document.getElementById(id); return el ? el.value : ''; }
   function checked(id) { var el = document.getElementById(id); return !!(el && el.checked); }
 
+  /* Show the thank-you and bring it into view. This form is long enough that a submit from
+     the bottom would otherwise leave the confirmation off-screen above you, looking like
+     nothing happened. Focus moves too, so keyboard and screen-reader users land on it
+     rather than being dumped on <body> when the form disappears. */
+  function revealSuccess() {
+    form.style.display = 'none';
+    if (!success) return;
+    success.classList.add('visible');
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var header = document.querySelector('.site-header');
+    // The header is position:sticky, so it overlays whatever the scroll lands on.
+    var offset = (header ? header.getBoundingClientRect().height : 0) + 16;
+
+    // Measure only after the removed form has been taken out of flow, or the target is stale.
+    requestAnimationFrame(function () {
+      var top = success.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top > 0 ? top : 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      success.setAttribute('tabindex', '-1');
+      success.focus({ preventScroll: true });
+    });
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var btn = form.querySelector('button[type="submit"]');
@@ -459,8 +482,7 @@
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
         if (res.ok && res.data.ok) {
-          form.style.display = 'none';
-          if (success) success.classList.add('visible');
+          revealSuccess();
         } else {
           fail((res.data && res.data.error) || 'Something went wrong. Please try again.');
         }
