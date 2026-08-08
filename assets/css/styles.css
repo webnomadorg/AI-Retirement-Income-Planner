@@ -1156,6 +1156,12 @@ html.dark[data-theme="contrast"] .tg-tab.active{ background:#ffffff; color:#0000
   padding:1.1rem 1.2rem 1.3rem; margin:0 0 1.6rem; background:var(--surface-soft);
 }
 .consent-box .form-heading{ margin-top:0; }
+/* A <legend> is anchored to the fieldset's TOP BORDER and ignores the fieldset's padding, so
+   the heading rendered sitting on the border rather than inside the box. Floating it puts it
+   back in normal flow; width:100% keeps the following content below it rather than wrapped
+   alongside, and the clear stops the float escaping the box. */
+.consent-box legend{ float:left; width:100%; margin:0 0 .35rem; }
+.consent-box::after{ content:""; display:block; clear:both; }
 
 .consent-check{
   display:flex; align-items:flex-start; gap:.6rem;
