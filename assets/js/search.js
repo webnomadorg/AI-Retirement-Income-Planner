@@ -36,6 +36,7 @@
   /* ---- index loading ------------------------------------------------------- */
 
   var parts = { core: null, blog: null };
+  var failed = { core: false, blog: false };
   var started = false;
   var waiting = [];         // callbacks fired again as each half lands
 
@@ -56,8 +57,14 @@
     // the legacy `routes` array, which cannot coexist with a `headers` block, so the freshness
     // rule lives here instead of in the CDN config. A 304 is cheap.
     return fetch(url, { cache: "no-cache" })
-      .then(function (r) { return r.ok ? r.json() : []; })
-      .catch(function () { return []; })
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      // Search still works on whatever did load — half an index beats none. But the failure is
+      // recorded, because it must NOT be mistaken for "this half is legitimately empty": see
+      // complete().
+      .catch(function () { failed[key] = true; return []; })
       .then(function (data) {
         parts[key] = prep(data);
         for (var i = 0; i < waiting.length; i++) waiting[i]();
@@ -78,7 +85,13 @@
   function index() {
     return (parts.core || []).concat(parts.blog || []);
   }
+  // Both halves have settled — the UI can stop saying "Searching…".
   function ready() { return parts.core !== null && parts.blog !== null; }
+
+  // Both halves settled AND both actually arrived. Analytics needs this stricter test: a
+  // failed blog.json leaves an empty half that looks exactly like "no blog post matches", so
+  // logging on ready() alone would file every blog-only query as a content gap that isn't one.
+  function complete() { return ready() && !failed.core && !failed.blog; }
 
   /* ---- matching ------------------------------------------------------------ */
 
@@ -111,13 +124,16 @@
 
   function search(q, limit, perUrl) {
     var ts = terms(q);
-    if (!ts.length) return [];
+    if (!ts.length) { search.lastTotal = 0; return []; }
     var phrase = q.toLowerCase().trim();
     var all = index(), hits = [];
     for (var i = 0; i < all.length; i++) {
       var sc = score(all[i], ts, phrase);
       if (sc > 0) hits.push({ r: all[i], s: sc });
     }
+    // The true match count, before the display limit and the per-page cap. Analytics wants
+    // "did this find anything", not "how many rows fitted in the dropdown".
+    search.lastTotal = hits.length;
     hits.sort(function (a, b) { return b.s - a.s; });
 
     var seen = {}, out = [];
@@ -226,6 +242,7 @@
       }
       var ts = terms(q);
       var hits = search(q, PAGE_MAX, PAGE_PER_URL);
+      noteWhenSettled(q, search.lastTotal);
       status.textContent = countLabel(hits.length, q, ready());
       list.innerHTML = hits.length
         ? hits.map(function (r) { return resultHTML(r, ts, ""); }).join("")
@@ -262,6 +279,59 @@
     if (input.value.trim()) status.textContent = "Searching…";
     load(render);
   })();
+
+  /* ---- what people search for, and what they fail to find ------------------ */
+
+  // Sends the query text and its result count, batched, once per page. Nothing else: no id,
+  // no cookie, no IP (the server uses the IP for rate limiting and never stores it). See
+  // Website/lib/search-log.mjs.
+  var LOG_URL = "/api/search-log";
+  var loggedQueries = {};   // dedupe within a page session
+  var pendingLog = [];
+  var settleTimer;
+
+  function trackingRefused() {
+    return navigator.doNotTrack === "1" || window.doNotTrack === "1" ||
+           navigator.msDoNotTrack === "1" || navigator.globalPrivacyControl === true;
+  }
+
+  function flushLog() {
+    if (!pendingLog.length) return;
+    var payload = JSON.stringify({ items: pendingLog });
+    pendingLog = [];
+    if (!navigator.sendBeacon) return;
+    // sendBeacon survives the page going away, which a fetch on pagehide does not.
+    try {
+      navigator.sendBeacon(LOG_URL, new Blob([payload], { type: "application/json" }));
+    } catch (e) { /* analytics must never surface to a visitor */ }
+  }
+
+  function noteQuery(q, total) {
+    // ⚠ Never log against a partially-loaded index. core.json lands before blog.json, so a
+    // query answered only by a blog post looks like a zero-result miss for a few hundred
+    // milliseconds. Logging that would manufacture content gaps that do not exist — the exact
+    // opposite of what this is for.
+    if (!complete() || trackingRefused()) return;
+    q = String(q).toLowerCase().replace(/\s+/g, " ").trim();
+    if (q.length < 2 || q.length > 80) return;
+    if (loggedQueries[q]) return;
+    loggedQueries[q] = 1;
+    pendingLog.push({ q: q, n: total });
+    if (pendingLog.length >= 5) flushLog();
+  }
+
+  // Only record a query the visitor actually stopped on. The 120 ms render debounce fires on
+  // every pause in typing, so logging there would record "r", "ro", "rot", "roth" — four
+  // invented misses for one real search.
+  function noteWhenSettled(q, total) {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(function () { noteQuery(q, total); }, 1400);
+  }
+
+  window.addEventListener("pagehide", flushLog);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") flushLog();
+  });
 
   /* ---- landing on an accordion --------------------------------------------- */
 
@@ -369,6 +439,7 @@
       }
       var ts = terms(q);
       var hits = search(q, OVERLAY_MAX, OVERLAY_PER_URL);
+      noteWhenSettled(q, search.lastTotal);
       status.textContent = countLabel(hits.length, q, ready());
       list.innerHTML = hits.length
         ? hits.map(function (r, i) { return resultHTML(r, ts, "wn-opt-" + i); }).join("")
