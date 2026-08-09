@@ -263,6 +263,29 @@
     load(render);
   })();
 
+  /* ---- landing on an accordion --------------------------------------------- */
+
+  // A search result can now link straight to an FAQ question, which is a <details>. Scrolling
+  // one into view still leaves it CLOSED, so the reader arrives at the question and not the
+  // answer. Open it on arrival, and on any later in-page jump.
+  (function accordions() {
+    function openTarget() {
+      var id = location.hash.slice(1);
+      if (!id || id.indexOf(":~:") === 0) return;
+      var el;
+      try { el = document.getElementById(decodeURIComponent(id)); } catch (e) { el = null; }
+      if (!el) return;
+      var d = el.tagName === "DETAILS" ? el : el.closest && el.closest("details");
+      if (d && !d.open) {
+        d.open = true;
+        // Opening changes the page height, so the browser's own scroll landed short.
+        if (d.scrollIntoView) d.scrollIntoView({ block: "start" });
+      }
+    }
+    openTarget();
+    window.addEventListener("hashchange", openTarget);
+  })();
+
   /* ---- the overlay (every page) -------------------------------------------- */
 
   (function overlay() {

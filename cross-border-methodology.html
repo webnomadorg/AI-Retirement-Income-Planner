@@ -110,7 +110,7 @@
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">The shape of the calculation</h2>
+      <h2 id="the-shape-of-the-calculation" style="margin-top:.4rem;">The shape of the calculation</h2>
       <p>Income is simulated <strong>month by month</strong>, not projected with an annual formula. Each month the model draws the requested amounts from each account, works out the tax due on that year's income, applies healthcare cost, and grows the remaining balances. Phase figures are the average of the months inside them.</p>
       <p>Phases are cut at the ages where the arithmetic genuinely changes — <strong>65</strong> (Medicare replaces marketplace insurance), the <strong>Social Security claim age</strong>, <strong>73</strong> (Required Minimum Distributions begin, on the IRS Uniform Lifetime Table) and <strong>80</strong>. Putting a boundary on the claim age matters: it means Social Security never starts halfway through a phase, so every phase is either wholly before or wholly after it.</p>
       <p>Brackets, deductions, thresholds and healthcare costs are inflated per phase, so a bracket ceiling at 80 is not the ceiling that applies at 60.</p>
@@ -119,29 +119,29 @@
 
   <section class="section band">
     <div class="container">
-      <h2 style="margin-top:.4rem;">What each country taxes</h2>
+      <h2 id="what-each-country-taxes" style="margin-top:.4rem;">What each country taxes</h2>
 
-      <h3>United States</h3>
+      <h3 id="united-states">United States</h3>
       <p>Federal brackets of <strong>10 / 12 / 22 / 24%</strong> applied to taxable income after the standard deduction and the senior add-on. Social Security is taxed the IRS way — through the <strong>provisional-income test</strong>, so only a portion becomes taxable rather than all or none. Long-term capital gains on brokerage withdrawals are handled separately from ordinary income, and the <strong>Net Investment Income Tax</strong> applies above its threshold. State income tax is a flat rate you set; the published comparisons set it to zero.</p>
 
-      <h3>United Kingdom</h3>
+      <h3 id="united-kingdom">United Kingdom</h3>
       <p>The personal allowance, then <strong>basic (20%), higher (40%) and additional (45%)</strong> bands. Two details that are easy to miss and are modelled here:</p>
       <ul class="checklist">
         <li>The <strong>personal-allowance taper</strong> — £1 of allowance is lost for every £2 of income above roughly £100,000, so there is an effective marginal spike in that band.</li>
         <li><strong>Treaty Article 17</strong>: US Social Security is <em>not</em> taxable by the UK. What the UK does tax is 401(k) withdrawals, the UK State Pension, equity gains and any part-time earnings.</li>
       </ul>
 
-      <h3>Canada</h3>
+      <h3 id="canada">Canada</h3>
       <p>Federal brackets applied after the <strong>basic personal amount</strong>, plus a provincial rate. Unlike the UK, there is no treaty carve-out for US Social Security in this model — it is taxed as income along with the full 401(k) withdrawal, which is why Canada carries the heaviest tax burden in every published comparison.</p>
 
-      <h3>Australia</h3>
+      <h3 id="australia">Australia</h3>
       <p>The <strong>tax-free threshold</strong>, then <strong>19 / 32.5 / 37 / 45%</strong> (the Stage 3 rates), reduced by the <strong>Low Income Tax Offset</strong> — $700 below $37,500, tapering to zero at $66,667. The <strong>Medicare Levy</strong> of 2% is then added on income above the levy threshold. Superannuation withdrawals after 60 are tax-free and are excluded from assessable income.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">The Foreign Tax Credit: you pay the higher bill, not the sum</h2>
+      <h2 id="the-foreign-tax-credit-you-pay-the-higher-bill-not-the-sum" style="margin-top:.4rem;">The Foreign Tax Credit: you pay the higher bill, not the sum</h2>
       <p>This is the part most write-ups get wrong, so it is worth stating precisely. For a US citizen resident in the UK the model computes both liabilities and then credits one against the other:</p>
 
       <div class="callout" style="margin-top:1.8rem;">
@@ -156,7 +156,7 @@
 
   <section class="section band">
     <div class="container">
-      <h2 style="margin-top:.4rem;">Healthcare</h2>
+      <h2 id="healthcare" style="margin-top:.4rem;">Healthcare</h2>
       <p>For a US resident this is modelled in two regimes. <strong>Before 65</strong>: ACA marketplace premiums, including the 400%-of-federal-poverty-level subsidy cliff and the 250% FPL Silver cost-sharing-reduction band — both driven by MAGI, so a withdrawal decision can move the premium. <strong>From 65</strong>: Medicare Part B and Part D, plus <strong>IRMAA</strong> surcharges, which use a two-year income lookback — the surcharge you pay at 67 is set by your income at 65.</p>
       <p>For the UK, Canadian and Australian columns the model applies <strong>no direct healthcare premium</strong>, on the assumption that the public system covers a resident.</p>
       <p><strong>This assumption does more work than any other in the model.</strong> In the published base case it is worth $312–$486 a month, and from age 67 it is the entire remaining gap between the US and the UK. Anything that changes it — private cover, an insurance condition attached to a visa, a surcharge for recent arrivals — moves the answer directly. Treat it as the first thing to challenge, not a footnote.</p>
@@ -165,18 +165,18 @@
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">Simplifications, stated plainly</h2>
+      <h2 id="simplifications-stated-plainly" style="margin-top:.4rem;">Simplifications, stated plainly</h2>
       <p>Every model simplifies. These are the ones that could change a conclusion, so they belong on the page rather than in a disclaimer:</p>
 
       <div class="grid cols-2">
         <div class="card" style="padding:1.2rem;">
-          <h3 style="margin-top:0;">Known asymmetry: US tax abroad</h3>
+          <h3 id="known-asymmetry-us-tax-abroad" style="margin-top:0;">Known asymmetry: US tax abroad</h3>
           <p>The UK column applies both liabilities and the treaty credit. The <strong>Canadian and Australian columns apply local tax only</strong> — no US layer — even though a US citizen abroad still has US filing obligations.</p>
           <p>Where local tax is <em>higher</em> than the US figure, this makes no difference, because the credit result would be the local bill anyway. That is the case throughout the published comparisons at $900k and above.</p>
           <p><strong>Below roughly $600k it can matter.</strong> At that level Australian tax falls to about $70/month against a US figure near $95, so the Australian column understates by around $25/month. Small, but real — and it flatters Australia at the lower end. We have checked that it does not overturn the published finding: Australia still leads at $600k after allowing for it.</p>
         </div>
         <div class="card" style="padding:1.2rem;">
-          <h3 style="margin-top:0;">The rest</h3>
+          <h3 id="the-rest" style="margin-top:0;">The rest</h3>
           <ul class="checklist">
             <li><strong>No local social-security entitlements</strong> — no CPP, OAS, Age Pension or UK State Pension accrual. The comparison holds the <em>same savings</em> against different tax systems; it is not a comparison of different working lives.</li>
             <li><strong>No currency risk.</strong> Everything is priced in US dollars. For destinations where cost arbitrage is the whole proposition, this matters a great deal.</li>
@@ -192,7 +192,7 @@
 
   <section class="section band">
     <div class="container">
-      <h2 style="margin-top:.4rem;">How it is checked</h2>
+      <h2 id="how-it-is-checked" style="margin-top:.4rem;">How it is checked</h2>
       <p>The engine ships with a <strong>golden-master self-test</strong>: fixed fixture plans re-run on every build and diffed against known-good values, so silent calculation drift shows up immediately rather than in a customer's plan. Coverage spans all four tax regimes, Social Security claim-age splits, RMDs, NIIT, ACA, early retirement, Roth conversions, pensions and lump sums.</p>
       <p>The free comparison tool and the data study run <strong>that same engine</strong> — not a simplified re-implementation — and the study's generator refuses to produce output unless it first reproduces a twenty-value cross-check against the paid planner, and unless the engine's own identity (<code>net = gross − tax − healthcare</code>) holds for every country in every phase.</p>
       <p>That second check is not decoration. It is what caught a real error: the tool had been reporting a UK resident's income tax as <strong>$0</strong>, because the field it displayed held only the US federal component — which the treaty credit had reduced to nothing. The net income figures were correct throughout; the breakdown row was not. It is fixed, and the check now makes that class of mistake impossible to ship quietly.</p>
@@ -202,7 +202,7 @@
   <section class="section">
     <div class="container narrow center">
       <div class="cta-box">
-        <h2 style="margin-top:0;">See it applied</h2>
+        <h2 id="see-it-applied" style="margin-top:0;">See it applied</h2>
         <p>Read the worked comparison, or put your own numbers through the same engine — free, no sign-up, no email.</p>
         <p style="margin-top:1.2rem;">
           <a class="btn btn-primary" href="cross-border-retirement-data-study.html">The data study →</a>

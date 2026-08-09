@@ -66,9 +66,13 @@ SKIP_DIRS = {"blog", "demo", "blog-src", "partials", "tools", "assets", "api", "
 
 # Elements whose text is never page content.
 SKIP_TAGS = {"script", "style", "noscript", "svg", "template", "select", "option"}
-# Navigation chrome that happens to sit inside <main>. Breadcrumbs put "Home" on every page,
-# and the TOC/series nav duplicate headings we already index — which would double their weight.
-SKIP_CLASSES = {"post-toc", "post-series-nav", "skip", "crumb", "post-breadcrumb"}
+# Chrome that happens to sit inside <main>. Breadcrumbs put "Home" on every page, and the
+# TOC/series nav duplicate headings we already index — which would double their weight.
+# The rest are the per-post template blocks (eBook capture, planner CTA, related links): the
+# SAME words on all 55 posts, so indexing them meant 175 near-identical records competing with
+# real content — a search for "test this with your own numbers" matched every article at once.
+SKIP_CLASSES = {"post-toc", "post-series-nav", "skip", "crumb", "post-breadcrumb",
+                "post-capture", "cta-band", "related-posts"}
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
              "param", "source", "track", "wbr"}
 
@@ -96,6 +100,7 @@ class PageText(HTMLParser):
         self.skip_depth = None
         self.h1_depth = None
         self.head_depth = None
+        self.details_id = ""
         self.title = ""
         self.sections = [{"h": "", "a": "", "parts": []}]
 
@@ -131,6 +136,16 @@ class PageText(HTMLParser):
             self.h1_depth = self.depth          # captured as the page title, not as body text
         elif tag in ("h2", "h3"):
             self.sections.append({"h": "", "a": dict(attrs).get("id", ""), "parts": []})
+            self.head_depth = self.depth
+        elif tag == "details":
+            # The id lives on the <details>, not the <summary> — that is the element a reader
+            # needs scrolled into view, and it is what heading_ids.py names.
+            self.details_id = dict(attrs).get("id", "")
+        elif tag == "summary":
+            # An accordion question is its own section. Without this the FAQ's 22 questions all
+            # collapse into whichever h2 sat above them, so a hit for "refund" was reported under
+            # a heading like "1-on-1 sessions".
+            self.sections.append({"h": "", "a": self.details_id, "parts": []})
             self.head_depth = self.depth
         else:
             self.sections[-1]["parts"].append(" ")   # keep block text from running together

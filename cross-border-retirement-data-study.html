@@ -111,19 +111,19 @@
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">Three things the numbers say</h2>
+      <h2 id="three-things-the-numbers-say" style="margin-top:.4rem;">Three things the numbers say</h2>
 
       <div class="grid cols-3" data-stagger>
         <div class="card reveal" style="padding:1.3rem;">
-          <h3 style="margin-top:0;">The order changes</h3>
+          <h3 id="the-order-changes" style="margin-top:0;">The order changes</h3>
           <p>The country that is best the year you retire is often not the one that is best at 80. In the base case the United States climbs from 3rd to 2nd, and Australia slips from 2nd to 3rd, without either of them doing anything differently.</p>
         </div>
         <div class="card reveal" style="padding:1.3rem;">
-          <h3 style="margin-top:0;">After 67, tax stops being the story</h3>
+          <h3 id="after-67-tax-stops-being-the-story" style="margin-top:0;">After 67, tax stops being the story</h3>
           <p>Once Social Security starts, the UK resident's total tax bill converges on the US figure <em>exactly</em>. Everything the UK is still winning by from that point is healthcare, not tax.</p>
         </div>
         <div class="card reveal" style="padding:1.3rem;">
-          <h3 style="margin-top:0;">It depends how much you have</h3>
+          <h3 id="it-depends-how-much-you-have" style="margin-top:0;">It depends how much you have</h3>
           <p>At $600k Australia starts ahead. At $2.5M the United States does. The UK finishes ahead in every single case we ran — but it is not always in front at the start.</p>
         </div>
       </div>
@@ -132,11 +132,11 @@
 
   <section class="section band">
     <div class="container">
-      <h2 style="margin-top:.4rem;">The plan we modelled</h2>
+      <h2 id="the-plan-we-modelled" style="margin-top:.4rem;">The plan we modelled</h2>
       <p>A single filer retiring at 60 with <strong>$1,200,000</strong> — $800,000 in a 401(k), $300,000 in a taxable brokerage account and $100,000 in cash — drawing <strong>$7,000 a month</strong> across the three, and claiming <strong>$2,800/month</strong> of Social Security at 67. Once Social Security starts, portfolio withdrawals are trimmed by what it replaces, so total income stays level rather than stepping up.</p>
       <p>The plan is then run four times. The only thing that changes is where the person is tax resident. Phase boundaries land on the events that actually change the arithmetic: <strong>Medicare at 65</strong>, the <strong>Social Security claim at 67</strong>, <strong>Required Minimum Distributions at 73</strong>, and 80.</p>
 
-      <h3>Net monthly income, by country and age</h3>
+      <h3 id="net-monthly-income-by-country-and-age">Net monthly income, by country and age</h3>
       <div class="cmp-matrix-wrap">
         <table class="cmp-table">
           <caption class="sr-only">Net monthly income in US dollars by country of residence and age band</caption>
@@ -158,10 +158,10 @@
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">Why the order changes</h2>
+      <h2 id="why-the-order-changes" style="margin-top:.4rem;">Why the order changes</h2>
       <p>The interesting part is not that the UK leads. It is <em>what</em> it leads with, and how that changes at 67.</p>
 
-      <h3>Income tax, per month</h3>
+      <h3 id="income-tax-per-month">Income tax, per month</h3>
       <div class="cmp-matrix-wrap">
         <table class="cmp-table">
           <caption class="sr-only">Total income tax per month by country of residence and age band</caption>
@@ -192,7 +192,7 @@
 
   <section class="section band">
     <div class="container">
-      <h2 style="margin-top:.4rem;">Does it depend on how much you have? Yes.</h2>
+      <h2 id="does-it-depend-on-how-much-you-have-yes" style="margin-top:.4rem;">Does it depend on how much you have? Yes.</h2>
       <p>We re-ran the whole thing across portfolio sizes, scaling withdrawals with the balance. The ranking in the <em>first</em> phase changes three times:</p>
 
       <div class="cmp-matrix-wrap">
@@ -214,20 +214,20 @@
       <p>Three different countries lead at the start depending on the size of the pot — Australia when it is small, the UK in the middle, the United States when it is large. At $2.5M the American is drawing enough that healthcare is a small fraction of income and the US brackets look favourable; at $600k, Australia's tax-free threshold shelters most of a modest income.</p>
       <p><strong>The last phase never changes.</strong> The UK finishes first at every portfolio size we tested.</p>
 
-      <h3 style="margin-top:2rem;">Retiring later doesn't reorder it — it just widens the gap</h3>
+      <h3 id="retiring-later-doesn-t-reorder-it-it-just-widens-the-gap" style="margin-top:2rem;">Retiring later doesn't reorder it — it just widens the gap</h3>
       <p>Retiring at 60, 62, 65 or 67 produces the same ordering in both the first and last phase. What changes is the size of the difference: the spread between best and worst country grows from about <strong>$205/month at the start to roughly $1,100/month by the eighties</strong>. Whatever the decision is worth on the day you make it, it is worth about five times that later.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <h2 style="margin-top:.4rem;">How this was produced</h2>
+      <h2 id="how-this-was-produced" style="margin-top:.4rem;">How this was produced</h2>
       <p>Every figure comes from the same calculation engine that powers the paid <a href="products.html">AI Retirement Income Planner</a> and the free <a href="retire-abroad.html">Retire Abroad comparison tool</a> — not a spreadsheet approximation built for this article. Income is simulated month by month and averaged over each phase.</p>
       <p>The generating script refuses to publish numbers it cannot stand behind: it re-derives a documented twenty-value cross-check against the paid planner before writing any output, and asserts the engine's own identity — net income equals gross minus tax minus healthcare — on every phase of every country.</p>
 
       <div class="grid cols-2">
         <div class="card" style="padding:1.2rem;">
-          <h3 style="margin-top:0;">What is modelled</h3>
+          <h3 id="what-is-modelled" style="margin-top:0;">What is modelled</h3>
           <ul class="checklist">
             <li>US federal income tax — brackets, standard and senior deductions, the taxable-Social-Security calculation, capital gains, NIIT.</li>
             <li>US healthcare — ACA premiums and the subsidy cliff before 65, then Medicare Part B/D and IRMAA surcharges.</li>
@@ -239,7 +239,7 @@
           </ul>
         </div>
         <div class="card" style="padding:1.2rem;">
-          <h3 style="margin-top:0;">What is not — read this before quoting it</h3>
+          <h3 id="what-is-not-read-this-before-quoting-it" style="margin-top:0;">What is not — read this before quoting it</h3>
           <ul class="checklist">
             <li><strong>No healthcare cost outside the US.</strong> The UK, Canadian and Australian figures assume the public system covers you at no direct premium. Since healthcare turns out to be the largest single lever here, this assumption is doing a great deal of work. Private cover, an insurance requirement attached to a visa, or a surcharge for new residents would all reduce those columns.</li>
             <li><strong>US state income tax is set to zero</strong> — a no-tax state. That flatters the US column, so any overseas advantage shown is understated.</li>
@@ -256,7 +256,7 @@
 
   <section class="section band" id="data">
     <div class="container narrow center">
-      <h2 style="margin-top:.4rem;">Take the data</h2>
+      <h2 id="take-the-data" style="margin-top:.4rem;">Take the data</h2>
       <p>Free to use with attribution (CC BY 4.0). If you are writing about cross-border retirement, a link back to this page is all we ask.</p>
       <p style="margin-top:1.4rem;">
         <a class="btn btn-primary" href="data/cross-border-base-case.csv" download>Base case (CSV)</a>
@@ -269,7 +269,7 @@
   <section class="section">
     <div class="container narrow center">
       <div class="cta-box">
-        <h2 style="margin-top:0;">Run it with your own numbers</h2>
+        <h2 id="run-it-with-your-own-numbers" style="margin-top:0;">Run it with your own numbers</h2>
         <p>The comparison tool is free, needs no sign-up and does not ask for your email. Put your own balances and withdrawals in and see where you land.</p>
         <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="retire-abroad.html">Open the Retire Abroad comparison →</a></p>
       </div>
