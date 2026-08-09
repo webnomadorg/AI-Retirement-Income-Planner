@@ -1639,6 +1639,24 @@ html.search-open{ overflow:hidden; }
 
 .search-status{ flex:none; margin:0; padding:.55rem 1rem 0; font-size:.85rem; color:var(--ink-faint); }
 .search-box .search-results{ overflow-y:auto; padding:.4rem .5rem .5rem; }
+
+/* The results list is the only scroller the visitor stares into, and the OS default — a grey
+   slab with square ends — is the one part of the overlay that would not look designed. Firefox
+   gets the two-property standard version; WebKit/Blink get the pseudo-elements. Both are
+   progressive: an unsupported browser simply keeps its native bar. Alpha over the surface
+   rather than a flat token, so it rides the five colour themes without an override each. */
+.search-box .search-results{ scrollbar-width:thin; scrollbar-color:rgba(20,48,75,.22) transparent; }
+.search-box .search-results::-webkit-scrollbar{ width:11px; }
+.search-box .search-results::-webkit-scrollbar-track{ background:transparent; }
+.search-box .search-results::-webkit-scrollbar-thumb{
+  background:rgba(20,48,75,.22); border-radius:999px;
+  /* transparent border + padding-box clip insets the thumb without a wrapper element */
+  border:3px solid transparent; background-clip:padding-box;
+}
+.search-box .search-results::-webkit-scrollbar-thumb:hover{ background:rgba(20,48,75,.38); background-clip:padding-box; }
+html.dark .search-box .search-results{ scrollbar-color:rgba(255,255,255,.24) transparent; }
+html.dark .search-box .search-results::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.24); background-clip:padding-box; }
+html.dark .search-box .search-results::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.40); background-clip:padding-box; }
 .search-box-foot{ flex:none; padding:.7rem 1rem; border-top:1px solid var(--line-soft);
   background:var(--surface-soft); font-size:.88rem; }
 .search-box-foot a{ color:var(--teal-deep); font-weight:550; }

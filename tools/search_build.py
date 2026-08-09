@@ -20,10 +20,15 @@ Verify only:        python Website/tools/search_build.py --check
 stale index is a silent failure with teeth: search would keep confidently quoting text that
 has since been edited away. sync.ps1 runs it before every push.
 
-ORDER MATTERS. This reads generated HTML, so it must run AFTER both other builds:
+ORDER MATTERS. This reads generated HTML, so it must run AFTER the other builds:
+    python Website/tools/heading_ids.py
     python Website/tools/page_build.py
     python Website/tools/blog_build.py
     python Website/tools/search_build.py
+
+Adding a new page? There is a checklist in Plans/Sitewide-Search.md — the two that bite are
+registering the page (step 1, enforced here) and keeping its content inside <main id="main">,
+which is the only region this reads.
 """
 
 import json
