@@ -270,6 +270,15 @@
         e.preventDefault();
         clearTimeout(timer);
         render();
+        // ⚠ Analytics MUST be flushed here, and this is the one place it is easy to forget.
+        // Cancelling the navigation above means pagehide never fires, so a visitor who types
+        // a query, presses Search and then reads the results without leaving the page was
+        // never recorded at all — the single clearest statement of intent on the whole site
+        // was the one action guaranteed to go unlogged. Log immediately rather than waiting
+        // out the settle timer (a submit IS the settle), and flush rather than waiting for
+        // the page to go away. noteQuery dedupes, so the pending timer becomes a no-op.
+        noteQuery(input.value, search.lastTotal);
+        flushLog();
       });
     }
 
@@ -484,6 +493,11 @@
       document.documentElement.classList.remove("search-open");
       trigger.setAttribute("aria-expanded", "false");
       if (lastFocus && lastFocus.focus) lastFocus.focus();
+      // Dismissing the overlay ends a search just as definitely as navigating away from one.
+      // Waiting for pagehide would hold the highest-signal case of all — searched, found
+      // nothing, gave up, carried on reading — hostage to whether the visitor later closes
+      // the tab in a way that fires it.
+      flushLog();
     }
 
     if (onResultsPage) {
