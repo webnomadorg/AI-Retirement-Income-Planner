@@ -1690,6 +1690,17 @@ html.dark .search-box .search-results::-webkit-scrollbar-thumb:hover{ background
 html.dark .search-result mark{ background:rgba(193,154,46,.38); color:#FFF0CC; }
 .search-empty{ margin:0; padding:1.2rem .8rem; color:var(--ink-soft); font-size:.95rem; }
 
+/* Acknowledge a press of the Search button on /search.html.
+   With JS on that button is inert by nature: results are already live as you type, so submitting
+   re-renders an identical list and nothing on screen moves — it reads as broken. One short wash
+   behind the result count, which sits directly under the button, says "yes, that ran".
+   ⚠ Keep the animation FINITE. An infinite one wedges the screenshot tooling these pages are
+   verified with, and this file is shared by all 86 pages. */
+@keyframes search-ack{ from{ background:rgba(30,122,110,.28); } to{ background:transparent; } }
+#searchStatus{ border-radius:6px; }
+#searchStatus.acked{ animation:search-ack .9s ease-out 1; }
+@media (prefers-reduced-motion:reduce){ #searchStatus.acked{ animation:none; } }
+
 /* /search.html */
 .search-page-form{ display:flex; gap:.6rem; align-items:center; margin-bottom:.4rem; }
 .search-page-form .blog-search{ max-width:none; }

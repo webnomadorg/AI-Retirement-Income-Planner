@@ -279,6 +279,18 @@
         // the page to go away. noteQuery dedupes, so the pending timer becomes a no-op.
         noteQuery(input.value, search.lastTotal);
         flushLog();
+
+        // Say something. The button cannot change the results — they are already live — so
+        // without this it is a control that visibly does nothing, which reads as broken.
+        // Removing and reflowing before re-adding restarts the animation on a repeated press;
+        // without the reflow the class is already there and the second press looks ignored.
+        // Focus is deliberately NOT moved: Enter submits from inside the input, and taking
+        // focus away there would break refining a query mid-typing.
+        if (input.value.trim()) {
+          status.classList.remove("acked");
+          void status.offsetWidth;
+          status.classList.add("acked");
+        }
       });
     }
 
