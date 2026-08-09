@@ -44,10 +44,10 @@ Website/
 All links are **relative**, so it works in a subfolder too.
 
 ## GitHub sync
-This folder is its own git repo, wired to **github.com/webnomadorg/AI-Retirement-Income-Planner** (branch `main`). `Source Files/`, `Website Notes.txt`, and `sync.ps1` are git-ignored, so only the publishable site is pushed.
+This folder is its own git repo, wired to **github.com/webnomadorg/AI-Retirement-Income-Planner** (branch `main`). `Source Files/` and `Website Notes.txt` are git-ignored (as is any stray `sync.ps1`), so only the publishable site is pushed.
 
 - **First push (one-time auth):** from inside `Website/`, run `git push -u origin main`. Git Credential Manager opens a browser to log in to GitHub; after that, credentials are cached.
-- **Resync after future edits:** `pwsh ./sync.ps1 "what changed"` — it stages, commits, and pushes in one step.
+- **Resync after future edits:** `pwsh ../tools/website-sync.ps1 "what changed"` — it stages, commits, and pushes in one step.
 - Enable **GitHub Pages** on the repo (Settings → Pages → deploy from `main` / root) to host it free at a github.io URL, or point a custom domain at it.
 
 ## Before you go live — quick edits

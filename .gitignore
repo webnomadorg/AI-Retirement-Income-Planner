@@ -2,7 +2,10 @@
 Source Files/
 Website Notes.txt
 
-# Local helper script (not part of the published site)
+# The pre-push guard runner moved to the PRIVATE desktop repo (tools/website-sync.ps1) so a
+# fresh clone cannot silently lose the four safety checks. This rule stays as a backstop: this
+# repo is public and Vercel serves its root, so a stray copy here would be downloadable at
+# /sync.ps1. There should be exactly one copy, and it is not this one.
 sync.ps1
 
 # Dependencies. Vercel installs these itself from package.json — a local `npm install` here
