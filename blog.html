@@ -934,14 +934,22 @@ var POSTS = [
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  function matches(p) {
+  // `q` defaults to the committed state.q. The analytics below passes an explicit query so it
+  // can count results for what is in the box RIGHT NOW, which on blur is newer than state.q.
+  // ⚠ Never pass this straight to Array.filter — filter supplies (element, index, array), so
+  // `POSTS.filter(matches)` would hand the array index in as the query.
+  function matches(p, q) {
+    var needle = q === undefined ? state.q : q;
     if (state.cat && p.catSlug !== state.cat) return false;
-    if (state.q) {
+    if (needle) {
       var hay = (p.title + " " + p.description + " " + p.category).toLowerCase();
-      var terms = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      var terms = needle.toLowerCase().split(/\s+/).filter(Boolean);
       for (var i = 0; i < terms.length; i++) if (hay.indexOf(terms[i]) === -1) return false;
     }
     return true;
+  }
+  function countFor(q) {
+    return POSTS.filter(function (p) { return matches(p, q); }).length;
   }
   function card(p) {
     // List view uses the pre-cropped square thumbnail when the post has one
@@ -965,7 +973,7 @@ var POSTS = [
   }
   function render() {
     grid.classList.toggle("list-view", state.view === "list");
-    var list = POSTS.filter(matches);
+    var list = POSTS.filter(function (p) { return matches(p); });
     var slice = list.slice(0, state.shown);
     grid.innerHTML = slice.map(card).join("");
     noResults.hidden = list.length !== 0;
@@ -991,7 +999,69 @@ var POSTS = [
       state.q = search.value.trim();
       state.shown = pageSize();
       render();
+      noteWhenSettled(state.q);
     }, 120);
+  });
+
+  /* ---- what people search for here, and what they fail to find ----------------------------
+     This box is NOT sitewide search. It filters the card grid locally and deliberately never
+     fetches the 1.35 MB index — that is the whole reason it is a second implementation. But
+     logging does not need the index: the number of matching cards is already known. Without
+     this, the one box on the site where somebody hunts for an article by name was invisible to
+     the analytics, so "looked for an article we have not written" — the most actionable signal
+     there is — could never be recorded.
+
+     Same endpoint, same privacy rules and same 1.4 s settle as assets/js/search.js.
+     ⚠ `n` counts matching ARTICLE CARDS, not indexed sections, so a count from this box is not
+     directly comparable with a sitewide count for the same words. */
+  var LOG_URL = "/api/search-log";
+  var loggedQueries = {};   // dedupe within a page session
+  var pendingLog = [];
+  var settleTimer;
+
+  function trackingRefused() {
+    return navigator.doNotTrack === "1" || window.doNotTrack === "1" ||
+           navigator.msDoNotTrack === "1" || navigator.globalPrivacyControl === true;
+  }
+
+  function flushLog() {
+    if (!pendingLog.length) return;
+    var payload = JSON.stringify({ items: pendingLog });
+    pendingLog = [];
+    if (!navigator.sendBeacon) return;
+    try {
+      navigator.sendBeacon(LOG_URL, new Blob([payload], { type: "application/json" }));
+    } catch (e) { /* analytics must never surface to a visitor */ }
+  }
+
+  function noteQuery(q) {
+    if (trackingRefused()) return;
+    q = String(q).toLowerCase().replace(/\s+/g, " ").trim();
+    if (q.length < 2 || q.length > 80) return;
+    if (loggedQueries[q]) return;
+    loggedQueries[q] = 1;
+    pendingLog.push({ q: q, n: countFor(q) });
+    if (pendingLog.length >= 5) flushLog();
+  }
+
+  // Only a query the visitor stopped on. The grid re-filters on a 120 ms debounce, so logging
+  // there would file "r", "ro", "rot", "roth" as four invented misses for one real search.
+  function noteWhenSettled(q) {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(function () { noteQuery(q); }, 1400);
+  }
+
+  // Leaving the box is this page's equivalent of pressing Search or closing the overlay — the
+  // visitor is done with it, usually on the way to clicking a card. Note immediately instead of
+  // waiting out the settle timer, or a quick type-then-click is lost before it is ever queued.
+  search.addEventListener("blur", function () {
+    clearTimeout(settleTimer);
+    noteQuery(search.value);
+    flushLog();
+  });
+  window.addEventListener("pagehide", flushLog);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") flushLog();
   });
   loadMore.addEventListener("click", function () {
     state.shown += pageSize();
