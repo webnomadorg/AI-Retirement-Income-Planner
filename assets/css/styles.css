@@ -1591,3 +1591,91 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
    inside this card it should not inherit the centred landing-page treatment. */
 .post-capture .form-success{ text-align:left; }
 .post-capture .form-success p{ margin:0; }
+
+/* ---- Sitewide search ------------------------------------------------------- */
+/* Everything here is drawn from the shared tokens, so dark mode and all five colour
+   themes come out right without a single per-theme override — the same way .blog-search
+   does. No hard-coded colours below this line. */
+
+/* Header trigger. margin-left:auto pushes it — and everything after it — to the right, so it
+   lands beside the hamburger on small screens and immediately left of the nav links on wide
+   ones. It is a direct child of .nav rather than of .nav-panel, which is display:none below
+   1500px; search is a primary action and cannot live behind a hamburger. */
+.nav-search{
+  margin-left:auto;
+  width:36px; height:36px; border-radius:9px; flex:none;
+  background:var(--paper-2); border:1px solid var(--line); color:var(--ink);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background var(--transition),color var(--transition),border-color var(--transition);
+}
+.nav-search:hover{ background:var(--surface); color:var(--teal); border-color:var(--teal); }
+.nav-search svg{ pointer-events:none; }
+.nav-search:focus-visible{ outline:none; box-shadow:var(--ring); border-color:var(--teal); }
+
+/* Overlay */
+html.search-open{ overflow:hidden; }
+.search-overlay{ position:fixed; inset:0; z-index:120; display:flex; justify-content:center;
+  align-items:flex-start; padding:clamp(1rem,8vh,6rem) 1rem 2rem; }
+.search-overlay[hidden]{ display:none; }
+.search-backdrop{ position:absolute; inset:0; background:rgba(20,48,75,.45);
+  backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); }
+.search-box{ position:relative; width:100%; max-width:680px; max-height:100%;
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); animation:searchIn .16s ease-out; }
+.search-overlay.no-anim .search-box{ animation:none; }
+@keyframes searchIn{ from{ opacity:0; transform:translateY(-8px); } to{ opacity:1; transform:none; } }
+
+.search-box-head{ display:flex; align-items:center; gap:.6rem; flex:none;
+  padding:.85rem 1rem; border-bottom:1px solid var(--line-soft); }
+.search-box-head>svg{ color:var(--ink-faint); flex:none; }
+.search-box-head input{ flex:1; min-width:0; font:inherit; font-size:1.05rem; color:var(--ink);
+  background:none; border:none; padding:.2rem 0; }
+.search-box-head input:focus{ outline:none; }
+.search-close{ flex:none; font:inherit; font-size:.72rem; font-weight:600; letter-spacing:.04em;
+  color:var(--ink-faint); background:var(--paper-2); border:1px solid var(--line);
+  border-radius:6px; padding:.2rem .45rem; cursor:pointer; }
+.search-close:hover{ color:var(--teal); border-color:var(--teal); }
+
+.search-status{ flex:none; margin:0; padding:.55rem 1rem 0; font-size:.85rem; color:var(--ink-faint); }
+.search-box .search-results{ overflow-y:auto; padding:.4rem .5rem .5rem; }
+.search-box-foot{ flex:none; padding:.7rem 1rem; border-top:1px solid var(--line-soft);
+  background:var(--surface-soft); font-size:.88rem; }
+.search-box-foot a{ color:var(--teal-deep); font-weight:550; }
+
+/* Result rows — shared by the overlay and /search.html */
+.search-result{ display:block; text-decoration:none; color:inherit; padding:.7rem .8rem;
+  border-radius:var(--radius-sm); border:1px solid transparent; transition:var(--transition); }
+.search-result:hover,
+.search-result.active{ background:var(--surface-soft); border-color:var(--line); }
+.search-result:focus-visible{ outline:none; box-shadow:var(--ring); }
+.search-result-kind{ display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--teal-deep); background:rgba(30,122,110,.13);
+  border-radius:999px; padding:.14rem .55rem; margin-bottom:.3rem; }
+.search-result-title{ display:block; font-family:var(--font-display); font-size:1.06rem;
+  font-weight:600; line-height:1.3; color:var(--ink-2); }
+.search-result-crumb{ display:block; font-size:.78rem; color:var(--ink-faint); margin-top:.1rem; }
+.search-snippet{ display:block; font-size:.9rem; line-height:1.5; color:var(--ink-soft);
+  margin-top:.3rem; }
+/* The match colour is set explicitly rather than inherited. Inheriting gave the snippet's
+   muted --ink-soft on top of a gold wash: 4.7:1 in light mode and only 2.81:1 in dark, i.e.
+   highlighting a word made it HARDER to read than leaving it alone. Now 10.5:1 and 6.9:1. */
+.search-result mark{ background:rgba(193,154,46,.28); color:var(--ink); border-radius:3px;
+  padding:0 .1em; font-weight:600; }
+html.dark .search-result mark{ background:rgba(193,154,46,.38); color:#FFF0CC; }
+.search-empty{ margin:0; padding:1.2rem .8rem; color:var(--ink-soft); font-size:.95rem; }
+
+/* /search.html */
+.search-page-form{ display:flex; gap:.6rem; align-items:center; margin-bottom:.4rem; }
+.search-page-form .blog-search{ max-width:none; }
+.search-page-form .btn{ flex:none; }
+#searchResults{ margin-top:1rem; display:flex; flex-direction:column; gap:.3rem; }
+#searchResults .search-result{ border-color:var(--line-soft); background:var(--surface); }
+#searchResults .search-result:hover{ border-color:var(--teal); }
+
+@media (max-width:600px){
+  .search-overlay{ padding:0; }
+  .search-box{ max-width:none; height:100%; border:none; border-radius:0; }
+  .search-page-form{ flex-wrap:wrap; }
+  .search-page-form .blog-search{ flex:1 1 100%; }
+}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session Terms — AI Retirement Income Planner | WebNomad Studio</title>
+<title>Search — AI Retirement Income Planner | WebNomad Studio</title>
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
      Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
      the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
@@ -35,14 +35,17 @@
   fbq('track', 'PageView');
 </script>
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Terms for WebNomad Studio's 1-on-1 educational planner sessions: what they are (educational instruction, not financial advice), booking, rescheduling, cancellation and refunds.">
+<meta name="description" content="Search everything on the AI Retirement Income Planner site — features, pricing, tax and healthcare guidance, setup help, and every article on the blog.">
+<!-- A results page has nothing stable to index, and crawling one query at a time would
+     bury the real pages under near-duplicates of their own content. -->
+<meta name="robots" content="noindex, follow">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="canonical" href="https://airetirementincomeplanner.com/terms.html">
+<link rel="canonical" href="https://airetirementincomeplanner.com/search.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Session Terms — WebNomad Studio">
-<meta property="og:description" content="The terms for our 1-on-1 educational planner sessions — educational instruction only, not financial advice.">
+<meta property="og:title" content="Search — WebNomad Studio">
+<meta property="og:description" content="Search everything on the site — the planner, the guides, and every article on the blog.">
 <meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
-<meta property="og:url" content="https://airetirementincomeplanner.com/terms.html">
+<meta property="og:url" content="https://airetirementincomeplanner.com/search.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
@@ -98,94 +101,36 @@
 
   <section class="page-head band">
     <div class="container narrow center">
-      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Session Terms</p>
-      <span class="eyebrow" style="justify-content:center;">The fine print, plainly</span>
-      <h1>1-on-1 Session Terms</h1>
-      <p class="lead center" style="margin-inline:auto;">These terms apply when you book a 1-on-1 educational session. They explain what a session is (and isn't), how booking works, and our rescheduling, cancellation and refund policy.</p>
-      <p class="muted" style="font-size:.92rem;">Last updated: 2 August 2026</p>
+      <p class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; Search</p>
+      <span class="eyebrow" style="justify-content:center;">Find it fast</span>
+      <h1>Search</h1>
+      <p class="lead center" style="margin-inline:auto;">Every page and every article, searched in full — pricing, taxes, healthcare, Social Security, setup help and the changelog.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container narrow">
 
-      <div class="callout" style="margin-bottom:2.2rem;display:flex;align-items:flex-start;gap:.7rem;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="flex-shrink:0;margin-top:.15rem;color:var(--teal)" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span><strong>The short version:</strong> A session is one-to-one teaching about how the software works and what the retirement concepts mean. It is <strong>not financial, tax, or legal advice</strong>, and no personalised recommendations are given. Pay through Stripe, then pick a time — the session is confirmed once you choose a slot. Cancel or reschedule with at least 24 hours' notice for a full refund of the session fee.</span>
-      </div>
+      <!-- A real GET form, so the page still works with JavaScript off: submitting reloads
+           search.html?q=… and the script picks the query up from the URL on the way back in. -->
+      <form class="search-page-form" action="/search.html" method="get" role="search">
+        <div class="blog-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="searchInput" name="q" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search the site… e.g. IRMAA, refund, Roth conversion" aria-label="Search the site">
+        </div>
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
 
-      <h2 id="who">1. Who these terms are between</h2>
-      <p>These terms are an agreement between you, the person booking ("you"), and <strong>Paul Hankin, an individual doing business as WebNomad Studio</strong> ("WebNomad Studio", "we", "us", "our"). By booking and paying for a session you agree to these terms. If you don't agree with them, please don't book — email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> with any questions first.</p>
+      <p class="search-status" id="searchStatus" role="status" aria-live="polite"></p>
 
-      <h2 id="not-advice">2. Educational instruction only — not financial advice</h2>
-      <p>This is the most important part, so we say it plainly:</p>
-      <ul>
-        <li>A session is <strong>educational instruction</strong>. We teach you how to use the AI Retirement Income Planner and explain the general concepts it relies on (such as MAGI, ACA subsidies, CSR, IRMAA, RMDs and Roth conversions).</li>
-        <li>A session is <strong>not financial, tax, investment, legal, insurance, Social Security, estate, or retirement advice</strong>, and we are not acting as your financial adviser, accountant, attorney, or fiduciary.</li>
-        <li>We do <strong>not</strong> give personalised recommendations, we do <strong>not</strong> tell you what to do with your money, and we do <strong>not</strong> review, endorse, approve, or give an opinion on the merits of your personal plan or financial situation.</li>
-        <li>Any figures used in a session — whether sample numbers or numbers you choose to share — are for illustration and learning only. Every output of the planner is an estimate based on the assumptions entered.</li>
-        <li>A session does <strong>not</strong> create an ongoing advisory relationship of any kind, and nothing said in a session should be relied upon as advice.</li>
-        <li>Before making any financial, tax, or legal decision, you should consult a suitably qualified and licensed professional who can consider your individual circumstances.</li>
-      </ul>
+      <noscript>
+        <p class="muted">Search needs JavaScript. You can still browse from the menu above, or
+          try the <a href="/faq.html">FAQ</a>, <a href="/features.html">Features</a> or the
+          <a href="/blog.html">blog index</a>, which lists every article.</p>
+      </noscript>
 
-      <h2 id="scope">3. What a session includes — and doesn't</h2>
-      <p><strong>Included:</strong> a live, online, screen-share session of the duration you purchased (currently one hour), covering the planner's setup and features and the concepts behind them; time for your questions; and — where relevant — a starter scenario file, built during the session, emailed to you afterwards.</p>
-      <p><strong>Not included:</strong> preparation or review of your personal tax returns, financial statements or accounts; the creation of a financial plan on your behalf; ongoing support or follow-up beyond the session (unless separately arranged); or any of the professional services listed in Section 2. We will not enter your real account credentials or handle your money.</p>
+      <div class="search-results" id="searchResults"></div>
 
-      <h2 id="booking">4. Booking and the video platform</h2>
-      <p>Sessions are <strong>pay first, then book</strong>. After your payment is complete you are directed to a scheduling page and also emailed a scheduling link. <strong>Your session is only confirmed once you select a time.</strong> If you don't choose a time straight away, your scheduling link remains valid so you can book later.</p>
-      <p>Sessions take place online over <strong>Google Meet</strong>, which runs in your browser — the meeting link is added to your calendar invitation automatically. A working internet connection, a modern browser and (ideally) audio are needed on your side. If you have technical trouble joining, contact us as soon as possible so we can help or reschedule.</p>
-
-      <h2 id="payments">5. Payments, pricing and promotion codes</h2>
-      <p>Payment is processed securely by <strong>Stripe</strong>, which acts as the merchant of record and handles the transaction, receipt and any applicable taxes under Stripe's own terms and privacy policy. Prices are shown on the <a href="sessions.html">1-on-1 Sessions</a> and <a href="products.html">Products</a> pages and may change from time to time; the price shown at checkout is the price that applies to your booking. Valid promotion codes can be entered at checkout. Bundled options that include the planner software also grant you an instant download of that software.</p>
-
-      <h2 id="reschedule">6. Rescheduling, cancellation and no-shows</h2>
-      <ul>
-        <li><strong>Reschedule:</strong> you may reschedule using the link in your confirmation email, provided you do so at least <strong>24 hours</strong> before the start time. Rescheduling within 24 hours is at our discretion, subject to availability.</li>
-        <li><strong>Cancel for a refund:</strong> cancel at least <strong>24 hours</strong> before the start time and we'll refund the session fee in full (see Section 7).</li>
-        <li><strong>Late cancellation / no-show:</strong> if you cancel within 24 hours of the start time, or don't attend, the session fee is non-refundable because the time was reserved for you. As a courtesy we will normally offer a one-time reschedule where we reasonably can.</li>
-        <li><strong>If we need to reschedule:</strong> occasionally we may have to move a session. If that happens we'll offer you the earliest convenient alternative, or a full refund of the session fee if you prefer.</li>
-      </ul>
-
-      <h2 id="refunds">7. Refunds</h2>
-      <p>We want you to be happy. The session fee is refundable in the circumstances described in Section 6, and we will always consider a fair resolution if something went wrong on our side. For bundled purchases that include the planner software, the software portion is a digital product delivered immediately; where the software is faulty or not as described we will put it right or refund it, consistent with our general approach in the <a href="faq.html">FAQ</a>. Any consumer-law cooling-off or refund rights that apply where you live are honoured. To request a refund, email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> with your receipt; refunds are issued through Stripe to your original payment method.</p>
-
-      <h2 id="conduct">8. Your responsibilities</h2>
-      <p>To get the most from a session, please join on time and be ready to share your screen if you wish. You decide what information to show us — <strong>you don't need to share any sensitive financial details</strong>, and we recommend you don't share account numbers, passwords, or other credentials. You're responsible for the security of your own device and data. Sessions are provided for your personal use and may not be recorded, resold, or shared as a substitute for purchasing your own session.</p>
-
-      <h2 id="recording">9. Recording and privacy</h2>
-      <p>We do <strong>not</strong> record sessions. If you would like to take your own notes, that's fine. Any information you give us to arrange the session (for example, your name, email, and the answers to a short intake question set) is used only to schedule and prepare for your session and is handled in line with our <a href="privacy.html">Privacy Policy</a>. Scheduling and video are provided by third parties (our scheduling tool and Google Meet), which process your booking details under their own terms.</p>
-
-      <h2 id="no-guarantee">10. No guarantee of outcomes; limitation of liability</h2>
-      <p>Retirement planning involves assumptions about the future that may not hold. We make no guarantee about any financial result, and any decisions you make after a session are your own. To the fullest extent permitted by law, our total liability arising out of or in connection with a session is limited to the amount you paid for that session, and we are not liable for indirect or consequential losses. Nothing in these terms limits any liability that cannot be limited under applicable law.</p>
-
-      <h2 id="ip">11. Materials</h2>
-      <p>The planner software, this website, and any documents or example files we provide remain our intellectual property (or that of our licensors). You may use them for your own personal planning, but not redistribute or resell them.</p>
-
-      <h2 id="changes">12. Changes to these terms</h2>
-      <p>We may update these terms from time to time; the version in force is the one published here on the date you book. Material changes will be reflected by the "last updated" date above.</p>
-
-      <h2 id="governing-law">13. Governing law and disputes</h2>
-      <p>These terms, and any dispute or claim arising out of or relating to a session or these terms, are governed by the laws of the <strong>State of Missouri, United States</strong>, without regard to its conflict-of-laws principles.</p>
-      <p>Subject to any mandatory right you may have as a consumer to bring proceedings in another jurisdiction, the state courts located in <strong>St. Louis County, Missouri</strong>, and the <strong>United States District Court for the Eastern District of Missouri</strong>, will have exclusive jurisdiction over any dispute or claim arising out of or relating to a session or these terms, and you and WebNomad Studio consent to the jurisdiction of those courts.</p>
-      <p><strong>Nothing in these terms deprives you of any mandatory consumer rights or protections that apply under the laws of the jurisdiction in which you reside and that cannot lawfully be excluded or restricted by agreement.</strong></p>
-
-      <h2 id="contact">14. Contact</h2>
-      <p>Questions about a session or these terms? Email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> — a real person replies, usually within one business day.</p>
-
-      <p class="muted" style="font-size:.9rem;margin-top:2rem;">These terms are provided in good faith and in plain language; they are not legal advice to you. See also our <a href="privacy.html">Privacy Policy</a>.</p>
-
-    </div>
-  </section>
-
-  <section class="section band-ink on-ink cta-band">
-    <div class="container center">
-      <span class="eyebrow" style="justify-content:center;">Ready to learn the planner?</span>
-      <h2 class="cta-band-title">Book a 1-on-1 session</h2>
-      <div class="cta-actions" style="justify-content:center;">
-        <a class="btn btn-primary btn-lg" href="sessions.html#pricing">See sessions &amp; pricing</a>
-        <a class="btn btn-outline btn-lg" href="contact.html">Ask a question</a>
-      </div>
     </div>
   </section>
 

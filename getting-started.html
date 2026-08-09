@@ -63,6 +63,12 @@
       <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
       <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
     </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
     <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
     <div class="nav-panel" id="nav-panel">
       <ul class="nav-links">
@@ -357,6 +363,7 @@
       <div class="footer-col">
         <h4>Support</h4>
         <ul>
+          <li><a href="/search.html">Search the site</a></li>
           <li><a href="/faq.html">FAQ</a></li>
           <li><a href="/updates.html">Updates &amp; Fixes</a></li>
           <li><a href="/about.html">About the Developer</a></li>
@@ -377,6 +384,11 @@
     </div>
     <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
   </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
 </footer>
 
 <script src="assets/js/main.js"></script>

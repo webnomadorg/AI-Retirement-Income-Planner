@@ -51,6 +51,7 @@
       <div class="footer-col">
         <h4>Support</h4>
         <ul>
+          <li><a href="/search.html">Search the site</a></li>
           <li><a href="/faq.html">FAQ</a></li>
           <li><a href="/updates.html">Updates &amp; Fixes</a></li>
           <li><a href="/about.html">About the Developer</a></li>
@@ -71,4 +72,9 @@
     </div>
     <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
   </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
 </footer>

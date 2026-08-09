@@ -46,6 +46,7 @@ PAGES = {
     "technical.html": "",
     "updates.html": "",
     "faq.html": "FAQ",
+    "search.html": "",
     "contact.html": "",
     "share.html": "",
     "affiliates.html": "",
