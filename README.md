@@ -79,8 +79,11 @@ local static preview):
   `handler(request)` form crashes this project's runtime. The product ZIPs and the Stripe
   catalog are maintained by tooling in a separate private repo; product files are never
   committed here (this repo is public).
-- **`api/contact.js`** — the contact form; emails `dev@webnomad.org` + a confirmation to the
-  sender via **Resend** (`RESEND_API_KEY`).
+- **`api/contact.mjs`** — the contact form; emails `dev@webnomad.org` + an auto-reply to the
+  sender via **Resend** (`RESEND_API_KEY`). Screened by `lib/signup-guard.mjs` with
+  **disposable-domain blocking OFF** (a throwaway address may be a genuine pre-sales
+  question). The auto-reply is capped at one per address per day — it is the half that can be
+  aimed at a victim; the notification to `dev@` is never throttled.
 - **`api/newsletter.mjs`** — the free-download signup, **step 1 of 2**. Screens the address
   (`lib/signup-guard.mjs`) and emails a signed confirmation link. It does **not** write to
   MailerLite.

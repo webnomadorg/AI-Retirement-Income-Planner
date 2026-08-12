@@ -16,7 +16,7 @@
                              connected to the project (falls back to OIDC).
 
    NOTE: written in the classic Node (req, res) signature — same as
-   api/contact.js — which is how this project's functions are invoked. */
+   api/contact.mjs — which is how this project's functions are invoked. */
 
 import { Readable } from 'node:stream';
 import { get } from '@vercel/blob';

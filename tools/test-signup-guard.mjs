@@ -159,6 +159,23 @@ const noTok = await screen({ formToken: '' });
 ok('missing token still passes', noTok.ok, `blocked as ${noTok.reason}`);
 eq('missing token is recorded', noTok.tokenState, 'missing');
 
+/* The contact form's lighter screen. A throwaway address there may be a real person with a
+   real question, so it is allowed through — but the checks that cannot be a person still
+   apply. Getting this backwards would silently start rejecting pre-sales enquiries. */
+const contactish = (over = {}) => screen({ checkDisposable: false, ...over });
+ok('contact: disposable allowed through',
+   (await contactish({ email: 'someone@mailinator.com' })).ok);
+eq('contact: noreply@ still blocked',
+   (await contactish({ email: 'noreply@gmail.com' })).reason, 'non-human-address');
+eq('contact: honeypot still blocked',
+   (await contactish({ honeypot: 'x' })).reason, 'honeypot');
+eq('contact: bad syntax still blocked',
+   (await contactish({ email: 'nope' })).reason, 'syntax');
+eq('contact: instant submit still blocked',
+   (await contactish({ formToken: issueFormToken(SECRET) })).reason, 'submitted-too-fast');
+ok('contact: a missing token is tolerated when there is no secret',
+   (await screen({ checkToken: false, formToken: '', checkDisposable: false })).ok);
+
 const good = await screen();
 ok('a good signup passes', good.ok, good.reason);
 eq('screen returns the canonical address', (await screen({ email: 'A.rchie+tag@GMail.com' })).email, 'archie@gmail.com');

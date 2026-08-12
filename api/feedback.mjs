@@ -122,7 +122,7 @@ export default async function handler(req, res) {
     }
     body = body || {};
 
-    // Honeypot — bots fill hidden fields, humans don't. Same trap as api/contact.js.
+    // Honeypot — bots fill hidden fields, humans don't. Same trap as api/contact.mjs.
     if (body._honey) return res.status(400).json({ error: 'Bad request' });
 
     const name = trim(body.name, CAP.name);

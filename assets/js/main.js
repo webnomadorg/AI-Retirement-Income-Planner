@@ -229,6 +229,28 @@
   var notice = document.getElementById('form-notice');
   var success = document.getElementById('form-success');
 
+  /* Form token — a deliberate near-copy of the one in the signup handler below, kept here
+     rather than shared because these IIFEs have no common scope and the alternative is a
+     global. The logic that matters is server-side (lib/signup-guard.mjs); this end only
+     fetches a string and hands it back.
+
+     It MUST be primed on first interaction, not at submit: the server rejects a token less
+     than two seconds old as robotic, so one fetched at submit time would block every
+     genuine message. */
+  var formToken = '';
+  var tokenPending = null;
+  function primeToken() {
+    if (formToken || tokenPending) return tokenPending;
+    tokenPending = fetch('/api/contact', { method: 'GET', headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.t) formToken = d.t; })
+      .catch(function () { /* proceed without — the server tolerates a missing token */ });
+    return tokenPending;
+  }
+  ['focusin', 'input'].forEach(function (evt) {
+    form.addEventListener(evt, primeToken, { once: true });
+  });
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var btn = form.querySelector('button[type="submit"]');
@@ -244,11 +266,19 @@
     btn.disabled = true;
     btn.innerHTML = 'Sending…';
 
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, email: email, subject: subject, message: message, _honey: honey }),
-    })
+    (tokenPending
+      ? Promise.race([tokenPending, new Promise(function (r) { setTimeout(r, 1500); })])
+      : Promise.resolve())
+      .then(function () {
+        return fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name, email: email, subject: subject, message: message,
+            _honey: honey, formToken: formToken,
+          }),
+        });
+      })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
         if (res.ok && res.data.ok) {
