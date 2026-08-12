@@ -20,7 +20,7 @@
      META_PAGE_ACCESS_TOKEN    — Page token with leads_retrieval, to read the lead
      META_APP_SECRET           — app secret, to verify X-Hub-Signature-256
      MAILERLITE_API_KEY        — already set
-     MAILERLITE_GROUP_ID*      — already set; same map as api/newsletter.js
+     MAILERLITE_GROUP_ID*      — already set; the shared map lives in lib/magnets.mjs
 
    ⚠ Classic Node (req, res) signature. The web-standard handler(request) form crashes this
    project's runtime with FUNCTION_INVOCATION_FAILED — the same lesson as download.mjs.

@@ -81,14 +81,19 @@ local static preview):
   committed here (this repo is public).
 - **`api/contact.js`** — the contact form; emails `dev@webnomad.org` + a confirmation to the
   sender via **Resend** (`RESEND_API_KEY`).
-- **`api/newsletter.js`** — the free-eBook signup. Currently runs in **MailerLite mode**: adds
-  each subscriber to a MailerLite group (which sends the welcome + eBook automation) and sends a
-  dev notification via Resend. It can also run in the original **Resend-only mode**.
-  👉 **Full setup, env vars, verification, and how to switch between the two modes (with both
-  complete source versions archived) live in [`NEWSLETTER-SETUP.md`](NEWSLETTER-SETUP.md).**
+- **`api/newsletter.mjs`** — the free-download signup, **step 1 of 2**. Screens the address
+  (`lib/signup-guard.mjs`) and emails a signed confirmation link. It does **not** write to
+  MailerLite.
+- **`api/newsletter-confirm.mjs`** — **step 2, and the only code path that adds a subscriber.**
+  Verifies the signed link, upserts into MailerLite, then fires the Meta `Lead` event.
+  ⚠ Requires **`SIGNUP_TOKEN_SECRET`**; without it every signup returns 503, deliberately.
+  👉 **Full setup, env vars and verification live in
+  [`NEWSLETTER-SETUP.md`](NEWSLETTER-SETUP.md);** the design rationale is in
+  `Plans/Newsletter-Spam-Prevention.md` (private desktop repo).
 
 Env vars (Vercel → Project → Settings → Environment Variables): `RESEND_API_KEY`,
-`MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `STRIPE_VERIFY_KEY`. None are committed to the repo.
+`MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `SIGNUP_TOKEN_SECRET`, `BLOB_READ_WRITE_TOKEN`,
+`STRIPE_VERIFY_KEY`. None are committed to the repo.
 
 ## Interactive pieces
 - **Theme gallery** (Features page) — tabbed switcher across the 5 themes with a Light/Dark toggle; images preload with a sequence guard so the picture and caption never disagree.

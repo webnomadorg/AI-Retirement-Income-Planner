@@ -280,7 +280,7 @@
 
    Each form declares:
      data-newsletter          marks it for this handler
-     data-magnet="<key>"      which download to send (see MAGNETS in api/newsletter.js)
+     data-magnet="<key>"      which download to send (see MAGNETS in lib/magnets.mjs)
    Fields are found WITHIN the form, so several can coexist on one page without colliding.
 
    On success we leave for /thank-you.html instead of swapping in an inline panel. That gives

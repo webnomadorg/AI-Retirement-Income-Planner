@@ -91,7 +91,7 @@ CATEGORY_LABEL_TO_SLUG = {label: slug for slug, label in CLUSTER_TO_CATEGORY.val
 # relevant one, and costs the same to serve.
 #
 # Keys are category slugs from CLUSTER_TO_CATEGORY; values are magnet keys from MAGNETS in
-# api/newsletter.js. Anything unlisted falls back to CAPTURE_DEFAULT.
+# lib/magnets.mjs. Anything unlisted falls back to CAPTURE_DEFAULT.
 CAPTURE_DEFAULT = "ebook"
 CAPTURE_BY_CATEGORY = {
     "planner-howto": "checklist",     # mid-tutorial: the next question is "what do I need?"
