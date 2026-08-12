@@ -1,1 +1,0 @@
-{"error":"Missing or malformed session_id"}
