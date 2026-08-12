@@ -34,7 +34,7 @@ import {
   signingSecret,
   issueFormToken,
   emailHash,
-  BLOCK_MESSAGE,
+  BLOCK_MESSAGE_CONTACT,
 } from '../lib/signup-guard.mjs';
 import { logEvent, claimDailySend } from '../lib/signup-quarantine.mjs';
 
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
       note: 'contact-form',
     });
     console.warn(`[contact] blocked (${screened.reason})`);
-    return res.status(400).json({ error: BLOCK_MESSAGE });
+    return res.status(400).json({ error: BLOCK_MESSAGE_CONTACT });
   }
 
   /* Use the address as TYPED for correspondence, not the canonical form.
