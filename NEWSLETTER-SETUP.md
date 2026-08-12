@@ -1,5 +1,79 @@
 # Newsletter signup — setup, operation & switching guide
 
+> ## ⚠ READ FIRST — signup is now DOUBLE OPT-IN (changed 2026-08-12)
+>
+> `api/newsletter.js` no longer exists; it is **`api/newsletter.mjs`**, and it **does not write
+> to MailerLite at all**. It screens the address and emails a signed confirmation link.
+> **`api/newsletter-confirm.mjs` is the only code path that adds a subscriber.**
+>
+> **One new environment variable is REQUIRED: `SIGNUP_TOKEN_SECRET`.** Without it every
+> signup returns 503 and nothing works. That is deliberate — see below. Set it in Vercel and
+> **redeploy** (env vars bind at deploy time).
+>
+> Everything in "How to switch modes" further down still describes the *old* single-opt-in
+> behaviour and is kept only as history. Do not follow it expecting the current design.
+> The current design is documented in **`Plans/Newsletter-Spam-Prevention.md`** (desktop repo).
+
+## The two-step flow, end to end
+
+1. Visitor focuses a signup form → `GET /api/newsletter` issues a short-lived signed **form
+   token** (proves the form was rendered; catches instant robotic submits).
+2. Visitor submits → `POST /api/newsletter` runs the free screen in `lib/signup-guard.mjs`:
+   honeypot → syntax → **canonicalisation** → non-human localpart → disposable domain → form
+   token → MX/A record.
+3. Survivors get a confirmation email (Resend). **Nothing is stored anywhere yet** — the
+   pending signup lives entirely inside the signed token in the link.
+4. They click it → `GET /api/newsletter-confirm` verifies the signature and expiry, upserts
+   into MailerLite (`status: "active"` — the confirmation already happened, on our link),
+   fires the Meta CAPI `Lead`, notifies `dev@webnomad.org`, and redirects to
+   `/confirmed.html`.
+
+### The one thing to understand about the spam it was built for
+
+Addresses like `a.rch.i.e.w.ane.2.9@gmail.com` are **valid, deliverable mailboxes**. Gmail
+ignores dots, so that is the same inbox as `archiewane29@gmail.com`, and one person can mint
+unlimited distinct-looking addresses that all land in it. **No email-verification API can
+catch this** — ZeroBounce, Kickbox and the rest all return `valid`, correctly, and charge for
+the answer. Canonicalisation (free, instant) is the only fix, which is why none was bought.
+
+### Why a missing `SIGNUP_TOKEN_SECRET` breaks signup instead of degrading
+
+Because a quiet fallback would silently disable the entire double opt-in while the site kept
+looking healthy. `UPDATE_LOOKUP_PEPPER` sat unset in production from launch until 2026-08-08
+for exactly that reason. Breaking loudly is the feature.
+
+### What is logged
+
+`lib/signup-quarantine.mjs` writes one blob per decision to `signup-log/`, visible in the
+owner console's **Signups** tab. **No plaintext addresses** — a masked form, the domain, and
+an HMAC of the canonical address so repeat attempts can be counted without keeping a list of
+addresses nobody consented to. Check it for **false positives**, not just spam volume.
+
+It also enforces **one confirmation email per address+magnet per day**, via
+`allowOverwrite:false` on a deterministic key (atomic at the storage layer, same trick as the
+affiliate payout ledger). Without that cap, canonicalisation would make this endpoint a
+convenient way to send a hundred emails to one victim.
+
+### Facebook Lead Ads
+
+`api/meta-leads.mjs` runs the same screen but **deliberately no double opt-in** — Meta already
+verified the address and pre-filled it from the person's account, so a second confirmation
+would just discard paid leads. Canonicalisation, disposable and MX checks still apply, so it
+cannot be used as a back door into the list.
+
+### Tests
+
+`node Website/tools/test-signup-guard.mjs` — 63 assertions over canonicalisation, tokens and
+the screen. Run automatically by `pwsh tools/website-sync.ps1` before every push.
+
+---
+
+## History — the original single-opt-in design
+
+The rest of this document describes the flow **before** 2026-08-12, when
+`api/newsletter.js` wrote straight into MailerLite. It is retained because the Mode A/Mode B
+sources below are still the reference for the MailerLite and Resend call shapes.
+
 The free-eBook signup form (`newsletter.html`) posts to the Vercel serverless function
 `api/newsletter.js`. That function can run in **either of two modes**. This doc records both
 so you can switch between them at any time, even after the original chat/context is gone.
@@ -63,6 +137,8 @@ the eBook group, so signups keep working but everyone receives the eBook:
 ### Vercel environment variables (Project → Settings → Environment Variables, all environments)
 | Variable | Used by | Notes |
 | --- | --- | --- |
+| `SIGNUP_TOKEN_SECRET` | **double opt-in — REQUIRED** | **secret.** Any random string of 16+ chars (e.g. `openssl rand -base64 32`). Signs the form token and the confirmation link. **Unset = every signup returns 503, by design.** Rotating it invalidates confirmation links already in flight — those people simply sign up again. |
+| `BLOB_READ_WRITE_TOKEN` | quarantine log + daily confirmation cap | already set for the other Blob features |
 | `MAILERLITE_API_KEY` | Mode A | the secret MailerLite token |
 | `MAILERLITE_GROUP_ID` | Mode A | `188987074019329204` — also the fallback for any magnet below that is unset |
 | `MAILERLITE_GROUP_ID_CHECKLIST` | Mode A | group ID for the input checklist |

@@ -50,6 +50,7 @@ EXCLUDE = {
     "404.html",
     "thanks.html",
     "thank-you.html",
+    "confirmed.html",       # reached only from a signed link in a confirmation email
     "share.html",
     "search.html",          # the results page itself
     # A 6 MB copy of the planner app, not prose.

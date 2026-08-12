@@ -28,6 +28,9 @@
    parse and re-serialise the JSON changes them and every verification fails. */
 
 import crypto from 'node:crypto';
+import { screenSignup, signingSecret, emailHash } from '../lib/signup-guard.mjs';
+import { logEvent } from '../lib/signup-quarantine.mjs';
+import { magnetGroupId } from '../lib/magnets.mjs';
 
 export const config = { api: { bodyParser: false } };
 
@@ -44,13 +47,6 @@ const FORM_NAME_MAGNETS = [
   ['ebook', 'ebook'],
   ['book', 'ebook'],
 ];
-const MAGNET_ENV = {
-  ebook: 'MAILERLITE_GROUP_ID',
-  checklist: 'MAILERLITE_GROUP_ID_CHECKLIST',
-  questions: 'MAILERLITE_GROUP_ID_QUESTIONS',
-  abroad: 'MAILERLITE_GROUP_ID_ABROAD',
-};
-
 function magnetForForm(formName) {
   const n = String(formName || '').toLowerCase();
   for (const [needle, magnet] of FORM_NAME_MAGNETS) {
@@ -96,11 +92,51 @@ function fieldsToObject(lead) {
   return out;
 }
 
-async function addToMailerLite(email, firstName, magnet) {
+/* Screen a Lead Ads address with the same rules the website form uses, then subscribe.
+
+   ⚠ THIS PATH IS NOT DOUBLE OPT-IN, AND SHOULD NOT BE.
+   The person filled in a form inside Facebook, where Meta had already confirmed the address
+   as theirs and pre-filled it from their account. Emailing them a confirmation link would be
+   asking them to prove something Meta has already proved, and the drop-off would be paid-for
+   leads thrown away. What DOES apply is everything free: canonicalisation (so the dotted
+   Gmail trick cannot mint duplicate leads here either), the disposable-domain list, the
+   non-human-address check and the MX lookup.
+
+   The form token is skipped for the same reason it exists — there is no form of ours here.
+
+   Without this, the whole guard on api/newsletter.mjs would just move the problem: anyone
+   who can reach a lead form writes straight into the list through the back door. */
+async function screenAndAdd(rawEmail, rawName, magnet) {
+  const secret = signingSecret();
+
+  const screened = await screenSignup({
+    honeypot: '',
+    email: rawEmail,
+    name: rawName,
+    checkToken: false,
+    secret,
+  });
+
+  if (!screened.ok) {
+    console.warn(`meta-leads: rejected lead (${screened.reason})`);
+    await logEvent({
+      event: 'blocked',
+      reason: screened.reason,
+      email: rawEmail,
+      domain: screened.domain || '',
+      magnet,
+      note: 'facebook-lead-ads',
+    });
+    return false;
+  }
+
+  const email = screened.email;              // canonical, not what Meta sent
+  const firstName = screened.firstName;
+
   const apiKey = process.env.MAILERLITE_API_KEY;
-  const groupId = process.env[MAGNET_ENV[magnet]] || process.env.MAILERLITE_GROUP_ID;
+  const groupId = magnetGroupId(magnet);
   if (!apiKey || !groupId) {
-    console.error('meta-leads: MailerLite not configured — lead dropped:', email);
+    console.error('meta-leads: MailerLite not configured — lead dropped');
     return false;
   }
   const r = await fetch('https://connect.mailerlite.com/api/subscribers', {
@@ -121,6 +157,15 @@ async function addToMailerLite(email, firstName, magnet) {
     console.error('meta-leads: MailerLite rejected', r.status, await r.text());
     return false;
   }
+
+  await logEvent({
+    event: 'confirmed',
+    email,
+    domain: screened.domain,
+    magnet,
+    hash: emailHash(email, secret),
+    note: 'facebook-lead-ads',
+  });
   return true;
 }
 
@@ -189,10 +234,10 @@ export default async function handler(req, res) {
           console.warn('meta-leads: lead has no email field', v.leadgen_id);
           continue;
         }
-        const firstName = (fields.first_name || fields.full_name || '').trim().split(/\s+/)[0] || '';
+        const leadName = (fields.first_name || fields.full_name || '').trim();
         const magnet = magnetForForm(lead.form_name || v.form_name);
 
-        if (await addToMailerLite(email, firstName, magnet)) handled += 1;
+        if (await screenAndAdd(email, leadName, magnet)) handled += 1;
       }
     }
   } catch (err) {

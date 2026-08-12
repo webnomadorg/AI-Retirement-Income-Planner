@@ -306,6 +306,31 @@
     return m ? decodeURIComponent(m[2]) : '';
   }
 
+  /* ---- Form token ----
+     GET /api/newsletter hands out a short-lived signed token; the POST sends it back. It
+     proves two things the server cannot otherwise know: that a form was actually rendered
+     (a script POSTing blind at the endpoint has no token), and that more than a couple of
+     seconds passed between the page appearing and the submit.
+
+     Fetched on first interaction rather than page load, so an ordinary visitor who never
+     touches the form costs nothing, and the token is always fresh when it is used.
+
+     Nothing here is load-bearing on the client's good behaviour — the server decides. If
+     this fetch fails the signup still goes through; the server treats a MISSING token as
+     acceptable (it must, since this file is cached hard and old copies will keep posting
+     without one for hours after a deploy) and only rejects a FORGED one. */
+  var formToken = '';
+  var tokenPending = null;
+
+  function primeToken() {
+    if (formToken || tokenPending) return tokenPending;
+    tokenPending = fetch('/api/newsletter', { method: 'GET', headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.t) formToken = d.t; })
+      .catch(function () { /* proceed without — the server is tolerant of a missing token */ });
+    return tokenPending;
+  }
+
   /* Facebook's own browser identifiers, forwarded so the server-side event can be matched.
 
      Sending only a hashed email leaves Meta guessing which person (and which ad click) a
@@ -333,6 +358,12 @@
   }
 
   Array.prototype.forEach.call(forms, function (form) {
+    // Capture phase, once: the token request starts the moment someone engages with the
+    // form, so it has finished long before they have typed an address.
+    ['focusin', 'input'].forEach(function (evt) {
+      form.addEventListener(evt, primeToken, { once: true });
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -358,25 +389,39 @@
         if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
       }
 
-      fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name, email: email, _honey: honey,
-          magnet: magnet, eventId: eventId,
-          fbp: fbIds.fbp, fbc: fbIds.fbc,
-        }),
-      })
+      /* Wait for an in-flight token before posting. Someone who pastes an address and hits
+         enter immediately can outrun the GET, and posting without a token would work but
+         needlessly lose the timing signal. Capped so a hanging request cannot strand the
+         form — the server accepts a missing token. */
+      var ready = tokenPending
+        ? Promise.race([tokenPending, new Promise(function (r) { setTimeout(r, 1500); })])
+        : Promise.resolve();
+
+      ready
+        .then(function () {
+          return fetch('/api/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name, email: email, _honey: honey,
+              magnet: magnet, eventId: eventId,
+              fbp: fbIds.fbp, fbc: fbIds.fbc,
+              formToken: formToken,
+            }),
+          });
+        })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
           if (res.ok && res.data.ok) {
-            // Trust the server's echo — it decides the real magnet after validating.
+            /* Signup is now a two-step: this only sent a confirmation email, so there is no
+               conversion to report yet. The Lead event moved to /confirmed.html, which is
+               reached by clicking the link in that email — see api/newsletter-confirm.mjs
+               for why measuring at submission would have taught the ad optimiser to chase
+               the junk. No `eid` is passed on: the event id travels inside the signed token
+               instead, so it survives the click happening on a different device. */
             var served = (res.data && res.data.magnet) || magnet;
-            var eid    = (res.data && res.data.eventId) || eventId;
             try {
-              window.location.assign(
-                '/thank-you.html?m=' + encodeURIComponent(served) + '&eid=' + encodeURIComponent(eid)
-              );
+              window.location.assign('/thank-you.html?m=' + encodeURIComponent(served));
               return;
             } catch (navErr) { /* fall through to the inline panel */ }
             form.style.display = 'none';

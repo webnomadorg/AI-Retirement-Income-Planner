@@ -62,6 +62,7 @@ PAGES = {
     "press.html": "",
     "thanks.html": "",
     "thank-you.html": "",
+    "confirmed.html": "",
     "404.html": "",
 }
 

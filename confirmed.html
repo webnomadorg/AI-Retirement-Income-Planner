@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Confirm your email | WebNomad Studio</title>
+<title>You're confirmed | WebNomad Studio</title>
 <meta name="robots" content="noindex,nofollow">
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
      Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
@@ -36,7 +36,7 @@
   fbq('track', 'PageView');
 </script>
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Check your inbox and confirm your email to receive your free download.">
+<meta name="description" content="Email confirmed — your free download is on its way.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
@@ -93,19 +93,18 @@
   <section class="section">
     <div class="container narrow">
 
-      <div class="card" style="text-align:center;border:1.5px solid var(--teal);">
+      <!-- One of these four is revealed by the inline script below, from ?status=. They are
+           all present in the markup rather than built server-side because this page is
+           static: api/newsletter-confirm.mjs does the work and 302s here with the outcome. -->
+
+      <div class="card" id="st-ok" hidden style="text-align:center;border:1.5px solid var(--teal);">
         <div class="success-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h1 style="margin-bottom:.4rem;">One more click</h1>
+        <h1 style="margin-bottom:.4rem;">You're confirmed</h1>
         <p style="max-width:52ch;margin-inline:auto;">
-          We've emailed you a confirmation link. Click it and
-          <strong><span id="ty-what">your free download</span></strong> arrives straight away.
-        </p>
-        <p class="muted" style="max-width:52ch;margin-inline:auto;font-size:.95rem;">
-          Why the extra step? It keeps this list to people who actually asked to be on it —
-          no bought addresses, no bots, and nobody signed up by someone else typing their
-          address by mistake.
+          <strong><span id="cf-what">Your free download</span></strong> is on its way — it
+          usually arrives within a couple of minutes.
         </p>
         <p class="muted" style="font-size:.92rem;max-width:48ch;margin-inline:auto;">
           Nothing after five minutes? Check your spam or promotions folder — and if it still
@@ -114,12 +113,45 @@
         </p>
       </div>
 
+      <div class="card" id="st-expired" hidden style="text-align:center;">
+        <h1 style="margin-bottom:.4rem;">That link has expired</h1>
+        <p style="max-width:52ch;margin-inline:auto;">
+          Confirmation links last seven days. Nothing is wrong and you're not on any list —
+          just ask again and a fresh one will be sent.
+        </p>
+        <p style="margin-top:1.4rem;">
+          <a class="btn btn-primary btn-lg" href="/newsletter.html">Send me a new link</a>
+        </p>
+      </div>
+
+      <div class="card" id="st-invalid" hidden style="text-align:center;">
+        <h1 style="margin-bottom:.4rem;">We couldn't read that link</h1>
+        <p style="max-width:52ch;margin-inline:auto;">
+          Some email apps break long links across two lines, which is usually all this is. Try
+          clicking it again from the original email, or start over below.
+        </p>
+        <p style="margin-top:1.4rem;">
+          <a class="btn btn-primary btn-lg" href="/newsletter.html">Start again</a>
+        </p>
+      </div>
+
+      <div class="card" id="st-error" hidden style="text-align:center;">
+        <h1 style="margin-bottom:.4rem;">Something went wrong at our end</h1>
+        <p style="max-width:52ch;margin-inline:auto;">
+          Your link was fine — we just couldn't finish the signup. Email
+          <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we'll send your download
+          across by hand.
+        </p>
+      </div>
+
     </div>
   </section>
 
   <section class="section band">
     <div class="container narrow">
-      <h2>While you're waiting — try the planner itself</h2>
+      <!-- Neutral heading, not "while you're waiting": this band also shows under the
+           expired and invalid-link states, where nothing is on its way. -->
+      <h2>While you're here — try the planner itself</h2>
       <p>
         The download explains the thinking. The planner is where you actually run it: your own
         numbers, phase by phase, with the tax, healthcare and withdrawal maths worked out for
@@ -225,31 +257,65 @@
 
 <script src="assets/js/main.js" defer></script>
 <script>
-/* ⚠ NO CONVERSION EVENT FIRES HERE ANY MORE — THIS IS DELIBERATE, DO NOT PUT IT BACK.
+/* The end of the double opt-in. api/newsletter-confirm.mjs verifies the signed link,
+   subscribes the person, and 302s here with the outcome in ?status=.
 
-   Reaching this page means a confirmation email was SENT, not that anyone signed up. Since
-   signup became double opt-in, the conversion happens when the emailed link is clicked, and
-   the Lead event lives on /confirmed.html with the server-side half in
-   api/newsletter-confirm.mjs.
-
-   Firing it here would report a lead for every address typed into the form — including the
-   junk the guard is there to stop — and would train Facebook's optimiser to go and find
-   more of exactly that. A conversion counted before the person has proved they own the
-   mailbox is worse than no conversion at all: it is a wrong number that ad spend follows.
-
-   The page still names the requested download, which is presentation only. */
+   THIS is where the Lead conversion fires — not on thank-you.html, which is only reached by
+   submitting the form. A conversion recorded before someone proves they own the mailbox is a
+   wrong number that ad spend then follows. */
 var params = new URLSearchParams(location.search);
+var status = params.get('status') || 'ok';
 var magnet = params.get('m') || 'ebook';
+var eid    = params.get('eid') || '';
+
+var PANELS = { ok: 'st-ok', expired: 'st-expired', invalid: 'st-invalid', error: 'st-error' };
+var panel = document.getElementById(PANELS[status] || PANELS.error);
+if (panel) panel.hidden = false;
 
 var LABELS = {
   ebook:     'Build a Retirement Plan You Can Question',
-  checklist: 'the retirement input checklist',
+  checklist: 'The retirement input checklist',
   questions: '50+ questions to ask your retirement plan',
-  abroad:    'the cross-border retirement guide',
+  abroad:    'The cross-border retirement guide',
 };
 if (LABELS[magnet]) {
-  var what = document.getElementById('ty-what');
+  var what = document.getElementById('cf-what');
   if (what) what.textContent = LABELS[magnet];
+}
+
+/* Consent mode still gates the browser half: a visitor who declined the cookie banner sends
+   nothing from here, and the server-side copy (fired by the confirm endpoint, with this same
+   event id) is what keeps the signup measurable.
+
+   ⚠ Timing matters, and gets this wrong silently. consent.js is deferred, so it re-grants
+   consent AFTER any inline script in the body has already run. Firing Lead synchronously
+   would therefore queue it while consent is still revoked — and Meta drops it, including for
+   visitors who accepted the banner. Waiting for DOMContentLoaded (which fires only once every
+   deferred script has executed) puts the grant ahead of the event. */
+function fireLead() {
+  if (status !== 'ok') return;
+  // A refresh, or a second click on the same emailed link, must not fire a second conversion.
+  try {
+    var key = 'wn-lead-' + (eid || magnet);
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+  } catch (e) { /* private mode — worst case one duplicate, still better than none */ }
+
+  try {
+    if (typeof fbq === 'function') {
+      // Same event id the server sent, so Meta collapses the pair into one conversion.
+      fbq('track', 'Lead', { content_name: magnet }, eid ? { eventID: eid } : undefined);
+    }
+    if (typeof gtag === 'function') {
+      gtag('event', 'generate_lead', { method: magnet });
+    }
+  } catch (e) { /* analytics must never break the page */ }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', fireLead);
+} else {
+  fireLead();
 }
 </script>
 </body>
