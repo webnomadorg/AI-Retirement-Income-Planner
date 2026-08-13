@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>You're confirmed | WebNomad Studio</title>
-<meta name="robots" content="noindex,nofollow">
+<title>The Private Retirement Planner — No Account, Works Offline | WebNomad Studio</title>
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
      Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
      the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
@@ -36,8 +35,15 @@
   fbq('track', 'PageView');
 </script>
 <script src="assets/js/consent.js" defer></script>
-<meta name="description" content="Email confirmed — your free download is on its way.">
+<meta name="description" content="A retirement planner that keeps your figures on your own computer. No account, no sign-up, no bank links, no uploads — a single file that runs with the internet switched off. See exactly what leaves your machine.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/private.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Private Retirement Planner — No Account, Works Offline">
+<meta property="og:description" content="Your retirement figures never leave your computer. No account, no uploads, and it keeps working with the Wi-Fi off.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/og-cover.png">
+<meta property="og:url" content="https://airetirementincomeplanner.com/private.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
 </head>
@@ -90,85 +96,53 @@
 
 <main id="main">
 
-  <section class="section">
-    <div class="container narrow">
-
-      <!-- One of these four is revealed by the inline script below, from ?status=. They are
-           all present in the markup rather than built server-side because this page is
-           static: api/newsletter-confirm.mjs does the work and 302s here with the outcome. -->
-
-      <div class="card" id="st-ok" hidden style="text-align:center;border:1.5px solid var(--teal);">
-        <div class="success-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <h1 style="margin-bottom:.4rem;">You're confirmed</h1>
-        <p style="max-width:52ch;margin-inline:auto;">
-          <strong><span id="cf-what">Your free download</span></strong> is on its way — it
-          usually arrives within a couple of minutes.
-        </p>
-        <p class="muted" style="font-size:.92rem;max-width:48ch;margin-inline:auto;">
-          Nothing after five minutes? Check your spam or promotions folder — and if it still
-          hasn't landed, email <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we'll
-          send it straight over.
-        </p>
-      </div>
-
-      <div class="card" id="st-expired" hidden style="text-align:center;">
-        <h1 style="margin-bottom:.4rem;">That link has expired</h1>
-        <p style="max-width:52ch;margin-inline:auto;">
-          Confirmation links last seven days. Nothing is wrong and you're not on any list —
-          just ask again and a fresh one will be sent.
-        </p>
-        <p style="margin-top:1.4rem;">
-          <a class="btn btn-primary btn-lg" href="/newsletter.html">Send me a new link</a>
-        </p>
-      </div>
-
-      <div class="card" id="st-invalid" hidden style="text-align:center;">
-        <h1 style="margin-bottom:.4rem;">We couldn't read that link</h1>
-        <p style="max-width:52ch;margin-inline:auto;">
-          Some email apps break long links across two lines, which is usually all this is. Try
-          clicking it again from the original email, or start over below.
-        </p>
-        <p style="margin-top:1.4rem;">
-          <a class="btn btn-primary btn-lg" href="/newsletter.html">Start again</a>
-        </p>
-      </div>
-
-      <div class="card" id="st-error" hidden style="text-align:center;">
-        <h1 style="margin-bottom:.4rem;">Something went wrong at our end</h1>
-        <p style="max-width:52ch;margin-inline:auto;">
-          Your link was fine — we just couldn't finish the signup. Email
-          <a href="mailto:dev@webnomad.org">dev@webnomad.org</a> and we'll send your download
-          across by hand.
-        </p>
-      </div>
-
+  <section class="page-head band">
+    <div class="container narrow center">
+      <p class="crumb"><a href="index.html">Home</a> &nbsp;&rsaquo;&nbsp; Private by design</p>
+      <span class="eyebrow" style="justify-content:center;">Private by design</span>
+      <h1>The private retirement planner</h1>
+      <p class="lead center" style="margin-inline:auto;">Most retirement calculators ask you to open an account and hand over your finances. This one does not, and cannot &mdash; it is a single file that runs on your own computer, with the internet switched off if you like.</p>
     </div>
   </section>
 
-  <section class="section band">
+  <section class="section">
     <div class="container narrow">
-      <!-- Neutral heading, not "while you're waiting": this band also shows under the
-           expired and invalid-link states, where nothing is on its way. -->
-      <h2>While you're here — try the planner itself</h2>
-      <p>
-        The download explains the thinking. The planner is where you actually run it: your own
-        numbers, phase by phase, with the tax, healthcare and withdrawal maths worked out for
-        every year rather than averaged into a single rule of thumb.
+
+      <h2 id="why-most-retirement-calculators-want-an-account">Why most retirement calculators want an account</h2>
+      <p>Not usually for your benefit. An account lets a planner store your figures on its servers, which is what makes a subscription enforceable, a mailing list possible and a company valuation larger. It also means your income, savings, ages and health assumptions sit on someone else&rsquo;s computer &mdash; subject to their security, their policy changes, their acquisition, and their pricing.</p>
+      <p>That trade is worth making for some products. For a calculator that does arithmetic on numbers you already know, it is worth asking what you are getting in return.</p>
+
+      <h2 id="what-private-means-here-precisely">What &ldquo;private&rdquo; means here, precisely</h2>
+      <p>The AI Retirement Income Planner is one self-contained HTML file. You download it, open it, and everything happens inside your own browser:</p>
+      <ul>
+        <li><strong>No account and no sign-up.</strong> There is no login, so there is no profile, no password to leak and nothing to cancel.</li>
+        <li><strong>No uploads.</strong> Your figures live in your own browser&rsquo;s storage. There is no server that receives them, because there is no server.</li>
+        <li><strong>No bank connections.</strong> The planner never links to a financial account.</li>
+        <li><strong>No analytics inside the product.</strong> No telemetry, no crash reporting, no usage tracking of any kind.</li>
+        <li><strong>It works offline.</strong> Opening the file makes no network request at all &mdash; there are no external scripts, fonts or stylesheets in it.</li>
+      </ul>
+
+      <h2 id="you-can-verify-this-in-about-ten-seconds">You can verify this in about ten seconds</h2>
+      <p>This is the part that separates a privacy claim from a privacy policy. Open the planner, press <strong>F12</strong> to bring up your browser&rsquo;s developer tools, and watch the Network tab while you build an entire plan. Nothing goes out.</p>
+      <p>If that sounds fiddly, there is a blunter version: disconnect from the internet and keep working. Every number still runs. A planner that needs an account cannot pass either test, no matter how reassuring its privacy page reads.</p>
+      <p><a href="technical.html#data-flow">Every request the planner is capable of making is listed here</a> &mdash; there are only a handful, and none of them carry your plan.</p>
+
+      <h2 id="the-one-exception-in-our-own-words">The one exception, in our own words</h2>
+      <p>The planner has an optional AI co-pilot. If you switch it on and choose a cloud provider &mdash; Anthropic, OpenAI, Google or OpenRouter &mdash; a summary of your plan is sent to that provider so it can answer, using an API key you supply and pay for. It never passes through us and we never see it, but it does leave your computer.</p>
+      <p>Three things follow, and we would rather you heard them from us than found them out: the co-pilot is <strong>off until you turn it on</strong>, the planner is fully functional without it, and if you want AI <em>and</em> complete privacy you can point it at a local model running on your own machine, which keeps everything offline.</p>
+
+      <h2 id="who-this-tends-to-matter-to">Who this tends to matter to</h2>
+      <p>People who are self-employed or hold company equity, and would rather their compensation not sit in a marketing database. People planning a move abroad, whose residency and tax position is nobody else&rsquo;s business. People who have simply been breached before. And people who object on principle to renting access to their own arithmetic.</p>
+      <p>If none of that is you, the planner is worth having on the modelling alone &mdash; the privacy is just how it happens to be built.</p>
+
+      <h2 id="what-you-actually-get">What you actually get</h2>
+      <p>A month-by-month retirement income engine covering five phases, US, UK, Canadian and Australian tax treatment, Social Security timing, ACA and Medicare thresholds, Roth conversions, Monte Carlo and historical backtesting. Bought once, owned outright, with no subscription and no renewal.</p>
+      <p style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.6rem;">
+        <a class="btn btn-primary btn-lg" href="products.html">See the products</a>
+        <a class="btn btn-lg" href="demo.html">Try the live demo</a>
       </p>
-      <p>
-        You don't have to decide anything now. The interactive demo runs a full worked plan in
-        your browser — no signup, nothing to install.
-      </p>
-      <p style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.4rem;">
-        <a class="btn btn-primary btn-lg" href="/demo.html">Open the free demo</a>
-        <a class="btn btn-lg" href="/products.html">See what it costs</a>
-      </p>
-      <p class="muted" style="font-size:.92rem;margin-top:1.2rem;">
-        Educational only — not financial, tax or legal advice. Every projection is an estimate
-        based on the assumptions you enter.
-      </p>
+      <p class="muted" style="font-size:.92rem;margin-top:1.2rem;">Educational only &mdash; not financial, tax or legal advice. Every projection is an estimate based on the assumptions you enter.</p>
+
     </div>
   </section>
 
@@ -256,68 +230,9 @@
   <script src="/assets/js/search.js" defer></script>
 </footer>
 
-<script src="assets/js/main.js" defer></script>
-<script>
-/* The end of the double opt-in. api/newsletter-confirm.mjs verifies the signed link,
-   subscribes the person, and 302s here with the outcome in ?status=.
-
-   THIS is where the Lead conversion fires — not on thank-you.html, which is only reached by
-   submitting the form. A conversion recorded before someone proves they own the mailbox is a
-   wrong number that ad spend then follows. */
-var params = new URLSearchParams(location.search);
-var status = params.get('status') || 'ok';
-var magnet = params.get('m') || 'ebook';
-var eid    = params.get('eid') || '';
-
-var PANELS = { ok: 'st-ok', expired: 'st-expired', invalid: 'st-invalid', error: 'st-error' };
-var panel = document.getElementById(PANELS[status] || PANELS.error);
-if (panel) panel.hidden = false;
-
-var LABELS = {
-  ebook:     'Build a Retirement Plan You Can Question',
-  checklist: 'The retirement input checklist',
-  questions: '50+ questions to ask your retirement plan',
-  abroad:    'The cross-border retirement guide',
-};
-if (LABELS[magnet]) {
-  var what = document.getElementById('cf-what');
-  if (what) what.textContent = LABELS[magnet];
-}
-
-/* Consent mode still gates the browser half: a visitor who declined the cookie banner sends
-   nothing from here, and the server-side copy (fired by the confirm endpoint, with this same
-   event id) is what keeps the signup measurable.
-
-   ⚠ Timing matters, and gets this wrong silently. consent.js is deferred, so it re-grants
-   consent AFTER any inline script in the body has already run. Firing Lead synchronously
-   would therefore queue it while consent is still revoked — and Meta drops it, including for
-   visitors who accepted the banner. Waiting for DOMContentLoaded (which fires only once every
-   deferred script has executed) puts the grant ahead of the event. */
-function fireLead() {
-  if (status !== 'ok') return;
-  // A refresh, or a second click on the same emailed link, must not fire a second conversion.
-  try {
-    var key = 'wn-lead-' + (eid || magnet);
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, '1');
-  } catch (e) { /* private mode — worst case one duplicate, still better than none */ }
-
-  try {
-    if (typeof fbq === 'function') {
-      // Same event id the server sent, so Meta collapses the pair into one conversion.
-      fbq('track', 'Lead', { content_name: magnet }, eid ? { eventID: eid } : undefined);
-    }
-    if (typeof gtag === 'function') {
-      gtag('event', 'generate_lead', { method: magnet });
-    }
-  } catch (e) { /* analytics must never break the page */ }
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', fireLead);
-} else {
-  fireLead();
-}
-</script>
+<script src="assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

@@ -60,6 +60,7 @@ PAGES = {
     "cross-border-methodology.html": "",
     "about.html": "",
     "press.html": "",
+    "private.html": "",
     "thanks.html": "",
     "thank-you.html": "",
     "confirmed.html": "",
