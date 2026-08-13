@@ -168,14 +168,22 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
    Nothing depends on the tagline; the brand name still reads and it is decorative. ⚠ Do not
    "fix" it by letting it wrap: two lines push the header taller on exactly the screens with
    least room. */
-@media (max-width:480px){
-  .brand-tagline{ display:none; }
-  /* Reclaim the gutters between brand / magnifier / hamburger. `.nav` inherits gap:1.5rem
-     (27px at this root size), so three items spend 54px on whitespace — on a 320px handset
-     that was enough to push the hamburger 4px past the edge even with the tagline gone. The
-     1rem override further down lives in a min-width:1601px block, so it never reached here. */
-  .nav{ gap:1rem; }
-}
+@media (max-width:480px){ .brand-tagline{ display:none; } }
+
+/* Pair the magnifier with the hamburger wherever the hamburger is used (below 1600px, where
+   .nav-panel collapses). They are both nav controls, so they read as a set rather than two
+   loose icons — and the row is tight on a phone, so the space is better spent elsewhere.
+
+   Only ONE gap is visibly affected, which is why this is safe to set on the whole row:
+   `.nav-search` carries `margin-left:auto`, so the brand-to-magnifier space is free space
+   that expands to absorb whatever the gap gives up. Shrinking the gap therefore moves the
+   magnifier toward the hamburger and leaves the brand where it is.
+
+   It also buys back room at the bottom end: `.nav` inherits gap:1.5rem (27px here), so three
+   items were spending 54px on whitespace and a 320px handset pushed the hamburger 4px past
+   the edge even with the tagline hidden. ⚠ Do not tighten this much further — these are
+   adjacent touch targets, and the audience skews 40+. */
+@media (max-width:1600px){ .nav{ gap:.55rem; } }
 /* Tighten the brand lockup so the tagline sits close to "WebNomad" and aligns with the logo — at every screen size, not just large desktop. */
 .brand-name{ margin-top:-2px; }
 .brand-tagline{ margin-top:-4px; }
