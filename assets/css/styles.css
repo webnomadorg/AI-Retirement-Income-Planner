@@ -141,14 +141,41 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .brand-sub{ display:block; font-family:var(--font-sans); font-size:.62rem; letter-spacing:.22em; color:var(--teal); font-weight:600; text-transform:uppercase; margin-top:3px; }
 .brand-tagline{ display:block; font-family:var(--font-sans); font-size:.7rem; letter-spacing:.01em; color:#86D6C6; font-weight:600; margin-top:1px; margin-left:-6px; white-space:nowrap; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:2px 6px; border-radius:3px; }
 html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:none; -webkit-backdrop-filter:none; padding:0; color:var(--teal); }
-/* Drop the tagline on the narrowest phones. It is a fixed-width nowrap block sitting under
-   "WebNomad", so as the viewport narrows it advances on the search magnifier — 27px of clearance
-   at 375px, none by ~345px, and it collides on a 320-360px handset. This used to shrink it to
-   .52rem (~8px) to buy room, which cured the overlap by making the words illegible; hiding it is
-   the honest version of the same trade. Nothing depends on it — the brand name still reads, and
-   the tagline is decorative. ⚠ Do not "fix" this by letting it wrap: two lines push the header
-   taller on exactly the screens with least room. */
-@media (max-width:380px){ .brand-tagline{ display:none; } }
+/* Drop the tagline on phones. It is a nowrap block under "WebNomad", and `.nav` is a flex row
+   whose items keep min-width:auto — so the brand CANNOT shrink, and when the row runs out of
+   space it overflows instead of compressing. The hamburger is what gets pushed out.
+
+   ⚠ THE DANGER ZONE IS ABOVE THIS BREAKPOINT, NOT BELOW IT. Below it the tagline is already
+   hidden and everything fits; the breakage sits in the band between this value and ~427px,
+   where the tagline is shown but there is not enough room for it. Measured at 480px in Chrome:
+
+     ≤380px      tagline hidden, no overflow          fine
+     381-427px   tagline shown, nav overflows by up   BROKEN — hamburger pushed up to 44px
+                 to 44px, page scrolls sideways       off-screen, tagline meets the magnifier
+     ≥428px      tagline shown, no overflow           fine
+
+   That band is where the phones are: iPhone 13/12 (390), iPhone 14/15/16 (393), Pixel (412).
+   The previous value of 380px predated the search magnifier — the tagline rule was written
+   2026-06-14, the magnifier landed 2026-08-09 between the brand and the hamburger and took
+   ~36px plus a gap, and nobody revisited this number. Reported from an iPhone 13, but it
+   reproduces in desktop Chrome at the same width; it was never a Safari quirk.
+
+   480px is chosen to clear every phone in portrait (widest is ~430px, the Pro Max) with room
+   to spare, because the margin at the true edge is only tens of pixels and any font-metric
+   difference eats it. ⚠ If another control is ever added to the header, re-measure this — the
+   failure is silent, and it is the second time this number has been left behind.
+
+   Nothing depends on the tagline; the brand name still reads and it is decorative. ⚠ Do not
+   "fix" it by letting it wrap: two lines push the header taller on exactly the screens with
+   least room. */
+@media (max-width:480px){
+  .brand-tagline{ display:none; }
+  /* Reclaim the gutters between brand / magnifier / hamburger. `.nav` inherits gap:1.5rem
+     (27px at this root size), so three items spend 54px on whitespace — on a 320px handset
+     that was enough to push the hamburger 4px past the edge even with the tagline gone. The
+     1rem override further down lives in a min-width:1601px block, so it never reached here. */
+  .nav{ gap:1rem; }
+}
 /* Tighten the brand lockup so the tagline sits close to "WebNomad" and aligns with the logo — at every screen size, not just large desktop. */
 .brand-name{ margin-top:-2px; }
 .brand-tagline{ margin-top:-4px; }
