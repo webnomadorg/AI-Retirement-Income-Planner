@@ -1654,6 +1654,57 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
    ⚠ Split into separate stroke/fill classes deliberately. A CSS declaration beats an SVG
    presentation attribute, so one combined `fill+stroke` class would clobber the fill="none"
    on the arrow shafts and fill each arrow into a solid blob. */
+/* Data-flow table on technical.html — stack it into one card per row on phones.
+
+   ⚠ Horizontal scroll is the wrong pattern for THIS table specifically. .table-scroll's
+   default keeps a 520px minimum and lets the reader swipe, which pushed "What it sends" off
+   the right edge at 375px — and that column is the entire reason the page exists. A privacy
+   proof the reader has to discover by swiping is not a proof.
+
+   The site already solves this for blog tables (one card per row, headers reproduced from
+   data-label), but that rule is scoped to .post-body, so this mirrors it for #data-flow. Keep
+   the data-label attributes on the <td>s in sync with the <th> text if the columns change —
+   they are the only thing carrying the header down into the stacked view. */
+@media (max-width:700px){
+  #data-flow .table-scroll{ overflow-x:visible; border:none; margin:1.2rem 0; }
+  #data-flow .table-scroll table{ min-width:0; width:100%; display:block; background:none; }
+  #data-flow .table-scroll thead{ display:none; }
+  #data-flow .table-scroll tbody,
+  #data-flow .table-scroll tr,
+  #data-flow .table-scroll th,
+  #data-flow .table-scroll td{ display:block; width:auto; }
+  #data-flow .table-scroll tr{ background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-sm); margin-bottom:.9rem; padding:.35rem .2rem .5rem; }
+  #data-flow .table-scroll th{ background:none; font-size:1.02rem; color:var(--ink-2);
+    border-bottom:none; padding-bottom:.15rem; }
+  #data-flow .table-scroll td{ border-bottom:none; padding-top:.35rem; }
+  #data-flow .table-scroll td::before{ content:attr(data-label); display:block;
+    font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; font-weight:700;
+    color:var(--ink-faint); margin-bottom:.1rem; }
+}
+
+/* Diagram caption — the wording that used to live inside the SVG as <text>.
+
+   ⚠ NEVER put label text back into these SVGs. The diagram scales with its card, so baked-in
+   text scales too: measured at 7px on a 320px phone, 8.8px at 375px and 9.3px in the
+   two-column tablet range. Only >=1024px was legible. As HTML it stays at a fixed readable
+   size at every width, and it is selectable, translatable and reachable by a screen reader. */
+/* ⚠ Written as `.card p.df-cap-*`, not `.df-cap-*`. The band these sit in already styles
+   `.band-ink .card p { color:var(--ink-soft) }` at (0,2,1), which outranks a lone class at
+   (0,1,0) — a plain `.df-cap-out` rule is silently ignored and the caption renders muted grey
+   instead of the accent. Matching (0,2,1) and appearing later in this file is what makes it
+   apply. */
+.df-cap{ font-weight:650; font-size:.95rem; margin:.1rem 0 .75rem; }
+.card p.df-cap-out{ color:#A8442A; }
+.card p.df-cap-in{ color:#1B7165; }
+html.dark .card p.df-cap-out{ color:#E8917A; }
+html.dark .card p.df-cap-in{ color:#6FD3C0; }
+
+/* The greyed "no server" box. Also a theme swap: #8A97A4 is 5.3:1 on the dark card but only
+   2.9:1 on the white one, under the 3:1 that non-text contrast needs. */
+.df-mute-stroke{ stroke:#556879; fill:none; }
+html.dark .df-mute-stroke{ stroke:#8A97A4; }
+
 .df-out-fill{ fill:#A8442A; }
 .df-out-stroke{ stroke:#A8442A; }
 .df-in-fill{ fill:#1B7165; }
