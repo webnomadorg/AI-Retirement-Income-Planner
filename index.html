@@ -106,6 +106,10 @@
         <span class="eyebrow">AI Retirement Income Planner · Version 7</span>
         <h1>The retirement planner you can <span class="accent">actually talk to.</span></h1>
         <p class="hero-sub">Model your income, taxes, Social Security, healthcare and withdrawals — month by month, privately in your browser. Then ask the built-in AI co‑pilot, in plain English, “will this still work?”</p>
+        <!-- The privacy claim, stated as something the reader can test rather than an adjective.
+             "Runs offline in your browser" is already a trust pill below, but a pill reads as a
+             feature; this reads as a promise, and it is the one competitors cannot match. -->
+        <p class="hero-sub" style="font-weight:600;margin-top:-.4rem;">No account. No upload. It runs with your Wi‑Fi switched off.</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" href="products.html">See the products</a>
           <a class="btn btn-outline btn-lg" href="demo.html">Try the live demo</a>
@@ -132,6 +136,92 @@
         <span class="pill"><b>Roth</b>, RMD, IRMAA &amp; ACA modeling</span>
         <span class="pill"><b>Calculators</b> &amp; currency converter included</span>
         <span class="pill"><b>AI</b> co‑pilot &amp; education built in</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRIVACY =====
+       Moved here from position 7 (it used to sit below the pricing table) and de-hedged: the
+       old heading opened "Perhaps the biggest difference…", which is the one claim on this
+       site that does not need a hedge. It is the differentiator a cloud planner cannot copy,
+       so a visitor should meet it before they meet the price.
+
+       ⚠ The claim is deliberately "your plan never leaves your computer", NOT "totally
+       private". If someone turns on the AI co-pilot with a cloud provider, their plan context
+       goes to that provider — so a blanket claim would be false the moment they use the
+       headline feature. The exception is stated below in our own words rather than left for
+       someone to discover, which is what makes the rest of it credible.
+
+       The diagrams are inline SVG rather than an image on purpose: they stay sharp at every
+       width, cost ~2KB, need no @2x variants, and carry no text that a screen reader cannot
+       already read from the HTML beside them. `.grid.cols-2` collapses to one column below
+       620px, so the comparison stacks on a phone for free. Plain hex fills only — var() and
+       color-mix() inside SVG attributes wedge the screenshot rasterizer. -->
+  <section class="section band-ink on-ink">
+    <div class="container">
+      <span class="eyebrow">Private by design</span>
+      <h2 id="turn-off-your-wi-fi-it-still-works">Turn off your Wi‑Fi. It still works.</h2>
+      <p class="lead" style="max-width:62ch;">The planner is a single self-contained HTML file. No account, no login, no upload — open it in
+        airplane mode and every number still runs, because the maths happens on your computer rather than ours.
+        Your figures live in your own browser’s storage and are never sent anywhere.</p>
+
+      <div class="grid cols-2" style="margin-top:2rem;">
+        <div class="card">
+          <svg viewBox="0 0 340 116" width="100%" height="auto" role="img" aria-label="Diagram: with a cloud planner, your numbers are uploaded from your computer to the provider's server.">
+            <text x="68" y="16" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" fill="currentColor" opacity=".85">Your computer</text>
+            <rect x="8" y="26" width="120" height="70" rx="8" fill="#FFFFFF" stroke="#14304B" stroke-width="2"/>
+            <path d="M8 44 H128" stroke="#14304B" stroke-width="2"/>
+            <circle cx="20" cy="35" r="3" fill="#14304B"/>
+            <text x="68" y="75" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" fill="#14304B">Your numbers</text>
+            <text x="167" y="54" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" class="df-out-fill" font-weight="600">uploaded</text>
+            <path d="M134 66 H194" class="df-out-stroke" stroke-width="2.5" fill="none"/>
+            <path d="M202 66 l-10 -6 v12 z" class="df-out-fill"/>
+            <text x="266" y="16" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" fill="currentColor" opacity=".85">Their server</text>
+            <rect x="206" y="26" width="126" height="70" rx="8" fill="#F6EDE7" stroke="#A8442A" stroke-width="2"/>
+            <path d="M222 48 H316 M222 63 H316 M222 78 H292" stroke="#A8442A" stroke-width="2" opacity=".5"/>
+          </svg>
+          <h3 id="a-typical-cloud-planner">A typical cloud planner</h3>
+          <p>Create an account, hand over your figures, and they live on someone else’s computer — subject to their
+            breaches, their policy changes and their subscription staying paid.</p>
+        </div>
+
+        <div class="card">
+          <svg viewBox="0 0 340 116" width="100%" height="auto" role="img" aria-label="Diagram: with this planner, your numbers stay inside your own computer and no server is ever contacted.">
+            <text x="68" y="16" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" fill="currentColor" opacity=".85">Your computer</text>
+            <rect x="8" y="26" width="120" height="70" rx="8" fill="#FFFFFF" stroke="#1B7165" stroke-width="2"/>
+            <path d="M8 44 H128" stroke="#1B7165" stroke-width="2"/>
+            <circle cx="20" cy="35" r="3" fill="#1B7165"/>
+            <text x="68" y="75" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" fill="#14304B">Your numbers</text>
+            <path d="M141 54 a20 20 0 1 0 12 -20" class="df-in-stroke" stroke-width="2.5" fill="none"/>
+            <path d="M150 28 l3 11 -11 -3 z" class="df-in-fill"/>
+            <text x="167" y="92" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" class="df-in-fill" font-weight="600">stays put</text>
+            <text x="266" y="16" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" fill="currentColor" opacity=".85">No server</text>
+            <rect x="206" y="26" width="126" height="70" rx="8" fill="none" stroke="#8A97A4" stroke-width="2" stroke-dasharray="6 5" opacity=".8"/>
+            <path d="M248 48 L290 74 M290 48 L248 74" stroke="#8A97A4" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+          </svg>
+          <h3 id="the-ai-retirement-income-planner">The AI Retirement Income Planner</h3>
+          <p>One file on your machine. Nothing to sign up for, nothing to breach, and nothing that stops working if
+            we ever do.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:2rem;">
+        <h3 id="don-t-take-our-word-for-it-check">Don’t take our word for it — check</h3>
+        <p>Open the planner, press <b>F12</b>, and watch the Network tab while you build a whole plan. Nothing goes out.
+          Or simply disconnect from the internet and carry on working. A planner that needs an account cannot pass
+          either test, however good its privacy policy reads.</p>
+      </div>
+
+      <div class="callout" style="margin-top:1.2rem;">
+        <h3 id="one-exception-and-we-ll-name-it-ourselves">One exception, and we’ll name it ourselves</h3>
+        <p>If you switch on the AI co-pilot and choose a cloud provider, a summary of your plan is sent to that
+          provider under <b>your own API key</b> — that is how it answers. It is off until you turn it on, and you can
+          run the AI entirely offline with a local model instead. Everything else in this section is true whether the
+          co-pilot is on or off.</p>
+      </div>
+
+      <div class="hero-cta" style="margin-top:2rem;">
+        <a class="btn btn-primary btn-lg" href="technical.html#data-flow">See exactly what leaves your computer</a>
       </div>
     </div>
   </section>
@@ -489,25 +579,6 @@
   </section>
 
   <!-- ===== PRIVACY BAND ===== -->
-  <section class="section band-ink on-ink">
-    <div class="container">
-      <div class="hero-grid" style="align-items:center;">
-        <div>
-          <span class="eyebrow">Private by design</span>
-          <h2 id="perhaps-the-biggest-difference-your-data-never-leaves-your-c">Perhaps the biggest difference: your data never leaves your computer.</h2>
-          <p class="lead">The planner is a single self‑contained HTML file. Open it, enter your numbers, and everything stays in your browser’s local storage. No cloud account, no bank links, no data uploaded to anyone.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary btn-lg" href="technical.html">Read the security model</a>
-          </div>
-        </div>
-        <div class="grid cols-2">
-          <div class="card"><div class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3 id="offline-capable">Offline‑capable</h3><p>Works without an internet connection once loaded.</p></div>
-          <div class="card"><div class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3 id="you-own-the-file">You own the file</h3><p>Export to PDF or JSON for backup and sharing.</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== FAQ TEASER ===== -->
   <section class="section">
     <div class="container">

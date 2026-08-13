@@ -1643,6 +1643,26 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
    lands beside the hamburger on small screens and immediately left of the nav links on wide
    ones. It is a direct child of .nav rather than of .nav-panel, which is display:none below
    1500px; search is a primary action and cannot live behind a hamburger. */
+/* Data-flow diagrams — the two comparison cards in the homepage privacy section.
+
+   These accent colours sit directly on the card background rather than inside a white box, so
+   they have to flip with the theme: measured on the dark card, #A8442A is 2.57:1 and #1B7165
+   is 2.62:1, both well under the 4.5:1 this site holds itself to. The lighter variants below
+   are 6.4:1 and 8.6:1 on dark — and would be 2.4:1 and 1.8:1 on white, which is why this is a
+   swap and not simply a lighter palette everywhere.
+
+   ⚠ Split into separate stroke/fill classes deliberately. A CSS declaration beats an SVG
+   presentation attribute, so one combined `fill+stroke` class would clobber the fill="none"
+   on the arrow shafts and fill each arrow into a solid blob. */
+.df-out-fill{ fill:#A8442A; }
+.df-out-stroke{ stroke:#A8442A; }
+.df-in-fill{ fill:#1B7165; }
+.df-in-stroke{ stroke:#1B7165; }
+html.dark .df-out-fill{ fill:#E8917A; }
+html.dark .df-out-stroke{ stroke:#E8917A; }
+html.dark .df-in-fill{ fill:#6FD3C0; }
+html.dark .df-in-stroke{ stroke:#6FD3C0; }
+
 .nav-search{
   margin-left:auto;
   width:36px; height:36px; border-radius:9px; flex:none;

@@ -127,6 +127,84 @@
     </div>
   </section>
 
+  <!-- ===== DATA FLOW =====
+       The homepage privacy section links straight here (technical.html#data-flow), so this is
+       the page that has to substantiate the claim it makes. Written as a complete list rather
+       than a reassuring paragraph: a privacy page that omits a call is worse than one that
+       never claimed anything, and every row below is checkable by the reader in DevTools.
+
+       ⚠ KEEP THIS TABLE IN SYNC WITH THE CODE. If a future build adds an outbound call, it
+       belongs here the same day. The list was compiled from the only fetch() targets in
+       src/03-app.js; there are no <script src> or <link href> tags in the built file at all,
+       which is why simply opening it makes no requests. -->
+  <section class="section" id="data-flow">
+    <div class="container">
+      <span class="eyebrow">Data flow</span>
+      <h2 id="exactly-what-leaves-your-computer">Exactly what leaves your computer</h2>
+      <p class="lead" style="max-width:64ch;">Every network request the planner is capable of making, when it happens, and what it carries.
+        There is no analytics, no telemetry and no crash reporting anywhere in the file — so this list is the whole of it.</p>
+
+      <!-- ⚠ .table-scroll, NOT .cmp-matrix-wrap. That wrapper is display:none below 820px on
+           purpose — the products page swaps it for a JS-rendered stack — so a hand-written
+           table inside it silently vanishes on every phone. .table-scroll scrolls instead of
+           hiding, and its stacking rules are scoped to .post-body so they do not apply here. -->
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Every outbound network request the planner can make</caption>
+          <thead>
+            <tr><th scope="col">What</th><th scope="col">When</th><th scope="col">What it sends</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Opening the planner</th>
+              <td>Never makes a request</td>
+              <td><b>Nothing.</b> The file has no external scripts, fonts or stylesheets — charting and all — so it opens with the network off.</td>
+            </tr>
+            <tr>
+              <th scope="row">Your plan &amp; figures</th>
+              <td>Never leaves the file</td>
+              <td><b>Nothing.</b> Stored in your own browser’s local storage. There is no server to send it to.</td>
+            </tr>
+            <tr>
+              <th scope="row">Version check</th>
+              <td>Once a day, automatically</td>
+              <td>Asks our site which build is current. Sends <b>nothing about you or your plan</b> — not even which build you have; your copy compares the answer locally.</td>
+            </tr>
+            <tr>
+              <th scope="row">Live exchange rates</th>
+              <td>Only when you press the button</td>
+              <td>Requests published USD rates from a public rates service. Sends no personal data and no part of your plan.</td>
+            </tr>
+            <tr>
+              <th scope="row">AI co-pilot <span class="pill" style="font-size:.7rem;">opt-in</span></th>
+              <td>Only when you enable it and ask a question</td>
+              <td><b>This is the exception.</b> A summary of your plan goes to the AI provider you chose, under your own API key. See below.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top:1.6rem;">
+        <h3 id="the-ai-co-pilot-stated-plainly">The AI co-pilot, stated plainly</h3>
+        <p>The co-pilot cannot answer questions about your plan without seeing your plan. If you switch it on and pick a
+          cloud provider — Anthropic, OpenAI, Google or OpenRouter — a summary of your figures is sent to that provider
+          using an API key you supply and pay for. We never see it, and it never passes through our servers, but it does
+          leave your computer.</p>
+        <p>Three things follow from that, and we would rather you heard them from us: the co-pilot is <b>off until you
+          turn it on</b>; the rest of the planner works fully without it; and if you want AI <b>and</b> total privacy, you
+          can point it at a local model running on your own machine, which keeps everything offline.</p>
+      </div>
+
+      <div class="callout" style="margin-top:1.2rem;">
+        <h3 id="this-website-is-not-the-planner">This website is not the planner</h3>
+        <p>Worth separating, because people reasonably assume otherwise. This <em>website</em> uses ordinary analytics,
+          which stay switched off until you accept the cookie banner. The <em>planner</em> you download contains none of
+          it — no analytics, no tracking, no accounts. Buying does involve our payment provider, as any purchase must,
+          but the product itself never phones home.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Three pillars -->
   <section class="section band">
     <div class="container">
