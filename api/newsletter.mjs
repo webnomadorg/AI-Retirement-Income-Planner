@@ -90,7 +90,7 @@ async function sendConfirmEmail(to, firstName, magnetLabel, link) {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'WebNomad Studio <noreply@webnomad.org>',
+        from: 'WebNomad Studio <dev@webnomad.org>',
         to: [to],
         subject: `Please confirm: ${magnetLabel}`,
         html: body.html,

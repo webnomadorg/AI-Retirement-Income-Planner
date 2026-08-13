@@ -157,8 +157,8 @@
           <tbody>
             <tr>
               <th scope="row">Opening the planner</th>
-              <td data-label="When">Never makes a request</td>
-              <td data-label="What it sends"><b>Nothing.</b> The file has no external scripts, fonts or stylesheets — charting and all — so it opens with the network off.</td>
+              <td data-label="When">Loads with no external files</td>
+              <td data-label="What it sends"><b>Nothing about you.</b> The file has no external scripts, fonts or stylesheets — charting and all — so the page itself pulls nothing in. It does look up exchange rates as it starts; see the row below.</td>
             </tr>
             <tr>
               <th scope="row">Your plan &amp; figures</th>
@@ -172,8 +172,8 @@
             </tr>
             <tr>
               <th scope="row">Live exchange rates</th>
-              <td data-label="When">Only when you press the button</td>
-              <td data-label="What it sends">Requests published USD rates from a public rates service. Sends no personal data and no part of your plan.</td>
+              <td data-label="When">Automatically as the planner opens, and again when you refresh them</td>
+              <td data-label="What it sends">Requests published USD conversion rates from a public rates service. Sends <b>no personal data and no part of your plan</b> — it is the same request whoever makes it. If there is no connection it times out quietly and the planner carries on with its stored rates, which is why it still works offline.</td>
             </tr>
             <tr>
               <th scope="row">AI co-pilot <span class="pill" style="font-size:.7rem;">opt-in</span></th>

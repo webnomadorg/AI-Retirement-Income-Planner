@@ -79,7 +79,7 @@ async function notifyOwner(record, decision) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'WebNomad Feedback <noreply@webnomad.org>',
+        from: 'WebNomad Feedback <dev@webnomad.org>',
         to: [OWNER],
         subject: `Testimonial ${decision} — ${who}`,
         html:

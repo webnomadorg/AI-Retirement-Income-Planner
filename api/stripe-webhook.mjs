@@ -180,7 +180,7 @@ export default async function handler(req, res) {
     // 1. Owner alert (always)
     try {
       await sendEmail(resendKey, {
-        from: 'WebNomad Sales <noreply@webnomad.org>',
+        from: 'WebNomad Sales <dev@webnomad.org>',
         to: ['dev@webnomad.org'],
         reply_to: buyerEmail || undefined,
         subject: `New purchase: ${productNames} — ${amountStr}`,
@@ -206,7 +206,7 @@ export default async function handler(req, res) {
         : `<p>We’ll email you to arrange a time. Any questions, just reply to this message or write to <a href="mailto:dev@webnomad.org">dev@webnomad.org</a>.</p>`;
       try {
         await sendEmail(resendKey, {
-          from: 'WebNomad Studio <noreply@webnomad.org>',
+          from: 'WebNomad Studio <dev@webnomad.org>',
           to: [buyerEmail],
           reply_to: 'dev@webnomad.org',
           subject: `Book your ${label} — AI Retirement Income Planner`,

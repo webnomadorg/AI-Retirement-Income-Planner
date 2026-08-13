@@ -212,7 +212,7 @@ export default async function handler(req, res) {
     const draftCmd = `node tools/testimonials/cli.mjs draft ${id} --text "…" --as "…"`;
 
     const notify = await sendEmail({
-      from: 'WebNomad Feedback <noreply@webnomad.org>',
+      from: 'WebNomad Feedback <dev@webnomad.org>',
       to: [OWNER],
       reply_to: email,
       subject: `${stored ? '' : '[NOT RECORDED] '}Planner feedback — ${verdict} — ${consentLabel}`,
@@ -264,7 +264,7 @@ export default async function handler(req, res) {
     // Acknowledgement to the sender — best effort, never fails the request.
     try {
       await sendEmail({
-        from: 'WebNomad Studio <noreply@webnomad.org>',
+        from: 'WebNomad Studio <dev@webnomad.org>',
         to: [email],
         subject: 'Thanks — we got your feedback',
         html:

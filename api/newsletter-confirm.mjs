@@ -133,7 +133,7 @@ async function notifyDev(firstName, email, magnetLabel) {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'WebNomad Newsletter <noreply@webnomad.org>',
+        from: 'WebNomad Newsletter <dev@webnomad.org>',
         to: ['dev@webnomad.org'],
         reply_to: email,
         subject: `Confirmed signup (${magnetLabel}): ${firstName || email}`,

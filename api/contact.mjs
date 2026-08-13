@@ -134,7 +134,7 @@ export default async function handler(req, res) {
   try {
     // 1. Notification to WebNomad. NEVER throttled — every genuine message must arrive.
     const notifyRes = await sendEmail({
-      from: 'WebNomad Contact Form <noreply@webnomad.org>',
+      from: 'WebNomad Contact Form <dev@webnomad.org>',
       to: ['dev@webnomad.org'],
       reply_to: replyTo,
       subject: subjectLine,
@@ -169,7 +169,7 @@ export default async function handler(req, res) {
     if (mayReply) {
       try {
         await sendEmail({
-          from: 'WebNomad Studio <noreply@webnomad.org>',
+          from: 'WebNomad Studio <dev@webnomad.org>',
           to: [replyTo],
           subject: 'We received your message — WebNomad Studio',
           html: `<p>Hi ${esc(cleanName)},</p>
