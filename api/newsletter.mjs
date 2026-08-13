@@ -43,34 +43,42 @@ import { resolveMagnet, magnetLabel } from '../lib/magnets.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
 
+/* ⚠ DELIBERATELY PLAIN. DO NOT "IMPROVE" THIS WITH A BUTTON, BRANDING OR COLOUR.
+
+   The first version was styled like marketing — a teal CTA button, seven inline colour rules,
+   three links, a paragraph explaining the benefit, and "download"/"yours" in the copy — and
+   Gmail filed it under Promotions. That is not the spam folder, but for a link that expires
+   in seven days it may as well be: nobody checks Promotions promptly, and 0 of 8 real
+   signups confirmed while it looked like this.
+
+   A confirmation is transactional mail. It should read like a receipt, not an offer:
+     • subject names the ACTION, not the product ("Confirm your email address"). A product
+       name in the subject is the single strongest promotional tell.
+     • one link, as a plain link — a styled block-level button is marketing markup
+     • no colours, no rules, no logo, no font stack
+     • no persuasion. The "why the extra click" pitch belonged on the website, not here.
+   The text part carries the whole message; the HTML is a near-copy so no client sees less. */
 function confirmEmailBody(firstName, magnetLabel, link) {
   const hi = firstName ? `Hi ${escapeHtml(firstName)},` : 'Hi,';
   return {
-    html: `<div style="font-family:Inter,Arial,sans-serif;color:#1f2a33;line-height:1.6;max-width:560px">
-<p>${hi}</p>
-<p>One quick step and <strong>${escapeHtml(magnetLabel)}</strong> is yours — just confirm this is your email address:</p>
-<p style="margin:1.6em 0">
-  <a href="${link}" style="background:#1B7165;color:#fff;text-decoration:none;padding:.85em 1.7em;border-radius:8px;font-weight:600;display:inline-block">Confirm and send my download</a>
-</p>
-<p style="font-size:.9em;color:#555">If the button doesn't work, copy and paste this into your browser:<br>
-<a href="${link}" style="color:#1B7165;word-break:break-all">${link}</a></p>
-<hr style="border:none;border-top:1px solid #e2e2e2;margin:1.6em 0">
-<p style="font-size:.9em;color:#555">Why the extra click? It keeps the list to people who actually asked to be on it — which means fewer emails sent to the wrong person, and none of the junk signups that make a newsletter worth ignoring.</p>
-<p style="font-size:.9em;color:#555">Didn't sign up? Then someone typed your address by mistake. Ignore this and nothing happens — you are not on any list, and this link expires in 7 days.</p>
-<p>— WebNomad Studio<br><a href="${SITE}" style="color:#1B7165">airetirementincomeplanner.com</a></p>
-</div>`,
+    html: `<p>${hi}</p>
+<p>Please confirm this is your email address so we can send you ${escapeHtml(magnetLabel)}:</p>
+<p><a href="${link}">${link}</a></p>
+<p>The link works for 7 days.</p>
+<p>If you did not request this, ignore this message — you have not been added to anything.</p>
+<p>Paul Hankin<br>WebNomad Studio</p>`,
     text: `${firstName ? `Hi ${firstName},` : 'Hi,'}
 
-One quick step and "${magnetLabel}" is yours — confirm this is your email address:
+Please confirm this is your email address so we can send you ${magnetLabel}:
 
 ${link}
 
-Why the extra click? It keeps the list to people who actually asked to be on it.
+The link works for 7 days.
 
-Didn't sign up? Someone typed your address by mistake. Ignore this and nothing happens — you are not on any list, and this link expires in 7 days.
+If you did not request this, ignore this message - you have not been added to anything.
 
-— WebNomad Studio
-${SITE}`,
+Paul Hankin
+WebNomad Studio`,
   };
 }
 
@@ -92,7 +100,9 @@ async function sendConfirmEmail(to, firstName, magnetLabel, link) {
       body: JSON.stringify({
         from: 'WebNomad Studio <dev@webnomad.org>',
         to: [to],
-        subject: `Please confirm: ${magnetLabel}`,
+        // ⚠ Names the action, not the product. "Please confirm: <product name>" reads as a
+        // promotion to Gmail and was part of what filed the old version under Promotions.
+        subject: 'Confirm your email address',
         html: body.html,
         text: body.text,
       }),
