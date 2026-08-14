@@ -131,6 +131,24 @@
       <p>The planner has an optional AI co-pilot. If you switch it on and choose a cloud provider &mdash; Anthropic, OpenAI, Google or OpenRouter &mdash; a summary of your plan is sent to that provider so it can answer, using an API key you supply and pay for. It never passes through us and we never see it, but it does leave your computer.</p>
       <p>Three things follow: the co-pilot is <strong>off until you turn it on</strong>, the planner is fully functional without it, and if you want AI <em>and</em> complete privacy you can point it at a local model running on your own machine, which keeps everything offline.</p>
 
+      <h3 id="what-that-summary-contains-and-what-it-cannot">What that summary contains &mdash; and what it cannot</h3>
+      <p>It sends the plan, not the planner. There is no field anywhere in the file for your name, email address, postal address, phone number, employer, or any account, policy or Social Security number &mdash; it never asks for them, so there is nothing of that kind for it to send. There is no login either, so no user id or profile is attached to the request.</p>
+      <p>What does go is the arithmetic:</p>
+      <ul>
+        <li><strong>The figures you entered</strong> &mdash; ages, filing status, account balances, withdrawals, pensions and Social Security amounts, and the tax settings for the country and US state you asked it to model. Your birth year too, if you gave one, because it sets your Full Retirement Age.</li>
+        <li><strong>The results the engine produced from them</strong> &mdash; income, tax, healthcare cost and ending balance for each phase, and which plan health checks currently pass.</li>
+        <li><strong>Your question</strong>, as you typed it.</li>
+      </ul>
+      <p>What never goes:</p>
+      <ul class="checklist">
+        <li><strong>No name, email or address.</strong> There is no box to type one into.</li>
+        <li><strong>No account or institution details.</strong> A balance is just a number &mdash; the planner never knows where the money is held, and it connects to no bank or brokerage.</li>
+        <li><strong>No Social Security or tax ID numbers.</strong> The planner models the benefit; it never asks for the number.</li>
+        <li><strong>Not your plan notes.</strong> The free-text notes you can attach to a plan are for your own report. The co-pilot never sees them.</li>
+        <li><strong>No tracking of any kind.</strong> No analytics id, no device fingerprint, and no record on our side that a question was asked at all.</li>
+      </ul>
+      <p>Two caveats, because a privacy page that only reassures is not much use. First, the only free text that leaves is text you wrote yourself: your question, the label you gave a lump sum (&ldquo;house sale&rdquo;, say), and any reason you typed when dismissing a suggestion. Name things however you like &mdash; just know those labels travel with the question. Second, the request goes from your browser straight to the provider under your own API key, so they see it as ordinary API traffic on your own account, your IP address included, exactly as any website you visit does. What they then do with it is governed by their terms rather than ours &mdash; which is why the planner names the provider before you use it, and lets you point it at a local model instead.</p>
+
       <h2 id="who-this-tends-to-matter-to">Who this tends to matter to</h2>
       <p>People who are self-employed or hold company equity, and would rather their compensation not sit in a marketing database. People planning a move abroad, whose residency and tax position is nobody else&rsquo;s business. People who have simply been breached before. And people who object on principle to renting access to their own arithmetic.</p>
       <p>If none of that is you, the planner is worth having on the modelling alone &mdash; the privacy is just how it happens to be built.</p>
