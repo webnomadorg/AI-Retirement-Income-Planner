@@ -375,8 +375,11 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 /* ---- 13. Quote / callout ------------------------------------------------- */
 .quote{ font-family:var(--font-display); font-size:clamp(1.5rem,1.1rem+1.6vw,2.3rem); line-height:1.32;
   color:var(--ink); font-weight:500; max-width:24ch; }
+/* margin-bottom is load-bearing: the site spaces blocks with bottom margins only (p has no top
+   margin), so without this every callout sat flush against the next paragraph — a literal 0px
+   gap on every page using one. Same trap as .cmp-matrix-wrap had. Measure, never assume. */
 .callout{ background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--teal);
-  border-radius:var(--radius); padding:1.3rem 1.5rem; box-shadow:var(--shadow-sm); }
+  border-radius:var(--radius); padding:1.3rem 1.5rem; box-shadow:var(--shadow-sm); margin-bottom:1.6rem; }
 .callout.warn{ border-left-color:var(--warn); }
 
 /* ---- 14. CTA band -------------------------------------------------------- */
