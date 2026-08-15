@@ -106,7 +106,7 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <div class="callout">
         <p><strong>This is a constructed example, not a customer.</strong> Nobody in it is real. The figures were invented to show how the pieces interact, then run through the planner so the numbers on this page are the ones the software actually produced — not illustrations drawn by hand.</p>
         <p style="margin-bottom:0">It is educational information, not financial, tax, or legal advice, and nothing here is a recommendation for anyone. Every assumption is listed below so you can see exactly what the answer depends on.</p>
@@ -115,22 +115,22 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="the-situation" style="margin-top:.4rem;">The situation</h2>
       <p>A single 62-year-old stops working. Social Security is not being claimed until 67, and Medicare does not start until 65. That leaves three years to fund from savings, with health cover bought on the open market.</p>
       <p>They have <strong>$605,000</strong>, and — this is the part that matters — it is not in one place:</p>
 
-      <div class="cmp-matrix-wrap">
-        <table class="cmp-matrix">
+      <div class="wex-compare">
+        <table>
           <caption class="sr-only">Starting balances by account type</caption>
           <thead>
             <tr><th scope="col">Account</th><th scope="col">Balance</th><th scope="col">How a withdrawal is treated</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">Traditional 401(k)</th><td>$380,000</td><td>The whole withdrawal counts as income</td></tr>
-            <tr><th scope="row">Taxable brokerage</th><td>$145,000</td><td>Only the gain counts — here, 40% of the value</td></tr>
-            <tr><th scope="row">Cash savings</th><td>$60,000</td><td>Already taxed; the withdrawal is not income</td></tr>
-            <tr><th scope="row">Roth</th><td>$20,000</td><td>Not income</td></tr>
+            <tr><th scope="row">Traditional 401(k)</th><td data-label="Balance">$380,000</td><td data-label="Treated as">The whole withdrawal counts as income</td></tr>
+            <tr><th scope="row">Taxable brokerage</th><td data-label="Balance">$145,000</td><td data-label="Treated as">Only the gain counts — here, 40% of the value</td></tr>
+            <tr><th scope="row">Cash savings</th><td data-label="Balance">$60,000</td><td data-label="Treated as">Already taxed; the withdrawal is not income</td></tr>
+            <tr><th scope="row">Roth</th><td data-label="Balance">$20,000</td><td data-label="Treated as">Not income</td></tr>
           </tbody>
         </table>
       </div>
@@ -140,7 +140,7 @@
   </section>
 
   <section class="section band">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="why-the-source-matters-before-65" style="margin-top:.4rem;">Why the source matters before 65</h2>
       <p>Health insurance bought through the marketplace is priced against your income — specifically a measure called modified adjusted gross income, or MAGI. The lower it is, the more help you get with the premium.</p>
       <p>In retirement you have unusual control over that figure, because you largely decide your own income by choosing what to withdraw and from where. A dollar taken from a traditional 401(k) counts in full. A dollar of cash savings does not count at all, because it was taxed years ago. A dollar from a brokerage account counts only to the extent it is a gain.</p>
@@ -153,21 +153,21 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="two-ways-to-fund-the-same-three-years" style="margin-top:.4rem;">Two ways to fund the same three years</h2>
       <p>Both versions of this plan are identical in every respect but one: which accounts pay for the years between 62 and 65. Everything else — the balances, the growth rates, the Social Security claim at 67, the spending — is the same.</p>
 
-      <div class="cmp-matrix-wrap">
-        <table class="cmp-matrix">
+      <div class="wex-compare">
+        <table>
           <caption class="sr-only">The two funding approaches for ages 62 to 65</caption>
           <thead>
             <tr><th scope="col">Monthly withdrawal, ages 62–65</th><th scope="col">Version A</th><th scope="col">Version B</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">From the 401(k)</th><td>$5,500</td><td>$1,200</td></tr>
-            <tr><th scope="row">From cash</th><td>—</td><td>$1,400</td></tr>
-            <tr><th scope="row">From the brokerage</th><td>—</td><td>$3,000</td></tr>
-            <tr><th scope="row"><strong>Total leaving the portfolio</strong></th><td><strong>$5,500</strong></td><td><strong>$5,600</strong></td></tr>
+            <tr><th scope="row">From the 401(k)</th><td data-label="Version A">$5,500</td><td data-label="Version B">$1,200</td></tr>
+            <tr><th scope="row">From cash</th><td data-label="Version A">—</td><td data-label="Version B">$1,400</td></tr>
+            <tr><th scope="row">From the brokerage</th><td data-label="Version A">—</td><td data-label="Version B">$3,000</td></tr>
+            <tr class="wex-key"><th scope="row">Total leaving the portfolio</th><td data-label="Version A">$5,500</td><td data-label="Version B">$5,600</td></tr>
           </tbody>
         </table>
       </div>
@@ -177,23 +177,23 @@
   </section>
 
   <section class="section band">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="what-the-planner-produced" style="margin-top:.4rem;">What the planner produced</h2>
       <p>These are the figures for the first phase, ages 62 to 65.</p>
 
-      <div class="cmp-matrix-wrap">
-        <table class="cmp-matrix">
+      <div class="wex-compare">
+        <table>
           <caption class="sr-only">Phase one results compared, ages 62 to 65</caption>
           <thead>
             <tr><th scope="col">Ages 62–65</th><th scope="col">Version A</th><th scope="col">Version B</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">Modified adjusted gross income</th><td>$66,000</td><td>$31,805</td></tr>
-            <tr><th scope="row">Health care</th><td>$700/mo</td><td>$159/mo</td></tr>
-            <tr><th scope="row">Silver plan cost-sharing reductions</th><td>No</td><td>Yes</td></tr>
-            <tr><th scope="row">Income tax</th><td>$5,779/yr</td><td>$1,676/yr</td></tr>
-            <tr><th scope="row"><strong>Income left to spend</strong></th><td><strong>$4,318/mo</strong></td><td><strong>$5,301/mo</strong></td></tr>
-            <tr><th scope="row">Portfolio at 65</th><td>$536,174</td><td>$529,271</td></tr>
+            <tr><th scope="row">Modified adjusted gross income</th><td data-label="Version A">$66,000</td><td data-label="Version B">$31,805</td></tr>
+            <tr><th scope="row">Health care</th><td data-label="Version A">$700/mo</td><td data-label="Version B">$159/mo</td></tr>
+            <tr><th scope="row">Silver plan cost-sharing reductions</th><td data-label="Version A">No</td><td data-label="Version B">Yes</td></tr>
+            <tr><th scope="row">Income tax</th><td data-label="Version A">$5,779/yr</td><td data-label="Version B">$1,676/yr</td></tr>
+            <tr class="wex-key"><th scope="row">Income left to spend</th><td data-label="Version A">$4,318/mo</td><td data-label="Version B">$5,301/mo</td></tr>
+            <tr><th scope="row">Portfolio at 65</th><td data-label="Version A">$536,174</td><td data-label="Version B">$529,271</td></tr>
           </tbody>
         </table>
       </div>
@@ -209,7 +209,7 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="what-this-does-and-does-not-show" style="margin-top:.4rem;">What this does and does not show</h2>
       <p>The comparison above covers <strong>the three years before Medicare only</strong>, and that is deliberate.</p>
       <p>Once Medicare begins at 65, marketplace subsidies stop being the question, and the two versions of the plan hold different balances — version B has spent much of its cash and brokerage, version A has spent much of its 401(k). What happens from there depends on decisions this example does not make, so comparing the two over a full retirement would say more about those later choices than about the one being examined. Both versions run to 90 without exhausting an account, and that is all the later years are here to demonstrate.</p>
@@ -224,7 +224,7 @@
   </section>
 
   <section class="section band">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="the-full-report" style="margin-top:.4rem;">The full report</h2>
       <p>The complete plan for version B, exported from the planner exactly as it comes out of the software — every phase, the tax working, the health care costs, the year-by-year balances.</p>
       <p><a class="btn" href="downloads/worked-example-retiring-at-62.pdf">Download the example report (PDF)</a></p>
@@ -233,7 +233,7 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <h2 id="assumptions" style="margin-top:.4rem;">Every assumption behind the numbers</h2>
       <p>So the figures above can be checked rather than taken on trust:</p>
       <ul>
@@ -261,7 +261,7 @@
   </section>
 
   <section class="section">
-    <div class="container narrow">
+    <div class="container">
       <p class="muted" style="font-size:.9rem;">This page is general education only. It is not financial, tax, investment, legal, healthcare, Social Security, Medicare, estate, or retirement advice, and it is not a recommendation for any person. The example is a simplified, constructed illustration and does not describe a real customer. Retirement rules, tax law, and healthcare costs change. Confirm any decision with a suitably qualified professional and official sources before acting.</p>
     </div>
   </section>
