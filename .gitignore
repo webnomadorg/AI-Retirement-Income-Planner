@@ -12,6 +12,15 @@ sync.ps1
 # must never reach the repo. ⚠ This repo is PUBLIC, and node_modules is thousands of files.
 node_modules/
 
+# Secrets. ⚠ This repo is PUBLIC and Vercel serves its root, so a stray env file here would be
+# downloadable at /.env — and `vercel env pull` writes exactly that, carrying EVERY project
+# secret (MailerLite, Stripe verify, Blob, signup token) in one file. No env file has any
+# business in this repo: local tooling reads the gitignored .env in the desktop project root,
+# and production reads Vercel's own environment. This rule is the backstop for the one command
+# a future session is most likely to reach for.
+.env
+.env.*
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
