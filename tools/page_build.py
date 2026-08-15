@@ -58,6 +58,7 @@ PAGES = {
     "retire-abroad.html": "",
     "cross-border-retirement-data-study.html": "",
     "cross-border-methodology.html": "",
+    "worked-example-retiring-at-62.html": "",
     "about.html": "",
     "press.html": "",
     "private.html": "",
