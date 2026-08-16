@@ -186,6 +186,8 @@ Once a year, and after any major life event, [refresh the plan](/blog/keeping-yo
 - Has my Social Security, pension, retirement date, or risk tolerance changed?
 - Which scenario should become the new baseline?
 
+If you are already retired, the [annual retirement plan review checklist](/blog/annual-retirement-plan-review-checklist.html) turns these four questions into a full pass over balances, spending, income, withdrawals, taxes, healthcare, RMDs, cash, debt, and survivor planning.
+
 ## How the Planner Helps You Ask These
 
 The AI Retirement Income Planner is built so that most of these questions have somewhere to land. The **Overview** tab answers the income, real-income, and ending-balance questions phase by phase. The **Confidence** tab runs a Plan Health review that flags the tax, healthcare, income-floor, and survivor questions automatically. The **Drawdown** tab compares withdrawal strategies. The **Scenarios** and **Stress test** tools answer the durability questions, and **Saved plans** lets you turn any question into a separate version to compare. If you add your own Claude API key, the optional **AI Chat** tab turns the review questions above into one-click starter prompts, and every flagged check carries an "Ask AI about this" button that pre-writes a plan-aware question for you.
