@@ -504,13 +504,20 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
    price and Buy below. Wider than that, and with no sale at any width, the row is one line. */
 @media (max-width:429px){
   html.has-sale .ver-row{ flex-direction:column; align-items:stretch; gap:.45rem; padding:.75rem .75rem .75rem 1rem; }
-  html.has-sale .ver-buy{ width:100%; justify-content:space-between; }
+  /* ⚠ flex-start + margin-left:auto on the button, NOT space-between. The two prices are one
+     idea — "was $4.99, now $3.99" — and space-between spread all three children evenly, leaving
+     74px between them at 390px. Stranded that far from the price it modifies, the struck figure
+     stops reading as the old price and starts reading as a third, unrelated number. Grouped, the
+     pair sits one .9rem gap apart and the button still holds the right edge. */
+  html.has-sale .ver-buy{ width:100%; justify-content:flex-start; }
+  html.has-sale .ver-buy .btn{ margin-left:auto; }
 }
 /* Same split, no sale needed, on a 320px screen (Galaxy Fold cover, iPhone SE 1) — there the
    longer prices alone are already enough to fold v3–v5 while v1 and v2 hold their line. */
 @media (max-width:359px){
   .ver-row{ flex-direction:column; align-items:stretch; gap:.45rem; padding:.75rem .75rem .75rem 1rem; }
-  .ver-buy{ width:100%; justify-content:space-between; }
+  .ver-buy{ width:100%; justify-content:flex-start; }
+  .ver-buy .btn{ margin-left:auto; }
 }
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
 .product-note{ font-size:.85rem; color:var(--ink-faint); margin:.6rem 0 0; text-align:center; }
