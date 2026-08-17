@@ -13,6 +13,13 @@
    elements too, and sale codes deliberately never apply to a session — that is an hour of
    someone's time, not a file. Adding the attribute is how a price joins the sale.
 
+   ⚠ THE OTHER HALF OF THAT RULE: every price a BUYER could act on must carry it. A page that
+   says $39.99 while checkout charges $31.99 is the one failure that costs trust rather than
+   money. Prices inside buttons and prose take `data-usd-plain` as well, which changes the figure
+   without inserting the struck price and code pill beside it.
+   ⚠ Editorial figures are NOT prices — the blog and the cross-border study are full of "$605,000
+   portfolio" and "$312/month". Never mark those.
+
    Nothing here stores anything about the visitor. The two keys it writes are the cached
    response (so the next page does not jump) and which sale this browser has dismissed. */
 
@@ -92,6 +99,13 @@
       if (now === null) continue;
       var list = money(Number(el.getAttribute("data-usd")));
       el.textContent = money(now);
+
+      // data-usd-plain: change the FIGURE and nothing else. For prices written into running
+      // prose or into a call-to-action button ("Get the bundle — $39.99"), where a struck price
+      // and a code pill injected beside them would break the sentence or the button. The offer
+      // is already stated by the bar and by the product cards; here the only requirement is that
+      // the number matches what checkout will actually charge.
+      if (el.hasAttribute("data-usd-plain")) continue;
 
       // The row already carries the RRP and a "Save 53%" pill. During a sale the sale is the
       // message, so those two slots are reused: struck price becomes today's list price, and

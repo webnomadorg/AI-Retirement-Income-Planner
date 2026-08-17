@@ -333,7 +333,11 @@
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Built‑in calculators &amp; currency converter</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Dedicated Roth conversion optimizer</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td></tr>
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Lifetime tax minimisation &amp; IRMAA guardrails</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td></tr>
-              <tr style="border-top:1px solid var(--line);background:var(--surface-soft);"><td style="padding:1rem 1.2rem;font-weight:650;">Price</td><td style="text-align:center;font-weight:650;">$37.49</td><td style="text-align:center;font-weight:650;color:var(--teal-deep);">$39.99</td><td style="text-align:center;font-weight:650;">$5.99</td></tr>
+              <!-- data-usd-plain: the figure follows a live sale, but without the struck price
+                   and code pill — three of each across one table row is noise, and the bar above
+                   already carries the offer. The requirement here is only that the number agrees
+                   with checkout. -->
+              <tr style="border-top:1px solid var(--line);background:var(--surface-soft);"><td style="padding:1rem 1.2rem;font-weight:650;">Price</td><td style="text-align:center;font-weight:650;" data-usd="37.49" data-usd-plain>$37.49</td><td style="text-align:center;font-weight:650;color:var(--teal-deep);" data-usd="39.99" data-usd-plain>$39.99</td><td style="text-align:center;font-weight:650;" data-usd="5.99" data-usd-plain>$5.99</td></tr>
             </tbody>
           </table>
         </div>
@@ -363,7 +367,7 @@
       <span class="eyebrow" style="justify-content:center;">Ready when you are</span>
       <h2 id="start-planning-with-confidence-today">Start planning with confidence today.</h2>
       <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01">Get the bundle — $39.99</a>
+        <a class="btn btn-primary btn-lg" href="https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01">Get the bundle — <span data-usd="39.99" data-usd-plain>$39.99</span></a>
         <a class="btn btn-outline btn-lg" href="features.html">See all features</a>
       </div>
       <p style="margin-top:1rem;font-size:.95rem;opacity:.7;">Not sure which is right for you? <a href="contact.html" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Contact us →</a></p>
