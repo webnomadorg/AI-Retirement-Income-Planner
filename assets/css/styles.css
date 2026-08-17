@@ -432,6 +432,16 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .price{ font-family:var(--font-display); font-size:2rem; font-weight:600; color:var(--ink); }
 .price-was{ color:var(--ink-faint); text-decoration:line-through; font-size:1.05rem; }
 .price-save{ background:#F4ECD3; color:#6e540a; font-weight:700; font-size:.78rem; padding:.25rem .55rem; border-radius:999px; letter-spacing:.03em; }
+
+/* Earlier-versions rows ("Planner v3" · price · Buy).
+
+   With no sale running the label is comfortably one line and must stay that way — hence the
+   nowrap. A live sale adds a struck price and a code pill to the same row, which squeezes the
+   label until "Planner v3" folds at the space, and it folded on some rows and not others
+   depending on how wide that row's code happened to be. So during a sale the break is FORCED
+   instead of left to chance: every row reads the same, and the ragged mixture is gone. */
+.ver-label{ font-weight:600; white-space:nowrap; line-height:1.25; }
+html.has-sale .ver-n{ display:block; }
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
 .product-note{ font-size:.85rem; color:var(--ink-faint); margin:.6rem 0 0; text-align:center; }
 
