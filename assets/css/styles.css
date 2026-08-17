@@ -264,7 +264,15 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .sale-bar{
   display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
   gap:.15rem .6rem;
-  min-height:30px; padding:.3rem .9rem;
+  /* ⚠ 2.2rem of side padding, not .9rem, and SYMMETRIC so the content still reads as centred.
+     The close button is position:absolute at right:.5rem, so it is outside the flex flow and
+     reserves no width of its own — the padding is the only thing keeping content out from under
+     it. The narrow value was fine only because a short code never reached the right edge. A long
+     one does: at 700px "· ends in 3 days" sat beneath the ✕, and at 561px the ✕ landed on the
+     code button itself, so clicking to copy the code dismissed the sale instead. The 560px rule
+     below already reserved this space; the wide case had simply never been tested with a code
+     long enough to need it. */
+  min-height:30px; padding:.3rem 2.2rem;
   background:linear-gradient(180deg,#FBEAA6,#F6DC85);
   color:#4A3705;
   border-top:1px solid rgba(0,0,0,.10);
