@@ -71,7 +71,20 @@
   --shadow-lg: 0 30px 70px -28px rgba(20,48,75,.40), 0 10px 24px -12px rgba(20,48,75,.18);
   --ring: 0 0 0 3px rgba(30,122,110,.35);
   --transition: .25s cubic-bezier(.4,0,.2,1);
+
+  /* Sticky-header geometry. THREE unrelated rules used to hard-code 72px and two more
+     hard-coded 90px, and the header grew a sale bar — so the number lives here now and every
+     consumer reads it. The failure mode when these drift is silent (the mobile menu overlaps
+     the nav row; in-page anchors land underneath the header), which is exactly the kind this
+     file already warns about twice. If the header's height ever changes again, change it here.
+     --anchor-offset is deliberately a separate token: it is the header height plus breathing
+     room, not the header height. */
+  --header-h: 72px;
+  --anchor-offset: 90px;
 }
+/* The sale bar adds 30px to the sticky header, so both numbers move together. Set by
+   assets/js/sale.js, which puts .has-sale on <html> only while the bar is actually shown. */
+html.has-sale{ --header-h: 102px; --anchor-offset: 120px; }
 
 /* ---- 2. Reset / base ----------------------------------------------------- */
 *,*::before,*::after{ box-sizing:border-box; }
@@ -211,11 +224,11 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
      iOS vh bug). The plain-vh line is a fallback for browsers that don't know dvh.
      Landscape needs this too: the hamburger is used below 1500px, so a landscape phone
      gets this panel in a ~390px-tall viewport. */
-  .nav-panel{ position:fixed; inset:72px 0 auto 0; background:var(--paper);
+  .nav-panel{ position:fixed; inset:var(--header-h) 0 auto 0; background:var(--paper);
     border-bottom:1px solid var(--line); box-shadow:var(--shadow);
     display:none; flex-direction:column; padding:1rem clamp(1.1rem,4vw,2.2rem) 1.6rem; gap:.2rem;
-    max-height:calc(100vh - 72px);
-    max-height:calc(100dvh - 72px);
+    max-height:calc(100vh - var(--header-h));
+    max-height:calc(100dvh - var(--header-h));
     overflow-y:auto;
     overscroll-behavior:contain;
     -webkit-overflow-scrolling:touch;
@@ -228,6 +241,68 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
   .nav-cta .btn{ width:100%; justify-content:center; }
 }
 @media (min-width:1601px){ .nav-panel{ display:flex !important; align-items:center; gap:1.5rem; } }
+
+/* ---- 4b. Sale bar -------------------------------------------------------- */
+/* A 30px strip inside the sticky header, below the nav row and above the hero. Shown only
+   while a promotion is live; assets/js/sale.js fills it and adds .has-sale to <html>.
+
+   ⚠ COLOUR IS HARD-CODED PER THEME, NOT var(--gold). There are TEN palettes here (five colour
+   themes × light/dark) and --gold is redefined in all ten as an ACCENT — #C19A2E on white is
+   ~2.6:1, which fails AA badly as a background. This follows .price-save, the site's existing
+   sale chip: a pale saturated yellow with dark gold text, overridden once per theme. Every
+   pair below is ≥7:1 measured, not eyeballed.
+
+   ⚠ min-height, never height. The text must be free to wrap — a phone in a large accessibility
+   font size would otherwise clip the promo code, which is the one word that has to be readable. */
+.sale-bar{
+  display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+  gap:.15rem .6rem;
+  min-height:30px; padding:.3rem .9rem;
+  background:linear-gradient(180deg,#FBEAA6,#F6DC85);
+  color:#4A3705;
+  border-top:1px solid rgba(0,0,0,.10);
+  border-bottom:1px solid rgba(0,0,0,.16);
+  font-family:var(--font-sans); font-size:.82rem; line-height:1.2; font-weight:600;
+  letter-spacing:.005em;
+  text-align:center;
+}
+.sale-bar[hidden]{ display:none; }
+.sale-bar svg{ flex:none; }
+.sale-bar-msg{ color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:.45rem; }
+.sale-bar-msg:hover{ color:inherit; text-decoration:underline; }
+.sale-bar-msg strong{ font-weight:750; }
+/* The code is a button, not text: one click copies it, which is the whole job of this bar. */
+.sale-bar-code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.8rem; font-weight:700; letter-spacing:.06em;
+  color:inherit; background:rgba(255,255,255,.55);
+  border:1px solid rgba(0,0,0,.22); border-radius:6px;
+  padding:.1rem .45rem; cursor:pointer;
+  transition:background var(--transition);
+}
+.sale-bar-code:hover{ background:rgba(255,255,255,.85); }
+.sale-bar-code:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(0,0,0,.35); }
+.sale-bar-ends{ opacity:.82; font-weight:600; }
+.sale-bar-close{
+  position:absolute; right:.5rem; top:50%; transform:translateY(-50%);
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; padding:0; line-height:1;
+  background:none; border:0; border-radius:6px; cursor:pointer; color:inherit; opacity:.65;
+}
+.sale-bar-close:hover{ opacity:1; background:rgba(0,0,0,.10); }
+.sale-bar-close:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(0,0,0,.35); opacity:1; }
+.sale-bar{ position:relative; }
+/* Slide it in rather than snapping the page down. FINITE — an infinite animation here would
+   hang the screenshot tooling, and this file has been bitten by that before. */
+.sale-bar.sale-bar-enter{ animation:saleBarIn .22s var(--transition) both; }
+@keyframes saleBarIn{ from{ max-height:0; opacity:0; } to{ max-height:80px; opacity:1; } }
+@media (prefers-reduced-motion:reduce){ .sale-bar.sale-bar-enter{ animation:none; } }
+/* On a phone the strip has room for the offer and the code, and nothing else. The countdown
+   and the words "Enter code" are the first things to go — the code is what must survive. */
+@media (max-width:560px){
+  .sale-bar{ font-size:.76rem; padding:.3rem 2.2rem .3rem .7rem; gap:.1rem .45rem; }
+  .sale-bar-ends,.sale-bar-lead{ display:none; }
+}
 
 /* ---- 5. Buttons ---------------------------------------------------------- */
 .btn{ display:inline-flex; align-items:center; gap:.55rem; font-family:var(--font-sans);
@@ -495,7 +570,7 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
   padding:.3rem .7rem; border-radius:999px; }
 
 /* anchor offset for sticky header */
-[id]{ scroll-margin-top:90px; }
+[id]{ scroll-margin-top:var(--anchor-offset); }
 
 /* ============================================================================
    20. MOTION & POLISH (progressive — only active when JS adds .reveal-on)
@@ -689,6 +764,9 @@ html.dark .dark-toggle .icon-moon{ display:none; }
   .nav-panel{ background:rgba(20,48,75,.13); border-radius:9px; padding-inline:.4rem; }
   html.dark .nav-panel{ background:rgba(255,255,255,.07); }
   .nav{ min-height:80px; }
+  /* The nav row is 8px taller up here, so the anchor offset and the panel origin follow it. */
+  :root{ --header-h:80px; --anchor-offset:98px; }
+  html.has-sale{ --header-h:110px; --anchor-offset:128px; }
 }
 
 /* ============================================================================
@@ -750,6 +828,15 @@ html.dark .footer-disclaimer{ color:#7a96ae; }
 html.dark .footer-brand p{ color:#708aa0; }
 html.dark .lightbox{ background:rgba(0,0,0,.92); }
 html.dark .price-save{ background:var(--gold-soft); color:var(--gold); }
+/* Sale bar stays yellow in dark mode — a muted amber-on-charcoal strip stops reading as a sale
+   at all, which is the only thing it exists to do. 9.5:1. */
+html.dark .sale-bar{ background:linear-gradient(180deg,#3F3211,#33280C); color:#F0CE6A;
+  border-top-color:rgba(255,255,255,.10); border-bottom-color:rgba(0,0,0,.55); }
+html.dark .sale-bar-code{ background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.30); }
+html.dark .sale-bar-code:hover{ background:rgba(255,255,255,.20); }
+html.dark .sale-bar-close:hover{ background:rgba(255,255,255,.14); }
+html.dark .sale-bar-code:focus-visible,
+html.dark .sale-bar-close:focus-visible{ box-shadow:0 0 0 3px rgba(255,255,255,.45); }
 html.dark .product-tag{ background:#1e2d42; color:#c8d8e8; }
 html.dark .product-tag.best{ background:var(--teal-deep); color:#fff; }
 html.dark .checklist li::before{
@@ -822,6 +909,8 @@ html[data-theme="soft"] .checklist li::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232e8b6f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 }
 html[data-theme="soft"] .price-save{ background:#eedfa0; color:#6b5010; }
+html[data-theme="soft"] .sale-bar{ background:linear-gradient(180deg,#FAE9B4,#F7E4A0); color:#5B4508; }
+html.dark[data-theme="soft"] .sale-bar{ background:linear-gradient(180deg,#453410,#3D2E0A); color:#E2BC58; }
 html[data-theme="soft"] .nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(46,139,111,.28); }
 html[data-theme="soft"] .eyebrow{ color:var(--teal); }
 html.dark[data-theme="soft"]{
@@ -899,6 +988,8 @@ html[data-theme="editorial"] .checklist li::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233d5a80' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 }
 html[data-theme="editorial"] .price-save{ background:#f5e0cc; color:#7a3508; }
+html[data-theme="editorial"] .sale-bar{ background:linear-gradient(180deg,#FBE8D2,#F8DFC0); color:#6B3208; }
+html.dark[data-theme="editorial"] .sale-bar{ background:linear-gradient(180deg,#452B0B,#3D2508); color:#EE9E5E; }
 html[data-theme="editorial"] .nav-links a[aria-current="page"]{ color:var(--teal-deep); background:rgba(61,90,128,.28); }
 html[data-theme="editorial"] .eyebrow{ color:var(--gold); }
 html[data-theme="editorial"] .eyebrow::before{ background:var(--teal); }
@@ -980,6 +1071,8 @@ html[data-theme="pro"] .checklist li::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f62fe' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 }
 html[data-theme="pro"] .price-save{ background:#fff1cc; color:#5a3a00; }
+html[data-theme="pro"] .sale-bar{ background:linear-gradient(180deg,#FEEFAF,#FCE79A); color:#4A3200; }
+html.dark[data-theme="pro"] .sale-bar{ background:linear-gradient(180deg,#463800,#3D3000); color:#F1C21B; }
 html[data-theme="pro"] .btn-primary{ background:#0f62fe; box-shadow:0 4px 12px -6px rgba(15,98,254,.6); }
 html[data-theme="pro"] .btn-primary:hover{ background:#0050e6; }
 html[data-theme="pro"] .nav-links a[aria-current="page"]{ color:#0050e6; background:rgba(15,98,254,.28); }
@@ -1079,6 +1172,10 @@ html[data-theme="contrast"] .checklist li::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003d80' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 }
 html[data-theme="contrast"] .price-save{ background:#fce8c0; color:#3a1c00; }
+/* High Contrast gets the loudest pair on the page — 11.7:1 light, 10.3:1 dark — and a solid
+   fill rather than a gradient, matching how this theme treats every other surface. */
+html[data-theme="contrast"] .sale-bar{ background:#FFD84D; color:#2B1F00; border-bottom-width:2px; border-bottom-color:rgba(0,0,0,.5); }
+html.dark[data-theme="contrast"] .sale-bar{ background:#3A2400; color:#FFD27A; }
 html[data-theme="contrast"] .tg-tab.active{ background:#000000; color:#ffffff; border-color:#000000; }
 html.dark[data-theme="contrast"]{
   --paper:        #000000;
@@ -1396,7 +1493,7 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .post-body{ font-size:1.05rem; overflow-wrap:break-word; }
 /* Long bare URLs (e.g. in Source Links) must break rather than force horizontal scroll on mobile */
 .post-body a{ overflow-wrap:break-word; word-break:break-word; }
-.post-body h2{ font-size:1.72rem; margin-top:2.6rem; scroll-margin-top:90px; }
+.post-body h2{ font-size:1.72rem; margin-top:2.6rem; scroll-margin-top:var(--anchor-offset); }
 .post-body h3{ font-size:1.22rem; margin-top:1.8rem; }
 .post-body li{ margin:.28rem 0; }
 .post-body blockquote{ margin:1.4rem 0; padding:.2rem 1.2rem; border-left:4px solid var(--teal);

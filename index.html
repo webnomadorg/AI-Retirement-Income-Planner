@@ -94,6 +94,23 @@
       </div>
     </div>
   </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
 </header>
 
 <main id="main">
@@ -527,7 +544,7 @@
             <h3 id="ai-retirement-income-planner-v7">AI Retirement Income Planner v7</h3>
             <p class="product-desc">The complete five‑phase planner with AI chat, tax &amp; healthcare modeling, and risk tools.</p>
             <div class="price-row">
-              <span class="price">$37.49</span>
+              <span class="price" data-usd="37.49">$37.49</span>
               <span class="price-was">$79.99</span>
               <span class="price-save">Save 53%</span>
             </div>
@@ -543,7 +560,7 @@
             <h3 id="v7-roth-optimizer-bundle">v7 + Roth Optimizer Bundle</h3>
             <p class="product-desc">The full planner <em>plus</em> the companion Roth Conversion Optimizer — for just $2.50 more.</p>
             <div class="price-row">
-              <span class="price">$39.99</span>
+              <span class="price" data-usd="39.99">$39.99</span>
               <span class="price-was">$74.99</span>
               <span class="price-save">Save 47%</span>
             </div>
@@ -559,7 +576,7 @@
             <h3 id="roth-conversion-optimizer">Roth Conversion Optimizer</h3>
             <p class="product-desc">The companion tool that minimises your lifetime tax through smart Roth conversions.</p>
             <div class="price-row">
-              <span class="price">$5.99</span>
+              <span class="price" data-usd="5.99">$5.99</span>
             </div>
             <div class="product-actions">
               <a class="btn btn-primary btn-block" href="https://buy.stripe.com/14AbJ25vU7PI9YKgnz4Ja02">Buy now</a>
@@ -707,6 +724,9 @@
        so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
        it fetches nothing until someone actually searches. -->
   <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
 </footer>
 
 <script src="assets/js/main.js"></script>

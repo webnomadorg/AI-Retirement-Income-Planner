@@ -90,6 +90,23 @@
       </div>
     </div>
   </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
 </header>
 
 <main id="main">
@@ -136,7 +153,7 @@
               <li>Multi‑currency &amp; expat support</li>
             </ul>
             <div class="price-row">
-              <span class="price">$37.49</span>
+              <span class="price" data-usd="37.49">$37.49</span>
               <span class="price-was">$79.99</span>
               <span class="price-save">Save 53%</span>
             </div>
@@ -160,7 +177,7 @@
               <li>Just $2.50 more than the planner alone</li>
             </ul>
             <div class="price-row">
-              <span class="price">$39.99</span>
+              <span class="price" data-usd="39.99">$39.99</span>
               <span class="price-was">$74.99</span>
               <span class="price-save">Save 47%</span>
             </div>
@@ -184,7 +201,7 @@
               <li>Exports into the Retirement Income Planner</li>
             </ul>
             <div class="price-row">
-              <span class="price">$5.99</span>
+              <span class="price" data-usd="5.99">$5.99</span>
             </div>
             <div class="product-actions">
               <a class="btn btn-primary btn-block" href="https://buy.stripe.com/14AbJ25vU7PI9YKgnz4Ja02">Buy now</a>
@@ -205,11 +222,11 @@
           <h2 id="earlier-versions-v1-v5" style="font-size:var(--fs-h3);">Earlier versions (v1–v5)</h2>
           <p class="muted">Prefer to start small? Earlier editions of the planner are available as one‑time purchases — a great way to get familiar with the approach before upgrading.</p>
           <ul style="list-style:none;margin:1.2rem 0 0;padding:0;display:grid;gap:.6rem;">
-            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v1</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" style="font-size:1.05rem;">$4.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/6oU8wQbUi2vo6My1sF4Ja03">Buy</a></span></li>
-            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v2</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" style="font-size:1.05rem;">$9.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/00weVecYmee6b2Ob3f4Ja04">Buy</a></span></li>
-            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v3</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" style="font-size:1.05rem;">$12.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/5kQcN69Mab1Ufj4gnz4Ja05">Buy</a></span></li>
-            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v4</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" style="font-size:1.05rem;">$16.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/4gM6oIaQe8TM8UG0oB4Ja06">Buy</a></span></li>
-            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v5</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" style="font-size:1.05rem;">$19.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/8x200kf6ugme7QCc7j4Ja07">Buy</a></span></li>
+            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v1</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" data-usd="4.99" style="font-size:1.05rem;">$4.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/6oU8wQbUi2vo6My1sF4Ja03">Buy</a></span></li>
+            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v2</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" data-usd="9.99" style="font-size:1.05rem;">$9.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/00weVecYmee6b2Ob3f4Ja04">Buy</a></span></li>
+            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v3</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" data-usd="12.99" style="font-size:1.05rem;">$12.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/5kQcN69Mab1Ufj4gnz4Ja05">Buy</a></span></li>
+            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v4</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" data-usd="16.99" style="font-size:1.05rem;">$16.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/4gM6oIaQe8TM8UG0oB4Ja06">Buy</a></span></li>
+            <li style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .65rem .65rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;"><span style="font-weight:600;">Planner v5</span><span style="display:flex;align-items:center;gap:.9rem;"><span class="price" data-usd="19.99" style="font-size:1.05rem;">$19.99</span><a class="btn btn-primary btn-sm" href="https://buy.stripe.com/8x200kf6ugme7QCc7j4Ja07">Buy</a></span></li>
           </ul>
         </div>
       </div>
@@ -427,6 +444,9 @@
        so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
        it fetches nothing until someone actually searches. -->
   <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
 </footer>
 
 <script src="assets/js/main.js"></script>
