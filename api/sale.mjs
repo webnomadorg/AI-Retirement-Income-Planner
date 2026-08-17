@@ -14,15 +14,22 @@
    length of the cache window.
 
    ?preview=<id> returns a sale regardless of the active flag and the date window, so a
-   scheduled sale can be looked at on the live site before it goes out. That is safe because
-   the console creates every promotion code INACTIVE and only activates it when the sale
-   starts — a leaked code from a preview link buys nobody a discount.
+   scheduled sale can be looked at on the live site before it goes out. For a MANUAL sale that
+   is safe because the console creates its promotion code INACTIVE and only activates it when
+   the sale starts — a leaked code from a preview link buys nobody a discount.
+
+   ⚠ NOT TRUE OF AN AUTOMATED SALE. Its code is live in Stripe from the moment it is minted
+   (see lib/sale-state.mjs), and its id is guessable — `?preview=black-friday-2027` would hand
+   out a working discount months early. So an automated sale that has not started yet has its
+   code MASKED here. The bar can still be checked for layout, which is all a preview is for.
 
    NOTE: classic Node (req, res) signature — the web-standard handler(request) form crashes
    this project's runtime with FUNCTION_INVOCATION_FAILED. Same constraint as
    api/download.mjs and api/latest-version.mjs. */
 
-import { readState, resolveActive, findSale, publicView } from '../lib/sale-state.mjs';
+import {
+  readState, resolveActive, findSale, publicView, inWindow, maskCode,
+} from '../lib/sale-state.mjs';
 
 export default async function handler(req, res) {
   // Same reasoning as api/latest-version.mjs: nothing here is private or user-specific, and
@@ -54,7 +61,12 @@ export default async function handler(req, res) {
     const sale = findSale(state, previewId);
     // A preview must never be cached — it is a one-off look at something not yet public.
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json(sale ? { ...publicView(sale), preview: true } : { active: false });
+    if (!sale) return res.status(200).json({ active: false });
+    const view = publicView(sale);
+    // See the header: an automated code works the moment it exists, so it stays masked until
+    // the window it belongs to actually opens.
+    if (sale.auto && !inWindow(sale, Date.now())) view.code = maskCode(view.code);
+    return res.status(200).json({ ...view, preview: true });
   }
 
   const live = resolveActive(state, new Date());
