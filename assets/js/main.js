@@ -29,6 +29,32 @@
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+
+    /* ---- Sticky-header height: measured, never assumed ----
+       --header-h / --anchor-offset in styles.css are hand-tuned numbers, and .has-sale adds a
+       flat 30px for the sale bar. But the bar WRAPS: it is flex-wrap:wrap by design (so a large
+       accessibility font size can never clip the promo code), and on a 390px phone most of the
+       real occasion names do wrap — "Black Friday Sale — 25% off" plus BLACKFRIDAY25 needs two
+       lines. The bar is then 54px, the header 127px, and the token still says 102px.
+
+       The two consumers both fail silently at that point: .nav-panel opens at inset:var(--header-h)
+       so its first row (the theme picker) hides behind the header, and every in-page anchor —
+       including sitewide-search deep links — lands under it. Measuring removes the whole class of
+       bug: wrapped bar, no bar, the 1500px breakpoint and accessibility font sizes all self-correct.
+
+       No feedback loop: .nav-panel is position:fixed, so opening it does not change the header's
+       own height. Where ResizeObserver is missing, the CSS numbers stand as they always did. */
+    if (window.ResizeObserver) {
+      var syncHeaderHeight = function () {
+        var h = Math.round(header.getBoundingClientRect().height);
+        if (!h) return;                       // display:none (print, or a chrome-free /get/ page)
+        var root = document.documentElement.style;
+        root.setProperty("--header-h", h + "px");
+        root.setProperty("--anchor-offset", (h + 18) + "px");  // header plus breathing room
+      };
+      new ResizeObserver(syncHeaderHeight).observe(header);
+      syncHeaderHeight();
+    }
   }
 
   /* ---- Scroll reveal (progressive enhancement) ---- */

@@ -237,10 +237,16 @@
 
     <!-- Terms must be readable BEFORE payment: terms a buyer first meets after paying are on shaky
          ground under UK/EU consumer law, and the licence and liability limit lived only inside the
-         downloaded file until now. -->
-    <p class="muted center" style="max-width:62ch;margin:2.4rem auto 0;font-size:.92rem;">
-      Every purchase is covered by our <a href="software-terms.html">Software Terms</a> — a single-user licence, free updates for life, and a plain-English account of what the planner does and does not promise. The planner is an educational tool, not financial advice.
-    </p>
+         downloaded file until now.
+
+         ⚠ Inside .container, like every other block on the page. .container is what carries the
+         horizontal padding; a stray child of .section has none, so on a phone this paragraph ran
+         from screen edge to screen edge while everything above it stayed properly inset. -->
+    <div class="container">
+      <p class="muted center" style="max-width:62ch;margin:2.4rem auto 0;font-size:.92rem;">
+        Every purchase is covered by our <a href="software-terms.html">Software Terms</a> — a single-user licence, free updates for life, and a plain-English account of what the planner does and does not promise. The planner is an educational tool, not financial advice.
+      </p>
+    </div>
   </section>
 
   <!-- 1-on-1 educational sessions -->

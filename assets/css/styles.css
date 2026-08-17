@@ -464,11 +464,16 @@ html.has-sale .ver-n{ display:block; }
    sits in the sale bar pinned inside the sticky header, on screen the whole time you read this
    list. The struck price still carries the discount. Left in, it wrapped a different way on each
    row depending on how wide that row's prices happened to be — the ragged mixture the forced
-   .ver-n break was added to cure, arriving back one line lower down. */
+   .ver-n break was added to cure, arriving back one line lower down.
+
+   ⚠ Every rule below is gated on html.has-sale. With no sale running the row is "Planner v1 …
+   $4.99 · Buy" and that has always fitted one line on a phone — stacking it there just made five
+   rows taller for nothing. The two-line treatment is a response to the sale chips, so it lives
+   and dies with them. */
 @media (max-width:620px){
-  .ver-row{ flex-direction:column; align-items:stretch; gap:.5rem; padding:.8rem .8rem .8rem 1rem; }
-  .ver-buy{ width:100%; justify-content:space-between; }
-  .ver-row .price-save{ display:none; }
+  html.has-sale .ver-row{ flex-direction:column; align-items:stretch; gap:.5rem; padding:.8rem .8rem .8rem 1rem; }
+  html.has-sale .ver-buy{ width:100%; justify-content:space-between; }
+  html.has-sale .ver-row .price-save{ display:none; }
   html.has-sale .ver-n{ display:inline; }
 }
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
