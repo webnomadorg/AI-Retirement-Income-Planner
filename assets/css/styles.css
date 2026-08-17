@@ -446,43 +446,71 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .price-row{ display:flex; align-items:baseline; gap:.6rem; margin-top:auto; margin-bottom:1rem; flex-wrap:wrap; }
 .price{ font-family:var(--font-display); font-size:2rem; font-weight:600; color:var(--ink); }
 .price-was{ color:var(--ink-faint); text-decoration:line-through; font-size:1.05rem; }
-.price-save{ background:#F4ECD3; color:#6e540a; font-weight:700; font-size:.78rem; padding:.25rem .55rem; border-radius:999px; letter-spacing:.03em; }
+/* overflow-wrap:anywhere, not break-word — only `anywhere` lowers the MIN-CONTENT width, which is
+   the number that decides how wide a grid track has to be. The pill's text is "20% off · CODE" and
+   the code half is one unbreakable token, so a very long one (the Sales tab lets you type any code,
+   and the suggested ones already run to 22 characters) made the whole v1–v5 row unshrinkable. */
+.price-save{ background:#F4ECD3; color:#6e540a; font-weight:700; font-size:.78rem; padding:.25rem .55rem; border-radius:999px; letter-spacing:.03em; overflow-wrap:anywhere; }
 
-/* Earlier-versions rows ("Planner v3" · price · Buy).
+/* Earlier-versions rows: "Planner v3 ······ $12.99 $10.39 · Buy", one line, sale or no sale.
 
-   With no sale running the label is comfortably one line and must stay that way — hence the
-   nowrap. A live sale adds a struck price and a code pill to the same row, which squeezes the
-   label until "Planner v3" folds at the space, and it folded on some rows and not others
-   depending on how wide that row's code happened to be. So during a sale the break is FORCED
-   instead of left to chance: every row reads the same, and the ragged mixture is gone. */
+   ⚠ The code pill is deliberately absent from these rows — see .ver-row .price-save below. That
+   one decision is what lets everything here stay simple. The pill was ~120px of an unbreakable
+   token in a row that is only ~310px wide on a phone, and every problem this block used to carry
+   came from trying to fit it: the row could not shrink, so it widened the grid TRACK, and the
+   cover image sharing that track was stretched off the side of the screen. Then the fixes piled
+   up — a forced "Planner"/"v3" line break to buy width back, a two-line stack below 620px, and
+   still three- and four-line rows on desktop once a code ran to 20 characters.
+
+   Without the pill the row fits one line everywhere from 360px up, so none of that is needed:
+   no forced label break, no breakpoint, no stacking. The discount is still on the row as the
+   struck-through price, and the code itself is in the sale bar pinned inside the sticky header,
+   on screen the entire time this list is being read. */
 .ver-list{ list-style:none; margin:1.2rem 0 0; padding:0; display:grid; gap:.6rem; }
 .ver-row{ display:flex; align-items:center; justify-content:space-between; gap:.5rem 1rem; flex-wrap:wrap;
   padding:.65rem .65rem .65rem 1rem; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
 .ver-buy{ display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:.5rem .9rem; }
 .ver-buy .price{ font-size:1.05rem; }
 .ver-label{ font-weight:600; white-space:nowrap; line-height:1.25; }
-html.has-sale .ver-n{ display:block; }
-/* Both rows wrap. A sale turns "$4.99 · Buy" into "$3.99 · $4.99 · 20% off · FLASH20 · Buy", and
-   none of those five pieces can break internally, so on a phone the row's min-content was wider
-   than the screen. That widened the grid track it shares with the cover image above it, and the
-   image — stretched to a track it never asked for — was what visibly ran off the edge.
+/* The full-size product cards above (v7, Bundle, Roth) keep their pill — they have a whole card
+   width for it. This hides it only in the compact list, and only there. */
+.ver-row .price-save{ display:none; }
+/* flex-wrap on both stays as the safety net: if a future price or label outgrows the row it wraps
+   instead of forcing the track wider and dragging the image out again. */
 
-   Below 620px the row splits into two full-width lines instead, and the code pill steps aside.
-   The pill is ~120px of a ~310px row and, unlike the price, it is not row-specific: the same code
-   sits in the sale bar pinned inside the sticky header, on screen the whole time you read this
-   list. The struck price still carries the discount. Left in, it wrapped a different way on each
-   row depending on how wide that row's prices happened to be — the ragged mixture the forced
-   .ver-n break was added to cure, arriving back one line lower down.
+/* ⚠ This block splits into two columns at 1025px, not at the usual 620px — it stays stacked for
+   every phone AND every tablet.
 
-   ⚠ Every rule below is gated on html.has-sale. With no sale running the row is "Planner v1 …
-   $4.99 · Buy" and that has always fitted one line on a phone — stacking it there just made five
-   rows taller for nothing. The two-line treatment is a response to the sale chips, so it lives
-   and dies with them. */
-@media (max-width:620px){
-  html.has-sale .ver-row{ flex-direction:column; align-items:stretch; gap:.5rem; padding:.8rem .8rem .8rem 1rem; }
+   Two separate things go wrong when it splits early. The rows get WORSE as the window grows: below
+   620px the list has the whole container (~500px at 560px wide), and the moment it goes two-up it
+   drops to about 236px of usable row when the row needs 314px, so every Buy button wrapped to a
+   second line. And the figure beside it is a screenshot of the planner's own dense UI — at the
+   ~380px a half-column gives it on a tablet, the numbers in it are unreadable, which is the only
+   reason it is on the page. Side by side only earns its place once the column is wide enough for
+   both, so the split waits for a real desktop.
+
+   Stacked, the block is capped and centred rather than stretched to a 1000px-wide row of mostly
+   empty space between "Planner v1" and its price.
+
+   Source order matters: this must stay AFTER the .cols-2 rule in section 3, same specificity. */
+@media (max-width:1024px){
+  .ver-split{ grid-template-columns:1fr; max-width:40rem; margin-inline:auto; }
+}
+
+/* Below 430px a sale's struck price is the ~50px that stops the row fitting one line — but only
+   on SOME rows: "$3.99 $4.99" fits where "$15.99 $19.99" does not, so v1 and v2 stayed on one
+   line while v3–v5 folded. Five rows of two different heights read as a mistake. So under 430px,
+   and only while a sale is running, the split is made deliberately on every row: label above,
+   price and Buy below. Wider than that, and with no sale at any width, the row is one line. */
+@media (max-width:429px){
+  html.has-sale .ver-row{ flex-direction:column; align-items:stretch; gap:.45rem; padding:.75rem .75rem .75rem 1rem; }
   html.has-sale .ver-buy{ width:100%; justify-content:space-between; }
-  html.has-sale .ver-row .price-save{ display:none; }
-  html.has-sale .ver-n{ display:inline; }
+}
+/* Same split, no sale needed, on a 320px screen (Galaxy Fold cover, iPhone SE 1) — there the
+   longer prices alone are already enough to fold v3–v5 while v1 and v2 hold their line. */
+@media (max-width:359px){
+  .ver-row{ flex-direction:column; align-items:stretch; gap:.45rem; padding:.75rem .75rem .75rem 1rem; }
+  .ver-buy{ width:100%; justify-content:space-between; }
 }
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
 .product-note{ font-size:.85rem; color:var(--ink-faint); margin:.6rem 0 0; text-align:center; }
