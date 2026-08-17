@@ -127,6 +127,13 @@ hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
 .band-ink .card h3,.band-ink .callout h3{ color:var(--ink); }
 .band-ink .card p,.band-ink .callout p{ color:var(--ink-soft); }
 .grid{ display:grid; gap:clamp(1.1rem,2.4vw,1.8rem); }
+/* ⚠ A grid item's automatic minimum size is its MIN-CONTENT width, so one item that cannot
+   shrink (an unbreakable token, a flex row of nowrap chips) widens the whole TRACK — and every
+   other item in that track with it. Collapsed to one column on a phone that means a single
+   stubborn list row drags the sibling image out past the screen edge, and the image, being the
+   only thing you can see sticking out, looks like the bug. It is never the image. min-width:0
+   keeps the track honest, so a future offender overflows only its own box instead of the page. */
+.grid > *{ min-width:0; }
 .cols-2{ grid-template-columns:repeat(2,1fr); }
 .cols-3{ grid-template-columns:repeat(3,1fr); }
 .cols-4{ grid-template-columns:repeat(4,1fr); }
@@ -440,8 +447,30 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
    label until "Planner v3" folds at the space, and it folded on some rows and not others
    depending on how wide that row's code happened to be. So during a sale the break is FORCED
    instead of left to chance: every row reads the same, and the ragged mixture is gone. */
+.ver-list{ list-style:none; margin:1.2rem 0 0; padding:0; display:grid; gap:.6rem; }
+.ver-row{ display:flex; align-items:center; justify-content:space-between; gap:.5rem 1rem; flex-wrap:wrap;
+  padding:.65rem .65rem .65rem 1rem; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+.ver-buy{ display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:.5rem .9rem; }
+.ver-buy .price{ font-size:1.05rem; }
 .ver-label{ font-weight:600; white-space:nowrap; line-height:1.25; }
 html.has-sale .ver-n{ display:block; }
+/* Both rows wrap. A sale turns "$4.99 · Buy" into "$3.99 · $4.99 · 20% off · FLASH20 · Buy", and
+   none of those five pieces can break internally, so on a phone the row's min-content was wider
+   than the screen. That widened the grid track it shares with the cover image above it, and the
+   image — stretched to a track it never asked for — was what visibly ran off the edge.
+
+   Below 620px the row splits into two full-width lines instead, and the code pill steps aside.
+   The pill is ~120px of a ~310px row and, unlike the price, it is not row-specific: the same code
+   sits in the sale bar pinned inside the sticky header, on screen the whole time you read this
+   list. The struck price still carries the discount. Left in, it wrapped a different way on each
+   row depending on how wide that row's prices happened to be — the ragged mixture the forced
+   .ver-n break was added to cure, arriving back one line lower down. */
+@media (max-width:620px){
+  .ver-row{ flex-direction:column; align-items:stretch; gap:.5rem; padding:.8rem .8rem .8rem 1rem; }
+  .ver-buy{ width:100%; justify-content:space-between; }
+  .ver-row .price-save{ display:none; }
+  html.has-sale .ver-n{ display:inline; }
+}
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
 .product-note{ font-size:.85rem; color:var(--ink-faint); margin:.6rem 0 0; text-align:center; }
 
