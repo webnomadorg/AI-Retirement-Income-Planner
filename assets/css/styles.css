@@ -644,6 +644,13 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
 @media (prefers-reduced-motion:reduce){ .cookie-banner{ animation:none; } }
 
 /* ---- 19. Utilities ------------------------------------------------------- */
+/* Fine print under a form's submit button. Deliberately NOT the .mt-2 utility: inside a
+   .card, `.card p{margin:0}` (0-1-1) outranks `.mt-2` (0-1-0), so the utility silently does
+   nothing and the note sits flush against the button with 0px between them. Same family as the
+   .cmp-matrix-wrap trap — measure the gap, never assume the wrapper carries it. Scoped to win. */
+.form-note,.card .form-note{ margin:1.15rem 0 .35rem; font-size:.85rem; line-height:1.55;
+  text-align:center; color:var(--ink-soft); }
+
 .mt-0{ margin-top:0; } .mb-0{ margin-bottom:0; }
 .mt-1{ margin-top:.6rem; } .mt-2{ margin-top:1.2rem; } .mt-3{ margin-top:2rem; }
 .muted{ color:var(--ink-soft); }
