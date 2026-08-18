@@ -250,9 +250,9 @@ Yes. The free Retire Abroad tool on this site compares a US retirement against t
 
 ## CTA Blocks
 
-**Soft CTA:** If you want to see what a retirement starting in your forties actually looks like phase by phase — the locked years, the marketplace headroom, the gap between what leaves the portfolio and what arrives in your account — the interactive demo runs a sample plan in your browser with nothing to install and no signup.
+**Soft CTA:** Most of what is described here you can look at for free. The demo walks through a worked sample plan phase by phase — the subsidy badges, the headroom left before the cost-sharing ceiling, the gap between what leaves the portfolio and what lands in the account — with nothing to install and no signup. Two honest caveats: it runs a fixed example rather than your own figures, and that example retires at 62, so the locked pre-59½ years are the one part of this article it cannot show you. For those you need your own numbers.
 
-**Demo CTA:** Open the live demo and look at the earliest phase card, then the one covering 65 onward. The first shows subsidy status and how much income headroom is left before the cost-sharing ceiling; the second shows Medicare with any surcharge. Click any badge for an explanation using that plan's figures.
+**Demo CTA:** Open the demo and compare its first phase card, covering the pre-Medicare years, with the one from 65 onward. The first shows marketplace subsidy status and how much income headroom is left before the cost-sharing ceiling; the second shows Medicare with any surcharge. Click any badge for an explanation built from that plan's figures, and switch the country to see the tax and healthcare assumptions change with it.
 
 **Product CTA:** The AI Retirement Income Planner models the whole thing on your own numbers: a locked pre-59½ phase when you retire early, marketplace subsidies and Silver cost-sharing with dollar headroom to the next threshold, Medicare and IRMAA with the two-year lookback, multi-year Roth conversions, part-time income per phase, Monte Carlo and historical backtesting over a horizon that runs to 100, and residence switching for retiring abroad. One-time purchase, no subscription, runs privately in your browser — your figures never leave your computer.
 
