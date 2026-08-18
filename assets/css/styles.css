@@ -1604,8 +1604,14 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .post-body h2{ font-size:1.72rem; margin-top:2.6rem; scroll-margin-top:var(--anchor-offset); }
 .post-body h3{ font-size:1.22rem; margin-top:1.8rem; }
 .post-body li{ margin:.28rem 0; }
-.post-body blockquote{ margin:1.4rem 0; padding:.2rem 1.2rem; border-left:4px solid var(--teal);
+.post-body blockquote{ margin:1.4rem 0; padding:.7rem 1.2rem; border-left:4px solid var(--teal);
   background:var(--surface-soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; color:var(--ink-soft); }
+/* The quote's last paragraph keeps the .post-body p bottom margin, which the blockquote padding
+   does not absorb — so every pull-quote sat high in its own box (measured 4px above the text,
+   22px below). Strip the trailing margin and let the symmetric padding do the centring. This is a
+   spacing bug, not an alignment one: flex/align-items would have hidden it rather than fixed it. */
+.post-body blockquote > :last-child{ margin-bottom:0; }
+.post-body blockquote > :first-child{ margin-top:0; }
 .post-img{ margin:2rem 0; text-align:center; }
 .post-img img{ max-width:100%; width:auto; height:auto; margin-inline:auto; border-radius:var(--radius-sm); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
 
