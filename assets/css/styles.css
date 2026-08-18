@@ -450,6 +450,20 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
    the number that decides how wide a grid track has to be. The pill's text is "20% off · CODE" and
    the code half is one unbreakable token, so a very long one (the Sales tab lets you type any code,
    and the suggested ones already run to 22 characters) made the whole v1–v5 row unshrinkable. */
+/* Forces the savings pill onto its own line, so every product card breaks in the same place.
+   Without it the break is decided by text width alone: "$37.49 $79.99 Save 50%" is wide enough
+   to wrap on its own, but "$5.99 $11.99 Save 50%" fits on one line, so the cheap card looked
+   different from its neighbours. A zero-height 100%-basis flex item is the only reliable break —
+   flex-basis:100% on the pill itself would stretch its background across the card, and clamping
+   that with max-width does not work (line-breaking uses the size AFTER max-width is applied). */
+.price-break{ flex:0 0 100%; height:0; }
+/* The break sits on its own zero-height line, so the row gap is paid TWICE — once from the
+   price down to the break, once from the break down to the pill (2 x 10.8px = 22px, which
+   reads as a stray blank line). Collapse it on rows that carry a break and give the pill its
+   own smaller top margin. Scoped with :has() so every other .price-row keeps its row gap. */
+.price-row:has(.price-break){ row-gap:0; }
+.price-break + .price-save{ margin-top:.45rem; }
+
 .price-save{ background:#F4ECD3; color:#6e540a; font-weight:700; font-size:.78rem; padding:.25rem .55rem; border-radius:999px; letter-spacing:.03em; overflow-wrap:anywhere; }
 
 /* Earlier-versions rows: "Planner v3 ······ $12.99 $10.39 · Buy", one line, sale or no sale.
