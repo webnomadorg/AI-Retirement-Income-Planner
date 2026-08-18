@@ -459,9 +459,18 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // Scoped to Phase 1 deliberately. A later claiming age (67, 70) lands inside a mid-plan phase where
   // the b-slot is genuinely useful and is NOT what was reported, so that path is untouched.
   const a1=(ssAge>_p1Start&&ssAge<_a1raw)?ssAge:_a1raw;
-  const a2=Math.max(a1+0.5,       pa.phaseAge2end||65);
-  const a3=Math.max(a2+0.5,       pa.phaseAge3end||67);
-  const a4=Math.max(a3+0.5,       pa.phaseAge4end||73);
+  // v15: was Math.max(aN+0.5, …). That half-year floor meant two boundaries could never coincide, so
+  // dragging one past the next in Edit values did not collapse the phase between them — it
+  // manufactured a SIX-MONTH one. Setting Phase 1 to end at 67 on stock boundaries produced
+  // "62–67 · 67–67.5 · 67.5–68 · 68–73", two cards covering half a year each and telling the reader
+  // nothing. Boundaries may now be equal; a phase with no months left is dropped below rather than
+  // padded into existence. Collapsing a phase is a legitimate thing to ask for, and the honest
+  // answer is one fewer card — the surviving phases keep their own numbers, so a gap in the
+  // sequence is the visible evidence that a phase was collapsed, and every card still matches the
+  // phase of the same name in Edit values.
+  const a2=Math.max(a1,           pa.phaseAge2end||65);
+  const a3=Math.max(a2,           pa.phaseAge3end||67);
+  const a4=Math.max(a3,           pa.phaseAge4end||73);
   const curAge=currentAge&&currentAge>startAge?currentAge:startAge;
   const p5mo=Math.max(1,Math.round((p5End-a4)*12));
   // v5: SS claiming age (hoisted above the boundaries) — determines when hasSS turns on.
@@ -527,6 +536,9 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   for(const p of allPhases){
     if(curAge>=p.endAge) continue;
     const effStart=Math.max(p.startAge,curAge);
+    // v15: a phase the user has collapsed to nothing carries no months, no income and no tax — it is
+    // not a phase. Dropped here rather than rounded up to a 1-month card by the Math.max(1,…) below.
+    if(p.endAge-effStart<=1e-9) continue;
     const months=Math.max(1,Math.round((p.endAge-effStart)*12));
     // v13: apply the early-Medicare override AFTER trimming, so a replanned phase that now starts at
     // the user's real current age is judged on that age, not on the phase's original boundary.
@@ -550,6 +562,15 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     // construction — that is the property the self-test asserts.
     result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0||spMedFrac>0,
       medicareFrac:medFrac,spouseMedicareFrac:spMedFrac,medicareUnits:medFrac+spMedFrac,
+      medicareHeads:_mfjHere&&!_spNever?2:1});
+  }
+  // A plan must always render at least one phase. Every boundary is clamped to <=85 and p5End to
+  // >=80, so the last phase cannot be squeezed out in practice — but returning [] would blank the
+  // whole dashboard, so fall back to the final phase rather than trust that invariant forever.
+  if(!result.length&&allPhases.length){
+    const last=allPhases[allPhases.length-1];
+    result.push({...last,startAge:Math.max(last.startAge,curAge),months:1,
+      hasMedicare:true,medicareFrac:1,spouseMedicareFrac:0,medicareUnits:1,
       medicareHeads:_mfjHere&&!_spNever?2:1});
   }
   return result;
