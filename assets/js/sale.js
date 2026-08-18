@@ -107,7 +107,7 @@
       // the number matches what checkout will actually charge.
       if (el.hasAttribute("data-usd-plain")) continue;
 
-      // The row already carries the RRP and a "Save 53%" pill. During a sale the sale is the
+      // The row already carries the RRP and a "Save N%" pill. During a sale the sale is the
       // message, so those two slots are reused: struck price becomes today's list price, and
       // the pill becomes the code. Originals stay in the attributes, so nothing is lost and
       // running this twice is harmless.
