@@ -219,6 +219,8 @@ But it needs to answer:
 
 Changing one variable can change the answer.
 
+If you are aiming considerably earlier than 55 — the FIRE case, where the gap before retirement accounts unlock runs to seventeen years or more — the same mechanics apply but the margins are thinner. [Am I ready to FIRE?](/blog/am-i-ready-to-fire.html) works through what a savings multiple cannot tell you about the years straight after you stop.
+
 ## When Retiring At 55 May Be More Realistic
 
 Retiring at 55 may be more realistic when:

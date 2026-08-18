@@ -117,6 +117,8 @@ The reason all of this sits inside a phased plan is that the right move changes 
 - **When Medicare begins at 65**, the ACA concerns fall away and IRMAA becomes the threshold to watch instead.
 - **When required distributions begin**, you may be forced to show more taxable income, so the earlier phases are where any Roth conversions or bracket-filling should already have happened.
 
+Retiring well before 59½ stretches every one of these effects over a longer stretch, and adds one the later ages never face: a large part of the portfolio is not reachable yet. [Am I ready to FIRE?](/blog/am-i-ready-to-fire.html) covers that case.
+
 The running total of estimated tax at the top of the planner acts as a rough score for all of this. Every time you adjust a withdrawal to keep MAGI in a good band and the tax figure comes down, that is money staying in your pocket. If you have not built a plan yet, the [step-by-step setup guide](/blog/how-to-set-up-a-retirement-income-plan.html) shows how to get your numbers in first.
 
 ## FAQ
