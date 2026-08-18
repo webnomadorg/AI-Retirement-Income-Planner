@@ -442,17 +442,29 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   const pa=phaseAges||{};
   // v5: if retiring before 59.5, Phase 1 cannot start before 59.5 (401k locked)
   const earlyRetire=startAge<59.5;
-  const a1=earlyRetire
+  // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
+  // Hoisted above the phase boundaries because a1 is now clamped to it — see below.
+  const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
+  const _p1Start=earlyRetire?59.5:startAge;
+  const _a1raw=earlyRetire
     ?Math.max(59.5, pa.phaseAge1end||62)
     :Math.max(startAge, pa.phaseAge1end||62);
+  // v15: THE SS START AGE IS A HARD BOUNDARY — Phase 1 may not run past it. Set Phase 1 to end at 65
+  // while claiming at 62 and the split logic below used to carve it into "Phase 1" (59.5–62) plus a
+  // "Phase 1b" (62–65). That b-slot exists for a real reason — it can hold its own withdrawals — but
+  // as the FIRST thing SS does to a plan it reads as a glitch, and the owner reported it twice as
+  // one. Claiming age is a decision the whole plan pivots on, so it earns a boundary of its own
+  // rather than a lettered sub-phase. Ending Phase 1 there loses nothing: the years the user wanted
+  // in "Phase 1 to 65" are still one phase, now numbered normally.
+  // Scoped to Phase 1 deliberately. A later claiming age (67, 70) lands inside a mid-plan phase where
+  // the b-slot is genuinely useful and is NOT what was reported, so that path is untouched.
+  const a1=(ssAge>_p1Start&&ssAge<_a1raw)?ssAge:_a1raw;
   const a2=Math.max(a1+0.5,       pa.phaseAge2end||65);
   const a3=Math.max(a2+0.5,       pa.phaseAge3end||67);
   const a4=Math.max(a3+0.5,       pa.phaseAge4end||73);
   const curAge=currentAge&&currentAge>startAge?currentAge:startAge;
   const p5mo=Math.max(1,Math.round((p5End-a4)*12));
-  // v5: SS claiming age — determines when hasSS turns on; may split a phase
-  // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
-  const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
+  // v5: SS claiming age (hoisted above the boundaries) — determines when hasSS turns on.
   // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age).
   // v15 (2026-08-18): the DEFAULT is now 65, not null. It used to fall through to the per-phase
   // `hasMedicare` flag, which is hardcoded from Phase 3 onward — so Medicare began wherever Phase 3

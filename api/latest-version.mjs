@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 302, released: '2026-08-18', headline: 'Medicare now starts at 65 whatever your phase ages — if you changed any of them, your healthcare costs after 65 were wrong.' }; /* __LATEST__ */
+const LATEST = { build: 306, released: '2026-08-18', headline: 'Your Social Security claiming age now gets a phase of its own, and the phase strip stays where you left it while you edit.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
