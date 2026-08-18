@@ -199,9 +199,11 @@ const D_USD={
   //         age floor; it changes no maths. At FRA the benefit converts to the retirement benefit at
   //         the same amount, which is why one figure covers both sides of that boundary.
   //   medicareStartAge — SSDI recipients qualify for Medicare 24 months after entitlement regardless
-  //         of age. null ⇒ the untouched phase-index behaviour (Medicare from phase 3, i.e. 65).
-  //         Set ⇒ a phase has Medicare when it STARTS at or after this age, which also switches off
-  //         ACA subsidies and switches on IRMAA for those phases. ──
+  //         of age. Unset ⇒ 65, the ordinary age. (It used to mean 'fall back to the phase-index
+  //         flag', which put Medicare wherever Phase 3 started — only 65 on the DEFAULT boundaries.
+  //         Fixed 2026-08-18; see Plans/Bug-Medicare-Tied-To-Phase-Slot.md.)
+  //         Either way a phase is priced by the SHARE of its months at or after this age, which also
+  //         switches off ACA subsidies and switches on IRMAA for that share. ──
   ssdiMode:false, medicareStartAge:null,
   // ── v14: substantial gainful activity. Earning above this while on SSDI can eventually END the
   //         cash benefit (after the 9-month trial work period and the 36-month extended eligibility
@@ -451,8 +453,18 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // v5: SS claiming age — determines when hasSS turns on; may split a phase
   // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
   const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
-  // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age). null ⇒ untouched.
-  const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:null;
+  // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age).
+  // v15 (2026-08-18): the DEFAULT is now 65, not null. It used to fall through to the per-phase
+  // `hasMedicare` flag, which is hardcoded from Phase 3 onward — so Medicare began wherever Phase 3
+  // began, and that equals 65 only on the DEFAULT boundaries (62/65/67/73). Move a boundary and it
+  // silently decoupled from 65: `phaseAge1end:65` pushes a2 to 67, so 65–67 was billed as ACA and
+  // even flagged subsidy-eligible, which is impossible once you are Medicare-eligible. Moving a
+  // boundary DOWN was worse — Medicare charged from 63. Neither needed an early retirement age;
+  // retiring AT 65 tripped it on stock settings. Passing 65 here routes every phase through the
+  // same pro-rating `_fracFrom` already used for the SSDI case, so a phase straddling 65 is priced
+  // part ACA / part Medicare instead of all-or-nothing. Default-boundary plans are byte-identical
+  // (the golden master asserts it) and an explicit medicareStartAge still wins.
+  const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:65;
   // v14: the SPOUSE's Medicare, as a share of each phase, so a married couple is charged Part B and
   // Part D for two people rather than one. Expressed in the PRIMARY's age line, because every phase
   // boundary is: the spouse turns 65 when the primary is 65 + (primary age − spouse age).
