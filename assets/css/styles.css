@@ -1701,6 +1701,19 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .scenario-card .scenario-a{ color:var(--ink-soft); font-size:.97rem; line-height:1.6; margin:0 0 1.1rem; }
 .scenario-card .scenario-a strong{ color:var(--ink); font-weight:650; }
 
+/* Each question links on to the page that answers it — the destination the nurture
+   sequence points at for that same question.
+   ⚠ The accent token FLIPS between schemes and neither one is safe on its own: measured on
+   --surface across all five themes, --teal-deep fails AA in dark soft/pro/editorial (3.25–3.63)
+   while --teal fails in light soft (4.17). Light→--teal-deep, dark→--teal clears 4.5 everywhere
+   (worst case 4.91). Re-measure before changing either. */
+.scenario-link{ display:inline-flex; align-items:center; gap:.3rem; margin:0 0 .3rem;
+  font-family:var(--font-sans); font-size:.88rem; font-weight:650; color:var(--teal-deep);
+  text-decoration:none; border-bottom:1px solid transparent;
+  transition:border-color var(--transition); }
+html.dark .scenario-link{ color:var(--teal); }
+.scenario-link:hover,.scenario-link:focus-visible{ border-bottom-color:currentColor; }
+
 .scenario-tools{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:auto;
   padding-top:.9rem; border-top:1px solid var(--line-soft); }
 .scenario-tool{ font-size:.72rem; font-weight:600; color:var(--teal-deep); background:var(--sage);
