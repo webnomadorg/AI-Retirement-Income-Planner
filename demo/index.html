@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v327.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v328.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -5972,7 +5972,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 327; /* __BUILD__ */
+const APP_BUILD = 328; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -10553,7 +10553,11 @@ function _renderTaxBracketChart(phs,opts){
       backgroundColor:sv.color,borderWidth:0,_tax:sv.tax}))},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       animation:{duration:600},
-      interaction:{mode:'index',intersect:false},
+      // ⚠ axis:'y' is REQUIRED on a horizontal bar. Chart.js defaults interaction to axis:'x', so on
+      // an indexAxis:'y' chart it searches for the nearest index along the wrong axis — every hover
+      // resolved to bar 0 regardless of where the pointer was, and the bottom bar matched nothing at
+      // all. Vertical bar charts hide this because there the index axis IS x.
+      interaction:{mode:'index',intersect:false,axis:'y'},
       plugins:{legend:{display:false},tooltip:{displayColors:true,filter:it=>it.parsed.x>0,
         callbacks:{title:it=>it.length?m.labels[it[0].dataIndex]+' · '+m.sub[it[0].dataIndex]:'',
           // Both halves matter: how much income sits in the band, and what it actually cost.
