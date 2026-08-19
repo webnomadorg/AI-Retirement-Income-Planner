@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 314, released: '2026-08-19', headline: 'Retiring before 59½? Draw on the 401k early and see the 10% penalty priced in, claim the Rule of 55, and get a warning if a Roth conversion ladder is spent before it has seasoned.' }; /* __LATEST__ */
+const LATEST = { build: 315, released: '2026-08-19', headline: 'Retiring before 59½? Draw on the 401k early with the 10% penalty priced in, or claim the Rule of 55 — plus a warning if a Roth conversion ladder is spent before it has seasoned, and a plain-English guide to the two Roth 5-year rules.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
