@@ -672,10 +672,13 @@ function renderIrmaaTierGrid(){
     const thr=mfj?(t.thrMfj||t.thrSingle):t.thrSingle;
     const mk=(html)=>{const d=document.createElement('div');d.innerHTML=html;host.appendChild(d);};
     mk(`<span style="color:var(--text-secondary);">${fmtC(toDisplay(thr))}${t.frozen?' <span style="font-size:10px;color:var(--text-tertiary);">fixed</span>':''}</span>`);
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}" style="width:100%;"
-         oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}" style="width:100%;"
-         oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
+    // v15: no inline width — #irmaa-tier-grid input now picks up the same border, radius, padding,
+    // background and focus ring as every other input on this tab, in all six themes. These used to
+    // be bare browser-default boxes sitting next to properly styled ones.
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}"
+         aria-label="Part B premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}"
+         aria-label="Part D premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
   });
 }
 function _setIrmaaTier(i,key,val){
