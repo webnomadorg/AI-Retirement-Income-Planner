@@ -653,6 +653,9 @@ figcaption{ font-size:.9rem; color:var(--ink-faint); margin-top:.6rem; text-alig
 .cookie-banner-actions{ display:flex; gap:.6rem; flex-shrink:0; }
 @media (max-width:560px){
   .cookie-banner{ flex-direction:column; align-items:stretch; }
+  /* Same main-axis trap as .post-capture-form: `flex:1 1 22rem` sized the text block to
+     22rem of HEIGHT here, making the banner ~495px tall on an iPhone. */
+  .cookie-banner-text{ flex:0 0 auto; }
   .cookie-banner-actions .btn{ flex:1; justify-content:center; }
 }
 @media (prefers-reduced-motion:reduce){ .cookie-banner{ animation:none; } }
@@ -1894,10 +1897,24 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
 /* Row on desktop, stacked on phones. The input takes the slack so the button keeps its
    natural width instead of stretching to something comical on a wide article. */
 .post-capture-form{ display:flex; flex-wrap:wrap; gap:.7rem; align-items:stretch; }
-.post-capture-form input[type=email]{ flex:1 1 16rem; min-width:0; margin:0; }
+/* This input is NOT inside a .form-group, so it inherits none of the site's field styling —
+   it rendered as a browser-default box (Arial 13px, inset border) whose only height came from
+   `align-items:stretch` matching the button. Mirror .form-group input so it looks like every
+   other field on the site and carries its own height. */
+.post-capture-form input[type=email]{ flex:1 1 16rem; min-width:0; margin:0;
+  padding:.78rem 1rem; border:1.5px solid var(--line-cool); border-radius:var(--radius-sm);
+  font-family:var(--font-sans); font-size:var(--fs-body); color:var(--ink);
+  background:var(--surface); line-height:1.5;
+  transition:border-color var(--transition),box-shadow var(--transition); }
+.post-capture-form input[type=email]:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
+html.dark .post-capture-form input[type=email]{ background:var(--surface); border-color:var(--line); color:var(--ink); }
+html.dark .post-capture-form input[type=email]::placeholder{ color:var(--ink-faint); }
 .post-capture-form .btn{ flex:0 0 auto; }
 @media (max-width:520px){
   .post-capture-form{ flex-direction:column; }
+  /* flex-basis follows the MAIN axis, so the row's `flex:1 1 16rem` becomes a 16rem-TALL
+     input once this stacks — a ~288px box on a phone (16rem at the 18px base). Reset it. */
+  .post-capture-form input[type=email]{ flex:0 0 auto; width:100%; }
   .post-capture-form .btn{ width:100%; justify-content:center; }
 }
 
