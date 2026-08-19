@@ -2516,6 +2516,10 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     simPhase: simPhase,
     calcPhase: calcPhase,
     calcAllPhases: calcAllPhases,
+    // Exposed so the demo-build capture can sample the real ACA curve rather than re-deriving the
+    // applicable-percentage ladder. The function body was already inside this bundle; this only makes
+    // it reachable, so nothing new is disclosed.
+    acaPrem: acaPrem,
     // Survivor projection: reuses the desktop calcSurvivorPhases verbatim; we feed it the S/p5EndAge/lumps
     // it expects via the module globals, then read its result. Returns null when N/A (not MFJ, survivor
     // off, or death at/after plan end). The result carries _baseline (both-alive phases) + _deathAge.

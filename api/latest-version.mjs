@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 332, released: '2026-08-19', headline: 'The Tax & ACA tab now draws where your plan sits on the two cliffs that cost the most: the ACA subsidy cliff and the IRMAA surcharge ladder. Under the hood shows the step-by-step working as a chart, and the balance chart can switch between phase and year.' }; /* __LATEST__ */
+const LATEST = { build: 333, released: '2026-08-19', headline: 'The Tax & ACA tab now draws where your plan sits on the two cliffs that cost the most: the ACA subsidy cliff and the IRMAA surcharge ladder. Under the hood shows the step-by-step working as a chart, and the balance chart can switch between phase and year.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
