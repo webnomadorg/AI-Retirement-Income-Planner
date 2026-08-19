@@ -181,6 +181,19 @@
         <ul class="upd-list">
 
           <li class="upd-item reveal">
+            <span class="upd-ver">v327</span>
+            <div class="upd-body">
+              <h4>Four new charts &mdash; and three things they caught <span class="upd-date">&middot; 19 August</span></h4>
+              <p>The <strong>stress test</strong> is the one I think you will notice first. Those twelve scenarios are now colour-shaded by how the portfolio ends up, so instead of reading twelve boxes of numbers you can see the shape of where your plan gets thin. The <strong>SS Optimizer</strong> finally draws the picture that tab has always been about: total benefit received by age, one line for each claiming age, and the point where waiting catches up is simply where the lines cross. The <strong>Balance</strong> tab shows which tax bands each phase of your income actually lands in. And the <strong>Annuities</strong> tab plots annuity income against what the premium would have grown to if you had just invested it.</p>
+              <p>Drawing things has a way of exposing what tables hide, and three problems turned up while I was building these.</p>
+              <p>The <strong>Canadian and Australian tax charts were wrong</strong>, and by a lot &mdash; about $57,000 in one test plan. Canada's provincial tax and Australia's Medicare Levy are flat charges on your whole income rather than tax bands, and they were being counted as if they were an extra band on top. That is now fixed, and the chart says plainly that those levies sit outside the bands it draws.</p>
+              <p>The <strong>Annuities tab was overstating the case for annuities</strong>. It said an annuity "wins" once its income overtakes what investing would have earned, and marked years "Ahead" from break-even. But break-even there only ever meant the annuity had paid back the premium &mdash; a much lower bar. On a typical setup the income never catches investing at all: $492,000 paid out against $2.1&nbsp;million invested. The wording now says what is actually being measured, and the chart lets you see it for yourself.</p>
+              <p>The <strong>annuity timeline table was showing a single row</strong> for most people. If your purchase age landed on a half year &mdash; 59&frac12;, which is the common case &mdash; it quietly filtered out almost everything. It shows the full timeline now.</p>
+              <p>One smaller fix that has been bothering me for a while: the charts used to flicker and re-animate every time you typed in a field. They hold still now, and animate when you actually change view.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
             <span class="upd-ver">v318</span>
             <div class="upd-body">
               <h4>See which pot is paying for each year of your retirement <span class="upd-date">&middot; 19 August</span></h4>

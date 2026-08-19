@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 318, released: '2026-08-19', headline: 'The Balance tab now draws where every year of your income actually comes from — a colour-coded chart above the account table that follows the same Account/Income and phase/year switches, so you can see which pot is paying for each year at a glance.' }; /* __LATEST__ */
+const LATEST = { build: 327, released: '2026-08-19', headline: 'Four new charts: the stress test is now colour-shaded so you can see at a glance where your plan breaks, the SS Optimizer draws the claiming breakeven, the Balance tab shows which tax bands your income lands in, and the Annuities tab plots income against staying invested. Charts also stopped re-animating while you type.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 

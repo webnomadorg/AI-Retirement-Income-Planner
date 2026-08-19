@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v318.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v327.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -3970,6 +3970,13 @@ html[data-theme="contrast"] .irow select:focus{
   <div id="tab-chart" class="tab-content">
     <div class="card" style="margin-bottom:16px;"><h3 style="margin-bottom:14px;">Account balances across retirement phases<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('balanceInsights',this)" title="Insights for this chart" aria-label="Insights for this chart">i</button></h3><div class="chart-wrap" style="height:300px;"><canvas id="balanceChart"></canvas></div><div class="legend" id="bal-legend"></div></div>
     <div class="card"><h3 style="margin-bottom:4px;">Monthly income across retirement phases<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('incomeInsights',this)" title="Insights for this chart" aria-label="Insights for this chart">i</button> <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=xWzTLJrIk6I','_blank','noopener');" title="Watch the Real vs nominal income explainer">&#x25B6; Real vs nominal &middot; 2 min</button></span></h3><p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">Nominal vs real (inflation-adjusted to age <span id="chart-base-age">59.5</span>)</p><div class="chart-wrap" style="height:260px;"><canvas id="incomeChart"></canvas></div><div class="legend" style="margin-top:10px;"><span class="legend-item"><span class="legend-swatch" style="background:#378ADD;"></span>Nominal</span><span class="legend-item"><span class="legend-swatch" style="background:#AFA9EC;border:1px dashed #534AB7;"></span>Real</span></div><p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;">Deflated at <span id="chart-inflation-note">3.0</span>%/yr from start age.</p></div>
+    <div class="card" style="margin-top:16px;" id="tax-bracket-card">
+      <h3 style="margin-bottom:4px;">Which tax bands your income lands in</h3>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">One bar per phase. Hover a band to see the income in it and what that band actually costs you.</p>
+      <div class="chart-wrap" style="height:230px;"><canvas id="taxBracketChart"></canvas></div>
+      <div class="legend" id="tax-bracket-legend"></div>
+      <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;" id="tax-bracket-note"></p>
+    </div>
     <div class="card" style="margin-top:16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
         <h3 style="margin:0;" id="av-title">Account view</h3>
@@ -5965,7 +5972,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 318; /* __BUILD__ */
+const APP_BUILD = 327; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -7084,6 +7091,9 @@ window.addEventListener('unhandledrejection',function(){_showRuntimeError();});
 let S=JSON.parse(JSON.stringify(D_USD));
 let p5EndAge=80,lumps=[],lumpIdCounter=0;
 let bChart=null,iChart=null,scChart=null,avChart=null;
+// Registry behind _chartUpsert (see SHARED CHART INFRASTRUCTURE). Declared up here with the other
+// chart globals so it is initialised long before the first render() at boot.
+const RP_CHARTS={};
 let confCharts={},_confLast=null,_confSims=null,_confSimsAutoRan=false;
 // Confidence-score lookup tables — declared up here (not next to calcConfidenceScore) because the
 // first render at boot calls updateConfBadge→calcConfidenceScore before that later line would run,
@@ -9639,8 +9649,8 @@ function _renderLumpSplitMeta(id){
 // 12. SCENARIOS
 // ═══════════════════════════════════════════════════════════════
 function calcAllWithParams(r,inf){const sv={r:S.r401k,i:S.inflation};S.r401k=r;S.inflation=inf;const p=calcAllPhases(S,p5EndAge,lumps);S.r401k=sv.r;S.inflation=sv.i;return p;}
-function renderScenarios(){
-  const sym=CURRENCIES[displayCurrency].symbol,conv=v=>Math.round(toDisplay(v));
+function renderScenarios(opts){
+  const _th=_chartTheme(),sym=_th.sym,conv=_th.conv;
   const bEl=document.getElementById('sc-base-r401k'),iEl=document.getElementById('sc-base-infl');
   if(bEl)bEl.textContent=S.r401k+'%';if(iEl)iEl.textContent=S.inflation+'%';
   const SC=[{name:'Pessimistic',r:4,i:4,col:'#E24B4A',cls:'sc-pess'},{name:'Base case',r:S.r401k,i:S.inflation,col:'#378ADD',cls:'sc-base'},{name:'Optimistic',r:9,i:2,col:'#639922',cls:'sc-opt'}];
@@ -9662,17 +9672,78 @@ function renderScenarios(){
   const _scTot=sc=>{const ph=sc.phs[_scLast];return ph.end.b401k+ph.end.bcash+(ph.end.bEquity||0)+(ph.end.bRoth||0)+(ph.end.bSuper||0);};
   const _scSeed=`On the Scenarios comparison (to age ${p5EndAge}): Pessimistic (4% return / 4% inflation) ends near ${fmtC(_scTot(res[0]))} with about ${fmtC(res[0].phs[_scLast].net_mo)}/mo; Base case (${S.r401k}% / ${S.inflation}%) near ${fmtC(_scTot(res[1]))} with ${fmtC(res[1].phs[_scLast].net_mo)}/mo; Optimistic (9% / 2%) near ${fmtC(_scTot(res[2]))} with ${fmtC(res[2].phs[_scLast].net_mo)}/mo. Using my actual plan numbers, explain how much my plan hinges on the return assumption and propose specific changes to make it more robust to the pessimistic case.`;
   h+='</tbody></table>'+_askAiBtnSeed(_scSeed,'Ask AI about: Scenario comparison (return sensitivity)');document.getElementById('scenarios-grid').innerHTML=h;
-  const isDark=document.documentElement.classList.contains('dark'),gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tc=isDark?'#a8a89e':'#5f5e5a';
+  const gc=_th.grid,tc=_th.tick;
   const scStartLabel=S.currentAge&&S.currentAge>S.startAge?'Age '+S.currentAge:'Start';
   const labels=[scStartLabel,...phases.map(p=>'Age '+p.ages.split('–')[1])];
-  const ctx=document.getElementById('scenarioChart').getContext('2d');if(scChart)scChart.destroy();
-  scChart=new Chart(ctx,{type:'line',data:{labels,datasets:res.map(sc=>({label:sc.name,
+  scChart=_chartUpsert(RP_CHARTS,'scenarioChart','scenarioChart',{type:'line',data:{labels,datasets:res.map(sc=>({label:sc.name,
     data:[conv(S.bal401k+S.balCash+(S.balEquity||0)+(S.balRoth||0)+(S.superBal||0)),...sc.phs.map(p=>conv(p.end.b401k+p.end.bcash+(p.end.bEquity||0)+(p.end.bRoth||0)+(p.end.bSuper||0)))],
     borderColor:sc.col,backgroundColor:sc.col+'18',fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:sc.col,
     borderDash:sc.name==='Pessimistic'?[5,4]:sc.name==='Optimistic'?[2,2]:[]
-  }))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},x:{ticks:{color:tc},grid:{color:gc}}}}});
+  }))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},x:{ticks:{color:tc},grid:{color:gc}}}}},opts);
   document.getElementById('scenario-legend').innerHTML=res.map(sc=>`<span class="legend-item"><span class="legend-swatch" style="background:${sc.col};"></span>${sc.name}</span>`).join('');
   _chartSrTable(scChart,'scenarioChart','Total portfolio balance by age — three scenarios (Pessimistic, Base, Optimistic)');
+}
+
+// ═══ SHARED CHART INFRASTRUCTURE ══════════════════════════════════════════════════════════════════
+// Two problems this solves. First, every chart re-derived the same four theme values by hand, so a
+// tweak to the gridline colour meant finding six copies. Second, and worse: balanceChart, incomeChart
+// and scenarioChart were DESTROYED AND RECREATED on every render() — and render() fires on every
+// keystroke while its tab is open — so they replayed their grow-in animation continuously as you
+// typed. A destroyed chart always animates from zero; there is no way to suppress it at the call site
+// without also killing the animation you do want.
+//
+// _chartUpsert draws the line in the right place: motion belongs to a change of VIEW (switching tab,
+// flipping a toggle), never to a change of NUMBER.
+
+/** The values every chart needs. `grid` is the standard gridline; `gridStrong` is the heavier weight
+ *  the radar wants for its angle lines. `reduce` is the prefers-reduced-motion answer. */
+function _chartTheme(){
+  const isDark=document.documentElement.classList.contains('dark');
+  let reduce=false;
+  try{reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(e){}
+  return{isDark,
+    grid:isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',
+    gridStrong:isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)',
+    tick:isDark?'#a8a89e':'#5f5e5a',
+    sym:CURRENCIES[displayCurrency].symbol,
+    conv:v=>Math.round(toDisplay(v)),
+    reduce};
+}
+
+/** Create-or-update the Chart.js chart held in `reg` under `key`. Returns the instance (or null when
+ *  the canvas is absent), so callers can keep their existing global and their _chartSrTable call.
+ *
+ *  Rebuilds ONLY when the series set changes — chart type, dataset count, or the dataset labels —
+ *  because that is what Chart.js cannot adapt to in place. Otherwise it assigns the new numbers onto
+ *  the live instance and updates it, which is both cheaper and free of the spurious animation.
+ *
+ *  opts.animate: absent/false means "a number changed" → update instantly. True means "the view
+ *  changed" → animate the transition, which tweens from the values currently on screen and reads
+ *  better than the old destroy-and-grow-from-zero. prefers-reduced-motion forces it off either way.
+ *  Custom motion (e.g. avChart's left-to-right stagger) goes in config.options.animation: it is
+ *  honoured when animating and stripped when not. */
+function _chartUpsert(reg,key,canvasId,config,opts){
+  const cv=document.getElementById(canvasId); if(!cv||typeof Chart==='undefined')return null;
+  const o=opts||{}, animate=!!o.animate&&!_chartTheme().reduce;
+  config.options=config.options||{};
+  if(!animate)config.options.animation=false;
+  const ds=(config.data&&config.data.datasets)||[];
+  const sig=config.type+'|'+ds.length+'|'+ds.map(d=>d.label||'').join('~');
+  const ex=reg[key];
+  // ex.canvas===cv matters: several tabs rebuild their whole card with innerHTML, which throws the
+  // old <canvas> away. Updating the orphaned instance would "succeed" in silence and leave the new
+  // canvas blank — so a replaced canvas forces a rebuild.
+  if(ex&&ex._rpSig===sig&&ex.canvas===cv){
+    ex.data.labels=config.data.labels;
+    ds.forEach((d,i)=>Object.assign(ex.data.datasets[i],d));
+    ex.options=config.options;
+    ex.update(animate?undefined:'none');
+    return ex;
+  }
+  if(ex){try{ex.destroy();}catch(e){}}
+  reg[key]=new Chart(cv.getContext('2d'),config);
+  reg[key]._rpSig=sig;
+  return reg[key];
 }
 
 // ═══ A11y: chart screen-reader pathway + modal focus management ═══════════════════════════════════
@@ -10359,8 +10430,7 @@ function renderPhases(phs){
 }
 
 function renderCharts(phs,opts){
-  const isDark=document.documentElement.classList.contains('dark'),gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tc=isDark?'#a8a89e':'#5f5e5a';
-  const sym=CURRENCIES[displayCurrency].symbol,conv=v=>Math.round(toDisplay(v));
+  const _th=_chartTheme(),gc=_th.grid,tc=_th.tick,sym=_th.sym,conv=_th.conv;
   const startLabel=S.currentAge&&S.currentAge>S.startAge?'Age '+S.currentAge:'Start';
   const labels=[startLabel,...phs.map(p=>'Age '+p.ages.split('–')[1])];
   const d1=[conv(S.bal401k),...phs.map(p=>conv(p.end.b401k))];
@@ -10372,20 +10442,135 @@ function renderCharts(phs,opts){
   // Match the phase-card amount colors (honors the user's Appearance palette + light/dark). Total has no
   // card amount, so it keeps its distinct plum.
   const cA=accountColor('c401k'),cC=accountColor('cCash'),cE=accountColor('cEquity'),cT='#534AB7';
-  const ctx1=document.getElementById('balanceChart').getContext('2d');if(bChart)bChart.destroy();
-  bChart=new Chart(ctx1,{type:'line',data:{labels,datasets:[
+  bChart=_chartUpsert(RP_CHARTS,'balanceChart','balanceChart',{type:'line',data:{labels,datasets:[
     {label:'401k',data:d1,borderColor:cA,backgroundColor:_hexToRgba(cA,0.12),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cA},
     {label:'Cash',data:d2,borderColor:cC,backgroundColor:_hexToRgba(cC,0.12),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cC,borderDash:[5,4]},
     {label:'Equity',data:d4,borderColor:cE,backgroundColor:_hexToRgba(cE,0.10),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cE,borderDash:[3,3]},
     {label:'Total',data:d3,borderColor:cT,fill:false,tension:0.3,pointRadius:5,pointBackgroundColor:cT,borderWidth:2,borderDash:[2,2]}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},x:{ticks:{color:tc},grid:{color:gc}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},x:{ticks:{color:tc},grid:{color:gc}}}}},opts);
   document.getElementById('bal-legend').innerHTML=[['401k',cA],['Cash',cC],['Equity',cE],['Total',cT]].map(([l,c])=>`<span class="legend-item"><span class="legend-swatch" style="background:${c};"></span>${l}</span>`).join('');
   document.getElementById('chart-base-age').textContent=S.currentAge&&S.currentAge>S.startAge?S.currentAge:S.startAge;document.getElementById('chart-inflation-note').textContent=S.inflation.toFixed(1);
   _chartSrTable(bChart,'balanceChart','Account balances across retirement phases (401k, Cash, Equity, Total)');
-  const ctx2=document.getElementById('incomeChart').getContext('2d');if(iChart)iChart.destroy();
-  iChart=new Chart(ctx2,{type:'bar',data:{labels:phs.map(p=>p.label+'\n('+p.ages+')'),datasets:[{label:'Nominal',data:phs.map(p=>conv(p.net_mo)),backgroundColor:'#378ADD',borderRadius:4},{label:'Real',data:phs.map(p=>conv(p.net_real)),backgroundColor:'#AFA9EC',borderRadius:4,borderWidth:1,borderColor:'#534AB7'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}/mo`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(1)}k`},grid:{color:gc}},x:{ticks:{color:tc,maxRotation:0},grid:{display:false}}}}});
+  iChart=_chartUpsert(RP_CHARTS,'incomeChart','incomeChart',{type:'bar',data:{labels:phs.map(p=>p.label+'\n('+p.ages+')'),datasets:[{label:'Nominal',data:phs.map(p=>conv(p.net_mo)),backgroundColor:'#378ADD',borderRadius:4},{label:'Real',data:phs.map(p=>conv(p.net_real)),backgroundColor:'#AFA9EC',borderRadius:4,borderWidth:1,borderColor:'#534AB7'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}/mo`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(1)}k`},grid:{color:gc}},x:{ticks:{color:tc,maxRotation:0},grid:{display:false}}}}},opts);
   _chartSrTable(iChart,'incomeChart','Monthly net income by phase — nominal vs real (today\'s dollars)');
+  _renderTaxBracketChart(phs,opts);
   renderAccountView(phs,opts);
+}
+
+// ─── TAX BRACKET OCCUPANCY (Balance tab) ────────────────────────────────────────────────────────
+// Which tax bands each phase's income actually lands in, and how much sits in each. Every number here
+// is READ FROM THE TRACE the engine already emits (see traceGroup / fedTax's "Slices computed for
+// DISPLAY only") — nothing is recomputed and no field was added to the phase result to support it.
+//
+// A bracket slice is a trace row carrying `base` (the money the rate applies to) as an ordinary
+// 'sub' row — but that test alone is NOT enough, and assuming it was produced a chart that overstated
+// Canadian tax by ~57k. Canada's flat provincial tax and Australia's Medicare Levy are emitted in the
+// same shape, yet their `base` is the WHOLE income over again rather than a slice of the ladder, so
+// stacking them double-counts every dollar.
+//
+// The structural tell is that those overlays sit AFTER the group's running total: a bracket ladder is
+// emitted as CONSECUTIVE rows, and anything separated from it by a `total` is a different calculation
+// applied to the same income. So we take the FIRST CONTIGUOUS RUN of slice rows and stop there. That
+// also survives the UK group, whose bands sit between two totals, which is why "everything before the
+// first total" would have been wrong.
+//
+// ⚠ Bands are emitted with skipZero, so a phase that reaches no band emits no slice rows at all, and
+// a regime that is not subject to tax emits only a `flag`. Both correctly yield "nothing to draw".
+const TAX_BRACKET_GROUPS=['fedbrk','uktax','cadtax','austax'];
+// Ascending severity, both variants taken from the WCAG-verified AMT_PRESETS pairs.
+const TAX_BAND_COLS=[['#4A7318','#A3D977'],['#1D5C8F','#7FA8CC'],['#945A0D','#E0A85C'],['#B11D2E','#F08A8A']];
+
+function _taxBracketModel(phs){
+  if(!phs||!phs.length)return null;
+  const slices=(p,id)=>{
+    const g=traceGroup(p,id); if(!g)return[];
+    const run=[]; let started=false;
+    for(let i=0;i<g.rows.length;i++){
+      const r=g.rows[i], isSlice=(r.base!=null&&r.kind==='sub');
+      if(isSlice){run.push(r);started=true;}
+      else if(started)break; // the ladder ended; whatever follows is a separate levy, not a band
+    }
+    return run;
+  };
+  // True when a group carries slice-shaped rows beyond the first run — i.e. a levy stacked on top of
+  // the ladder, which the chart deliberately does not draw and the note has to admit to.
+  const hasOverlay=(p,id)=>{
+    const g=traceGroup(p,id); if(!g)return false;
+    return g.rows.filter(r=>r.base!=null&&r.kind==='sub').length>slices(p,id).length;
+  };
+  let gid=null,title='';
+  for(let i=0;i<TAX_BRACKET_GROUPS.length;i++){
+    const id=TAX_BRACKET_GROUPS[i];
+    if(phs.some(p=>slices(p,id).length)){gid=id;
+      const g=phs.map(p=>traceGroup(p,id)).find(Boolean); title=(g&&g.title)||''; break;}
+  }
+  // No slice rows anywhere. That is usually not an error but the best possible answer — deductions
+  // covered everything — so tell the difference between "pays no tax" and "no tax regime applies",
+  // and let the caller say so instead of leaving a hole where a card was.
+  if(!gid){
+    const anyGroup=TAX_BRACKET_GROUPS.some(id=>phs.some(p=>traceGroup(p,id)));
+    return anyGroup?{empty:true}:null;
+  }
+  // The set of bands reached varies phase to phase, so they are unioned in first-seen order — which
+  // is emission order, which is ascending rate.
+  const bands=[];
+  phs.forEach(p=>slices(p,gid).forEach(r=>{if(bands.indexOf(r.label)<0)bands.push(r.label);}));
+  if(!bands.length)return null;
+  const dark=_chartTheme().isDark;
+  const series=bands.map((lbl,i)=>({
+    label:lbl, color:TAX_BAND_COLS[Math.min(i,TAX_BAND_COLS.length-1)][dark?1:0],
+    data:phs.map(p=>{const r=slices(p,gid).find(x=>x.label===lbl);return r?r.base:0;}),
+    tax:phs.map(p=>{const r=slices(p,gid).find(x=>x.label===lbl);return r?r.value:0;})
+  })).filter(sv=>sv.data.some(v=>v>0.5));
+  if(!series.length)return{empty:true};
+  const overlay=phs.some(p=>hasOverlay(p,gid));
+  return{gid,title,overlay,labels:phs.map(p=>p.label),sub:phs.map(p=>'Age '+p.ages),series};
+}
+
+function _renderTaxBracketChart(phs,opts){
+  const cv=document.getElementById('taxBracketChart'); if(!cv)return;
+  const card=document.getElementById('tax-bracket-card');
+  const m=_taxBracketModel(phs);
+  const wrap=cv.parentNode, leg0=document.getElementById('tax-bracket-legend');
+  const drop=()=>{if(RP_CHARTS['taxBrackets']){try{RP_CHARTS['taxBrackets'].destroy();}catch(e){}delete RP_CHARTS['taxBrackets'];}};
+  if(!m){drop();if(card)card.style.display='none';return;}
+  if(card)card.style.display='';
+  if(m.empty){
+    // Reaching no bracket at all is worth stating plainly — a hidden card reads as a missing feature,
+    // and "you pay no income tax in any phase" is one of the better things this plan can tell someone.
+    drop();
+    if(wrap)wrap.style.display='none';
+    if(leg0)leg0.innerHTML='';
+    const n0=document.getElementById('tax-bracket-note');
+    if(n0)n0.textContent='No phase of this plan reaches an income tax band — your deductions cover all of your taxable income, so there is no bracket to show. If you raise your withdrawals or add income, the bands you move into will appear here.';
+    return;
+  }
+  if(wrap)wrap.style.display='';
+  const th=_chartTheme();
+  const chart=_chartUpsert(RP_CHARTS,'taxBrackets','taxBracketChart',{
+    type:'bar',
+    data:{labels:m.labels,datasets:m.series.map(sv=>({label:sv.label,data:sv.data.map(th.conv),
+      backgroundColor:sv.color,borderWidth:0,_tax:sv.tax}))},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      animation:{duration:600},
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{displayColors:true,filter:it=>it.parsed.x>0,
+        callbacks:{title:it=>it.length?m.labels[it[0].dataIndex]+' · '+m.sub[it[0].dataIndex]:'',
+          // Both halves matter: how much income sits in the band, and what it actually cost.
+          label:c=>{const tax=(c.dataset._tax||[])[c.dataIndex]||0;
+            return ' '+c.dataset.label+': '+th.sym+Math.round(c.parsed.x).toLocaleString()+' of income → '+th.sym+Math.round(toDisplay(tax)).toLocaleString()+' tax';},
+          footer:it=>'Taxable income '+th.sym+Math.round(it.reduce((t,i)=>t+i.parsed.x,0)).toLocaleString()+'/yr'}}},
+      scales:{x:{stacked:true,beginAtZero:true,grid:{color:th.grid},
+                 ticks:{color:th.tick,callback:v=>th.sym+(v/1000).toFixed(0)+'k'},
+                 title:{display:true,text:'Taxable income per year',color:th.tick,font:{size:11}}},
+              y:{stacked:true,grid:{display:false},ticks:{color:th.tick}}}}
+  },opts);
+  const leg=document.getElementById('tax-bracket-legend');
+  if(leg)leg.innerHTML=m.series.map(sv=>`<span class="legend-item"><span class="legend-swatch" style="background:${sv.color};"></span>${escHtml(sv.label)}</span>`).join('');
+  const note=document.getElementById('tax-bracket-note');
+  if(note)note.textContent=(m.title||'Tax bands')+'. Each bar is one phase; the segments are how much of that phase’s taxable income falls in each band. Taxable income is what is left after deductions, so it is lower than your gross — and a phase that reaches no band pays no tax at all.'
+    +(m.overlay?' This shows the rate bands only: your plan also carries a flat levy charged on the same income (provincial tax, or the Medicare Levy), which is not a band and so is not drawn here — the tax figures on your phase cards do include it.':'');
+  if(chart)_chartSrTable(chart,'taxBracketChart','Taxable income by tax band, per phase');
 }
 
 // ─── ACCOUNT VIEW (Balance tab) ─────────────────────────────────────────────────────────────────
@@ -10591,24 +10776,21 @@ function _avChartModel(phs){
 function _renderAvChart(phs,opts){
   const cv=document.getElementById('avChart'); if(!cv)return;
   const wrap=cv.parentNode, leg=document.getElementById('av-chart-legend'), note=document.getElementById('av-chart-note');
-  if(avChart){avChart.destroy();avChart=null;}
   const m=_avChartModel(phs);
-  if(!m){if(wrap)wrap.style.display='none';if(leg)leg.innerHTML='';if(note)note.textContent='';return;}
+  if(!m){if(RP_CHARTS['avChart']){try{RP_CHARTS['avChart'].destroy();}catch(e){}delete RP_CHARTS['avChart'];}avChart=null;
+    if(wrap)wrap.style.display='none';if(leg)leg.innerHTML='';if(note)note.textContent='';return;}
   if(wrap)wrap.style.display='';
-  const isDark=document.documentElement.classList.contains('dark');
-  const gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tc=isDark?'#a8a89e':'#5f5e5a';
-  const sym=CURRENCIES[displayCurrency].symbol,conv=v=>Math.round(toDisplay(v));
-  const reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const animate=!!(opts&&opts.animate)&&!reduce;
+  const _th=_chartTheme(),gc=_th.grid,tc=_th.tick,sym=_th.sym,conv=_th.conv;
   const money=v=>sym+Math.round(v).toLocaleString();
-  avChart=new Chart(cv.getContext('2d'),{
+  avChart=_chartUpsert(RP_CHARTS,'avChart','avChart',{
     type:'bar',
     data:{labels:m.labels,datasets:m.series.map(s=>({label:s.label,data:s.data.map(conv),backgroundColor:s.color,borderWidth:0}))},
     options:{
       responsive:true,maintainAspectRatio:false,
       // Staggered left-to-right so a long plan reads as building up through the ages, capped so 40+
-      // bars still finish in about a second. The app has no other reduced-motion guard on Chart.js.
-      animation:animate?{duration:700,delay:c=>(c.type==='data'&&c.mode==='default')?Math.min(c.dataIndex*12,400):0}:false,
+      // bars still finish in about a second. _chartUpsert strips this entirely when the update is a
+      // data refresh rather than a view change, and when prefers-reduced-motion is set.
+      animation:{duration:700,delay:c=>(c.type==='data'&&c.mode==='default')?Math.min(c.dataIndex*12,400):0},
       interaction:{mode:'index',intersect:false}, // hovering anywhere in a column lights the whole stack
       plugins:{legend:{display:false},tooltip:{
         displayColors:true, // _applyChartTooltipTheme sets this false globally; a stack needs its swatches
@@ -10625,7 +10807,7 @@ function _renderAvChart(phs,opts){
            title:{display:true,text:'Gross income per year',color:tc,font:{size:11}}}
       }
     }
-  });
+  },opts);
   if(leg)leg.innerHTML=m.series.map(s=>`<span class="legend-item"><span class="legend-swatch" style="background:${s.color};"></span>${escHtml(s.label)}</span>`).join('');
   if(note){
     const bits=[m.byYear
@@ -11032,7 +11214,40 @@ function renderStressTest(){
   const el=document.getElementById('tab-stress');
   if(!el||!el.classList.contains('active'))return;
   const grid=buildStressTestGrid(S,p5EndAge,lumps);
+  const _allCells=grid.reduce((a,r)=>a.concat(r),[]);
   const retLabels=grid[0].map(c=>c.returnScenario);
+  // ── Heat scale ────────────────────────────────────────────────────────────────────────────────
+  // Bands are ABSOLUTE, deliberately — not normalised across the twelve. A min–max scale would paint
+  // the weakest of twelve perfectly healthy outcomes bright red and alarm someone whose plan is fine
+  // everywhere. The two thresholds are exactly the ones the cell text already colours on, so the
+  // tint and the wording can never disagree. Only WITHIN the healthy band is the shade graduated.
+  // Alphas stay low: the tint sits behind body text, and the existing text colours have to keep
+  // their contrast in both themes (verified against contrastRatio, see Plans doc).
+  const _healthyTotals=_allCells.filter(c=>!c.depleted&&c.endingTotal>=50000&&c.netMonthly>=1000).map(c=>c.endingTotal);
+  const _hMin=_healthyTotals.length?Math.min(..._healthyTotals):0;
+  const _hMax=_healthyTotals.length?Math.max(..._healthyTotals):0;
+  // The signal is carried TWICE, and deliberately so. A wash strong enough to read across twelve
+  // cells is also strong enough to drag the cell's own text under 4.5:1 — measured, not guessed: on
+  // the dark card an amber wash fails AA above alpha 0.075, which is far too faint to see. So the
+  // saturated colour goes in a 4px strip at the top of the cell, where no text sits and only the
+  // 3:1 non-text rule applies, and the background keeps a gentle AA-safe tint. Ceilings per theme
+  // were measured against every text colour used in these cells; these sit comfortably under them.
+  const _dk=_chartTheme().isDark;
+  const _A=_dk?{gLo:0.030,gHi:0.085,amber:0.065,red:0.100}:{gLo:0.045,gHi:0.145,amber:0.220,red:0.140};
+  const _band=c=>c.depleted?'red':(c.endingTotal<50000||c.netMonthly<1000)?'amber':'green';
+  const _t=c=>(_hMax>_hMin)?(c.endingTotal-_hMin)/(_hMax-_hMin):1;
+  const heatBg=c=>{const b=_band(c);
+    if(b==='red')return 'rgba(226,75,74,'+_A.red+')';
+    if(b==='amber')return 'rgba(239,159,39,'+_A.amber+')';
+    return 'rgba(99,153,34,'+(_A.gLo+_t(c)*(_A.gHi-_A.gLo)).toFixed(3)+')';};
+  // Full strength: nothing sits on it, so it only has to clear 3:1 against the card (WCAG 1.4.11).
+  const heatBar=c=>{const b=_band(c);
+    if(b==='red')return _dk?'#F08A8A':'#B11D2E';
+    if(b==='amber')return _dk?'#E0A85C':'#945A0D';
+    return _dk?'#A3D977':'#4A7318';};
+  // No opacity ramp on the strip: fading it to show gradient dropped 8 of the 12 strips under 3:1
+  // against the pale card. The two channels carry different things anyway — the STRIP is the band
+  // (categorical: healthy / thin / ran dry) and the BACKGROUND tint is the gradient within it.
   const hdrCells=retLabels.map(l=>`<th style="padding:9px 12px;font-size:12px;font-weight:600;text-align:center;border-left:1px solid var(--border-light);color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;">${l}</th>`).join('');
   let rows='';
   grid.forEach(row=>{
@@ -11042,17 +11257,19 @@ function renderStressTest(){
       const netColor=avg<0?'var(--red-text)':avg<1000?'var(--amber-text)':'var(--text-primary)';
       const totalColor=depleted?'var(--red-text)':total<50000?'var(--amber-text)':'var(--text-tertiary)';
       const depletedFlag=depleted?'<div style="font-size:10px;font-weight:700;color:var(--red-text);margin-top:4px;letter-spacing:.02em;">⚠ DEPLETED</div>':'';
-      cells+=`<td style="padding:9px 12px;text-align:center;vertical-align:top;${isBase?'background:var(--blue-bg);':''} border-left:1px solid var(--border-light);">
+      cells+=`<td style="padding:0 0 9px;text-align:center;vertical-align:top;background:${heatBg(c)};border-left:1px solid var(--border-light);${isBase?'outline:2px solid var(--blue-text);outline-offset:-2px;':''}">
+        <div style="height:4px;background:${heatBar(c)};margin-bottom:9px;" aria-hidden="true"></div>
+        <div style="padding:0 12px;">
         <div style="font-size:15px;font-weight:600;color:${netColor};">${fmtC(avg)}<span style="font-size:10px;font-weight:400;color:var(--text-secondary);">/mo</span></div>
         <div style="font-size:11px;color:var(--text-secondary);margin-top:1px;">Real: ${fmtC(avgR)}/mo</div>
         <div style="font-size:11px;color:${totalColor};margin-top:3px;${depleted?'font-weight:600;':''}">Total at ${p5EndAge}: ${fmtC(total)}</div>
         ${depletedFlag}
         ${isBase?'<div style="font-size:10px;font-weight:700;color:var(--blue-text);margin-top:4px;letter-spacing:.02em;">▲ BASE CASE</div>':''}
+        </div>
       </td>`;
     });
     rows+=`<tr style="border-top:1px solid var(--border-light);">${cells}</tr>`;
   });
-  const _allCells=grid.reduce((a,r)=>a.concat(r),[]);
   const _depCount=_allCells.filter(c=>c.depleted).length;
   const _base=_allCells.find(c=>c.isBaseCase);
   // Adaptive: only push to harden the plan when scenarios actually deplete. When none do (or on a
@@ -11064,7 +11281,7 @@ function renderStressTest(){
     : `On the inflation & returns stress test (12 combined scenarios to age ${p5EndAge}): ${_depCount} of 12 scenarios run my portfolio dry.${_stressBase} Using my actual plan numbers, explain how resilient my plan is and propose specific changes to harden it against the worst-case (high-inflation, low-return) scenarios.`;
   el.innerHTML=`<div class="card">
     <h3 style="margin-bottom:4px;">Inflation &amp; Returns Stress Test <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=6IzTRIfgrM0','_blank','noopener');" title="Watch the Stress-test resilience explainer">&#x25B6; Stress test &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=vg2WMvkq870','_blank','noopener');" title="Watch the Inflation explainer">&#x25B6; Inflation &middot; 2 min</button></span></h3>
-    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">Average net monthly income and estimated total portfolio at age <strong>${p5EndAge}</strong> across 12 combined scenarios. Blue = your current base case. Return delta applies equally to 401k, cash, equity, Roth, and super.</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">Average net monthly income and estimated total portfolio at age <strong>${p5EndAge}</strong> across 12 combined scenarios. Cells are shaded by how the portfolio ends up &mdash; <strong style="color:var(--green-text);">green</strong> healthy, <strong style="color:var(--amber-text);">amber</strong> thin, <strong style="color:var(--red-text);">red</strong> ran dry &mdash; so the shape of where your plan breaks reads at a glance. The outlined cell is your current base case. Return delta applies equally to 401k, cash, equity, Roth, and super.</p>
     <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">
       <thead><tr style="border-bottom:2px solid var(--border-mid);"><th style="padding:9px 12px;text-align:left;font-size:11px;color:var(--text-tertiary);font-weight:500;"></th>${hdrCells}</tr></thead>
       <tbody>${rows}</tbody>
@@ -11360,7 +11577,7 @@ function renderMonteCarlo(targetEl){
   const isDark=document.documentElement.classList.contains('dark');
   const axCol=isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)';
   const lblCol=isDark?'#a8a89e':'#5f5e5a';
-  function fmtK(v){const c=CURRENCIES[displayCurrency];const d=v*c.rate;return d>=1e6?c.symbol+(d/1e6).toFixed(1)+'M':d>=1000?c.symbol+(d/1000).toFixed(0)+'k':c.symbol+Math.round(d);}
+  const fmtK=_ddFmtK; // identical contract (takes USD, converts internally) — see _ddFmtK
   // Y-axis ticks
   const yTicks=5;
   const yLabels=Array.from({length:yTicks},(_,i)=>maxV*i/(yTicks-1));
@@ -12135,7 +12352,7 @@ function scrollToReplanPanel(){
   const top=target.getBoundingClientRect().top+window.scrollY-getStickyOverviewOffset()-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
 }
-function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios();if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
+function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios({animate:true});if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
 function setupLumpDelegation(){const ct=document.getElementById('lump-list');ct.addEventListener('input',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-amt'))updateLumpField(id,'amount',el.value);else if(el.classList.contains('lump-label'))updateLumpField(id,'label',el.value);else if(el.classList.contains('lump-split-amt'))updateLumpField(id,'split:'+el.dataset.acct,el.value);});ct.addEventListener('change',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-phase'))updateLumpField(id,'phase',el.value);else if(el.classList.contains('lump-dir'))updateLumpField(id,'dir',el.value);else if(el.classList.contains('lump-acct'))updateLumpField(id,'acct',el.value);else if(el.classList.contains('lump-fallback'))updateLumpField(id,'fallback',el.checked);else if(el.classList.contains('lump-grossup'))updateLumpField(id,'grossUp',el.checked);else if(el.classList.contains('lump-fbacct'))updateLumpField(id,'fbacct:'+el.dataset.acct,el.checked);});ct.addEventListener('click',e=>{const btn=e.target.closest('.lump-del');if(btn){const id=parseInt(btn.dataset.id);if(id)removeLump(id);}});}
 function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB','rate-EUR'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
 window.addEventListener('load',()=>{reflowTabs();setTimeout(reflowTabs,200);});
@@ -13066,6 +13283,65 @@ function importAndApplyRates(){demoToast("Importing tax rates is available in th
 // ═══════════════════════════════════════════════════════════════
 // 17. SS OPTIMIZER (v2)
 // ═══════════════════════════════════════════════════════════════
+// ── SS claiming: cumulative-benefit crossover ───────────────────────────────────────────────────
+// The question this tab exists to answer is "does waiting actually pay?", and the honest answer is a
+// picture: claiming later starts from zero later, but climbs more steeply, so the lines cross. Where
+// they cross is the breakeven — the same number the table below states in words.
+//
+// Pure SSA arithmetic (ssAtAge is a closure over ssFRA), so this touches nothing in the calc engine.
+// Cumulative income is NOT inflation-adjusted and carries no COLA: the comparison is between claiming
+// ages, and applying the same COLA to every line would scale them all identically while implying a
+// precision about future benefits that this chart does not have. Said plainly in the note under it.
+function _ssBreakevenModel(ssAtAge,ssAmt,ssBaseAge,mfj,spSSAmt,spSSBaseAge,claimAges,toAge){
+  if(!(ssAmt>0))return null;
+  const monthlyAt=ca=>ssAtAge(ssAmt,ssBaseAge,ca)+((mfj&&spSSAmt>0)?ssAtAge(spSSAmt,spSSBaseAge,ca):0);
+  const ages=[];for(let a=Math.min(...claimAges);a<=toAge;a++)ages.push(a);
+  const series=claimAges.map(ca=>{
+    const mo=monthlyAt(ca);
+    // Nothing received before you claim, so the line sits flat on zero until its own claim age.
+    return{claimAge:ca,monthly:mo,data:ages.map(a=>a<=ca?0:mo*12*(a-ca))};
+  });
+  // Breakeven vs claiming at the earliest age offered, read off the same numbers the lines are drawn
+  // from rather than recomputed — so the chart and the table can never disagree.
+  const baseS=series[0];
+  series.forEach(sv=>{
+    sv.breakevenAge=null;
+    if(sv.claimAge===baseS.claimAge||sv.monthly<=baseS.monthly)return;
+    for(let i=0;i<ages.length;i++){if(sv.data[i]>=baseS.data[i]&&sv.data[i]>0){sv.breakevenAge=ages[i];break;}}
+  });
+  return{ages,series,baseClaimAge:baseS.claimAge};
+}
+
+function _renderSsBreakevenChart(m,selectedClaimAge){
+  if(!m)return;
+  const th=_chartTheme();
+  // One hue ramp from early (warm) to late (cool) so the reading order is obvious; the plan's own
+  // claiming age is drawn heavier so you can find yourself among nine lines.
+  const col=i=>{const t=i/Math.max(1,m.series.length-1);
+    const a=th.isDark?[240,138,138]:[177,29,46], b=th.isDark?[127,168,204]:[29,92,143];
+    return'rgb('+a.map((v,j)=>Math.round(v+(b[j]-v)*t)).join(',')+')';};
+  const chart=_chartUpsert(RP_CHARTS,'ssBreakeven','ssBreakevenChart',{
+    type:'line',
+    data:{labels:m.ages,datasets:m.series.map((sv,i)=>{
+      const sel=sv.claimAge===selectedClaimAge;
+      return{label:'Claim at '+sv.claimAge,data:sv.data.map(v=>th.conv(v)),
+        borderColor:col(i),backgroundColor:col(i),borderWidth:sel?3.5:1.5,
+        pointRadius:0,pointHitRadius:8,tension:0.15,fill:false,order:sel?0:1};})},
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{displayColors:true,
+        callbacks:{title:it=>it.length?'By age '+m.ages[it[0].dataIndex]:'',
+          label:c=>' '+c.dataset.label+': '+th.sym+Math.round(c.parsed.y).toLocaleString()+' received'}}},
+      scales:{x:{grid:{display:false},ticks:{color:th.tick,maxRotation:0,autoSkip:true,maxTicksLimit:12},
+                 title:{display:true,text:'Age',color:th.tick,font:{size:11}}},
+              y:{beginAtZero:true,grid:{color:th.grid},ticks:{color:th.tick,callback:v=>_ddFmtK(v/CURRENCIES[displayCurrency].rate)},
+                 title:{display:true,text:'Total Social Security received',color:th.tick,font:{size:11}}}}}
+  },{animate:true});
+  const leg=document.getElementById('ssopt-chart-legend');
+  if(leg)leg.innerHTML=m.series.map((sv,i)=>`<span class="legend-item"><span class="legend-swatch" style="background:${col(i)};"></span>${sv.claimAge===selectedClaimAge?'<strong>':''}Claim at ${sv.claimAge}${sv.claimAge===selectedClaimAge?' (yours)</strong>':''}</span>`).join('');
+  if(chart)_chartSrTable(chart,'ssBreakevenChart','Total Social Security received by age, for each claiming age');
+}
+
 function renderSSOptimizer(){
   const el=document.getElementById('ssopt-output');
   if(!el)return;
@@ -13208,7 +13484,17 @@ function renderSSOptimizer(){
   });
   html+=`</tbody></table></div></div>`;
 
-  // Breakeven analysis
+  // Breakeven analysis — the chart states it, the table below quantifies it. Both read the same model.
+  const _ssBeModel=_ssBreakevenModel(ssAtAge,ssAmt,ssBaseAge,mfj,spSSAmt,spSSBaseAge,ages,95);
+  if(_ssBeModel)html+=`<div class="card" style="margin-bottom:14px;">
+    <h3 style="margin-bottom:4px;">Does waiting pay off?</h3>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6;">
+      Total Social Security received by each age, for every claiming age. Claiming later starts from zero later but climbs faster, so the lines cross &mdash; and where your line crosses the age-62 line is your breakeven. Your plan's claiming age is drawn heavier.
+    </p>
+    <div class="chart-wrap" style="height:300px;"><canvas id="ssBreakevenChart"></canvas></div>
+    <div class="legend" id="ssopt-chart-legend"></div>
+    <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;">Benefits only &mdash; this leaves out COLA, tax, and any return you might earn by investing benefits taken early. It answers "when does delaying catch up", not "what will I actually have".</p>
+  </div>`;
   html+=`<div class="card"><h3 style="margin-bottom:10px;">Breakeven ages — delay vs. claim at 62</h3>
   <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6;">
     The age at which delaying SS pays off vs. claiming at 62. Does not account for investment returns on early benefits or COLA.
@@ -13243,6 +13529,7 @@ function renderSSOptimizer(){
     html+=`<div style="margin-top:12px;">${_askAiBtnSeed(_ssSeed,'Ask AI about: Social Security claiming (age '+selectedClaimAge+')')}</div>`;
   }
   el.innerHTML=html;
+  _renderSsBreakevenChart(_ssBeModel,selectedClaimAge);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -13258,6 +13545,22 @@ function toggleTheme(){
   if(typeof _applyChartTooltipTheme==='function')_applyChartTooltipTheme();
   // Charts color their gridlines/ticks from the app dark class — re-render the active tab's chart.
   if(typeof render==='function')render();
+  _rerenderActiveTabForTheme();
+}
+
+// render() only refreshes the Balance, Scenarios and SS Optimizer tabs, so anything theme-derived on
+// the other analysis tabs survived a theme switch unchanged and stayed on the OLD theme's colours:
+// the stress heatmap kept the dark alphas on a light card, the annuity lines kept their dark hues,
+// and the hand-rolled SVG charts in Drawdown baked `isDark` in at build time. All three re-render
+// idempotently (they read their own module state, not arguments), so re-running the active one is
+// the whole fix.
+function _rerenderActiveTabForTheme(){
+  const on=id=>{const el=document.getElementById(id);return !!(el&&el.classList.contains('active'));};
+  try{
+    if(on('tab-stress')&&typeof renderStressTest==='function')renderStressTest();
+    if(on('tab-drawdown')&&typeof renderDrawdown==='function')renderDrawdown();
+    if(on('tab-annuity')&&typeof calcAnnuity==='function')calcAnnuity();
+  }catch(e){}
 }
 function updateThemeLabel(){
   const isDark=document.documentElement.classList.contains('dark');
@@ -18142,8 +18445,7 @@ function runConfidenceSims(){
 function _confBars(cats){
   const cv=document.getElementById('confBars'); if(!cv||typeof Chart==='undefined')return;
   _confDestroy('confBars');
-  const isDark=document.documentElement.classList.contains('dark');
-  const tc=isDark?'#a8a89e':'#5f5e5a',gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)';
+  const _th=_chartTheme(),tc=_th.tick,gc=_th.grid;
   confCharts['confBars']=new Chart(cv.getContext('2d'),{type:'bar',
     data:{labels:cats.map(c=>c.label),datasets:[{data:cats.map(c=>c.score),backgroundColor:cats.map(c=>_confColorFor(c.cls)),borderWidth:0,borderRadius:4}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
@@ -18154,8 +18456,7 @@ function _confBars(cats){
 function _confRadar(cats){
   const cv=document.getElementById('confRadar'); if(!cv||typeof Chart==='undefined')return;
   _confDestroy('confRadar');
-  const isDark=document.documentElement.classList.contains('dark');
-  const tc=isDark?'#a8a89e':'#5f5e5a',gc=isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)';
+  const _th=_chartTheme(),tc=_th.tick,gc=_th.gridStrong;
   const avg=cats.length?Math.round(cats.reduce((a,c)=>a+c.score,0)/cats.length):0;
   const col=_confColorFor(_confScoreCls(avg));
   confCharts['confRadar']=new Chart(cv.getContext('2d'),{type:'radar',
@@ -20403,6 +20704,53 @@ function annIncomeToRate(){
   if(premium&&mo&&el)el.value=((mo*12/premium)*100).toFixed(2);
 }
 
+// ── Annuity vs investing: the crossover ─────────────────────────────────────────────────────────
+// `rows` already holds both series for every age; the tab was showing five sampled rows of it as a
+// table. Two crossing lines answer the tab's actual question — "at what age does this annuity stop
+// being a bet and start being a win" — in one look.
+//
+// ⚠ These figures are ALREADY in the display currency (they come off the annuity input fields), so
+// this renderer must NOT convert them. See the fmtK note in calcAnnuity.
+function _renderAnnuityChart(rows,breakEvenAge,buyAge,startAge,isDIA,growthPct){
+  if(!rows||!rows.length)return;
+  const th=_chartTheme(),sym=CURRENCIES[displayCurrency].symbol;
+  const cInc=th.isDark?'#5EEAD4':'#0F746C', cPort=th.isDark?'#E0A85C':'#945A0D';
+  const chart=_chartUpsert(RP_CHARTS,'annBreakeven','annBreakevenChart',{
+    type:'line',
+    data:{labels:rows.map(r=>r.age),datasets:[
+      {label:'Cumulative annuity income',data:rows.map(r=>r.cumIncome),borderColor:cInc,backgroundColor:cInc,
+       borderWidth:2.5,pointRadius:0,pointHitRadius:8,tension:0.15,fill:false},
+      {label:'Premium if invested at '+growthPct+'%',data:rows.map(r=>r.portfolio),borderColor:cPort,backgroundColor:cPort,
+       borderWidth:2,borderDash:[5,4],pointRadius:0,pointHitRadius:8,tension:0.15,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{displayColors:true,
+        callbacks:{title:it=>it.length?'Age '+rows[it[0].dataIndex].age:'',
+          label:c=>' '+c.dataset.label+': '+sym+Math.round(c.parsed.y).toLocaleString()}}},
+      scales:{x:{grid:{display:false},ticks:{color:th.tick,maxRotation:0,autoSkip:true,maxTicksLimit:12},
+                 title:{display:true,text:'Age',color:th.tick,font:{size:11}}},
+              y:{beginAtZero:true,grid:{color:th.grid},ticks:{color:th.tick,
+                 callback:v=>{const a=Math.abs(v);return a>=1e6?sym+(a/1e6).toFixed(1)+'M':a>=1000?sym+Math.round(a/1000)+'k':sym+Math.round(a);}},
+                 title:{display:true,text:'Cumulative value',color:th.tick,font:{size:11}}}}}
+  },{animate:true});
+  const leg=document.getElementById('ann-chart-legend');
+  if(leg)leg.innerHTML=
+    `<span class="legend-item"><span class="legend-swatch" style="background:${cInc};"></span>Cumulative annuity income</span>`+
+    `<span class="legend-item"><span class="legend-swatch" style="background:${cPort};border:1px dashed ${cPort};"></span>Premium if invested at ${growthPct}%</span>`;
+  // ⚠ Two DIFFERENT milestones, and the tab used to blur them. `breakEvenAge` is when cumulative
+  // income repays the PREMIUM — it says nothing about investing. Whether the annuity beats investing
+  // is where these two lines actually cross, which is often never. The chart makes that visible, so
+  // the note has to be read off the drawn series rather than repeating the premium-payback number.
+  let crossAge=null;
+  for(let i=0;i<rows.length;i++){if(rows[i].cumIncome>=rows[i].portfolio){crossAge=rows[i].age;break;}}
+  const note=document.getElementById('ann-chart-note');
+  if(note)note.textContent=(crossAge!=null
+    ? 'The lines cross at age '+crossAge+'. Live beyond that and the annuity has paid you more than the premium would have grown to.'
+    : 'These lines never cross before '+rows[rows.length-1].age+': at '+growthPct+'%/yr the invested premium stays ahead of the income the annuity pays out, for as long as this runs. That is not an argument against the annuity — what it sells is income that cannot run out, however long you live, and an invested pot can. But on returns alone, it does not win here.')
+    +(breakEvenAge?' Separately, it repays the premium itself in income at age '+breakEvenAge+'.':' It does not even repay the premium in income before '+rows[rows.length-1].age+'.');
+  if(chart)_chartSrTable(chart,'annBreakevenChart','Cumulative annuity income versus the premium invested, by age');
+}
+
 function calcAnnuity(){
   const premium=parseFloat(document.getElementById('ann-premium')?.value)||0;
   const buyAge=parseFloat(document.getElementById('ann-buy-age')?.value)||62;
@@ -20430,6 +20778,10 @@ function calcAnnuity(){
   }
   const maxAge=100;
   const curr=CURRENCIES[displayCurrency].symbol;
+  // ⚠ NOT interchangeable with _ddFmtK, despite looking it. _ddFmtK takes USD and multiplies by the
+  // FX rate; these figures come straight off the annuity input fields, so they are ALREADY in the
+  // display currency. Swapping in _ddFmtK here would convert a second time and inflate every number
+  // on this tab in any non-USD currency.
   const fmtK=v=>{const a=Math.abs(v);return a>=1e6?curr+(a/1e6).toFixed(1)+'M':a>=1000?curr+Math.round(a/1000)+'k':curr+Math.round(a);};
   const fmtM=v=>curr+Math.round(v).toLocaleString();
 
@@ -20504,12 +20856,23 @@ function calcAnnuity(){
     ${_askAiBtnSeed(_annSeed,'Ask AI about: Annuity / income floor')}`;
 
   // ── Timeline table ────────────────────────────────────────────
-  const showAges=Array.from(new Set([buyAge,startAge,...[65,70,75,80,85,90,95,100].filter(a=>a>=buyAge&&a<=maxAge)])).sort((a,b)=>a-b);
-  const tableRows=rows.filter(r=>showAges.includes(r.age));
+  // ⚠ These rows step from buyAge, which is very often a HALF age (59.5 — the planner splits a phase
+  // at 59½), so the ages run 59.5, 60.5, 61.5 … and an exact-match filter against whole-number
+  // milestones matched nothing but the purchase row. The table silently collapsed to a single line
+  // for any half-age purchase, which is the default. Pick the NEAREST row to each milestone instead.
+  // The break-even row is a target in its own right — it is the one the table highlights, and it too
+  // could never appear when it landed on a half age.
+  const _targets=Array.from(new Set([buyAge,startAge,...(breakEvenAge!=null?[breakEvenAge]:[]),
+    ...[65,70,75,80,85,90,95,100].filter(a=>a>=buyAge&&a<=maxAge)])).sort((a,b)=>a-b);
+  const _nearest=t=>rows.reduce((best,r)=>Math.abs(r.age-t)<Math.abs(best.age-t)?r:best,rows[0]);
+  const tableRows=Array.from(new Set(_targets.map(_nearest))).sort((a,b)=>a.age-b.age);
   timelineEl.style.display='';
   timelineEl.innerHTML=`
     <h3 style="margin-bottom:8px;">Annuity vs Investing the Premium</h3>
-    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.55;">Cumulative annuity income received vs what the ${fmtM(premium)} premium would be worth if invested at ${growthPct}%/yr. The annuity "wins" once cumulative income overtakes the invested value.</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.55;">Cumulative annuity income received vs what the ${fmtM(premium)} premium would be worth if invested at ${growthPct}%/yr. Two different questions live here: whether the income ever <em>repays the premium</em>, and whether it ever <em>overtakes what investing that premium would have grown to</em>. The second is a much higher bar, and often never happens &mdash; the chart shows both.</p>
+    <div class="chart-wrap" style="height:280px;"><canvas id="annBreakevenChart"></canvas></div>
+    <div class="legend" id="ann-chart-legend"></div>
+    <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin:8px 0 16px;" id="ann-chart-note"></p>
     <div style="overflow-x:auto;">
     <table style="width:100%;border-collapse:collapse;font-size:12px;">
       <thead><tr style="border-bottom:1px solid var(--border-mid);">
@@ -20522,7 +20885,9 @@ function calcAnnuity(){
         const isBuy=r.age===buyAge,isStart=r.age===startAge&&isDIA,isBE=r.age===breakEvenAge;
         const bg=isBE?'background:var(--green-bg);':'';
         const lbl=r.age+(isBuy?' (purchase)':isStart?' (income starts)':'');
-        const statusHtml=r.cumIncome===0?'<span style="color:var(--text-tertiary);">Deferred</span>':r.ahead?'<span style="color:var(--green-text);font-weight:600;">✓ Ahead</span>':'<span style="color:var(--text-tertiary);">—</span>';
+        // "Ahead" read as "ahead of investing", which this flag has never tested — it is set from
+        // breakEvenAge, i.e. cumulative income >= premium. Named for what it actually means.
+        const statusHtml=r.cumIncome===0?'<span style="color:var(--text-tertiary);">Deferred</span>':r.ahead?'<span style="color:var(--green-text);font-weight:600;">✓ Premium repaid</span>':'<span style="color:var(--text-tertiary);">—</span>';
         return `<tr style="border-bottom:0.5px solid var(--border-light);${bg}">
           <td style="padding:6px 10px;font-weight:${isBuy||isStart||isBE?'600':'400'};color:var(--text-primary);white-space:nowrap;">${lbl}</td>
           <td style="text-align:right;padding:6px 10px;color:var(--text-primary);">${fmtK(r.cumIncome)}</td>
@@ -20531,6 +20896,8 @@ function calcAnnuity(){
         </tr>`;}).join('')}
       </tbody>
     </table></div>`;
+
+  _renderAnnuityChart(rows,breakEvenAge,buyAge,startAge,isDIA,growthPct);
 
   // ── Add to plan ───────────────────────────────────────────────
   _renderAnnuityAddToPlan(premium,buyAge,startAge,monthlyBase,cola);
