@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v328.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v332.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -3968,7 +3968,7 @@ html[data-theme="contrast"] .irow select:focus{
   </div>
 
   <div id="tab-chart" class="tab-content">
-    <div class="card" style="margin-bottom:16px;"><h3 style="margin-bottom:14px;">Account balances across retirement phases<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('balanceInsights',this)" title="Insights for this chart" aria-label="Insights for this chart">i</button></h3><div class="chart-wrap" style="height:300px;"><canvas id="balanceChart"></canvas></div><div class="legend" id="bal-legend"></div></div>
+    <div class="card" style="margin-bottom:16px;"><h3 style="margin-bottom:14px;">Account balances across retirement phases<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('balanceInsights',this)" title="Insights for this chart" aria-label="Insights for this chart">i</button></h3><div class="av-controls" style="margin-bottom:10px;"><div class="av-seg" role="group" aria-label="Balance chart granularity"><button type="button" class="av-seg-btn bal-seg-btn active" data-grain="phase" data-label="By phase" aria-pressed="true" onclick="balSet('phase')"><span>By phase</span></button><button type="button" class="av-seg-btn bal-seg-btn" data-grain="year" data-label="By year" aria-pressed="false" onclick="balSet('year')"><span>By year</span></button></div></div><div class="chart-wrap" style="height:300px;"><canvas id="balanceChart"></canvas></div><div class="legend" id="bal-legend"></div></div>
     <div class="card"><h3 style="margin-bottom:4px;">Monthly income across retirement phases<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('incomeInsights',this)" title="Insights for this chart" aria-label="Insights for this chart">i</button> <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=xWzTLJrIk6I','_blank','noopener');" title="Watch the Real vs nominal income explainer">&#x25B6; Real vs nominal &middot; 2 min</button></span></h3><p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">Nominal vs real (inflation-adjusted to age <span id="chart-base-age">59.5</span>)</p><div class="chart-wrap" style="height:260px;"><canvas id="incomeChart"></canvas></div><div class="legend" style="margin-top:10px;"><span class="legend-item"><span class="legend-swatch" style="background:#378ADD;"></span>Nominal</span><span class="legend-item"><span class="legend-swatch" style="background:#AFA9EC;border:1px dashed #534AB7;"></span>Real</span></div><p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;">Deflated at <span id="chart-inflation-note">3.0</span>%/yr from start age.</p></div>
     <div class="card" style="margin-top:16px;" id="tax-bracket-card">
       <h3 style="margin-bottom:4px;">Which tax bands your income lands in</h3>
@@ -4242,6 +4242,22 @@ html[data-theme="contrast"] .irow select:focus{
         </ul>
       </aside>
       <div class="taxguide-content">
+        <div class="card" style="margin-bottom:18px;display:none;" id="tg-threshold-card">
+          <h3 style="margin-bottom:4px;">Where your plan sits on the cliffs</h3>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6;">The two most expensive edges in US retirement are step changes, not gradual slopes &mdash; cross one by a single dollar and the cost lands in full. These show your own plan against them.</p>
+          <div id="tg-aca-chart-box" style="display:none;margin-bottom:20px;">
+            <h4 style="font-size:13px;margin:0 0 8px;">The ACA subsidy cliff</h4>
+            <div class="chart-wrap" style="height:250px;"><canvas id="acaCliffChart"></canvas></div>
+            <div class="legend" id="tg-aca-chart-legend"></div>
+            <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;" id="tg-aca-chart-note"></p>
+          </div>
+          <div id="tg-irmaa-chart-box" style="display:none;">
+            <h4 style="font-size:13px;margin:0 0 8px;">The IRMAA surcharge ladder</h4>
+            <div class="chart-wrap" style="height:250px;"><canvas id="irmaaLadderChart"></canvas></div>
+            <div class="legend" id="tg-irmaa-chart-legend"></div>
+            <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:8px;" id="tg-irmaa-chart-note"></p>
+          </div>
+        </div>
         <div class="card">
           <h3 style="margin-bottom:8px;">How calculations work <button class="vid-icon-btn" onclick="openVideoPopover('tax-aca',this)" title="Watch tutorial">&#x25B6;</button></h3>
           <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;">Reference notes for every calculation in the dashboard. Use the table of contents on the left to jump straight to a topic. For plain-English definitions of individual concepts, open the <strong>Glossary</strong> tab in the Help modal.</p>
@@ -5972,7 +5988,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 328; /* __BUILD__ */
+const APP_BUILD = 332; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -10429,32 +10445,199 @@ function renderPhases(phs){
   });
 }
 
+// Balance chart granularity. Same two-state pattern as the Account view's toggles, and the same
+// reason for existing: a phase is a coarse unit, and a plan that ends fine at every phase boundary can
+// still dip hard inside one. The per-year series is already sitting in _avYearModel — the table has
+// been showing it since v269; the chart just never did.
+let BAL_GRAIN='phase';
+function balSet(v){
+  BAL_GRAIN=v;
+  document.querySelectorAll('.bal-seg-btn').forEach(b=>{
+    const on=b.dataset.grain===v;
+    b.classList.toggle('active',on);
+    b.setAttribute('aria-pressed',on?'true':'false');
+  });
+  renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});
+}
+
 function renderCharts(phs,opts){
   const _th=_chartTheme(),gc=_th.grid,tc=_th.tick,sym=_th.sym,conv=_th.conv;
   const startLabel=S.currentAge&&S.currentAge>S.startAge?'Age '+S.currentAge:'Start';
-  const labels=[startLabel,...phs.map(p=>'Age '+p.ages.split('–')[1])];
-  const d1=[conv(S.bal401k),...phs.map(p=>conv(p.end.b401k))];
-  const d2=[conv(S.balCash),...phs.map(p=>conv(p.end.bcash))];
-  const d4=[conv(S.balEquity||0),...phs.map(p=>conv(p.end.bEquity||0))];
-  const dRoth=[conv(S.balRoth||0),...phs.map(p=>conv(p.end.bRoth||0))];
-  const dSuper=[conv(S.superBal||0),...phs.map(p=>conv(p.end.bSuper||0))];
+  // Year rows carry an END balance per account, so they label by the age the year ENDS on — matching
+  // the phase series, which labels by the phase's end age. `ym` is null when no account is in play.
+  const ym=BAL_GRAIN==='year'?_avYearModel(phs):null;
+  const cellEnd=(r,k)=>{const c=(r.cells||[]).find(x=>x.key===k);return c?c.end:0;};
+  const byYear=!!(ym&&ym.rows&&ym.rows.length);
+  const labels=byYear
+    ?[startLabel,...ym.rows.map(r=>'Age '+(Math.round(r.ageEnd*10)/10))]
+    :[startLabel,...phs.map(p=>'Age '+p.ages.split('–')[1])];
+  const d1=byYear?[conv(S.bal401k),...ym.rows.map(r=>conv(cellEnd(r,'k401')))]
+                 :[conv(S.bal401k),...phs.map(p=>conv(p.end.b401k))];
+  const d2=byYear?[conv(S.balCash),...ym.rows.map(r=>conv(cellEnd(r,'cash')))]
+                 :[conv(S.balCash),...phs.map(p=>conv(p.end.bcash))];
+  const d4=byYear?[conv(S.balEquity||0),...ym.rows.map(r=>conv(cellEnd(r,'equity')))]
+                 :[conv(S.balEquity||0),...phs.map(p=>conv(p.end.bEquity||0))];
+  const dRoth=byYear?[conv(S.balRoth||0),...ym.rows.map(r=>conv(cellEnd(r,'roth')))]
+                    :[conv(S.balRoth||0),...phs.map(p=>conv(p.end.bRoth||0))];
+  const dSuper=byYear?[conv(S.superBal||0),...ym.rows.map(r=>conv(cellEnd(r,'super')))]
+                     :[conv(S.superBal||0),...phs.map(p=>conv(p.end.bSuper||0))];
   const d3=d1.map((v,i)=>v+d2[i]+d4[i]+dRoth[i]+dSuper[i]);
   // Match the phase-card amount colors (honors the user's Appearance palette + light/dark). Total has no
   // card amount, so it keeps its distinct plum.
   const cA=accountColor('c401k'),cC=accountColor('cCash'),cE=accountColor('cEquity'),cT='#534AB7';
+  const pr=byYear?0:5;  // 40 dots on a year series is mush; the line carries it
   bChart=_chartUpsert(RP_CHARTS,'balanceChart','balanceChart',{type:'line',data:{labels,datasets:[
-    {label:'401k',data:d1,borderColor:cA,backgroundColor:_hexToRgba(cA,0.12),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cA},
-    {label:'Cash',data:d2,borderColor:cC,backgroundColor:_hexToRgba(cC,0.12),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cC,borderDash:[5,4]},
-    {label:'Equity',data:d4,borderColor:cE,backgroundColor:_hexToRgba(cE,0.10),fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:cE,borderDash:[3,3]},
-    {label:'Total',data:d3,borderColor:cT,fill:false,tension:0.3,pointRadius:5,pointBackgroundColor:cT,borderWidth:2,borderDash:[2,2]}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},x:{ticks:{color:tc},grid:{color:gc}}}}},opts);
+    {label:'401k',data:d1,borderColor:cA,backgroundColor:_hexToRgba(cA,0.12),fill:true,tension:0.3,pointRadius:pr,pointHitRadius:8,pointBackgroundColor:cA},
+    {label:'Cash',data:d2,borderColor:cC,backgroundColor:_hexToRgba(cC,0.12),fill:true,tension:0.3,pointRadius:pr,pointHitRadius:8,pointBackgroundColor:cC,borderDash:[5,4]},
+    {label:'Equity',data:d4,borderColor:cE,backgroundColor:_hexToRgba(cE,0.10),fill:true,tension:0.3,pointRadius:pr,pointHitRadius:8,pointBackgroundColor:cE,borderDash:[3,3]},
+    {label:'Total',data:d3,borderColor:cT,fill:false,tension:0.3,pointRadius:pr,pointHitRadius:8,pointBackgroundColor:cT,borderWidth:2,borderDash:[2,2]}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}`}}},
+    scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(0)}k`},grid:{color:gc}},
+            x:{ticks:{color:tc,maxRotation:0,autoSkip:true,maxTicksLimit:byYear?14:12},grid:{color:gc}}}}},opts);
   document.getElementById('bal-legend').innerHTML=[['401k',cA],['Cash',cC],['Equity',cE],['Total',cT]].map(([l,c])=>`<span class="legend-item"><span class="legend-swatch" style="background:${c};"></span>${l}</span>`).join('');
   document.getElementById('chart-base-age').textContent=S.currentAge&&S.currentAge>S.startAge?S.currentAge:S.startAge;document.getElementById('chart-inflation-note').textContent=S.inflation.toFixed(1);
-  _chartSrTable(bChart,'balanceChart','Account balances across retirement phases (401k, Cash, Equity, Total)');
+  _chartSrTable(bChart,'balanceChart','Account balances '+(byYear?'year by year':'across retirement phases')+' (401k, Cash, Equity, Total)');
   iChart=_chartUpsert(RP_CHARTS,'incomeChart','incomeChart',{type:'bar',data:{labels:phs.map(p=>p.label+'\n('+p.ages+')'),datasets:[{label:'Nominal',data:phs.map(p=>conv(p.net_mo)),backgroundColor:'#378ADD',borderRadius:4},{label:'Real',data:phs.map(p=>conv(p.net_real)),backgroundColor:'#AFA9EC',borderRadius:4,borderWidth:1,borderColor:'#534AB7'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}/mo`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(1)}k`},grid:{color:gc}},x:{ticks:{color:tc,maxRotation:0},grid:{display:false}}}}},opts);
   _chartSrTable(iChart,'incomeChart','Monthly net income by phase — nominal vs real (today\'s dollars)');
   _renderTaxBracketChart(phs,opts);
   renderAccountView(phs,opts);
+}
+
+// ─── THRESHOLD CHARTS (Tax & ACA tab) ───────────────────────────────────────────────────────────
+// Two of the most expensive edges in US retirement planning are invisible until you cross them: the
+// ACA subsidy cliff and the IRMAA ladder. Both are step functions, both are described in prose on
+// this tab, and neither was ever drawn. A number tells you where you are; a step function tells you
+// what happens next, which is the part people get wrong.
+//
+// Both models READ the engine. The ACA curve calls `acaPrem` itself rather than re-deriving the
+// applicable-percentage ladder, so the curve cannot drift from the figure on the phase card.
+//
+// ⚠ One line is duplicated on purpose and must stay in step with calcPhase: over the cliff `acaPrem`
+// returns -1, and the engine turns that into Math.max(magi*0.0996/12, 700). If that changes in
+// calcPhase, change it here too — otherwise the chart's cliff height stops matching the cost charged.
+function _acaCurveModel(phs){
+  if(typeof acaPrem!=='function')return null;
+  const p=(phs||[]).find(q=>q&&q.aca!=null&&q.fpl400>0&&q.fpl100>0);
+  if(!p)return null;
+  const f100=p.fpl100,f400=p.fpl400;
+  const cost=m=>{const v=acaPrem(m,f100,f400);return v===-1?Math.max(m*0.0996/12,700):v;};
+  // ⚠ typeof is NOT a sufficient guard. The website demo physically strips the calc engine and
+  // replaces each function with a stub that THROWS — so acaPrem is still a function, it just
+  // explodes when called. Probe it once: no engine, no curve. Without this the exception escaped
+  // through renderTaxThresholdCharts and took showTab('taxguide') down with it.
+  try{cost(f100);}catch(e){return null;}
+  const magi=p.magi||0;
+  const maxX=Math.max(f400*1.5,magi*1.15,f100*5);
+  const pts=[];
+  for(let i=0;i<=140;i++){const m=maxX*i/140;pts.push({x:m,y:cost(m)});}
+  // Straddle the cliff exactly, or 140 evenly-spaced samples render the jump as a diagonal ramp and
+  // the single most important feature of this chart reads as a gentle slope.
+  pts.push({x:f400,y:cost(f400)},{x:f400+1,y:cost(f400+1)});
+  pts.sort((a,b)=>a.x-b.x);
+  return{p,f100,f400,maxX,pts,magi,at:cost(magi),over:magi>f400};
+}
+
+// Highest tier whose threshold is cleared wins — NOT cumulative. Mirrors the loop in the lookback
+// pass; drawing it as cumulative would overstate every crossing.
+function _irmaaLadderModel(phs){
+  const p=(phs||[]).find(q=>q&&q.adjIrmaaTiers&&q.adjIrmaaTiers.length&&(q.hasMedicare||(q.medicareFrac||0)>0));
+  if(!p)return null;
+  const tiers=p.adjIrmaaTiers.filter(t=>t&&t.thr>0);
+  if(!tiers.length)return null;
+  const amt=t=>(t.partB||0)+(t.partD||0);
+  const pts=[{x:0,y:0}];
+  tiers.forEach(t=>{pts.push({x:t.thr,y:pts[pts.length-1].y});pts.push({x:t.thr,y:amt(t)});});
+  const maxX=tiers[tiers.length-1].thr*1.3;
+  pts.push({x:maxX,y:pts[pts.length-1].y});
+  const lb=(p.irmaaProximity&&p.irmaaProximity.lookbackMagi!=null)?p.irmaaProximity.lookbackMagi:(p.irmaaMagi||0);
+  let sy=0,tier=0; tiers.forEach((t,i)=>{if(lb>t.thr){sy=amt(t);tier=i+1;}});
+  return{p,tiers,pts,maxX,lookback:lb,surch:sy,tier};
+}
+
+function _renderThresholdChart(canvasId,key,m,opt){
+  const th=_chartTheme();
+  const money=v=>th.sym+Math.round(v).toLocaleString();
+  const maxY=(Math.max.apply(null,m.pts.map(q=>q.y))||1)*1.15;
+  const ds=[
+    {label:opt.curveLabel,data:m.pts.map(q=>({x:th.conv(q.x),y:th.conv(q.y)})),
+     borderColor:opt.curveCol,backgroundColor:_hexToRgba(opt.curveCol,0.10),fill:true,
+     borderWidth:2.5,pointRadius:0,pointHitRadius:6,stepped:!!opt.stepped,tension:0},
+    // No annotation plugin is bundled, so the threshold gets its own two-point dataset.
+    {label:opt.lineLabel,data:[{x:th.conv(opt.lineAt),y:0},{x:th.conv(opt.lineAt),y:th.conv(maxY)}],
+     borderColor:opt.lineCol,borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false},
+    {label:opt.youLabel,data:[{x:th.conv(m.youX),y:th.conv(m.youY)}],
+     borderColor:opt.youCol,backgroundColor:opt.youCol,pointRadius:7,pointHoverRadius:9,showLine:false}
+  ];
+  const ch=_chartUpsert(RP_CHARTS,key,canvasId,{
+    type:'line',data:{datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{displayColors:true,
+        callbacks:{title:it=>it.length?'MAGI '+money(it[0].parsed.x):'',
+          label:c=>' '+c.dataset.label+': '+money(c.parsed.y)+opt.suffix}}},
+      scales:{x:{type:'linear',grid:{color:th.grid},
+                 ticks:{color:th.tick,maxRotation:0,callback:v=>Math.abs(v)>=1000?th.sym+(v/1000).toFixed(0)+'k':th.sym+Math.round(v)},
+                 title:{display:true,text:opt.xTitle,color:th.tick,font:{size:11}}},
+              y:{beginAtZero:true,grid:{color:th.grid},
+                 ticks:{color:th.tick,callback:v=>Math.abs(v)>=1000?th.sym+(v/1000).toFixed(1)+'k':th.sym+Math.round(v)},
+                 title:{display:true,text:opt.yTitle,color:th.tick,font:{size:11}}}}}
+  },{animate:true});
+  if(ch)_chartSrTable(ch,canvasId,opt.srCaption);
+  const leg=document.getElementById(opt.legendId);
+  if(leg)leg.innerHTML=ds.map(d=>'<span class="legend-item"><span class="legend-swatch" style="background:'+d.borderColor+';"></span>'+escHtml(d.label)+'</span>').join('');
+  return ch;
+}
+
+function renderTaxThresholdCharts(){
+  try{_renderTaxThresholdCharts();}catch(e){
+    // Belt and braces. This runs from showTab and from all three render paths, so anything thrown in
+    // here would break tab switching itself — a chart is never worth that.
+    const c=document.getElementById('tg-threshold-card'); if(c)c.style.display='none';
+  }
+}
+function _renderTaxThresholdCharts(){
+  const card=document.getElementById('tg-threshold-card'); if(!card)return;
+  let phs=[]; try{phs=calcAllPhases(S,p5EndAge,lumps)||[];}catch(e){phs=[];}
+  const money=v=>CURRENCIES[displayCurrency].symbol+Math.round(toDisplay(v)).toLocaleString();
+  const th=_chartTheme();
+  const aca=_acaCurveModel(phs), irm=_irmaaLadderModel(phs);
+  const acaBox=document.getElementById('tg-aca-chart-box'), irmBox=document.getElementById('tg-irmaa-chart-box');
+  card.style.display=(aca||irm)?'':'none';
+  if(acaBox)acaBox.style.display=aca?'':'none';
+  if(irmBox)irmBox.style.display=irm?'':'none';
+  if(!aca&&RP_CHARTS['acaCliff']){try{RP_CHARTS['acaCliff'].destroy();}catch(e){}delete RP_CHARTS['acaCliff'];}
+  if(!irm&&RP_CHARTS['irmaaLadder']){try{RP_CHARTS['irmaaLadder'].destroy();}catch(e){}delete RP_CHARTS['irmaaLadder'];}
+
+  if(aca){
+    aca.youX=aca.magi; aca.youY=aca.at;
+    _renderThresholdChart('acaCliffChart','acaCliff',aca,{
+      curveLabel:'Estimated premium',curveCol:th.isDark?'#5FD3E6':'#06748C',
+      lineAt:aca.f400,lineLabel:'400% FPL cliff',lineCol:th.isDark?'#F08A8A':'#B11D2E',
+      youLabel:'Your plan',youCol:th.isDark?'#E3B341':'#8A6309',
+      xTitle:'MAGI per year',yTitle:'Health premium per month',suffix:'/mo',
+      legendId:'tg-aca-chart-legend',
+      srCaption:'Estimated ACA health premium against MAGI, showing the 400% FPL subsidy cliff'});
+    const n=document.getElementById('tg-aca-chart-note');
+    if(n)n.textContent='Thresholds are '+(aca.p.label||'this phase')+' (age '+(aca.p.ages||'')+') — the poverty level is inflation-adjusted, so later phases sit on a slightly different curve. '
+      +(aca.over
+        ? 'Your MAGI of '+money(aca.magi)+' is ABOVE the '+money(aca.f400)+' cliff, so no subsidy applies and the premium shown is the unsubsidised estimate.'
+        : 'Your MAGI of '+money(aca.magi)+' leaves '+money(Math.max(0,aca.f400-aca.magi))+' of headroom before the cliff. It is a cliff, not a taper: one dollar over removes the whole subsidy. Roth and cash withdrawals do not count toward MAGI.');
+  }
+  if(irm){
+    irm.youX=irm.lookback; irm.youY=irm.surch;
+    _renderThresholdChart('irmaaLadderChart','irmaaLadder',irm,{
+      curveLabel:'Monthly surcharge',curveCol:th.isDark?'#B7AEF0':'#534AB7',stepped:true,
+      lineAt:irm.tiers[0].thr,lineLabel:'First IRMAA threshold',lineCol:th.isDark?'#F08A8A':'#B11D2E',
+      youLabel:'Your plan',youCol:th.isDark?'#E3B341':'#8A6309',
+      xTitle:'MAGI from two years earlier',yTitle:'IRMAA surcharge per month',suffix:'/mo',
+      legendId:'tg-irmaa-chart-legend',
+      srCaption:'IRMAA surcharge ladder against the two-year-lookback MAGI'});
+    const n=document.getElementById('tg-irmaa-chart-note');
+    if(n)n.textContent='Based on '+(irm.p.label||'this phase')+' (age '+(irm.p.ages||'')+'), whose surcharge is set by your MAGI from two years earlier — '+money(irm.lookback)+'. '
+      +(irm.tier?('That lands in tier '+irm.tier+', costing '+money(irm.surch)+'/mo.'):'That sits below the first threshold, so no surcharge applies.')
+      +' Every step is a cliff rather than a taper, and the surcharge shown is per person — a couple on Medicare pays it each.';
+  }
 }
 
 // ─── TAX BRACKET OCCUPANCY (Balance tab) ────────────────────────────────────────────────────────
@@ -11134,8 +11317,8 @@ function updateRothPhaseLabels(){
     setLbl(cId[n],m?`Phase ${n} /yr · ${m}mo`:`Phase ${n} /yr`);
   }
 }
-function liveCalc(){readInputs();syncSplitState();updatePhaseCardVisibility();updateChangedIndicators();updateSurvivorHint();const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);updateRothPhaseLabels();if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();scheduleHeavyRender();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();autoSave();if(typeof updateAiContextStatus==='function')updateAiContextStatus();}
-function renderPhasesOnly(){const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);updateRothPhaseLabels();if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(document.getElementById('tab-confidence').classList.contains('active'))renderConfidenceScore();if(typeof renderLearnCard==='function')renderLearnCard();}
+function liveCalc(){readInputs();syncSplitState();updatePhaseCardVisibility();updateChangedIndicators();updateSurvivorHint();const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);updateRothPhaseLabels();if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();if(document.getElementById('tab-taxguide').classList.contains('active'))renderTaxThresholdCharts();scheduleHeavyRender();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();autoSave();if(typeof updateAiContextStatus==='function')updateAiContextStatus();}
+function renderPhasesOnly(){const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);updateRothPhaseLabels();if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();if(document.getElementById('tab-taxguide').classList.contains('active'))renderTaxThresholdCharts();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(document.getElementById('tab-confidence').classList.contains('active'))renderConfidenceScore();if(typeof renderLearnCard==='function')renderLearnCard();}
 // Debounced wrapper for keystroke-driven inputs: coalesce a burst of typing into one full
 // recalc+render ~150ms after the last keypress (typing "150000" did ~6 full rebuilds before).
 // liveCalcFlush() runs any pending recalc immediately — call it before reads that must see the
@@ -11143,7 +11326,7 @@ function renderPhasesOnly(){const p=calcAllPhases(S,p5EndAge,lumps);renderSummar
 let _lcT=null;
 function liveCalcDebounced(){clearTimeout(_lcT);_lcT=setTimeout(function(){_lcT=null;liveCalc();},150);}
 function liveCalcFlush(){if(_lcT){clearTimeout(_lcT);_lcT=null;liveCalc();}}
-function render(){if(typeof _tipHideAll==='function')_tipHideAll();/* a hovered node about to be replaced never fires mouseout — see TOOLTIPS */const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);if(document.getElementById('tab-chart').classList.contains('active'))renderCharts(p);if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
+function render(){if(typeof _tipHideAll==='function')_tipHideAll();/* a hovered node about to be replaced never fires mouseout — see TOOLTIPS */const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);if(document.getElementById('tab-chart').classList.contains('active'))renderCharts(p);if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();if(document.getElementById('tab-taxguide').classList.contains('active'))renderTaxThresholdCharts();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
 function setFilingStatus(val){S.filingStatus=val;document.getElementById('mfj-single-btn').classList.toggle('active',val==='single');document.getElementById('mfj-mfj-btn').classList.toggle('active',val==='mfj');const spRow=document.getElementById('spouse-ss-row');if(spRow)spRow.style.display=val==='mfj'?'':'none';const mfjCard=document.getElementById('mfj-brackets-card');if(mfjCard)mfjCard.style.display=(val==='mfj'&&S.subjectToUsTax!==false)?'':'none';liveCalc();}
 // v6: US tax obligation toggle — when false, all US tax / IRMAA / ACA calcs zero
 // out and US-specific UI surfaces hide. Re-applies filing-status side effects too.
@@ -12356,7 +12539,7 @@ function scrollToReplanPanel(){
   const top=target.getBoundingClientRect().top+window.scrollY-getStickyOverviewOffset()-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
 }
-function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios({animate:true});if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
+function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios({animate:true});if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='taxguide')renderTaxThresholdCharts();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
 function setupLumpDelegation(){const ct=document.getElementById('lump-list');ct.addEventListener('input',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-amt'))updateLumpField(id,'amount',el.value);else if(el.classList.contains('lump-label'))updateLumpField(id,'label',el.value);else if(el.classList.contains('lump-split-amt'))updateLumpField(id,'split:'+el.dataset.acct,el.value);});ct.addEventListener('change',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-phase'))updateLumpField(id,'phase',el.value);else if(el.classList.contains('lump-dir'))updateLumpField(id,'dir',el.value);else if(el.classList.contains('lump-acct'))updateLumpField(id,'acct',el.value);else if(el.classList.contains('lump-fallback'))updateLumpField(id,'fallback',el.checked);else if(el.classList.contains('lump-grossup'))updateLumpField(id,'grossUp',el.checked);else if(el.classList.contains('lump-fbacct'))updateLumpField(id,'fbacct:'+el.dataset.acct,el.checked);});ct.addEventListener('click',e=>{const btn=e.target.closest('.lump-del');if(btn){const id=parseInt(btn.dataset.id);if(id)removeLump(id);}});}
 function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB','rate-EUR'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
 window.addEventListener('load',()=>{reflowTabs();setTimeout(reflowTabs,200);});
@@ -13564,6 +13747,7 @@ function _rerenderActiveTabForTheme(){
     if(on('tab-stress')&&typeof renderStressTest==='function')renderStressTest();
     if(on('tab-drawdown')&&typeof renderDrawdown==='function')renderDrawdown();
     if(on('tab-annuity')&&typeof calcAnnuity==='function')calcAnnuity();
+    if(on('tab-taxguide')&&typeof renderTaxThresholdCharts==='function')renderTaxThresholdCharts();
   }catch(e){}
 }
 function updateThemeLabel(){
@@ -14770,6 +14954,66 @@ function _mathNoTraceHtml(){
   return '<p style="font-size:12.5px;color:var(--text-secondary);padding:14px 0;line-height:1.6;">'
     +'The step-by-step working isn’t available for this view.</p>';
 }
+// ─── TRACE WATERFALL ────────────────────────────────────────────────────────────────────────────
+// The trace rows are already a waterfall spec: `kind:'in'` adds, `kind:'minus'` subtracts, and
+// `kind:'total'` closes the sum. So one generic renderer turns ANY qualifying group into a picture,
+// rather than a bespoke chart per calculation — the gross→net story, the deduction walk, the Foreign
+// Tax Credit, the MAGI build-up, all from the same code.
+//
+// The guard that makes this safe to point at every group: it only draws when the arithmetic ACTUALLY
+// CLOSES. Walk the in/minus rows, compare the running total against the group's own `total` row, and
+// if they disagree this is not a waterfall — return null and let the rows speak for themselves. A
+// group whose rows do not sum is exactly the group a waterfall would misrepresent.
+function _traceWaterfallModel(g){
+  if(!g||!g.rows||!g.rows.length)return null;
+  const steps=[]; let run=0, started=false, total=null, unit=null;
+  for(let i=0;i<g.rows.length;i++){
+    const r=g.rows[i];
+    if(r.kind!=='in'&&r.kind!=='minus'&&r.kind!=='total')continue; // flags, rates, bracket slices
+    // Mixed units in one group cannot share a y-axis. Bail rather than stack /mo onto /yr.
+    if(unit===null)unit=r.unit; else if(r.unit!==unit)return null;
+    if(r.kind==='total'){total=r;break;}          // the FIRST total closes the sum; later ones are
+    if(!(Math.abs(r.value)>0.005))continue;       // restatements (e.g. "= in today's money")
+    const from=run;
+    run+=(r.kind==='in'?r.value:-r.value);
+    steps.push({label:r.label,from,to:run,delta:r.kind==='in'?r.value:-r.value,kind:r.kind});
+    started=true;
+  }
+  if(!started||!total||steps.length<2)return null;
+  if(Math.abs(run-total.value)>Math.max(1,Math.abs(total.value)*0.001))return null;
+  steps.push({label:total.label,from:0,to:run,delta:run,kind:'total'});
+  return{unit:unit||'usd/yr',steps};
+}
+
+function _renderTraceWaterfall(canvasId,m,key){
+  const th=_chartTheme();
+  const suffix=m.unit==='usd/mo'?'/mo':m.unit==='usd/yr'?'/yr':'';
+  const col=k=>k==='in'?(th.isDark?'#A3D977':'#4A7318')
+            :k==='minus'?(th.isDark?'#F08A8A':'#B11D2E')
+            :(th.isDark?'#7FA8CC':'#1D5C8F');
+  // The colour already says add / subtract / total, so the leading −  and =  are noise in a tick label.
+  const short=l=>String(l).replace(/^[−=+]\s*/,'');
+  const money=v=>th.sym+Math.round(v).toLocaleString();
+  const ch=_chartUpsert(RP_CHARTS,key,canvasId,{
+    type:'bar',
+    data:{labels:m.steps.map(s=>short(s.label)),
+      // A floating bar: [from, to]. That is what makes each step start where the last one finished.
+      datasets:[{label:'',data:m.steps.map(s=>[th.conv(s.from),th.conv(s.to)]),
+        backgroundColor:m.steps.map(s=>col(s.kind)),borderWidth:0,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{displayColors:false,callbacks:{
+        title:it=>it.length?short(m.steps[it[0].dataIndex].label):'',
+        label:c=>{const s=m.steps[c.dataIndex];
+          return s.kind==='total'
+            ? '= '+money(th.conv(s.to))+suffix
+            : (s.delta<0?'− ':'+ ')+money(Math.abs(th.conv(s.delta)))+suffix+'   running '+money(th.conv(s.to))+suffix;}}}},
+      scales:{x:{grid:{display:false},ticks:{color:th.tick,autoSkip:false,maxRotation:30,minRotation:0,font:{size:10}}},
+              y:{beginAtZero:true,grid:{color:th.grid},
+                 ticks:{color:th.tick,callback:v=>Math.abs(v)>=1000?th.sym+(v/1000).toFixed(1)+'k':th.sym+Math.round(v)}}}}
+  },{animate:true});
+  if(ch)_chartSrTable(ch,canvasId,'Step-by-step waterfall: each bar starts where the previous one ended');
+}
+
 function renderMathPane(filter){
   const host=document.getElementById('math-groups');if(!host)return;
   const bar=document.getElementById('math-phase-bar');
@@ -14809,12 +15053,21 @@ function renderMathPane(filter){
     return `<div class="fxc-card" id="mgrp-${escHtml(g.id)}" style="margin-bottom:10px;">
       <button class="check-why-toggle math-grp-head" aria-expanded="${open}" onclick="toggleMathGroup('${g.id}')">${open?'&#x25BE;':'&#x25B8;'} ${escHtml(g.title)}</button>
       <div class="check-why-body${open?' open':''}">
+        ${(open&&_traceWaterfallModel(g))?`<div class="chart-wrap" style="height:210px;margin-bottom:10px;"><canvas id="mwf-${escHtml(g.id)}"></canvas></div>`:''}
         ${traceRowsHtml(p,g.id)}
         ${g.rows.some(r=>r.formula)?`<div class="math-formula-list">${g.rows.filter(r=>r.formula).map(r=>`<div class="math-formula"><span>${escHtml(r.label)}</span> = ${escHtml(r.formula)}</div>`).join('')}</div>`:''}
         ${links.length?`<div class="info-popover-watch-group" style="margin-top:8px;">${links.join('')}</div>`:''}
       </div>
     </div>`;
   }).join('');
+  // Canvases only exist once the HTML is in the DOM. renderMathPane rebuilds everything on each
+  // toggle/keystroke, so the old canvas nodes are gone — _chartUpsert notices (ex.canvas!==cv) and
+  // rebuilds rather than updating an orphan.
+  shown.forEach(g=>{
+    if(!_mathOpen.has(g.id)&&!f)return;
+    const m=_traceWaterfallModel(g);
+    if(m)_renderTraceWaterfall('mwf-'+g.id,m,'mwf-'+g.id);
+  });
 }
 /** Run the golden-master self-test from the help pane. runSelfTest builds its own overlay; the
  *  setTimeout keeps the click feeling responsive while 20 plans are recalculated. */
