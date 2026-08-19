@@ -98,7 +98,7 @@ In a later phase the wording shifts from "ran out at age 69" to "empty since 69"
 
 This is the hardest failure a plan can report, and notice it never appears alone. Every account has been drained to zero to try to cover the bill, so the same card carries a depletion flag for each one. That crowding is the honest picture: an unfunded expense is not one problem, it is the moment a plan runs out of options.
 
-**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty, so a plan modelling early retirement should show that account as locked rather than let you spend from it and quietly understate your costs.
+**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty. A plan modelling early retirement should never let you spend from that account as though the penalty did not exist — either hold it back, or charge the 10% and show it. What it must not do is quietly understate the cost.
 
 [IMAGE pre-59 and a half phase card with the 401k line locked 11]
 

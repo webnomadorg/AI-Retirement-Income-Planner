@@ -88,7 +88,7 @@ The planner turns those milestones into a working structure. By default it split
 Two things make this more than a fixed template:
 
 - **You edit the boundaries.** Those ages (62, 65, 67, 73) are inputs, not hard-coded rules. If your Medicare, claiming, or retirement dates differ, change them and the phases redraw.
-- **The timeline adapts to you automatically.** If you retire before 59½, the planner adds a separate **"Pre 59½"** phase, because most retirement accounts are penalty-locked until then. And it **splits a phase at your Social Security start age**, showing a "before Social Security" and "after Social Security" half so the change is visible right where it happens.
+- **The timeline adapts to you automatically.** If you retire before 59½, the planner adds a separate **"Pre 59½"** phase, because most retirement accounts carry a 10% early-withdrawal penalty until then — the phase is where you decide whether to leave them alone, pay that penalty, or claim an exception such as the Rule of 55. And it **splits a phase at your Social Security start age**, showing a "before Social Security" and "after Social Security" half so the change is visible right where it happens.
 
 ## Each Phase Has Its Own Job
 

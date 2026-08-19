@@ -85,13 +85,13 @@ So the real question is not "do I have 25x?" but "**do I have enough in reachabl
 
 That bridge has to come from somewhere: taxable brokerage, cash, Roth contributions, or a conversion ladder built years in advance. Which is why two people with identical net worth can have completely different answers.
 
-The planner treats this as a phase in its own right. Set a retirement age below 59½ and a locked phase appears before everything else, with the 401(k) showing as unavailable and the years funded from whatever else you have.
+The planner treats this as a phase in its own right. Set a retirement age below 59½ and a separate phase appears before everything else, where you say how you are reaching the 401(k): leave it untouched and fund the years from whatever else you have, or draw on it and have the ten percent priced in.
 
 [IMAGE plan starting at 42 with a locked pre-59 and a half phase 2]
 
 **About the screenshots.** These come from a constructed example built to show what the planner displays — not a finished plan, not a recommendation, and not anyone's real numbers. The figures are there to show *where* each answer appears and how the pieces move together. Yours will look different, and should.
 
-Two limits worth stating plainly, because this article is not going to pretend otherwise. The planner models the pre-59½ years as **locked**, not as penalised. It does not model a 72(t)/SEPP series, and it does not model the Rule of 55 — which would not help a 42-year-old anyway. If your plan is to tap a 401(k) early and absorb the ten percent, this tool will make you fund those years from elsewhere instead. That is a deliberately conservative stance, and you should know it is the stance before you rely on the output.
+One limit worth stating plainly, because this article is not going to pretend otherwise. The planner gives you three ways to handle those years — leave the 401(k) untouched, withdraw and pay the ten percent, or claim the Rule of 55 if you left work at 55 or later — and it does **not** model a 72(t)/SEPP series or the five-year seasoning on Roth conversions. Those two are the routes that actually fit a retirement starting in your forties, which is the awkward part: the Rule of 55 is no help to a 42-year-old, because it turns on separating from service at 55 or later, not on reaching 55. So if your bridge plan is a SEPP or a conversion ladder, model the withdrawals here and take the mechanics to a tax professional.
 
 ## Blind Spot 2 — Health Cover Before 65
 
@@ -171,7 +171,7 @@ There is a [free Retire Abroad tool](/retire-abroad.html) on this site that comp
 
 | Flavour | The question a multiple cannot answer | Where to look |
 |---|---|---|
-| **Full FIRE at 40–45** | Seventeen-plus years before the 401(k) unlocks — is the bridge funded? | The locked pre-59½ phase |
+| **Full FIRE at 40–45** | Seventeen-plus years before the 401(k) unlocks penalty-free — is the bridge funded? | The pre-59½ phase |
 | **Barista FIRE** | Is the part-time work still worth it after its effect on your subsidy? | Part-time income on the phase, and what happens to the FPL headroom |
 | **Coast FIRE** | You stopped contributing — does it actually coast, or does it just look like it? | Two saved plans, compared side by side |
 | **Lean FIRE** | Thin margin — what does a bad decade actually do? | Monte Carlo, historical backtest, guardrails |
@@ -188,7 +188,7 @@ More on that trade-off in [working part-time in retirement](/blog/working-part-t
 
 The order matters, because each step changes what the next one shows.
 
-1. **Set your real retirement age**, even if it is 42. A locked pre-59½ phase appears automatically and the 401(k) goes unavailable inside it. If the bridge years cannot be funded, you will see it here rather than in year three.
+1. **Set your real retirement age**, even if it is 42. A pre-59½ phase appears automatically, and you choose there whether the 401(k) is left alone or drawn on with the ten percent priced in. If the bridge years cannot be funded, you will see it here rather than in year three.
 2. **Enter your accounts separately** — traditional, Roth, taxable brokerage, cash. Not one total. This is the single input that most changes the answer.
 3. **Put in the Social Security figure you got from the SSA calculator with zero future earnings**, not the one from your statement.
 4. **Set the plan horizon out to 95 or 100.** A fifty-year retirement is the whole point.
@@ -217,7 +217,7 @@ It was derived for a thirty-year horizon using historical US returns. A retireme
 
 ### How do I access retirement accounts before 59½?
 
-The common routes discussed in FIRE circles are a Roth conversion ladder, substantially equal periodic payments under 72(t), withdrawing Roth contributions, or simply accepting the ten percent penalty. Each has conditions and consequences, and this is exactly the point to talk to a tax professional. Note that the planner models the pre-59½ years as locked rather than penalised, so it will ask you to fund them from other accounts.
+The common routes discussed in FIRE circles are a Roth conversion ladder, substantially equal periodic payments under 72(t), withdrawing Roth contributions, or simply accepting the ten percent penalty. Each has conditions and consequences, and this is exactly the point to talk to a tax professional. The planner can price the last of those directly — the pre-59½ phase lets you withdraw and charges the ten percent — and it also covers the Rule of 55 if you left work at 55 or later. It does not model a 72(t) series or the five-year seasoning on conversions.
 
 ### Does retiring early reduce my Social Security?
 
@@ -250,11 +250,11 @@ Yes. The free Retire Abroad tool on this site compares a US retirement against t
 
 ## CTA Blocks
 
-**Soft CTA:** Most of what is described here you can look at for free. The demo walks through a worked sample plan phase by phase — the subsidy badges, the headroom left before the cost-sharing ceiling, the gap between what leaves the portfolio and what lands in the account — with nothing to install and no signup. Two honest caveats: it runs a fixed example rather than your own figures, and that example retires at 62, so the locked pre-59½ years are the one part of this article it cannot show you. For those you need your own numbers.
+**Soft CTA:** Most of what is described here you can look at for free. The demo walks through a worked sample plan phase by phase — the subsidy badges, the headroom left before the cost-sharing ceiling, the gap between what leaves the portfolio and what lands in the account — with nothing to install and no signup. Two honest caveats: it runs a fixed example rather than your own figures, and that example retires at 62, so the pre-59½ years are the one part of this article it cannot show you. For those you need your own numbers.
 
 **Demo CTA:** Open the demo and compare its first phase card, covering the pre-Medicare years, with the one from 65 onward. The first shows marketplace subsidy status and how much income headroom is left before the cost-sharing ceiling; the second shows Medicare with any surcharge. Click any badge for an explanation built from that plan's figures, and switch the country to see the tax and healthcare assumptions change with it.
 
-**Product CTA:** The AI Retirement Income Planner models the whole thing on your own numbers: a locked pre-59½ phase when you retire early, marketplace subsidies and Silver cost-sharing with dollar headroom to the next threshold, Medicare and IRMAA with the two-year lookback, multi-year Roth conversions, part-time income per phase, Monte Carlo and historical backtesting over a horizon that runs to 100, and residence switching for retiring abroad. One-time purchase, no subscription, runs privately in your browser — your figures never leave your computer.
+**Product CTA:** The AI Retirement Income Planner models the whole thing on your own numbers: a pre-59½ phase when you retire early, with the ten percent early-withdrawal penalty or the Rule of 55 priced in, marketplace subsidies and Silver cost-sharing with dollar headroom to the next threshold, Medicare and IRMAA with the two-year lookback, multi-year Roth conversions, part-time income per phase, Monte Carlo and historical backtesting over a horizon that runs to 100, and residence switching for retiring abroad. One-time purchase, no subscription, runs privately in your browser — your figures never leave your computer.
 
 ## Facebook Post Snippets
 

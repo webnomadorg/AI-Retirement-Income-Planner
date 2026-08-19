@@ -180,6 +180,18 @@ const D_USD={
   // When false, US federal tax / IRMAA / ACA / SS-provisional are all zeroed
   // and US-specific UI surfaces (MFJ toggle, std-ded inputs, etc.) hide.
   subjectToUsTax:true,
+  // ── v15: how the pre-59½ phase reaches the 401k. Default 'locked' is the historical behaviour
+  //   (the phase is funded from cash/equity/Roth), so every saved plan and every golden fixture is
+  //   unchanged by this field existing.
+  //     'locked'     — no 401k draw. What the app did before this existed.
+  //     'penalty'    — draw anyway and pay the §72(t) 10% additional tax, priced in calcPhase.
+  //     'rule55'     — separated from service at 55+, so that employer's plan pays penalty-free.
+  //     'disability' — §72(t)(2)(A)(iii). SSDI plans already drew from p0 penalty-free and were
+  //                    RIGHT to; this names the exception rather than leaving it implicit.
+  //   Only 'penalty' costs anything — the other three differ solely in whether the field is
+  //   offered and what the card says, which is why the penalty must never be applied on the
+  //   strength of "this is p0" alone. ──
+  earlyAccessMode:'locked',
   // ── v8: Survivor scenario — model income/tax when one spouse dies (MFJ plans only) ──
   //         survivorWho 'spouse' = lower earner dies; household keeps the larger SS, filing → single.
   survivorEnabled:false, survivorDeathAge:75, survivorWho:'spouse',
@@ -675,6 +687,65 @@ function _setIrmaaTier(i,key,val){
 function medicareStartLabel(){
   const a=S.medicareStartAge;
   return (S.ssdiMode&&a!=null&&a!=='')?`starts age ${a}`:'starts age 65';
+}
+// ── v15: pre-59½ 401k access ───────────────────────────────────────────────────────────────────
+// The Rule of 55 is offered from 54, not 55, and that is deliberate: §72(t)(2)(A)(v) keys off
+// separating from service during or after the CALENDAR YEAR you turn 55, so someone who leaves in
+// March of that year qualifies while still 54. Eligibility is therefore asserted by the user, not
+// computed from the age — the app cannot know their birth month or their plan's rules.
+function earlyAccessEligible(mode){
+  if(mode==='rule55')return (S.startAge||0)>=54;
+  if(mode==='disability')return !!S.ssdiMode;
+  return true;
+}
+// Rule of 55 eligibility is a property of the SEPARATION EVENT, not of time passing, so it is
+// decided once for the whole phase. That is why there is no split at 55: retire at 42 and no age
+// inside the phase changes anything; retire at 56 and the whole phase qualifies from the start.
+const EARLY_ACCESS_NOTES={
+  locked:'🔒 The 401k stays untouched until 59½. Fund these years from cash, equity, Roth contributions or part-time work.',
+  penalty:'⚠ Withdrawals here are taxed as ordinary income <strong>plus a 10% IRS penalty</strong>. The penalty is shown as its own cost on the phase card, and it is not reduced by the Foreign Tax Credit.',
+  rule55:'✓ <strong>Rule of 55:</strong> no penalty — but only from the plan of the employer you <em>just left</em>, and only if you separated at 55+. It does not cover IRAs or former employers\' plans, and <strong>rolling the money to an IRA destroys it</strong>. Public-safety workers qualify at 50.',
+  disability:'✓ <strong>Disability exception</strong> (§72(t)(2)(A)(iii)): withdrawals are taxed as income but carry no 10% penalty.'
+};
+function setEarlyAccessMode(mode){
+  const m=['locked','penalty','rule55','disability'].includes(mode)?mode:'locked';
+  S.earlyAccessMode=m;
+  // Going back to locked must zero the draw, not just hide the field — leaving a stranded number
+  // behind would keep charging the plan for a withdrawal the card says isn't happening.
+  if(m==='locked'){S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
+  syncEarlyAccessUI();populateInputsFromUSD();liveCalc();
+}
+// Reflect earlyAccessMode into the pre-59½ edit card (called on load and on change).
+function syncEarlyAccessUI(){
+  // Downgrade a mode the plan is no longer entitled to. Dropping the start age below 54, or
+  // turning SSDI off, invalidates rule55/disability — and silently continuing to draw penalty-free
+  // on a lapsed exception is the one failure here that would understate a real cost.
+  if(!earlyAccessEligible(S.earlyAccessMode||'locked')){S.earlyAccessMode='locked';S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
+  const m=S.earlyAccessMode||'locked';
+  const sel=document.getElementById('e-earlyAccessMode');
+  if(sel){
+    // Hide the options this plan cannot honestly use, rather than offering a control that lies.
+    for(const opt of sel.options){
+      const ok=earlyAccessEligible(opt.value);
+      opt.hidden=!ok; opt.disabled=!ok;
+    }
+    sel.value=m;
+  }
+  const unlocked=(m!=='locked');
+  const r0=document.getElementById('row-p0-401k'); if(r0)r0.style.display=unlocked?'':'none';
+  const r0b=document.getElementById('row-p0b-401k'); if(r0b)r0b.style.display=unlocked?'':'none';
+  const note=document.getElementById('early-access-note');
+  if(note){
+    let html=EARLY_ACCESS_NOTES[m]||EARLY_ACCESS_NOTES.locked;
+    // The genuinely-early retiree's signpost. Rule of 55 can never help someone who separated at
+    // 42, so instead of a dead control they get the two routes that actually exist for them.
+    if((S.startAge||0)<54){
+      html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(139,94,60,.25);">Retiring at '+(S.startAge||0)+', the Rule of 55 cannot apply — it needs you to leave work at 55 or later. The routes that do fit a gap this long are a <strong>72(t)/SEPP</strong> series (penalty-free, but locked in for the longer of 5 years or until 59½) and a <strong>Roth conversion ladder</strong> (each conversion seasons for 5 years first). Neither is modelled here yet; the planner prices the penalty route and leaves those to you and a tax professional.</div>';
+    }
+    note.innerHTML=html;
+  }
+  const hint=document.getElementById('p0-401k-hint');
+  if(hint)hint.innerHTML=(m==='penalty')?'A 10% penalty is added to the tax on this amount.':'No early-withdrawal penalty applies under this exception.';
 }
 // Reflect ssdiMode into the surrounding labels/rows (called on load and on toggle).
 function syncSsdiUI(){
@@ -1705,6 +1776,33 @@ function calcPhase(p){
     }
     tax_a+=niit_a; usTaxBeforeFTC+=niit_a; tax_mo=tax_a/12;
   }
+  // ── v15: §72(t) 10% additional tax on an early 401k withdrawal ─────────────────────────────
+  // Only ever charged when the user has explicitly chosen to accept it. Being in the pre-59½
+  // phase is NOT sufficient: 'rule55' and 'disability' are real statutory exceptions that draw
+  // from the same phase penalty-free, and SSDI plans have always done so correctly.
+  //
+  // The base is w_ann — the ACHIEVED draw, not the configured one — which buys two things:
+  // an account that ran dry cannot generate a penalty on money it never paid out, and Roth
+  // CONVERSIONS are excluded (they live in convIncome_ann), which is right, because converting is
+  // not a distribution. The 10% is on the taxable amount, and this model carries no after-tax
+  // 401k basis, so that is the whole withdrawal.
+  //
+  // Sits AFTER the FTC block on purpose: a foreign tax credit offsets US income tax, and this is
+  // an additional tax on top of it, so a UK-resident US citizen pays it in full. Gated like the
+  // federal-tax path itself — Canadian/Australian residence modes replace US tax wholesale, so a
+  // US penalty inside them would not be coherent.
+  let earlyPen_a=0;
+  const _isPre595=(p.phaseKey==='p0'||p.phaseKey==='p0b');
+  if(subjectUS&&!isCanadian&&!isAustralian&&_isPre595&&p.earlyAccessMode==='penalty'&&w_ann>0){
+    earlyPen_a=0.10*w_ann;
+    const g=_trGroup(T,'earlypen','Early-withdrawal penalty (before 59½)','tg-earlypen','earlyWithdrawalPenalty');
+    _trRow(g,'401k withdrawn before 59½',w_ann,'usd/yr',{kind:'in',
+      note:(p.w401k||0)*12>w_ann+0.5?'This is the ACHIEVABLE draw — the account could not fund the full amount you configured, and the penalty follows what actually came out.':null});
+    _trRow(g,'= IRS penalty at 10%',earlyPen_a,'usd/yr',{kind:'total',base:w_ann,
+      formula:'10% × 401k withdrawn before 59½',
+      note:'Charged on top of ordinary income tax, and not reduced by the Foreign Tax Credit.'});
+    tax_a+=earlyPen_a; usTaxBeforeFTC+=earlyPen_a; tax_mo=tax_a/12;
+  }
   let health_mo,acaVal=null;
   // v13: share of this phase spent on Medicare (1 = all, 0 = none, between = it starts mid-phase).
   // Absent ⇒ derive from hasMedicare, so any caller predating this field behaves exactly as before.
@@ -1853,6 +1951,9 @@ function calcPhase(p){
     trace:_trFinish(T), // "under the hood" working — see _trNew for the shape and rules
     end:{b401k:sim.b401k,bcash:sim.bCash,bEquity:sim.bEquity,bRoth:sim.bRoth,bSuper:sim.bSuper,costBasis:sim.costBasis},
     ti,tax_a,usTaxBeforeFTC,tax_mo,ukTax_a,ukTax_mo,ftc_a,ftc_mo,cadTax_a,ausTax_a,niit_a,stateTax_a,stateTax_mo,isUkRes,isCanadian,isAustralian,
+    // v15: the §72(t) penalty is INSIDE tax_a already; carried separately so the phase card and
+    // the PDF can name it instead of leaving an unexplained bulge in "Federal tax".
+    earlyPen_a,earlyPen_mo:earlyPen_a/12,earlyAccessMode:p.earlyAccessMode||'locked',
     magi,irmaaMagi,taxExemptInt:taxExemptInt_ann,aca:acaVal,health_mo,total_mo,net_mo,net_real,
     sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,medicareUnits:medUnits,medicareHeads:medHeads,spouseMedicareFrac:p.spouseMedicareFrac||0,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
@@ -1966,6 +2067,11 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       filingStatus:s.filingStatus||'single',
       // v6: pass through so calcPhase can gate US tax / IRMAA / ACA / SS-provisional
       subjectToUsTax:s.subjectToUsTax!==false,
+      // v15: pre-59½ 401k access. calcPhase needs BOTH the mode and which phase slot it is
+      // pricing — the §72(t) penalty is a property of the age at withdrawal, so it applies to
+      // p0/p0b and to nothing else, no matter what the mode says.
+      earlyAccessMode:s.earlyAccessMode||'locked',
+      phaseKey:pc.phaseKey,
       hasSS:pc.hasSS,hasUKP:pc.hasUKP,
       hasCPP,hasOAS,hasAgePension,hasMedicare:pc.hasMedicare,
       medicareFrac:(pc.medicareFrac!=null?pc.medicareFrac:(pc.hasMedicare?1:0)), // v13: part-year Medicare

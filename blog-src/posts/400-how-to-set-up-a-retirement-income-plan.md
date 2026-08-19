@@ -56,7 +56,7 @@ To model that, the planner divides retirement into [a timeline of connected phas
 
 [IMAGE getting started 2]
 
-By default the phases are keyed to the milestones that actually change your finances: Phase 1 runs from your retirement age to 62, Phase 2 from 62 (when Social Security first becomes available) to 65, Phase 3 from 65 (when Medicare starts) to 67 (a common full retirement age), Phase 4 from 67 to 73, and Phase 5 from 73 (when required distributions begin) onward, running to age 80 and extendable to 90. If your situation is different, you can change any of those boundary ages and everything else adjusts around it. If you retire before 59.5, the planner adds an earlier phase where your 401k is locked and you live on cash, brokerage, or part-time income.
+By default the phases are keyed to the milestones that actually change your finances: Phase 1 runs from your retirement age to 62, Phase 2 from 62 (when Social Security first becomes available) to 65, Phase 3 from 65 (when Medicare starts) to 67 (a common full retirement age), Phase 4 from 67 to 73, and Phase 5 from 73 (when required distributions begin) onward, running to age 80 and extendable to 90. If your situation is different, you can change any of those boundary ages and everything else adjusts around it. If you retire before 59.5, the planner adds an earlier phase where you choose how to reach the 401k — leave it untouched and live on cash, brokerage or part-time income, pay the 10% early-withdrawal penalty, or claim the Rule of 55.
 
 Each card shows the net monthly income for that phase, the estimated tax, the healthcare cost, and, most importantly, the **ending balance**. That ending balance is [the number that carries the plan](/blog/retirement-ending-balance-that-carries-the-plan.html): it is how much is left at the end of a phase and what gets passed to the next one. You want every phase to end healthy. If any phase runs dry, everything after it is in trouble, and the planner makes that obvious.
 
@@ -158,7 +158,7 @@ Enter all your figures once in the Edit values tab, then move to the Overview ta
 
 ### Can I change the ages the phases start at?
 
-Yes. The default boundaries are set to common US milestones, but every boundary age is editable. If your Social Security, pension, or required-distribution timing is different, you change the age and the plan adjusts around it. Retiring before 59.5 adds an earlier phase where the 401k is treated as locked.
+Yes. The default boundaries are set to common US milestones, but every boundary age is editable. If your Social Security, pension, or required-distribution timing is different, you change the age and the plan adjusts around it. Retiring before 59.5 adds an earlier phase where you choose how the 401k is reached: untouched, drawn with the 10% penalty priced in, or under the Rule of 55.
 
 ### Is my financial information kept private?
 
