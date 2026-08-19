@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 308, released: '2026-08-18', headline: 'Your claiming age gets a phase of its own, collapsing a phase boundary now removes that phase, and the phase strip stays put while you edit.' }; /* __LATEST__ */
+const LATEST = { build: 312, released: '2026-08-19', headline: 'Retiring before 59½? You can now draw on the 401k early and see the 10% penalty priced in — or claim the Rule of 55 if you stopped work at 55 or later.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
