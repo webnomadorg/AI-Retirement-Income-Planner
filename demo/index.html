@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v292.html on 2026-08-06. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v318.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -159,7 +159,7 @@
   .phase-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
   .phase-grid.phases-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
   .phase-grid.phases-4{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
-  .phase-grid.phases-6{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;}
+  .phase-grid.phases-6{grid-template-columns:repeat(6,minmax(var(--phase-card-min),1fr));gap:8px;}
   .phases-6 .card{padding:11px 12px;}
   .phases-6 .ir{margin-bottom:3px;}
   .phases-6 .phase-badge{font-size:10px;padding:2px 7px;}
@@ -177,10 +177,70 @@
   .phases-fit .bpill{font-size:10px;padding:2px 6px;margin:1px 2px 1px 0;}
   .phases-fit .deduct-block{padding:7px 9px;}
   .phases-fit .net-block{padding:8px 10px;}
-  /* 7-phase layout — horizontal scroll kicks in; cards stay same size as 6-phase compact */
-  .phases-scroll-wrapper{overflow-x:hidden;}
-  .phases-scroll-wrapper.scrollable{overflow-x:auto;padding-bottom:6px;}
-  .phase-grid.phases-7{grid-template-columns:repeat(7,minmax(210px,1fr));gap:8px;min-width:max-content;} /* JS overrides grid-template-columns when wrapper is visible to match 6-phase card width exactly */
+  /* ── Phase-card minimum width + horizontal scroll ────────────────────────────────────────────
+     A card below ~270px cannot hold "Healthcare (part-year)" and a figure on one line, so the text
+     wraps to three lines and the card stops being scannable. The floor below is roughly the width a
+     card gets at FIVE across, which is the last count that reads comfortably.
+
+     The browser decides when to scroll: with minmax(FLOOR,1fr) the columns sit at 1fr while there is
+     room and stop shrinking at FLOOR, at which point the grid overflows its wrapper and the wrapper
+     scrolls. No phase-count threshold to maintain, and it is automatically right at every width — on
+     a 2560px monitor seven cards still fit and nothing scrolls.
+
+     The ≤1600px media queries below use !important and override these, so the floor applies ONLY on
+     the wide single-row layout. Narrower screens keep wrapping to 3/2/1 columns as before.
+
+     ⚠ Every piece of scroll chrome hangs off .is-overflowing, which JS sets only when the content
+     genuinely overflows. On a monitor big enough to show every card there is no scrollbar gutter, no
+     edge fade and no snapping — the layout is byte-for-byte what it was. */
+  /* TWO widths, deliberately. --phase-card-min decides WHEN the strip scrolls: keep it modest so a
+     big monitor still fits every card and sees no scroll furniture at all. --phase-card-scroll is
+     the width cards take ONCE it is scrolling, and it is far roomier — at that point the screen is
+     no longer the constraint, so there is nothing to gain from squeezing. */
+  /* The floor is "what a card would get at five across" — the last count that reads comfortably —
+     rather than a fixed number. A constant cannot work: five-across is ~272px on a 1600px screen
+     and ~329px on a 1920px one, so any single value is too low on the bigger monitor (six cards sit
+     just under the readable width and nothing scrolls) or too eager on the smaller.
+     Capped at 380px so it does not force scrolling for ever: once a screen is wide enough that six
+     or seven cards each clear 380px on their own, they simply fit and no scrolling appears. */
+  .phase-grid{--phase-card-min:min(380px, calc((100% - 48px) / 5));--phase-card-scroll:380px;
+    /* "Fit phases" sets its columns inline with !important (it has to beat the responsive media
+       queries, which are !important too). That means it cannot be overridden by a later rule — so
+       it reads its width from THIS variable instead, and the variable is what changes between the
+       two states. Custom properties cascade normally, so the rule below still wins. */
+    --phase-card-fit:var(--phase-card-min);}
+  .phases-scroll-wrapper.is-overflowing .phase-grid{--phase-card-fit:var(--phase-card-scroll);}
+  .phases-scroll-wrapper{overflow-x:auto;position:relative;}
+  /* Nothing below applies unless the cards actually overflow. */
+  .phases-scroll-wrapper.is-overflowing{padding-bottom:4px;scroll-snap-type:x proximity;}
+  .phases-scroll-wrapper.is-overflowing .card{scroll-snap-align:start;}
+  .phases-scroll-wrapper.is-overflowing .phase-grid.phases-6{grid-template-columns:repeat(6,var(--phase-card-scroll));}
+  .phases-scroll-wrapper.is-overflowing .phase-grid.phases-7{grid-template-columns:repeat(7,var(--phase-card-scroll));}
+  .phases-scroll-wrapper:focus-visible{outline:2px solid var(--blue-text,#378ADD);outline-offset:3px;border-radius:8px;}
+  /* A scrollbar you have to aim at is a scrollbar people miss. Only styled while it is in use. */
+  .phases-scroll-wrapper.is-overflowing{scrollbar-width:auto;scrollbar-color:var(--border-mid,rgba(0,0,0,.28)) transparent;}
+  .phases-scroll-wrapper.is-overflowing::-webkit-scrollbar{height:14px;}
+  .phases-scroll-wrapper.is-overflowing::-webkit-scrollbar-track{background:var(--bg-secondary,#efeee8);border-radius:8px;}
+  .phases-scroll-wrapper.is-overflowing::-webkit-scrollbar-thumb{background:var(--border-mid,rgba(0,0,0,.28));border-radius:8px;
+    border:3px solid var(--bg-secondary,#efeee8);}
+  .phases-scroll-wrapper.is-overflowing::-webkit-scrollbar-thumb:hover{background:var(--text-tertiary,rgba(0,0,0,.45));}
+  /* Edge fades, one per side, each shown only while there is more that way. Sticky so they ride the
+     scroller rather than scrolling away with the cards; pointer-events:none so they never eat a click. */
+  .phases-fade,.phases-fade-l{position:sticky;top:0;height:100%;width:56px;pointer-events:none;
+    opacity:0;transition:opacity .18s ease;z-index:2;}
+  .phases-fade{right:0;float:right;margin-left:-56px;
+    background:linear-gradient(to right,transparent,var(--bg-primary,#faf9f5));}
+  .phases-fade-l{left:0;float:left;margin-right:-56px;
+    background:linear-gradient(to left,transparent,var(--bg-primary,#faf9f5));}
+  .phases-scroll-wrapper.is-overflowing.can-scroll-right .phases-fade{opacity:1;}
+  .phases-scroll-wrapper.is-overflowing.can-scroll-left .phases-fade-l{opacity:1;}
+  /* The explicit signal. A fade alone is easy to read as "the card is just cut off there". */
+  #phases-scroll-hint{display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    color:var(--blue-text,#378ADD);background:var(--blue-bg,#E8F0FA);border-radius:999px;
+    padding:3px 10px;white-space:nowrap;cursor:pointer;border:none;}
+  #phases-scroll-hint.show{display:inline-flex;}
+  #phases-scroll-hint:hover{filter:brightness(0.97);}
+  .phase-grid.phases-7{grid-template-columns:repeat(7,minmax(var(--phase-card-min),1fr));gap:8px;}
   .phases-7 .card{padding:11px 12px;}
   .phases-7 .ir{margin-bottom:3px;}
   .phases-7 .phase-badge{font-size:10px;padding:2px 7px;}
@@ -331,12 +391,12 @@
   body.tabs-more-open .tabs-sticky-wrap{z-index:160;}
 
   .irow{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;position:relative;}
-  .irow input,.irow select{border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:6px 10px;font-size:13px;background:var(--bg-primary);color:var(--text-primary);width:100%;font-family:var(--font);}
-  .irow input:focus,.irow select:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,0.15);}
+  .irow input,#irmaa-tier-grid input,.irow select{border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:6px 10px;font-size:13px;background:var(--bg-primary);color:var(--text-primary);width:100%;font-family:var(--font);}
+  .irow input:focus,#irmaa-tier-grid input:focus,.irow select:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,0.15);}
   /* v13: every disabled .irow input is a read-only MIRROR of an Income-streams figure (the per-phase
      SS / UK State Pension boxes). They now carry a real number, so they must stay legible — the old
      0.4 opacity ghosted the value below AA contrast. Dashed border = "shown here, set elsewhere". */
-  .irow input[disabled]:disabled{cursor:not-allowed;background:var(--bg-secondary);color:var(--text-secondary);border-style:dashed;}
+  .irow input[disabled]:disabled,#irmaa-tier-grid input[disabled]:disabled{cursor:not-allowed;background:var(--bg-secondary);color:var(--text-secondary);border-style:dashed;}
   .set-in-income{font-size:11px;color:var(--text-tertiary);margin-top:3px;line-height:1.45;}
   /* Clickable "changed since baseline" dot — injected by updateChangedIndicators(); click reverts the field. */
   .chg-dot{display:inline-block;width:7px;height:7px;padding:0;border:none;border-radius:50%;background:#378ADD;margin-left:5px;vertical-align:middle;cursor:pointer;transition:box-shadow .12s;}
@@ -545,6 +605,15 @@
      columns. Keyed off the same classes the compact spacing above already uses. */
   .phases-fit .net-grid,
   .phases-7 .net-grid{grid-template-columns:1fr;}
+  /* v15: …except once the strip actually SCROLLS. The squeeze above is a grid effect — 7 cards
+     sharing one viewport. The scroll wrapper pins every card to --phase-card-scroll (380px), which
+     is wider than the grid ever hands them, so the ~210–230px case that forced stacking cannot
+     arise there and each half gets ~165px for a figure needing ~88px. Scroll mode is now the
+     ordinary way to view 6–7 phases, so leaving it stacked cost vertical space in the common case.
+     Guarded above the phone breakpoint — the max-width:700px rule further down stacks on purpose. */
+  @media(min-width:701px){
+    .phases-scroll-wrapper.is-overflowing .net-grid{grid-template-columns:1fr 1fr;}
+  }
   .net-block{background:var(--bg-secondary);border-radius:var(--radius-md);padding:9px 11px;margin-top:6px;}
   .net-block-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:6px;}
   .net-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
@@ -860,10 +929,23 @@
   .av-csv-btn:hover{background:var(--bg-secondary);color:var(--text-primary);}
   .av-controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
   .av-seg{display:inline-flex;border:1px solid var(--border-mid);border-radius:var(--radius-md);overflow:hidden;}
-  .av-seg-btn{font-size:12px;padding:5px 12px;border:0;background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;white-space:nowrap;}
+  /* The active state BOLDS the label, which re-measures the button and made the whole segmented group
+     grow/shrink on every click — visibly shunting the neighbouring group sideways. The ::after ghost
+     renders the same label at the ACTIVE weight, permanently, stacked in the same grid cell and hidden.
+     The button therefore always measures its bold width, so selecting one never resizes anything.
+     Done this way rather than a min-width because the labels are translated/zoomed and a magic number
+     would drift at other text sizes. */
+  .av-seg-btn{font-size:12px;padding:5px 12px;border:0;background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;white-space:nowrap;display:inline-grid;place-items:center;}
+  .av-seg-btn>span{grid-area:1/1;}
+  .av-seg-btn::after{content:attr(data-label);grid-area:1/1;font-weight:600;visibility:hidden;pointer-events:none;height:0;}
   .av-seg-btn+.av-seg-btn{border-left:1px solid var(--border-mid);}
   .av-seg-btn:hover{background:var(--bg-secondary);color:var(--text-primary);}
   .av-seg-btn.active{background:var(--blue-bg);color:var(--blue-text);font-weight:600;}
+  /* Where the money comes from — the stacked chart above the table, driven by the same four toggles.
+     .chart-wrap (which this always carries too) is what cancels body{zoom} so Chart.js hit-testing
+     survives the text-size setting; height lives here so both are in one place. */
+  .av-chart-wrap{height:300px;margin-bottom:10px;}
+  .av-chart-note{font-size:11px;color:var(--text-secondary);font-style:italic;margin:8px 0 16px;}
   /* A phase-level figure spanning its year rows — the visual promise that the number is NOT per-year.
      The tint alone only reaches ~1.1:1 against the card in BOTH themes, which is no signal at all, so
      the boundary is carried by a real 2px rule (WCAG 1.4.11 wants 3:1 for meaningful non-text
@@ -2206,7 +2288,7 @@ html[data-theme="soft"] .metric-value,
 html[data-theme="soft"] .net-cell-value,
 html[data-theme="soft"] .ir,
 html[data-theme="soft"] .tax-detail,
-html[data-theme="soft"] .irow input,
+html[data-theme="soft"] .irow input,html[data-theme="soft"] #irmaa-tier-grid input,
 html[data-theme="soft"] .bpill{
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
@@ -2368,7 +2450,7 @@ html[data-theme="soft"] .help-fab:hover{ background: var(--copper-bg); color: va
 
 /* Inputs */
 html[data-theme="soft"] .irow{ margin-bottom: 12px; gap: 5px; }
-html[data-theme="soft"] .irow input,
+html[data-theme="soft"] .irow input,html[data-theme="soft"] #irmaa-tier-grid input,
 html[data-theme="soft"] .irow select{
   border: 1px solid var(--border-mid);
   border-radius: 10px;
@@ -2377,9 +2459,9 @@ html[data-theme="soft"] .irow select{
   background: var(--bg-primary);
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
-html[data-theme="soft"] .irow input:hover,
+html[data-theme="soft"] .irow input:hover,html[data-theme="soft"] #irmaa-tier-grid input:hover,
 html[data-theme="soft"] .irow select:hover{ border-color: rgba(60,42,24,0.28); }
-html[data-theme="soft"] .irow input:focus,
+html[data-theme="soft"] .irow input:focus,html[data-theme="soft"] #irmaa-tier-grid input:focus,
 html[data-theme="soft"] .irow select:focus{
   outline: none;
   border-color: #d9692f;
@@ -2541,9 +2623,9 @@ html[data-theme="editorial"] .text-size-btn,
 html[data-theme="editorial"] .amount-color-btn{ display:inline-flex; align-items:center; justify-content:center; line-height:1; }
 html[data-theme="editorial"] .text-size-btn.active,
 html[data-theme="editorial"] .amount-color-btn.active{ background:#3d5a80; color:#fbf8f3; border-color:#3d5a80; font-weight:600; }
-html[data-theme="editorial"] .irow input,
+html[data-theme="editorial"] .irow input,html[data-theme="editorial"] #irmaa-tier-grid input,
 html[data-theme="editorial"] .irow select{ border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:8px 10px; font-size:13.5px; background:var(--bg-primary); }
-html[data-theme="editorial"] .irow input:focus,
+html[data-theme="editorial"] .irow input:focus,html[data-theme="editorial"] #irmaa-tier-grid input:focus,
 html[data-theme="editorial"] .irow select:focus{ outline:none; border-color:#b35a1a; box-shadow:0 0 0 2px rgba(179,90,26,0.18); }
 html[data-theme="editorial"] .replan-panel{ border-radius:var(--radius-lg); border:1px solid var(--border-mid); background:var(--bg-primary); box-shadow:var(--shadow-elev); padding:22px 24px; }
 html[data-theme="editorial"] .phase-grid .card{ padding:16px; }
@@ -2599,7 +2681,7 @@ html[data-theme="fintech"] .metric-value,
 html[data-theme="fintech"] .net-cell-value,
 html[data-theme="fintech"] .ir,
 html[data-theme="fintech"] .bpill,
-html[data-theme="fintech"] .irow input{ font-variant-numeric:tabular-nums; }
+html[data-theme="fintech"] .irow input,html[data-theme="fintech"] #irmaa-tier-grid input{ font-variant-numeric:tabular-nums; }
 html[data-theme="fintech"] .card{ border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:var(--shadow-card); background:var(--bg-primary); }
 html[data-theme="fintech"] .metric-card{ background:var(--bg-primary); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px 14px; }
 html[data-theme="fintech"] .metric-label{ font-size:11px; font-weight:500; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.06em; }
@@ -2635,9 +2717,9 @@ html[data-theme="fintech"] .text-size-btn.active,
 html[data-theme="fintech"] .amount-color-btn.active{ background:#4f46e5; color:#fff; border-color:#4f46e5; font-weight:600; box-shadow:0 1px 2px rgba(40,30,140,0.20); }
 html[data-theme="fintech"] .tool-btn.primary{ background:#4f46e5; color:#fff; border-color:#4338ca; }
 html[data-theme="fintech"] .tool-btn.primary:hover{ background:#4338ca; }
-html[data-theme="fintech"] .irow input,
+html[data-theme="fintech"] .irow input,html[data-theme="fintech"] #irmaa-tier-grid input,
 html[data-theme="fintech"] .irow select{ border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:7px 10px; font-size:13px; background:var(--bg-primary); }
-html[data-theme="fintech"] .irow input:focus,
+html[data-theme="fintech"] .irow input:focus,html[data-theme="fintech"] #irmaa-tier-grid input:focus,
 html[data-theme="fintech"] .irow select:focus{ outline:none; border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
 html[data-theme="fintech"] .replan-panel{ border-radius:var(--radius-lg); border:1px solid var(--border-mid); box-shadow:var(--shadow-elev); padding:18px 20px; }
 html[data-theme="fintech"] .phase-grid .card{ padding:14px; }
@@ -2694,7 +2776,7 @@ html[data-theme="pro"] .metric-value,
 html[data-theme="pro"] .net-cell-value,
 html[data-theme="pro"] .ir,
 html[data-theme="pro"] .bpill,
-html[data-theme="pro"] .irow input{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+html[data-theme="pro"] .irow input,html[data-theme="pro"] #irmaa-tier-grid input{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
 html[data-theme="pro"] .card{ border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px 14px; box-shadow:none; background:var(--bg-primary); }
 html[data-theme="pro"] .metric-card{ background:var(--bg-primary); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px 12px; box-shadow:none; }
 html[data-theme="pro"] .metric-label{ font-size:10.5px; font-weight:400; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.06em; }
@@ -2727,9 +2809,9 @@ html[data-theme="pro"] .text-size-btn,
 html[data-theme="pro"] .amount-color-btn{ display:inline-flex; align-items:center; justify-content:center; line-height:1; }
 html[data-theme="pro"] .text-size-btn.active,
 html[data-theme="pro"] .amount-color-btn.active{ background:#0f62fe; color:#fff; border-color:#0f62fe; font-weight:600; }
-html[data-theme="pro"] .irow input,
+html[data-theme="pro"] .irow input,html[data-theme="pro"] #irmaa-tier-grid input,
 html[data-theme="pro"] .irow select{ border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 8px; font-size:12.5px; background:var(--bg-primary); }
-html[data-theme="pro"] .irow input:focus,
+html[data-theme="pro"] .irow input:focus,html[data-theme="pro"] #irmaa-tier-grid input:focus,
 html[data-theme="pro"] .irow select:focus{ outline:2px solid #0f62fe; outline-offset:-2px; border-color:#0f62fe; box-shadow:none; }
 html[data-theme="pro"] .replan-panel{ border-radius:var(--radius-md); border:1px solid var(--border-mid); padding:14px 16px; }
 html[data-theme="pro"] .phase-grid .card{ padding:10px 12px; }
@@ -2820,7 +2902,7 @@ html[data-theme="contrast"] .toggle-btn,
 html[data-theme="contrast"] .cur-toggle,
 html[data-theme="contrast"] .replan-btn,
 html[data-theme="contrast"] .tool-btn,
-html[data-theme="contrast"] .irow input,
+html[data-theme="contrast"] .irow input,html[data-theme="contrast"] #irmaa-tier-grid input,
 html[data-theme="contrast"] .irow select,
 html[data-theme="contrast"] .style-picker{ border:1px solid var(--border-mid); }
 /* Selected states invert the fill so they never rely on color alone */
@@ -2841,7 +2923,7 @@ html[data-theme="contrast"] select:focus-visible,
 html[data-theme="contrast"] [tabindex]:focus-visible{
   outline:3px solid var(--blue-text); outline-offset:2px;
 }
-html[data-theme="contrast"] .irow input:focus,
+html[data-theme="contrast"] .irow input:focus,html[data-theme="contrast"] #irmaa-tier-grid input:focus,
 html[data-theme="contrast"] .irow select:focus{
   outline:3px solid var(--blue-text); outline-offset:0; border-color:var(--text-primary); box-shadow:none;
 }
@@ -2853,7 +2935,7 @@ html[data-theme="contrast"] .irow select:focus{
    = (0,2,1) wherever it sits — that silently cost the mirrors their dashed border and muted
    background in Soft/Editorial/Fintech/Pro/Contrast. The redundant [disabled] lifts this to
    (0,3,1) so it wins outright. Verified against all five themes, light and dark. */
-.irow input[disabled]:disabled{
+.irow input[disabled]:disabled,#irmaa-tier-grid input[disabled]:disabled{
   cursor:not-allowed; background:var(--bg-secondary); color:var(--text-secondary);
   border-style:dashed; opacity:1;
 }
@@ -3252,6 +3334,9 @@ html[data-theme="contrast"] .irow select:focus{
     <div id="phases-title-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
       <div style="display:flex;align-items:center;gap:12px;">
         <h3 style="margin:0;">Retirement phases</h3>
+        <!-- v14: only shown when the strip actually scrolls. Clicking it nudges the strip along,
+             so it doubles as a control for anyone who does not think to drag sideways. -->
+        <button id="phases-scroll-hint" onclick="nudgePhaseScroll()" title="Scroll the phase cards sideways"><span aria-hidden="true">↔</span><span id="phases-scroll-hint-txt">scroll for more</span></button>
         <!-- Scoped undo/redo: reverts ONLY the inline-edited phase-card numbers, independent of the
              whole-plan Ctrl+Z history. Sits next to the title; disabled until its stack has an entry. -->
         <span id="phase-undo-wrap" style="display:inline-flex;align-items:center;gap:6px;" title="Undo / redo edits to the phase-card numbers only (separate from Ctrl+Z)">
@@ -3269,7 +3354,7 @@ html[data-theme="contrast"] .irow select:focus{
       </span>
     </div>
     <div id="phase-wrap-hint" class="amber-on-amber" style="display:none;font-size:12px;background:var(--amber-bg);border-left:3px solid #BA7517;border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.5;"></div>
-    <div class="phases-scroll-wrapper" id="phases-scroll-wrapper"><div class="phase-grid" id="phases-grid"></div></div>
+    <div class="phases-scroll-wrapper" id="phases-scroll-wrapper"><div class="phases-fade-l" id="phases-fade-l" aria-hidden="true"></div><div class="phases-fade" id="phases-fade" aria-hidden="true"></div><div class="phase-grid" id="phases-grid"></div></div>
   </div>
 
   <div id="tab-confidence" class="tab-content">
@@ -3449,24 +3534,37 @@ html[data-theme="contrast"] .irow select:focus{
         <p id="irmaa-relief-warn" style="display:none;font-size:11px;color:#854F0B;margin:0 0 10px;line-height:1.5;">&#9888; <strong>This is an assumption, not a guarantee.</strong> Social Security decides SSA-44 requests case by case, and reviews the outcome every year. Treat any phase priced this way as the optimistic case, and keep the two-years-back figure in mind as the fallback.</p>
         <div class="sect-hd" style="margin-top:16px;">IRMAA brackets<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('irmaa',this)" title="What is this?" aria-label="What is this?">i</button></div>
         <p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px;line-height:1.55;">IRMAA has <strong>six brackets</strong>, not one. These are the surcharges <em>added to</em> the standard premiums above, per person, at 2026 rates. The thresholds shown are for a single filer; married-filing-jointly uses double, except the top bracket which is $750,000. Use <strong>Fetch current rates</strong> to refresh them &mdash; CMS resets these every autumn.</p>
-        <div id="irmaa-tier-grid" style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px;align-items:center;font-size:12px;">
+        <div id="irmaa-tier-grid" style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px 8px;align-items:center;font-size:12px;">
           <div style="font-weight:600;color:var(--text-secondary);">MAGI above</div>
           <div style="font-weight:600;color:var(--text-secondary);">Part B /mo</div>
           <div style="font-weight:600;color:var(--text-secondary);">Part D /mo</div>
         </div>
         <p style="font-size:11px;color:var(--text-tertiary);margin:8px 0 0;line-height:1.5;">The top bracket is <strong>fixed in statute</strong> rather than rising with inflation, so it catches more people every year &mdash; the planner models it that way.</p>
         <div class="irow" data-key="expatHealthcare" id="row-expat-health" style="display:none;"><label id="lbl-expatHealthcare">Overseas healthcare cost /mo (USD)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('expatHealthcare',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-expatHealthcare" type="number" step="25" oninput="liveCalcDebounced()"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Private/international or supplemental insurance &amp; out-of-pocket costs. Used because US Medicare/ACA is excluded for your residence; grows each phase at your healthcare-inflation rate.</span></div>
-        <div class="irow" data-key="healthcareInflation"><label>Healthcare cost inflation (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('healthcareInflation',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-healthcareInflation" type="number" step="0.1" placeholder="blank = same as general" oninput="liveCalcDebounced()"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Medicare &amp; ACA premiums grow at this rate. Leave blank to track general inflation; medical costs historically run a few points higher.</span></div>
+        <div class="irow" data-key="healthcareInflation" style="margin-top:16px;"><label>Healthcare cost inflation (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('healthcareInflation',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-healthcareInflation" type="number" step="0.1" placeholder="blank = same as general" oninput="liveCalcDebounced()"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Medicare &amp; ACA premiums grow at this rate. Leave blank to track general inflation; medical costs historically run a few points higher.</span></div>
       </div>
 
       <!-- Phase 0 — Pre 59½ -->
       <div class="card" id="edit-card-p0" style="display:none;border-left:3px solid #8B5E3C;">
         <h3 style="margin-bottom:4px;color:#8B5E3C;" id="edit-hdr-p0">Pre 59½</h3>
-        <div style="font-size:11px;color:#8B5E3C;background:#F5EDE6;border-radius:4px;padding:5px 8px;margin-bottom:10px;">🔒 401k inaccessible before age 59½. Use cash or equity to cover this phase.</div>
+        <!-- v15: the 401k is no longer unconditionally locked here. How you reach it before 59½ is
+             a real choice with real consequences, so it is an explicit setting rather than an
+             assumption baked into the phase. renderEarlyAccessUI() shows/hides the 401k row and
+             the explanatory notes below to match. -->
+        <div class="irow" data-key="earlyAccessMode"><label>Reaching your 401k before 59½</label>
+          <select id="e-earlyAccessMode" onchange="setEarlyAccessMode(this.value)">
+            <option value="locked">Leave it untouched until 59½</option>
+            <option value="penalty">Withdraw and pay the 10% penalty</option>
+            <option value="rule55">Rule of 55 — no penalty</option>
+            <option value="disability">Disability exception — no penalty</option>
+          </select>
+        </div>
+        <div id="early-access-note" style="font-size:11px;color:#8B5E3C;background:#F5EDE6;border-radius:4px;padding:5px 8px;margin-bottom:10px;"></div>
         <div class="sect-hd">Monthly withdrawals</div>
+        <div class="irow" id="row-p0-401k" data-key="p0.w401k" style="display:none;"><label>401k withdrawal /mo</label><input id="e-p0-401k" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/><span id="p0-401k-hint" style="font-size:11px;color:var(--text-tertiary);margin-top:3px;"></span></div>
         <div class="irow" data-key="p0.wcash"><label>Cash withdrawal /mo</label><input id="e-p0-cash" type="number" step="50" oninput="liveCalcDebounced()"/></div>
         <div class="irow" data-key="p0.wEquity"><label>Equity withdrawal /mo</label><input id="e-p0-equity" type="number" step="50" oninput="liveCalcDebounced()"/></div>
-        <div class="irow" data-key="p0.wRoth"><label>Roth IRA withdrawal /mo</label><input id="e-p0-roth" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Your own <strong>contributions</strong> come out at any age, tax- and penalty-free — which is what makes Roth a bridge before 59½. Earnings are the part with the age rule.</span></div>
+        <div class="irow" data-key="p0.wRoth"><label>Roth IRA withdrawal /mo</label><input id="e-p0-roth" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;">Your own <strong>contributions</strong> come out at any age, tax- and penalty-free — which is what makes Roth a bridge before 59½. Earnings are the part with the age rule. (The planner does not model the 5-year seasoning rule on <em>converted</em> amounts.)</span></div>
         <div class="sect-hd">Part-time work</div>
         <div class="irow" data-key="p0.partTime"><label>Additional annual income (USD)</label><input id="e-p0-parttime" type="number" step="500" oninput="liveCalcDebounced()" placeholder="0"/></div>
       </div>
@@ -3474,8 +3572,9 @@ html[data-theme="contrast"] .irow select:focus{
       <!-- v13: pre-59½ split half. Only ever appears for SSDI — a retirement benefit can't start
            before 62, and this phase ends at 59.5, so no ordinary plan ever splits here. -->
       <div class="card" id="edit-card-p0b" style="display:none;border-left:3px solid #3B6D11;"><h3 style="margin-bottom:4px;color:#3B6D11;" id="edit-hdr-p0b">Pre 59½ (b) — SSDI active</h3>
-        <div style="font-size:11px;color:#3B6D11;background:#EDF5E6;border-radius:4px;padding:5px 8px;margin-bottom:10px;">⚡ Split phase: SSDI starts part-way through your pre-59½ years. Edit independently from the phase above. 401k is still locked until 59½.</div>
+        <div style="font-size:11px;color:#3B6D11;background:#EDF5E6;border-radius:4px;padding:5px 8px;margin-bottom:10px;">⚡ Split phase: SSDI starts part-way through your pre-59½ years. Edit independently from the phase above. The 401k setting above applies to both halves.</div>
         <div class="sect-hd">Monthly withdrawals</div>
+        <div class="irow" id="row-p0b-401k" data-key="p0b.w401k" style="display:none;"><label>401k withdrawal /mo</label><input id="e-p0b-401k" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/></div>
         <div class="irow" data-key="p0b.wcash"><label>Cash withdrawal /mo</label><input id="e-p0b-cash" type="number" step="50" oninput="liveCalcDebounced()"/></div>
         <div class="irow" data-key="p0b.wEquity"><label>Equity withdrawal /mo</label><input id="e-p0b-equity" type="number" step="50" oninput="liveCalcDebounced()"/></div>
         <div class="irow"><label>US Social Security /mo</label><input id="e-p0b-uss" type="number" step="50" disabled/><span class="set-in-income">Set in <strong>Income streams</strong> — one figure for the whole plan.</span></div>
@@ -3879,14 +3978,17 @@ html[data-theme="contrast"] .irow select:focus{
       <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;" id="av-blurb">What each account does in every phase — the balance it ends on, and the money that moved through it to get there.</p>
       <div class="av-controls">
         <div class="av-seg" role="group" aria-label="Table lens">
-          <button type="button" class="av-seg-btn active" data-lens="account" onclick="avSet('lens','account')">Account view</button>
-          <button type="button" class="av-seg-btn" data-lens="income" onclick="avSet('lens','income')">Income view</button>
+          <button type="button" class="av-seg-btn active" data-lens="account" data-label="Account view" aria-pressed="true" onclick="avSet('lens','account')"><span>Account view</span></button>
+          <button type="button" class="av-seg-btn" data-lens="income" data-label="Income view" aria-pressed="false" onclick="avSet('lens','income')"><span>Income view</span></button>
         </div>
         <div class="av-seg" role="group" aria-label="Row granularity">
-          <button type="button" class="av-seg-btn active" data-grain="phase" onclick="avSet('grain','phase')">By phase</button>
-          <button type="button" class="av-seg-btn" data-grain="year" onclick="avSet('grain','year')">By year</button>
+          <button type="button" class="av-seg-btn active" data-grain="phase" data-label="By phase" aria-pressed="true" onclick="avSet('grain','phase')"><span>By phase</span></button>
+          <button type="button" class="av-seg-btn" data-grain="year" data-label="By year" aria-pressed="false" onclick="avSet('grain','year')"><span>By year</span></button>
         </div>
       </div>
+      <div class="av-chart-wrap chart-wrap"><canvas id="avChart"></canvas></div>
+      <div class="legend" id="av-chart-legend"></div>
+      <p class="av-chart-note" id="av-chart-note"></p>
       <div class="av-wrap"><table class="av-table" id="av-table"><tbody></tbody></table></div>
       <div class="av-key" id="av-key"></div>
     </div>
@@ -4124,6 +4226,7 @@ html[data-theme="contrast"] .irow select:focus{
           <li><a href="#tg-rothconv" onclick="taxGuideJump('tg-rothconv');return false;">Roth conversions</a></li>
           <li><a href="#tg-rental" onclick="taxGuideJump('tg-rental');return false;">Rental income</a></li>
           <li><a href="#tg-rmd" onclick="taxGuideJump('tg-rmd');return false;">RMD estimate</a></li>
+          <li><a href="#tg-earlypen" onclick="taxGuideJump('tg-earlypen');return false;">Early-withdrawal penalty (before 59&frac12;)</a></li>
           <li><a href="#tg-phases" onclick="taxGuideJump('tg-phases');return false;">Custom phase boundaries</a></li>
           <li><a href="#tg-canada" onclick="taxGuideJump('tg-canada');return false;">Canada CPP &amp; OAS</a></li>
           <li><a href="#tg-australia" onclick="taxGuideJump('tg-australia');return false;">Australia Super</a></li>
@@ -4159,6 +4262,9 @@ html[data-theme="contrast"] .irow select:focus{
             <p id="tg-rothconv"><strong>Roth conversions:</strong> A Roth conversion amount entered for a phase is treated as ordinary income in that phase — it is added to gross income and taxed at your marginal rate. Conversions increase MAGI, which can push income above ACA subsidy thresholds, trigger the ACA cliff, or cause IRMAA surcharges. Use the phase-by-phase cards to monitor MAGI impact when modelling conversion strategies.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=tX1x6vw7VDI','_blank','noopener');" title="Watch the Roth conversion strategy explainer">&#x25B6; Roth conversions &middot; 3 min</button></span></p>
             <p id="tg-rental"><strong>Rental &amp; passive income:</strong> Rental income entered for a phase is treated as ordinary income for federal tax purposes. It is included in gross income and in MAGI for ACA subsidy, CSR, and IRMAA calculations. Enter your net rental income after estimated expenses — passive losses are not modelled.</p>
             <p id="tg-rmd"><strong>RMD estimate:</strong> For phases where your projected end age exceeds the <span data-fact-key="rmd_age">RMD start age (default 73, set by SECURE Act 2.0)</span>, an estimated Required Minimum Distribution is calculated as: 401k balance ÷ the IRS Uniform Lifetime Table divisor for your age (Publication 590-B — e.g. 26.5 at 73, 24.6 at 75, 20.2 at 80), then divided by 12 for a monthly figure. If your planned 401k withdrawal for a phase is below this estimate, a warning appears on the phase card. RMDs are included in ordinary income for tax purposes. This is an estimate only — consult a tax advisor for precise figures.<span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=AI3M-Y7_7nc','_blank','noopener');" title="Watch the RMDs &amp; 25% penalty explainer">&#x25B6; RMD &middot; 2 min</button></span></p>
+            <p id="tg-earlypen"><strong>Early-withdrawal penalty (before 59&frac12;):</strong> Money taken from a Traditional 401k before age 59&frac12; is normally taxed as ordinary income <em>and</em> charged an extra <strong>10% additional tax</strong> under IRC &sect;72(t). If your plan starts before 59&frac12;, the <em>Pre 59&frac12;</em> phase lets you choose how you reach the account: leave it locked, withdraw and accept the 10%, or claim a statutory exception. When the penalty applies it is calculated as 10% of the 401k withdrawal that <strong>actually came out</strong> in that phase &mdash; if the account empties partway through, the penalty falls with it &mdash; and it is shown as its own cost rather than folded into your tax figure. Roth <em>conversions</em> are excluded, because converting is not a distribution.<br><br>
+            Two exceptions are modelled. The <strong>Rule of 55</strong> (&sect;72(t)(2)(A)(v)) applies if you separated from service during or after the calendar year you turned 55 &mdash; but only to the plan of the employer you just left, not to IRAs and not to former employers' plans, and <strong>rolling the money into an IRA destroys it</strong>. Retiring at 50 and waiting until 55 does <em>not</em> qualify: the separation itself must happen at 55 or later. Qualified public-safety employees qualify at 50. The <strong>disability exception</strong> (&sect;72(t)(2)(A)(iii)) applies to those who are totally and permanently disabled. Both are asserted by you, not inferred &mdash; the planner cannot know your birth month, your employer's plan rules, or your medical status.<br><br>
+            <strong>Not modelled:</strong> a <strong>72(t)/SEPP</strong> series (penalty-free at any age, but it must run for the longer of five years or until 59&frac12;, and breaking it applies the penalty retroactively with interest) and the <strong>5-year seasoning</strong> on Roth conversions. If you retire well before 55, those are the two routes that fit &mdash; discuss them with a tax professional. For a US citizen living abroad the penalty is <em>not</em> reduced by the Foreign Tax Credit, so it is charged in full on top of any US tax remaining after the credit.</p>
             <p id="tg-phases"><strong>Custom phase boundaries:</strong> Each phase has a configurable start age and duration (months). This allows you to model non-standard retirement transitions. When using Replan, the current phase is trimmed to your actual current age, and subsequent phases retain their configured durations.</p>
             <p id="tg-canada"><strong>Canada CPP &amp; OAS:</strong> Canadian Pension Plan (CPP) and Old Age Security (OAS) income streams start at the ages you configure in the Edit tab. Both are modelled as ordinary income for US federal tax purposes — included in gross income and MAGI. CPP grows annually at your configured COLA rate from the start age. All values are stored internally in USD equivalent.</p>
             <p id="tg-australia"><strong>Australia Super &amp; Age Pension:</strong> Australian Superannuation (Super) is modelled as a separate balance that grows at your configured rate and is drawn down according to per-phase withdrawal amounts. When AUD is selected and a Super balance is present, the Super balance appears on the dashboard summary cards. All values are stored internally in USD equivalent.</p>
@@ -4583,7 +4689,7 @@ html[data-theme="contrast"] .irow select:focus{
           <div class="help-num">1</div>
           <div>
             <div class="help-step-title">Retirement start age</div>
-            <div class="help-step-text">Enter the age at which you plan to stop working. The default phases assume 59.5 (the earliest penalty-free 401k access age). <strong>Phase 1 is the early-retirement bridge — it runs from your start age up to the Phase 1 end age (62 by default), the point where Social Security becomes available. If you retire at or after that age, there is no Phase 1 and your plan begins at Phase 2.</strong> Retiring before 59.5 adds a <em>Pre 59½</em> phase, since your 401k is still locked.</div>
+            <div class="help-step-text">Enter the age at which you plan to stop working. The default phases assume 59.5 (the earliest penalty-free 401k access age). <strong>Phase 1 is the early-retirement bridge — it runs from your start age up to the Phase 1 end age (62 by default), the point where Social Security becomes available. If you retire at or after that age, there is no Phase 1 and your plan begins at Phase 2.</strong> Retiring before 59.5 adds a <em>Pre 59½</em> phase, where you choose how you reach the 401k: leave it untouched, withdraw and pay the 10% penalty, or claim the Rule of 55 or disability exception.</div>
           </div>
         </div>
         <div class="help-step">
@@ -4770,10 +4876,10 @@ html[data-theme="contrast"] .irow select:focus{
         <p class="help-p">The amber <strong>Total tax paid</strong> figure updates live as you adjust values. Every dollar of tax you eliminate is a dollar added to your lifetime net income. When comparing two strategies with similar ending balances, the one with the lower total tax figure is almost always the better choice. Use it as a live score while you tweak.</p>
 
         <div class="help-h2">What a complete withdrawal strategy looks like</div>
-        <p class="help-p"><strong>Phase 1 (pre-SS):</strong> Draw primarily from cash to keep MAGI low enough for ACA CSR — supplement with modest 401k withdrawals staying inside the 12% bracket. Let 401k continue compounding. Equity draws optional depending on ACA MAGI headroom.</p>
-        <p class="help-p"><strong>Phase 2 (SS starts, pre-Medicare):</strong> SS income raises your MAGI floor. Reduce 401k withdrawals to stay below 400% FPL. Cash continues to bridge the gap. Monitor the SS provisional income formula — <span data-fact-key="ss_provisional">85% of SS becomes taxable above $34k provisional income</span>.</p>
-        <p class="help-p"><strong>Phase 3 (Medicare starts):</strong> ACA drops away. Medicare premiums replace it. IRMAA risk begins — keep MAGI under the IRMAA threshold. 401k withdrawals can increase now that ACA is no longer a constraint, but watch the bracket.</p>
-        <p class="help-p"><strong>Phases 4 &amp; 5 (UK Pension + RMDs):</strong> UK State Pension adds to income from age 67. Required Minimum Distributions (RMDs) from the 401k begin at 73 — the dashboard models your chosen withdrawal, so set it at or above your expected RMD level. Focus shifts to preserving real income value against inflation.</p>
+        <p class="help-p"><strong>Before Social Security:</strong> Draw primarily from cash to keep MAGI low enough for ACA CSR — supplement with modest 401k withdrawals staying inside the 12% bracket. Let 401k continue compounding. Equity draws optional depending on ACA MAGI headroom.</p>
+        <p class="help-p"><strong>After SS starts, before 65:</strong> SS income raises your MAGI floor. Reduce 401k withdrawals to stay below 400% FPL. Cash continues to bridge the gap. Monitor the SS provisional income formula — <span data-fact-key="ss_provisional">85% of SS becomes taxable above $34k provisional income</span>.</p>
+        <p class="help-p"><strong>Once Medicare starts at 65:</strong> ACA drops away. Medicare premiums replace it. IRMAA risk begins — keep MAGI under the IRMAA threshold. 401k withdrawals can increase now that ACA is no longer a constraint, but watch the bracket.</p>
+        <p class="help-p"><strong>Later phases (UK Pension + RMDs):</strong> UK State Pension adds to income from age 67. Required Minimum Distributions (RMDs) from the 401k begin at 73 — the dashboard models your chosen withdrawal, so set it at or above your expected RMD level. Focus shifts to preserving real income value against inflation.</p>
 
         <div class="help-h2">Roth as a tax-free income lever <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=IqcuHCoxVk0','_blank','noopener');" title="Watch the Roth IRA &amp; Roth 401k mechanics explainer">&#x25B6; Roth mechanics &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=tX1x6vw7VDI','_blank','noopener');" title="Watch the Roth conversions explainer">&#x25B6; Roth conversions &middot; 3 min</button></span></div>
         <p class="help-p">Roth withdrawals are invisible to both the federal tax engine and the ACA MAGI calculation — they let you top up monthly income in any phase without pushing into a higher bracket or over an ACA threshold. In Phases 1 and 2, Roth is the cleanest source when you need extra income without breaching 400% FPL. In Phases 4 and 5, Roth draws can reduce 401k withdrawals to manage RMD exposure and keep taxable income lower.</p>
@@ -5859,7 +5965,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 292; /* __BUILD__ */
+const APP_BUILD = 318; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -6027,6 +6133,18 @@ const D_USD={
   // When false, US federal tax / IRMAA / ACA / SS-provisional are all zeroed
   // and US-specific UI surfaces (MFJ toggle, std-ded inputs, etc.) hide.
   subjectToUsTax:true,
+  // ── v15: how the pre-59½ phase reaches the 401k. Default 'locked' is the historical behaviour
+  //   (the phase is funded from cash/equity/Roth), so every saved plan and every golden fixture is
+  //   unchanged by this field existing.
+  //     'locked'     — no 401k draw. What the app did before this existed.
+  //     'penalty'    — draw anyway and pay the §72(t) 10% additional tax, priced in calcPhase.
+  //     'rule55'     — separated from service at 55+, so that employer's plan pays penalty-free.
+  //     'disability' — §72(t)(2)(A)(iii). SSDI plans already drew from p0 penalty-free and were
+  //                    RIGHT to; this names the exception rather than leaving it implicit.
+  //   Only 'penalty' costs anything — the other three differ solely in whether the field is
+  //   offered and what the card says, which is why the penalty must never be applied on the
+  //   strength of "this is p0" alone. ──
+  earlyAccessMode:'locked',
   // ── v8: Survivor scenario — model income/tax when one spouse dies (MFJ plans only) ──
   //         survivorWho 'spouse' = lower earner dies; household keeps the larger SS, filing → single.
   survivorEnabled:false, survivorDeathAge:75, survivorWho:'spouse',
@@ -6046,9 +6164,11 @@ const D_USD={
   //         age floor; it changes no maths. At FRA the benefit converts to the retirement benefit at
   //         the same amount, which is why one figure covers both sides of that boundary.
   //   medicareStartAge — SSDI recipients qualify for Medicare 24 months after entitlement regardless
-  //         of age. null ⇒ the untouched phase-index behaviour (Medicare from phase 3, i.e. 65).
-  //         Set ⇒ a phase has Medicare when it STARTS at or after this age, which also switches off
-  //         ACA subsidies and switches on IRMAA for those phases. ──
+  //         of age. Unset ⇒ 65, the ordinary age. (It used to mean 'fall back to the phase-index
+  //         flag', which put Medicare wherever Phase 3 started — only 65 on the DEFAULT boundaries.
+  //         Fixed 2026-08-18; see Plans/Bug-Medicare-Tied-To-Phase-Slot.md.)
+  //         Either way a phase is priced by the SHARE of its months at or after this age, which also
+  //         switches off ACA subsidies and switches on IRMAA for that share. ──
   ssdiMode:false, medicareStartAge:null,
   // ── v14: substantial gainful activity. Earning above this while on SSDI can eventually END the
   //         cash benefit (after the 9-month trial work period and the 36-month extended eligibility
@@ -6296,19 +6416,50 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   const pa=phaseAges||{};
   // v5: if retiring before 59.5, Phase 1 cannot start before 59.5 (401k locked)
   const earlyRetire=startAge<59.5;
-  const a1=earlyRetire
+  // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
+  // Hoisted above the phase boundaries because a1 is now clamped to it — see below.
+  const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
+  const _p1Start=earlyRetire?59.5:startAge;
+  const _a1raw=earlyRetire
     ?Math.max(59.5, pa.phaseAge1end||62)
     :Math.max(startAge, pa.phaseAge1end||62);
-  const a2=Math.max(a1+0.5,       pa.phaseAge2end||65);
-  const a3=Math.max(a2+0.5,       pa.phaseAge3end||67);
-  const a4=Math.max(a3+0.5,       pa.phaseAge4end||73);
+  // v15: THE SS START AGE IS A HARD BOUNDARY — Phase 1 may not run past it. Set Phase 1 to end at 65
+  // while claiming at 62 and the split logic below used to carve it into "Phase 1" (59.5–62) plus a
+  // "Phase 1b" (62–65). That b-slot exists for a real reason — it can hold its own withdrawals — but
+  // as the FIRST thing SS does to a plan it reads as a glitch, and the owner reported it twice as
+  // one. Claiming age is a decision the whole plan pivots on, so it earns a boundary of its own
+  // rather than a lettered sub-phase. Ending Phase 1 there loses nothing: the years the user wanted
+  // in "Phase 1 to 65" are still one phase, now numbered normally.
+  // Scoped to Phase 1 deliberately. A later claiming age (67, 70) lands inside a mid-plan phase where
+  // the b-slot is genuinely useful and is NOT what was reported, so that path is untouched.
+  const a1=(ssAge>_p1Start&&ssAge<_a1raw)?ssAge:_a1raw;
+  // v15: was Math.max(aN+0.5, …). That half-year floor meant two boundaries could never coincide, so
+  // dragging one past the next in Edit values did not collapse the phase between them — it
+  // manufactured a SIX-MONTH one. Setting Phase 1 to end at 67 on stock boundaries produced
+  // "62–67 · 67–67.5 · 67.5–68 · 68–73", two cards covering half a year each and telling the reader
+  // nothing. Boundaries may now be equal; a phase with no months left is dropped below rather than
+  // padded into existence. Collapsing a phase is a legitimate thing to ask for, and the honest
+  // answer is one fewer card — the surviving phases keep their own numbers, so a gap in the
+  // sequence is the visible evidence that a phase was collapsed, and every card still matches the
+  // phase of the same name in Edit values.
+  const a2=Math.max(a1,           pa.phaseAge2end||65);
+  const a3=Math.max(a2,           pa.phaseAge3end||67);
+  const a4=Math.max(a3,           pa.phaseAge4end||73);
   const curAge=currentAge&&currentAge>startAge?currentAge:startAge;
   const p5mo=Math.max(1,Math.round((p5End-a4)*12));
-  // v5: SS claiming age — determines when hasSS turns on; may split a phase
-  // v13: SSDI has no earliest-claim age, so the 62 floor only applies to a retirement benefit.
-  const ssAge=Math.max(pa.ssdiMode?40:62,Math.min(70,pa.ssStartAge||62));
-  // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age). null ⇒ untouched.
-  const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:null;
+  // v5: SS claiming age (hoisted above the boundaries) — determines when hasSS turns on.
+  // v13: optional early-Medicare age (SSDI qualifies after 24 months at any age).
+  // v15 (2026-08-18): the DEFAULT is now 65, not null. It used to fall through to the per-phase
+  // `hasMedicare` flag, which is hardcoded from Phase 3 onward — so Medicare began wherever Phase 3
+  // began, and that equals 65 only on the DEFAULT boundaries (62/65/67/73). Move a boundary and it
+  // silently decoupled from 65: `phaseAge1end:65` pushes a2 to 67, so 65–67 was billed as ACA and
+  // even flagged subsidy-eligible, which is impossible once you are Medicare-eligible. Moving a
+  // boundary DOWN was worse — Medicare charged from 63. Neither needed an early retirement age;
+  // retiring AT 65 tripped it on stock settings. Passing 65 here routes every phase through the
+  // same pro-rating `_fracFrom` already used for the SSDI case, so a phase straddling 65 is priced
+  // part ACA / part Medicare instead of all-or-nothing. Default-boundary plans are byte-identical
+  // (the golden master asserts it) and an explicit medicareStartAge still wins.
+  const medAge=(pa.medicareStartAge!=null&&pa.medicareStartAge!=='')?pa.medicareStartAge:65;
   // v14: the SPOUSE's Medicare, as a share of each phase, so a married couple is charged Part B and
   // Part D for two people rather than one. Expressed in the PRIMARY's age line, because every phase
   // boundary is: the spouse turns 65 when the primary is 65 + (primary age − spouse age).
@@ -6359,6 +6510,9 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   for(const p of allPhases){
     if(curAge>=p.endAge) continue;
     const effStart=Math.max(p.startAge,curAge);
+    // v15: a phase the user has collapsed to nothing carries no months, no income and no tax — it is
+    // not a phase. Dropped here rather than rounded up to a 1-month card by the Math.max(1,…) below.
+    if(p.endAge-effStart<=1e-9) continue;
     const months=Math.max(1,Math.round((p.endAge-effStart)*12));
     // v13: apply the early-Medicare override AFTER trimming, so a replanned phase that now starts at
     // the user's real current age is judged on that age, not on the phase's original boundary.
@@ -6382,6 +6536,15 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     // construction — that is the property the self-test asserts.
     result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0||spMedFrac>0,
       medicareFrac:medFrac,spouseMedicareFrac:spMedFrac,medicareUnits:medFrac+spMedFrac,
+      medicareHeads:_mfjHere&&!_spNever?2:1});
+  }
+  // A plan must always render at least one phase. Every boundary is clamped to <=85 and p5End to
+  // >=80, so the last phase cannot be squeezed out in practice — but returning [] would blank the
+  // whole dashboard, so fall back to the final phase rather than trust that invariant forever.
+  if(!result.length&&allPhases.length){
+    const last=allPhases[allPhases.length-1];
+    result.push({...last,startAge:Math.max(last.startAge,curAge),months:1,
+      hasMedicare:true,medicareFrac:1,spouseMedicareFrac:0,medicareUnits:1,
       medicareHeads:_mfjHere&&!_spNever?2:1});
   }
   return result;
@@ -6471,10 +6634,13 @@ function renderIrmaaTierGrid(){
     const thr=mfj?(t.thrMfj||t.thrSingle):t.thrSingle;
     const mk=(html)=>{const d=document.createElement('div');d.innerHTML=html;host.appendChild(d);};
     mk(`<span style="color:var(--text-secondary);">${fmtC(toDisplay(thr))}${t.frozen?' <span style="font-size:10px;color:var(--text-tertiary);">fixed</span>':''}</span>`);
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}" style="width:100%;"
-         oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}" style="width:100%;"
-         oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
+    // v15: no inline width — #irmaa-tier-grid input now picks up the same border, radius, padding,
+    // background and focus ring as every other input on this tab, in all six themes. These used to
+    // be bare browser-default boxes sitting next to properly styled ones.
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}"
+         aria-label="Part B premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
+    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}"
+         aria-label="Part D premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
   });
 }
 function _setIrmaaTier(i,key,val){
@@ -6486,6 +6652,65 @@ function _setIrmaaTier(i,key,val){
 function medicareStartLabel(){
   const a=S.medicareStartAge;
   return (S.ssdiMode&&a!=null&&a!=='')?`starts age ${a}`:'starts age 65';
+}
+// ── v15: pre-59½ 401k access ───────────────────────────────────────────────────────────────────
+// The Rule of 55 is offered from 54, not 55, and that is deliberate: §72(t)(2)(A)(v) keys off
+// separating from service during or after the CALENDAR YEAR you turn 55, so someone who leaves in
+// March of that year qualifies while still 54. Eligibility is therefore asserted by the user, not
+// computed from the age — the app cannot know their birth month or their plan's rules.
+function earlyAccessEligible(mode){
+  if(mode==='rule55')return (S.startAge||0)>=54;
+  if(mode==='disability')return !!S.ssdiMode;
+  return true;
+}
+// Rule of 55 eligibility is a property of the SEPARATION EVENT, not of time passing, so it is
+// decided once for the whole phase. That is why there is no split at 55: retire at 42 and no age
+// inside the phase changes anything; retire at 56 and the whole phase qualifies from the start.
+const EARLY_ACCESS_NOTES={
+  locked:'🔒 The 401k stays untouched until 59½. Fund these years from cash, equity, Roth contributions or part-time work.',
+  penalty:'⚠ Withdrawals here are taxed as ordinary income <strong>plus a 10% IRS penalty</strong>. The penalty is shown as its own cost on the phase card, and it is not reduced by the Foreign Tax Credit.',
+  rule55:'✓ <strong>Rule of 55:</strong> no penalty — but only from the plan of the employer you <em>just left</em>, and only if you separated at 55+. It does not cover IRAs or former employers\' plans, and <strong>rolling the money to an IRA destroys it</strong>. Public-safety workers qualify at 50.',
+  disability:'✓ <strong>Disability exception</strong> (§72(t)(2)(A)(iii)): withdrawals are taxed as income but carry no 10% penalty.'
+};
+function setEarlyAccessMode(mode){
+  const m=['locked','penalty','rule55','disability'].includes(mode)?mode:'locked';
+  S.earlyAccessMode=m;
+  // Going back to locked must zero the draw, not just hide the field — leaving a stranded number
+  // behind would keep charging the plan for a withdrawal the card says isn't happening.
+  if(m==='locked'){S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
+  syncEarlyAccessUI();populateInputsFromUSD();liveCalc();
+}
+// Reflect earlyAccessMode into the pre-59½ edit card (called on load and on change).
+function syncEarlyAccessUI(){
+  // Downgrade a mode the plan is no longer entitled to. Dropping the start age below 54, or
+  // turning SSDI off, invalidates rule55/disability — and silently continuing to draw penalty-free
+  // on a lapsed exception is the one failure here that would understate a real cost.
+  if(!earlyAccessEligible(S.earlyAccessMode||'locked')){S.earlyAccessMode='locked';S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
+  const m=S.earlyAccessMode||'locked';
+  const sel=document.getElementById('e-earlyAccessMode');
+  if(sel){
+    // Hide the options this plan cannot honestly use, rather than offering a control that lies.
+    for(const opt of sel.options){
+      const ok=earlyAccessEligible(opt.value);
+      opt.hidden=!ok; opt.disabled=!ok;
+    }
+    sel.value=m;
+  }
+  const unlocked=(m!=='locked');
+  const r0=document.getElementById('row-p0-401k'); if(r0)r0.style.display=unlocked?'':'none';
+  const r0b=document.getElementById('row-p0b-401k'); if(r0b)r0b.style.display=unlocked?'':'none';
+  const note=document.getElementById('early-access-note');
+  if(note){
+    let html=EARLY_ACCESS_NOTES[m]||EARLY_ACCESS_NOTES.locked;
+    // The genuinely-early retiree's signpost. Rule of 55 can never help someone who separated at
+    // 42, so instead of a dead control they get the two routes that actually exist for them.
+    if((S.startAge||0)<54){
+      html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(139,94,60,.25);">Retiring at '+(S.startAge||0)+', the Rule of 55 cannot apply — it needs you to leave work at 55 or later. The routes that do fit a gap this long are a <strong>72(t)/SEPP</strong> series (penalty-free, but locked in for the longer of 5 years or until 59½) and a <strong>Roth conversion ladder</strong> (each conversion seasons for 5 years first). Neither is modelled here yet; the planner prices the penalty route and leaves those to you and a tax professional.</div>';
+    }
+    note.innerHTML=html;
+  }
+  const hint=document.getElementById('p0-401k-hint');
+  if(hint)hint.innerHTML=(m==='penalty')?'A 10% penalty is added to the tax on this amount.':'No early-withdrawal penalty applies under this exception.';
 }
 // Reflect ssdiMode into the surrounding labels/rows (called on load and on toggle).
 function syncSsdiUI(){
@@ -6858,7 +7083,7 @@ window.addEventListener('unhandledrejection',function(){_showRuntimeError();});
 // ═══════════════════════════════════════════════════════════════
 let S=JSON.parse(JSON.stringify(D_USD));
 let p5EndAge=80,lumps=[],lumpIdCounter=0;
-let bChart=null,iChart=null,scChart=null;
+let bChart=null,iChart=null,scChart=null,avChart=null;
 let confCharts={},_confLast=null,_confSims=null,_confSimsAutoRan=false;
 // Confidence-score lookup tables — declared up here (not next to calcConfidenceScore) because the
 // first render at boot calls updateConfBadge→calcConfidenceScore before that later line would run,
@@ -6870,6 +7095,9 @@ const CONF_CHECK_META={
   'Income Floor Foundation':    {tier:'recommended', cat:'income'},
   'Survivor Income Resilience': {tier:'recommended', cat:'survivor'},
   'RMD Compliance':             {tier:'recommended', cat:'tax'},
+  // v15: recommended, not optimization — spending unseasoned conversion money is a real 10% cost,
+  // not a missed efficiency. N/A unless the plan has conversions AND a pre-59½ Roth draw.
+  'Roth Conversion Seasoning':  {tier:'recommended', cat:'tax'},
   'Tax Bracket Efficiency':     {tier:'optimization',cat:'tax'},
   'ACA Subsidy Protected':      {tier:'optimization',cat:'tax'},
   'IRMAA Not Triggered':        {tier:'optimization',cat:'tax'},
@@ -7612,7 +7840,9 @@ async function _callPdfAi(){
     ? `\n- Survivor scenario: modelled — first death age ${S.survivorDeathAge||75}, survivor spending need ${S.survivorSpendPct!=null?S.survivorSpendPct:100}% of the couple's`
     : '';
   // Phase summary + balance trajectory for AI
-  const phaseLines=phs.map(p=>`${p.label} (ages ${p.ages}): gross ${fmt(p.total_mo)}/mo, net ${fmt(p.net_mo)}/mo nominal, ${fmt(p.net_real||p.net_mo)}/mo real`).join('\n');
+  // v15: name the early-withdrawal penalty. Without it the commentary on a pre-59.5 plan that
+  // has chosen to absorb the 10% would be blind to the largest single cost in those years.
+  const phaseLines=phs.map(p=>`${p.label} (ages ${p.ages}): gross ${fmt(p.total_mo)}/mo, net ${fmt(p.net_mo)}/mo nominal, ${fmt(p.net_real||p.net_mo)}/mo real${(p.earlyPen_mo||0)>0?`, INCLUDING ${fmt(p.earlyPen_mo)}/mo of 10% early-withdrawal penalty`:''}`).join('\n');
   const {balEndLines,flags:balFlags}=_buildBalanceInsights(phs,fmt);
   // Failing/warning checks only (those are the risks) — exclude acknowledged checks so AI
   // doesn't write alarming narratives for risks the user has already said they're OK with.
@@ -7949,19 +8179,50 @@ function _renderPdfReport(ai){
     if((p.taxExemptInt||0)>0)lines.push({l:'Tax-exempt interest',v:fmtMo(p.taxExemptInt/12)});
     if(p.partTimeAnnual>0)lines.push({l:'Part-time work',v:fmt(p.partTimeAnnual/12)+'/mo'});
     const incomeRows=lines.map(x=>`<div class="pdf-line"><span>${x.l}</span><span>${x.v}</span></div>`).join('');
+    // v15: the §72(t) penalty is inside tax_mo. Printing it only there would show a federal tax
+    // figure the brackets cannot explain, in the document people take to an advisor — so it is
+    // subtracted out and given its own line, the way state tax and healthcare already are.
+    // v15: tax_mo is a TOTAL — ordinary federal tax plus two surtaxes that ride inside it (NIIT and
+    // the §72(t) early-withdrawal penalty). This report's lines are ADDITIVE and have to reconcile
+    // against Gross income, so each surtax is subtracted back out of the headline figure and given
+    // its own row. Printing only the total left a federal tax number the brackets could not explain,
+    // in the one document people hand to an advisor. (On screen the phase card solves the same
+    // problem the other way — it shows the total and itemises with "↳ incl." — because those rows
+    // are a breakdown, not a sum. Keep the two conventions straight.)
+    const _penMo=p.earlyPen_mo||0;
+    const _niitMo=(p.niit_a||0)/12;
     const taxLine=p.subjectUS===false
       ?`<div class="pdf-line"><span>US federal tax</span><span style="color:#888;">Not subject to US federal tax</span></div>`
-      :`<div class="pdf-line deduct"><span>Federal tax</span><span>&minus;${fmtMo(p.tax_mo)}</span></div>`;
+      :`<div class="pdf-line deduct"><span>Federal tax</span><span>&minus;${fmtMo(p.tax_mo-_penMo-_niitMo)}</span></div>`
+        +(_niitMo>0?`<div class="pdf-line deduct"><span>Net Investment Income Tax (3.8% surtax)</span><span>&minus;${fmtMo(_niitMo)}</span></div>`:'')
+        +(_penMo>0?`<div class="pdf-line deduct"><span>Early-withdrawal penalty (10%, before 59&frac12;)</span><span>&minus;${fmtMo(_penMo)}</span></div>`:'');
     const _pdfExcl=(p.foreign||p.isUkRes||p.isCanadian||p.isAustralian||p.subjectUS===false);
     // v13: a phase Medicare starts part-way through gets the BLENDED figure and its own label — the
     // full Part B premium would overstate a phase only partly on Medicare, and the report has to
     // reconcile against Gross income like every other line here.
     const _pdfMf=(p.medicareFrac!=null?p.medicareFrac:(p.hasMedicare?1:0));
-    const acaLine=_pdfExcl
-      ?(p.health_mo>0?`<div class="pdf-line deduct"><span>Healthcare (overseas est.)</span><span>&minus;${fmtMo(p.health_mo)}</span></div>`:'')
-      :(_pdfMf>0&&_pdfMf<1
-        ?`<div class="pdf-line deduct"><span>Healthcare (ACA &rarr; Medicare)</span><span>&minus;${fmtMo(p.health_mo)}</span></div>`
-        :(p.adjMedicare&&p.hasMedicare?`<div class="pdf-line deduct"><span>Medicare Part B est.</span><span>&minus;${fmtMo(p.adjMedicare)}</span></div>`:(p.aca!=null&&p.aca!==-1?`<div class="pdf-line deduct"><span>ACA premium est.</span><span>&minus;${fmtMo(p.aca)}</span></div>`:'')));
+    // v15: healthcare rows must SUM to health_mo, because that is what net income is actually
+    // reduced by. They did not, in two ways, and both were invisible in the report:
+    //   • Medicare phases printed only `adjMedicare` (Part B), while net also deducted Part D and
+    //     the IRMAA surcharge — at tier 4 that hid ~$596/mo of real cost.
+    //   • A phase OVER the 400% FPL cliff carries `aca === -1` (the no-subsidy sentinel), which the
+    //     old `p.aca!==-1` guard rendered as NOTHING AT ALL, while net still lost the full
+    //     unsubsidised premium — $4,057/mo in one test plan.
+    // Every branch below is now derived FROM health_mo, so the rows reconcile by construction
+    // whatever the head count or part-year blend. IRMAA keeps its own row: it is a real cost and
+    // the app made a point of saying so.
+    const acaLine=(()=>{
+      const _h=p.health_mo||0; if(_h<=0)return '';
+      const _row=(label,v)=>`<div class="pdf-line deduct"><span>${label}</span><span>&minus;${fmtMo(v)}</span></div>`;
+      if(_pdfExcl)return _row('Healthcare (overseas est.)',_h);
+      if(_pdfMf>0&&_pdfMf<1)return _row('Healthcare (ACA &rarr; Medicare, part-year)',_h);
+      if(p.hasMedicare){
+        const _su=p.irmaaSurch_mo||0;
+        return _row('Medicare premiums (Part B + Part D)',_h-_su)+(_su>0?_row('IRMAA surcharge',_su):'');
+      }
+      if(p.aca===-1)return _row('ACA premium est. &mdash; over the 400% FPL cliff, no subsidy',_h);
+      return _row('ACA premium est.',_h);
+    })();
     const stateLine=p.stateTax_mo>0?`<div class="pdf-line deduct"><span>State income tax${S.stateName?' ('+S.stateName+')':''}</span><span>&minus;${fmtMo(p.stateTax_mo)}</span></div>`:'';
     // CSR / subsidy headroom (US pre-Medicare phases) — mirrors the on-screen cliff-proximity badge.
     // Shows the dollar headroom to the active ACA threshold; turns amber when sitting near a cliff.
@@ -8150,6 +8411,9 @@ function _renderPdfReport(ai){
       `:`<div class="pdf-meta-note">This plan is set to &ldquo;not subject to US federal tax&rdquo; &mdash; US brackets, deductions, IRMAA, and ACA are excluded from the calculations.</div>`}
       ${isUkResPdf?`<div class="pdf-meta-note">UK income tax applies with a US Foreign Tax Credit; the US standard deduction still applies on the US return. US ACA / Medicare / IRMAA not applicable.</div>`:isForeignPdf?`<div class="pdf-meta-note">Residing outside the US: US ACA / Medicare / IRMAA not applicable; US federal brackets apply to US-account withdrawals.</div>`:''}
       `}
+      ${(S.startAge||0)<59.5?`<div class="pdf-meta-row"><span>401k access before 59&frac12;</span><strong>${
+        {locked:'Locked &mdash; not drawn',penalty:'Drawn, 10% penalty paid',rule55:'Rule of 55 &mdash; no penalty',disability:'Disability exception &mdash; no penalty'}[S.earlyAccessMode||'locked']
+      }</strong></div>`:''}
       <h3 class="pdf-h3">Phase boundaries</h3>
       <div class="pdf-meta-row"><span>Phase 1 ends &rarr; Phase 2 starts</span><strong>Age ${S.phaseAge1end||62}</strong></div>
       <div class="pdf-meta-row"><span>Phase 2 ends &rarr; Phase 3 starts</span><strong>Age ${S.phaseAge2end||65}</strong></div>
@@ -8911,6 +9175,9 @@ function updatePensionEndHints(){
 function populateInputsFromUSD(){
   const s=(id,v)=>{const el=document.getElementById(id);if(el&&!el.disabled)el.value=Math.round(toDisplay(v));};
   const s2=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+  // v15: FIRST, because it can downgrade an ineligible earlyAccessMode and zero the pre-59½ 401k
+  // draw — doing that after the boxes were filled would leave a stale figure on screen.
+  if(typeof syncEarlyAccessUI==='function')syncEarlyAccessUI();
   s('e-401k',S.bal401k);s('e-cash',S.balCash);s('e-equity',S.balEquity||0);
   s('e-uss',S.uss);s('e-ukp',S.ukp);s('e-medicare',S.medicare);s('e-medicareD',S.medicareD||0);s('e-irmaaSurcharge',S.irmaaSurcharge!=null?S.irmaaSurcharge:88);s('e-expatHealthcare',S.expatHealthcare||0);
   renderIrmaaTierGrid();
@@ -8933,7 +9200,10 @@ function populateInputsFromUSD(){
   // retiree's conversion ladder and rental income were silently modelled as zero.
   if(S.p0){s('e-p0-cash',S.p0.wcash||0);s('e-p0-equity',S.p0.wEquity||0);s('e-p0-parttime',S.p0.partTime||0);
     s('e-p0-roth',S.p0.wRoth||0);s('e-p0-conv',S.p0.rothConversion||0);s('e-p0-rental',S.p0.rentalAnn||0);
-    s('e-p0-texint',S.p0.taxExemptInt||0);}
+    s('e-p0-texint',S.p0.taxExemptInt||0);
+    // v15: only meaningful when earlyAccessMode unlocks it; the row itself is hidden otherwise.
+    s('e-p0-401k',S.p0.w401k||0);}
+  if(S.p0b){s('e-p0b-401k',S.p0b.w401k||0);}
   s('e-p1-401k',S.p1.w401k);s('e-p1-cash',S.p1.wcash);
   s('e-p1-equity',S.p1.wEquity||0);s('e-p1-parttime',S.p1.partTime||0);
   s('e-p2-401k',S.p2.w401k);s('e-p2-cash',S.p2.wcash);
@@ -9078,6 +9348,14 @@ function clampPhaseBoundaries(){
     x=parseFloat(x); if(isNaN(x))x=def[i]; return Math.max(lo[i],Math.min(hi[i],x));
   });
   for(let i=1;i<4;i++) if(v[i]<v[i-1]) v[i]=v[i-1];   // enforce non-decreasing order
+  // v15: mirror buildPhaseConfig's hard SS boundary back into the FIELD. The engine clamps Phase 1's
+  // end to the claiming age; without this the Edit tab would still read "65" while the cards showed
+  // 59.5–62, and a number that does not match what it produced is worse than the split ever was.
+  {
+    const _ss=Math.max(S.ssdiMode?40:62,Math.min(70,S.ssStartAge||62));
+    const _p1s=(S.startAge<59.5)?59.5:(S.startAge||62);
+    if(_ss>_p1s&&_ss<v[0]){ v[0]=_ss; for(let i=1;i<4;i++) if(v[i]<v[i-1]) v[i]=v[i-1]; }
+  }
   S.phaseAge1end=v[0];S.phaseAge2end=v[1];S.phaseAge3end=v[2];S.phaseAge4end=v[3];
   ['e-pa1end','e-pa2end','e-pa3end','e-pa4end'].forEach((id,i)=>{
     const el=document.getElementById(id);
@@ -9603,6 +9881,59 @@ function renderSummary(phs){
 const FIT_PHASES_LS='rd_fit_all_phases';
 let _fitAllPhases=false;
 try{_fitAllPhases=localStorage.getItem(FIT_PHASES_LS)==='1';}catch(e){}
+/** v14: decide whether the phase strip actually overflows, and dress it accordingly.
+ *  Deliberately does nothing on a monitor wide enough to show every card: no scrollbar gutter, no
+ *  edge fade, no snapping, and no tab stop. The affordance should only exist when it means
+ *  something — a fade on a strip that cannot scroll is just noise. */
+function syncPhaseScrollAffordance(){
+  const w=document.getElementById('phases-scroll-wrapper');
+  if(!w)return;
+  const grid=document.getElementById('phases-grid');
+  const hint=document.getElementById('phases-scroll-hint');
+  // ⚠ Measure with the class OFF, always. Scroll mode widens the cards, so measuring while it is on
+  // asks "does the WIDE layout overflow?" — which stays true even after the window grows enough for
+  // the normal layout to fit, and the strip would then never come out of scroll mode. Dropping the
+  // class first costs one forced reflow on render/resize, which is nothing, and makes the test
+  // honest: "would this overflow at its natural width?"
+  w.classList.remove('is-overflowing');
+  // 2px of slack: sub-pixel layout rounding otherwise reports a permanent 1px overflow.
+  const over=w.scrollWidth>w.clientWidth+2;
+  w.classList.toggle('is-overflowing',over);
+  if(over){
+    // A scrollable region has to be reachable by keyboard, so it becomes a labelled tab stop —
+    // but only while it scrolls, or it is a tab stop that does nothing.
+    w.setAttribute('tabindex','0');
+    w.setAttribute('role','region');
+    w.setAttribute('aria-label','Retirement phases — scroll sideways for more');
+    if(hint){
+      hint.classList.add('show');
+      const n=grid?grid.children.length:0;
+      const t=document.getElementById('phases-scroll-hint-txt');
+      if(t)t.textContent=n?`scroll to see all ${n} phases`:'scroll for more';
+    }
+  }else{
+    w.removeAttribute('tabindex');w.removeAttribute('role');w.removeAttribute('aria-label');
+    if(hint)hint.classList.remove('show');
+  }
+  syncPhaseFades();
+}
+/** Which way there is more to see. Split out because the scroll listener needs it on its own. */
+function syncPhaseFades(){
+  const w=document.getElementById('phases-scroll-wrapper');
+  if(!w)return;
+  if(!w.classList.contains('is-overflowing')){w.classList.remove('can-scroll-right','can-scroll-left');return;}
+  const left=Math.ceil(w.scrollLeft);
+  w.classList.toggle('can-scroll-right',w.scrollWidth-w.clientWidth-left>2);
+  w.classList.toggle('can-scroll-left',left>2);
+}
+/** The hint chip is also a button: click it and the strip moves. Someone who has not realised the
+ *  cards drag sideways still gets there, and the movement itself teaches the gesture. */
+function nudgePhaseScroll(){
+  const w=document.getElementById('phases-scroll-wrapper');
+  if(!w)return;
+  const atEnd=w.scrollWidth-w.clientWidth-Math.ceil(w.scrollLeft)<=2;
+  w.scrollBy({left:atEnd?-w.clientWidth:Math.round(w.clientWidth*0.8),behavior:'smooth'});
+}
 function applyFitAllPhases(){
   const grid=document.getElementById('phases-grid');
   const wrapper=document.getElementById('phases-scroll-wrapper');
@@ -9610,26 +9941,27 @@ function applyFitAllPhases(){
   if(btn){btn.classList.toggle('active',_fitAllPhases);btn.setAttribute('aria-pressed',_fitAllPhases?'true':'false');}
   if(!grid)return;
   const n=grid.children.length;
-  // Never override the 7-phase horizontal-scroll mode — it has its own affordance.
-  const scrollMode=wrapper&&wrapper.classList.contains('scrollable');
   // Fit-to-one-row is only offered above 1200px (below that the layout uses two columns).
   const fitAllowed=window.innerWidth>1200;
-  if(_fitAllPhases&&fitAllowed&&n>0&&!scrollMode){
+  if(_fitAllPhases&&fitAllowed&&n>0){
     // The responsive media queries use !important, so the override must be inline !important
     // (highest in the cascade) to win.
-    grid.style.setProperty('grid-template-columns',`repeat(${n}, minmax(0, 1fr))`,'important');
+    // v14: minmax(--phase-card-fit, 1fr), NOT minmax(0, 1fr). Squeezing to zero is what made this
+    // mode produce 235px cards that no longer held a label and a figure on one line — and because
+    // they technically "fitted", nothing scrolled and there was no way out. Now fit mode means
+    // "one row, never below a readable width", and scrolls when that does not fit.
+    grid.style.setProperty('grid-template-columns',`repeat(${n}, minmax(var(--phase-card-fit), 1fr))`,'important');
     grid.classList.add('phases-fit');
   } else {
     grid.classList.remove('phases-fit');
-    // Only clear the inline override if WE set it (don't clobber the 7-phase inline columns).
-    if(!scrollMode)grid.style.removeProperty('grid-template-columns');
+    grid.style.removeProperty('grid-template-columns');
   }
 }
 function toggleFitAllPhases(force){
   _fitAllPhases=(typeof force==='boolean')?force:!_fitAllPhases;
   try{localStorage.setItem(FIT_PHASES_LS,_fitAllPhases?'1':'0');}catch(e){}
   applyFitAllPhases();
-  requestAnimationFrame(checkPhaseWrap);
+  requestAnimationFrame(()=>{syncPhaseScrollAffordance();checkPhaseWrap();});
 }
 
 // v7: show a hint when the phase cards wrap onto more than one row, so users know they can
@@ -9641,7 +9973,7 @@ function checkPhaseWrap(){
   const hint=document.getElementById('phase-wrap-hint');
   const wrapper=document.getElementById('phases-scroll-wrapper');
   if(!grid||!hint)return;
-  if(wrapper&&wrapper.classList.contains('scrollable')){hint.style.display='none';return;}
+  if(wrapper&&wrapper.classList.contains('is-overflowing')){hint.style.display='none';return;}
   const cards=grid.children;
   if(cards.length<2){hint.style.display='none';return;}
   const firstTop=cards[0].offsetTop;
@@ -9662,7 +9994,12 @@ function checkPhaseWrap(){
   hint.style.display='';
 }
 let _phaseWrapT;
-window.addEventListener('resize',()=>{clearTimeout(_phaseWrapT);_phaseWrapT=setTimeout(()=>{applyFitAllPhases();checkPhaseWrap();},150);});
+window.addEventListener('resize',()=>{clearTimeout(_phaseWrapT);_phaseWrapT=setTimeout(()=>{applyFitAllPhases();syncPhaseScrollAffordance();checkPhaseWrap();},150);});
+// The fade tracks how much is left to the right, so it has to follow the scroll itself.
+// passive: this listener never calls preventDefault, and scroll handlers that might are the
+// classic cause of janky scrolling.
+{const _pw=document.getElementById('phases-scroll-wrapper');
+ if(_pw)_pw.addEventListener('scroll',syncPhaseFades,{passive:true});}
 
 // CONTRACT: (phs = calcAllPhases result) -> renders the phase-card grid into #phases-grid. DOM
 //   side-effect only; reads each result `p`. Writes the clickable badges/pills whose data-* attrs
@@ -9670,26 +10007,21 @@ window.addEventListener('resize',()=>{clearTimeout(_phaseWrapT);_phaseWrapT=setT
 function renderPhases(phs){
   const grid=document.getElementById('phases-grid');
   const wrapper=document.getElementById('phases-scroll-wrapper');
-  if(phs.length>=7){
-    grid.className='phase-grid phases-7';
-    if(wrapper){
-      wrapper.classList.add('scrollable');
-      // Match column width exactly to what 6-phase compact cards use; only set if wrapper is visible
-      const ww=wrapper.offsetWidth;
-      if(ww>0){
-        const colW=Math.floor((ww-5*8)/6); // 6-phase: 6 cols, 5 gaps of 8px
-        grid.style.gridTemplateColumns=`repeat(7,${colW}px)`;
-      }
-      // If hidden (ww===0), leave existing inline style or fall back to CSS rule
-    }
-  } else {
-    grid.style.gridTemplateColumns=''; // clear inline override
-    if(wrapper)wrapper.classList.remove('scrollable');
-    if(phs.length>=6)       grid.className='phase-grid phases-6';
-    else if(phs.length===4) grid.className='phase-grid phases-4';
-    else if(phs.length===3) grid.className='phase-grid phases-3';
-    else                    grid.className='phase-grid'; // 5 phases: default repeat(5,...)
-  }
+  // v15: remember how far the strip is scrolled. `grid.innerHTML=` below destroys every card, and a
+  // container whose content is replaced comes back at scrollLeft 0 — so committing an inline edit
+  // (blur → render) threw the user back to Phase 1. Working on the last phase, the very box being
+  // edited jumped out of view. Restored after layout settles; see the end of this function.
+  const _prevScroll=wrapper?wrapper.scrollLeft:0;
+  // v14: the layout class only says HOW MANY cards there are. Whether that overflows — and so
+  // whether anything scrolls — is now the browser's call, via minmax(--phase-card-min, 1fr) in the
+  // CSS. This used to pin exact pixel columns for the 7-phase case, which meant the one hard-coded
+  // width had to be right at every viewport; it wasn't, and six cards were left cramped anyway.
+  grid.style.gridTemplateColumns='';
+  if(phs.length>=7)       grid.className='phase-grid phases-7';
+  else if(phs.length>=6)  grid.className='phase-grid phases-6';
+  else if(phs.length===4) grid.className='phase-grid phases-4';
+  else if(phs.length===3) grid.className='phase-grid phases-3';
+  else                    grid.className='phase-grid'; // 5 phases: default repeat(5,...)
   // "Not in plan" detection: a fund is considered not part of this scenario if
   // its initial balance is 0 AND it never rises above 0 in any phase. This lets
   // us distinguish (a) "you didn't include this fund in your plan" — soft grey
@@ -9745,9 +10077,22 @@ function renderPhases(phs){
     const iRows=[]; // income streams + lump-sum windfalls
     const eRows=[]; // one-time expenses (lump-sum out)
     // — From your accounts (drawdown levers grouped together) —
-    wRows.push(pk==='p0'
+    // v15: the pre-59½ 401k row is only locked when the plan says it is. Under an accepted
+    // penalty or a §72(t) exception it behaves like any other phase's withdrawal row.
+    const _pre595=(pk==='p0'||pk==='p0b'), _eam=S.earlyAccessMode||'locked';
+    wRows.push((_pre595&&_eam==='locked')
       ?`<div class="ir"><span class="il" style="color:${PHASE0_COLOR};font-weight:500;">🔒 401k locked until 59½</span><span style="color:${PHASE0_COLOR};font-weight:500;">$0/mo</span></div>`
       :mkRowE('401k withdrawal',c.w401k,pk+'.w401k','/mo',c.w401k===0?'ia-zero':'ia-401k',_short(c.w401k,_wa.w401k,'b401k')));
+    // The penalty is a real cost and gets said out loud, rather than swelling "Tax" unexplained.
+    // Markers, deliberately WITHOUT a dollar figure: the penalty's money is already inside the tax
+    // total and is itemised there as "↳ incl.", exactly as NIIT is. Repeating the amount here would
+    // read as a second, additional deduction.
+    if(_pre595&&(p.earlyPen_mo||0)>0)
+      wRows.push(`<div class="ir"><span class="il" style="color:var(--red-text);">⚠ Before 59½ — 10% penalty applies</span><span style="font-size:11px;color:var(--red-text);">included in tax below</span></div>`);
+    else if(_pre595&&_eam==='rule55')
+      wRows.push(`<div class="ir"><span class="il" style="color:var(--green-text);">✓ Rule of 55</span><span style="font-size:11px;color:var(--green-text);">no early-withdrawal penalty</span></div>`);
+    else if(_pre595&&_eam==='disability')
+      wRows.push(`<div class="ir"><span class="il" style="color:var(--green-text);">✓ Disability exception</span><span style="font-size:11px;color:var(--green-text);">no early-withdrawal penalty</span></div>`);
     wRows.push(mkRowE('Cash withdrawal',c.wcash,pk+'.wcash','/mo',c.wcash===0?'ia-zero':'ia-cash',_short(c.wcash,_wa.wCash,'cash')));
     if(S.balEquity>0)wRows.push(mkRowE('Equity withdrawal',c.wEquity||0,pk+'.wEquity','/mo',(c.wEquity||0)===0?'ia-zero':'ia-equity',_short(c.wEquity,_wa.wEquity,'equity')));
     if(S.balRoth>0)wRows.push(mkRowE('Roth withdrawal',c.wRoth||0,pk+'.wRoth','/mo',(c.wRoth||0)===0?'ia-zero':'ia-roth',_short(c.wRoth,_wa.wRoth,'roth')));
@@ -9805,7 +10150,10 @@ function renderPhases(phs){
     const hA=_mPart?p.health_mo:(p.hasMedicare?p.adjMedicare*(_mBoth?2:1):(p.aca===-1?null:p.aca));
     const hS=hA===null?'Over FPL cliff!':fmtC(hA)+'/mo',hW=!isForeign&&phaseHasAcaMonths(p)&&(p.aca===-1||p.aca>100);
     // Part D is already inside the blended figure for a part-year phase — don't list it twice.
-    const hDline=!isForeign&&p.hasMedicare&&!_mPart&&(p.adjMedicareD||0)>0?`<div class="tax-detail"><span>Medicare Part D est.${_mBoth?' ×2':''}</span><span>−${fmtC(p.adjMedicareD*(_mBoth?2:1))}/mo</span></div>`:'';
+    // v15: Part D carries its own dot, opening the SAME medicarecalc popover as Part B. The popover
+    // has always covered both premiums, but only Part B advertised it, so the Part D figure looked
+    // like the one healthcare line with nothing behind it. Cosmetic only — same target, same handler.
+    const hDline=!isForeign&&p.hasMedicare&&!_mPart&&(p.adjMedicareD||0)>0?`<div class="tax-detail clickable-badge cb-row" style="cursor:pointer;padding-right:14px;" data-popover="medicarecalc" data-phase="${(p.label||'').replace(/"/g,'')}" onclick="openBadgePopover(this)" title="Click to see how Medicare Part B and Part D are estimated for this phase"><span>Medicare Part D est.${_mBoth?' ×2':''}</span><span>−${fmtC(p.adjMedicareD*(_mBoth?2:1))}/mo</span></div>`:'';
     // v14: a couple's healthcare cost roughly doubles the first time they open a plan after this
     // change. Say so at the point the number appears, not only in a release note.
     const hBothNote=(!isForeign&&_mBoth)?`<div class="tax-detail" style="font-size:11px;opacity:0.85;" title="Part B and Part D are charged per person, so a couple both on Medicare pays two of each."><span>↳ counted for both of you</span><span></span></div>`:'';
@@ -9903,6 +10251,7 @@ function renderPhases(phs){
         <div class="tax-detail clickable-badge cb-row" style="cursor:pointer;padding-right:14px;" ${_ftd} onclick="openBadgePopover(this)" title="Click to see how this is calculated"><span><strong>US federal tax (after FTC)</strong></span><span><strong>−${fmtC(p.tax_mo)}/mo</strong></span></div>
         `:`<div class="tax-detail clickable-badge cb-row" style="cursor:pointer;padding-right:14px;" ${_ftd} onclick="openBadgePopover(this)" title="Click to see how federal tax is calculated"><span>Federal income tax</span><span>−${fmtC(p.tax_mo)}/mo</span></div>`}
         ${p.niit_a>0?`<div class="tax-detail" style="font-size:11px;opacity:0.85;"><span>↳ incl. NIIT (3.8% surtax)</span><span>−${fmtC(p.niit_a/12)}/mo</span></div>`:''}
+        ${(p.earlyPen_mo||0)>0?`<div class="tax-detail" style="font-size:11px;opacity:0.85;"><span>↳ incl. 10% early-withdrawal penalty</span><span>−${fmtC(p.earlyPen_mo)}/mo</span></div>`:''}
         ${(!isForeign&&(S.stateTaxRate||0)>0)?`<div class="tax-detail clickable-badge cb-row" style="cursor:pointer;padding-right:14px;" ${_std} onclick="openBadgePopover(this)" title="Click to see how state tax is calculated"><span>State income tax${S.stateName?' ('+escHtml(S.stateName)+')':''}</span><span>−${fmtC(p.stateTax_mo)}/mo</span></div>`:''}
         ${hLine}
         ${hDlineFinal}
@@ -9989,11 +10338,27 @@ function renderPhases(phs){
   }).join('');
   // v7: re-apply the "fit all on one row" override (cards now exist so the count is correct),
   // then check whether they wrapped onto multiple rows.
+  // v14: measure overflow BEFORE applyFitAllPhases (it reads .is-overflowing to leave scroll mode
+  // alone) and again after, because turning fit-mode on changes the widths it was just measuring.
+  // Order matters: fit mode decides the column widths, so it has to run before we ask whether
+  // those widths overflow. It used to be measured first and then skipped in scroll mode, which is
+  // how a fit-mode layout could stay crammed with no scrollbar to escape it.
   applyFitAllPhases();
-  requestAnimationFrame(checkPhaseWrap);
+  requestAnimationFrame(()=>{
+    syncPhaseScrollAffordance();checkPhaseWrap();
+    // Restore AFTER syncPhaseScrollAffordance: it toggles .is-overflowing, which swaps
+    // --phase-card-fit and so changes scrollWidth. Clamp, because the phase COUNT can change in the
+    // same render (a start age under 59.5 adds the Pre-59½ card, a replan drops past phases) and the
+    // old offset may now be past the end. Assigning 0 to 0 is a no-op, so the common
+    // nothing-to-restore case costs nothing and fires no scroll event.
+    if(wrapper&&_prevScroll>0){
+      const max=Math.max(0,wrapper.scrollWidth-wrapper.clientWidth);
+      wrapper.scrollLeft=Math.min(_prevScroll,max);
+    }
+  });
 }
 
-function renderCharts(phs){
+function renderCharts(phs,opts){
   const isDark=document.documentElement.classList.contains('dark'),gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tc=isDark?'#a8a89e':'#5f5e5a';
   const sym=CURRENCIES[displayCurrency].symbol,conv=v=>Math.round(toDisplay(v));
   const startLabel=S.currentAge&&S.currentAge>S.startAge?'Age '+S.currentAge:'Start';
@@ -10020,7 +10385,7 @@ function renderCharts(phs){
   const ctx2=document.getElementById('incomeChart').getContext('2d');if(iChart)iChart.destroy();
   iChart=new Chart(ctx2,{type:'bar',data:{labels:phs.map(p=>p.label+'\n('+p.ages+')'),datasets:[{label:'Nominal',data:phs.map(p=>conv(p.net_mo)),backgroundColor:'#378ADD',borderRadius:4},{label:'Real',data:phs.map(p=>conv(p.net_real)),backgroundColor:'#AFA9EC',borderRadius:4,borderWidth:1,borderColor:'#534AB7'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${sym}${Math.round(c.parsed.y).toLocaleString()}/mo`}}},scales:{y:{ticks:{color:tc,callback:v=>`${sym}${(v/1000).toFixed(1)}k`},grid:{color:gc}},x:{ticks:{color:tc,maxRotation:0},grid:{display:false}}}}});
   _chartSrTable(iChart,'incomeChart','Monthly net income by phase — nominal vs real (today\'s dollars)');
-  renderAccountView(phs);
+  renderAccountView(phs,opts);
 }
 
 // ─── ACCOUNT VIEW (Balance tab) ─────────────────────────────────────────────────────────────────
@@ -10140,6 +10505,12 @@ function _avYearModel(phs){
         cells,total:cells.reduce((t,c)=>t+c.end,0),drawnRow,cumDrawn:cumAll,
         ss,otherPen,work,drawn:cells.reduce((t,c)=>t+c.drawn,0),
         gross:cells.reduce((t,c)=>t+c.drawn,0)+ss+otherPen+work,
+        // The same money as ss/otherPen/work above, but UNCOLLAPSED — the chart stacks one band per
+        // stream and needs them apart, while the table wants them grouped. Additive on purpose: the
+        // three fields above are left exactly as they were so the table and the CSV are untouched.
+        streams:{ss:y.ss||0,spSS:y.spSS||0,ukp:y.ukp||0,cpp:y.cpp||0,oas:y.oas||0,ap:y.ap||0,
+                 usPen:(y.usPen||0)+(y.usPen2||0),
+                 partTime:(p.partTimeAnnual||0)*frac,rental:(p.rentalAnn||0)*frac},
         // Phase-level, repeated for convenience but ALWAYS rendered as a spanned cell.
         phaseTaxAnn:((p.tax_mo||0)+(p.ukTax_mo||0)+(p.stateTax_mo||0))*12,
         phaseHealthAnn:(p.health_mo||0)*12,phaseNetMo:p.net_mo||0,phaseYears:perYr});
@@ -10155,18 +10526,135 @@ function _avPhaseSpan(rows,i){
   return n;
 }
 
+// ── The chart above the Account view table ──────────────────────────────────────────────────────
+// The same money as the table, drawn instead of tabulated, driven by the SAME two toggles — so the
+// picture and the numbers under it can never tell different stories. One stacked band per source.
+//
+// Three deliberate omissions, each stated in the footnote under the chart rather than left to be
+// discovered:
+//   • TAX AND HEALTHCARE. These bars are GROSS. Per-year tax does not exist in the engine and is not
+//     derivable by dividing a phase figure (the whole reason _renderAvYear renders it as a spanned
+//     cell), so it is not invented here either.
+//   • ROTH CONVERSIONS. A transfer between the user's own pots, not income. Stacking `conv` would
+//     inflate every bar it touched and double-count money that is already in the 401k band.
+//   • LUMP SUMS. Excluded to match the table's "Portfolio drawn" column, which uses `drawn` (not
+//     `drawnRow`) and so leaves lumps out too.
+//
+// Bars are per-year in BOTH grains, but they get there differently: a year row already IS a year, so
+// it is used raw and reconciles exactly with the table row beneath it; a phase spans many years, so a
+// phase bar is that phase ANNUALISED. Showing phase totals instead would make a 20-year phase tower
+// over a 3-year one and destroy the only thing a bar chart is for — comparing heights.
+const AV_SERIES=[
+  // Withdrawals. `w` reads the phase's monthly average; `key` matches the year model's cell key.
+  {key:'k401',  col:'c401k',     lbl:'401k withdrawal',        grp:'draw', w:'w401k'},
+  {key:'cash',  col:'cCash',     lbl:'Cash withdrawal',        grp:'draw', w:'wCash'},
+  {key:'equity',col:'cEquity',   lbl:'Equity withdrawal',      grp:'draw', w:'wEquity'},
+  {key:'roth',  col:'cRoth',     lbl:'Roth withdrawal',        grp:'draw', w:'wRoth'},
+  {key:'super', col:'cSuper',    lbl:'Super withdrawal',       grp:'draw', w:'wSuper'},
+  // Income streams. `ph` annualises the phase result; `st` names the field(s) on a year row's streams.
+  {key:'ss',    col:'cSS',       lbl:'Social Security',        grp:'inc', st:'ss',      ph:p=>(p.uss_grown||0)*12},
+  {key:'spSS',  col:'cSpouseSS', lbl:'Spouse Social Security', grp:'inc', st:'spSS',    ph:p=>(p.spSS_grown||0)*12},
+  {key:'ukp',   col:'cUkp',      lbl:'UK State Pension',       grp:'inc', st:'ukp',     ph:p=>(p.ukp_grown||0)*12},
+  {key:'usPen', col:'cPension',  lbl:'Pension / disability',   grp:'inc', st:'usPen',   ph:p=>((p.usPension_mo||0)+(p.usPension2_mo||0))*12},
+  {key:'other', col:'cOther',    lbl:'CPP / OAS / Age Pension',grp:'inc', st:['cpp','oas','ap'],ph:p=>((p.cpp_grown||0)+(p.oas_grown||0)+(p.ap_grown||0))*12},
+  {key:'work',  col:'cParttime', lbl:'Part-time work',         grp:'inc', st:'partTime',ph:p=>(p.partTimeAnnual||0)},
+  {key:'rental',col:'cRental',   lbl:'Rental / passive',       grp:'inc', st:'rental',  ph:p=>(p.rentalAnn||0)}
+];
+
+// Returns {labels,subLabels,series:[{key,label,color,data}],byYear} in USD — the caller converts.
+function _avChartModel(phs){
+  if(!phs||!phs.length)return null;
+  const byYear=AV_GRAIN==='year';
+  const ym=byYear?_avYearModel(phs):null;
+  if(byYear&&(!ym||!ym.rows.length))return null;
+  const rows=byYear?ym.rows:phs;
+  const labels=byYear?rows.map(r=>String(Math.round(r.ageStart*10)/10)):rows.map(p=>p.label);
+  const subLabels=byYear
+    ?rows.map(r=>'~'+r.calYear+(r.months<12?' · '+r.months+' months':''))
+    :rows.map(p=>'Age '+p.ages);
+  const wanted=AV_LENS==='account'?AV_SERIES.filter(s=>s.grp==='draw'):AV_SERIES;
+  const series=wanted.map(s=>{
+    const data=rows.map(r=>{
+      if(!byYear)return s.grp==='draw'?(((r.wActual||{})[s.w])||0)*12:s.ph(r);
+      if(s.grp==='draw'){const c=(r.cells||[]).find(c=>c.key===s.key);return c?(c.drawn||0):0;}
+      const st=r.streams||{};
+      return Array.isArray(s.st)?s.st.reduce((t,k)=>t+(st[k]||0),0):(st[s.st]||0);
+    });
+    return{key:s.key,label:s.lbl,color:accountColor(s.col),data,tot:data.reduce((t,v)=>t+v,0)};
+  }).filter(s=>s.tot>0.5); // a stream this plan never uses is dropped — series, legend key and all
+  return series.length?{labels,subLabels,series,byYear}:null;
+}
+
+// animate defaults OFF: render() re-runs this on every keystroke while the tab is open, and a chart
+// that replays its grow-in on each edit is nauseating. avSet/showTab opt in, because there the view
+// genuinely changed and the motion is what explains the change.
+function _renderAvChart(phs,opts){
+  const cv=document.getElementById('avChart'); if(!cv)return;
+  const wrap=cv.parentNode, leg=document.getElementById('av-chart-legend'), note=document.getElementById('av-chart-note');
+  if(avChart){avChart.destroy();avChart=null;}
+  const m=_avChartModel(phs);
+  if(!m){if(wrap)wrap.style.display='none';if(leg)leg.innerHTML='';if(note)note.textContent='';return;}
+  if(wrap)wrap.style.display='';
+  const isDark=document.documentElement.classList.contains('dark');
+  const gc=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tc=isDark?'#a8a89e':'#5f5e5a';
+  const sym=CURRENCIES[displayCurrency].symbol,conv=v=>Math.round(toDisplay(v));
+  const reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const animate=!!(opts&&opts.animate)&&!reduce;
+  const money=v=>sym+Math.round(v).toLocaleString();
+  avChart=new Chart(cv.getContext('2d'),{
+    type:'bar',
+    data:{labels:m.labels,datasets:m.series.map(s=>({label:s.label,data:s.data.map(conv),backgroundColor:s.color,borderWidth:0}))},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      // Staggered left-to-right so a long plan reads as building up through the ages, capped so 40+
+      // bars still finish in about a second. The app has no other reduced-motion guard on Chart.js.
+      animation:animate?{duration:700,delay:c=>(c.type==='data'&&c.mode==='default')?Math.min(c.dataIndex*12,400):0}:false,
+      interaction:{mode:'index',intersect:false}, // hovering anywhere in a column lights the whole stack
+      plugins:{legend:{display:false},tooltip:{
+        displayColors:true, // _applyChartTooltipTheme sets this false globally; a stack needs its swatches
+        filter:it=>it.parsed.y>0, // an empty band is noise, not information
+        callbacks:{
+          title:it=>it.length?m.labels[it[0].dataIndex]+' · '+m.subLabels[it[0].dataIndex]:'',
+          label:c=>' '+c.dataset.label+': '+money(c.parsed.y),
+          footer:it=>'Gross '+money(it.reduce((t,i)=>t+i.parsed.y,0))+' — before tax'
+        }}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{color:tc,maxRotation:0,autoSkip:true,maxTicksLimit:20},
+           title:{display:true,text:m.byYear?'Age':'Phase',color:tc,font:{size:11}}},
+        y:{stacked:true,beginAtZero:true,grid:{color:gc},ticks:{color:tc,callback:v=>sym+(v/1000).toFixed(0)+'k'},
+           title:{display:true,text:'Gross income per year',color:tc,font:{size:11}}}
+      }
+    }
+  });
+  if(leg)leg.innerHTML=m.series.map(s=>`<span class="legend-item"><span class="legend-swatch" style="background:${s.color};"></span>${escHtml(s.label)}</span>`).join('');
+  if(note){
+    const bits=[m.byYear
+      ?'One bar per year. A part-year segment is labelled as such and is shorter for that reason.'
+      :'One bar per phase, showing a typical year in that phase — not the phase total, so the bars stay comparable.'];
+    bits.push('Gross, before tax and healthcare: those are worked out once per phase, so they appear in the table below rather than being divided into years here.');
+    if(AV_LENS==='account')bits.push('Withdrawals only — switch to Income view to see pensions and benefits as well.');
+    if(phs.some(p=>((p.wActual&&p.wActual.rothConvAnn)||0)>0))bits.push('Roth conversions are left out: they move money between your own accounts rather than adding income.');
+    if(phs.some(p=>Object.keys(p.lumpDrawn||{}).length||Object.keys(p.lumpAdded||{}).length))bits.push('One-off lump sums are left out too, matching the “Portfolio drawn” column.');
+    note.textContent=bits.join(' ');
+  }
+  _chartSrTable(avChart,'avChart',(AV_LENS==='account'?'Withdrawals from each account':'Where your gross income comes from')+', per year, '+(m.byYear?'by age':'by phase'));
+}
+
 let AV_LENS='account', AV_GRAIN='phase';
 function avSet(kind,val){
   if(kind==='lens')AV_LENS=val; else AV_GRAIN=val;
   document.querySelectorAll('.av-seg-btn').forEach(b=>{
     const k=b.dataset.lens?'lens':'grain', v=b.dataset.lens||b.dataset.grain;
-    b.classList.toggle('active',(k==='lens'?AV_LENS:AV_GRAIN)===v);
+    const on=(k==='lens'?AV_LENS:AV_GRAIN)===v;
+    b.classList.toggle('active',on);
+    b.setAttribute('aria-pressed',on?'true':'false'); // the active state was visual-only before this
   });
-  renderAccountView(calcAllPhases(S,p5EndAge,lumps));
+  renderAccountView(calcAllPhases(S,p5EndAge,lumps),{animate:true});
 }
 
-function renderAccountView(phs){
+function renderAccountView(phs,opts){
   const tbl=document.getElementById('av-table'); if(!tbl)return;
+  _renderAvChart(phs,opts);
   const key=document.getElementById('av-key');
   const ttl=document.getElementById('av-title'),blurb=document.getElementById('av-blurb');
   if(ttl)ttl.textContent=AV_LENS==='account'?'Account view':'Income view';
@@ -11647,7 +12135,7 @@ function scrollToReplanPanel(){
   const top=target.getBoundingClientRect().top+window.scrollY-getStickyOverviewOffset()-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
 }
-function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps));if(name==='scenarios')renderScenarios();if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(()=>{const grid=document.getElementById('phases-grid');const wrapper=document.getElementById('phases-scroll-wrapper');if(grid&&grid.classList.contains('phases-7')&&wrapper){const ww=wrapper.offsetWidth;if(ww>0){const colW=Math.floor((ww-5*8)/6);grid.style.gridTemplateColumns=`repeat(7,${colW}px)`;}}});} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
+function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios();if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
 function setupLumpDelegation(){const ct=document.getElementById('lump-list');ct.addEventListener('input',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-amt'))updateLumpField(id,'amount',el.value);else if(el.classList.contains('lump-label'))updateLumpField(id,'label',el.value);else if(el.classList.contains('lump-split-amt'))updateLumpField(id,'split:'+el.dataset.acct,el.value);});ct.addEventListener('change',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-phase'))updateLumpField(id,'phase',el.value);else if(el.classList.contains('lump-dir'))updateLumpField(id,'dir',el.value);else if(el.classList.contains('lump-acct'))updateLumpField(id,'acct',el.value);else if(el.classList.contains('lump-fallback'))updateLumpField(id,'fallback',el.checked);else if(el.classList.contains('lump-grossup'))updateLumpField(id,'grossUp',el.checked);else if(el.classList.contains('lump-fbacct'))updateLumpField(id,'fbacct:'+el.dataset.acct,el.checked);});ct.addEventListener('click',e=>{const btn=e.target.closest('.lump-del');if(btn){const id=parseInt(btn.dataset.id);if(id)removeLump(id);}});}
 function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB','rate-EUR'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
 window.addEventListener('load',()=>{reflowTabs();setTimeout(reflowTabs,200);});
@@ -11880,7 +12368,7 @@ You are a retirement financial planning advisor. Please evaluate the following r
 })()}
 - **Income sources:** 401k withdrawals, cash savings, equities${S.uss>0?', US Social Security':''}${S.ukp>0?', UK State Pension':''}${hasRothBal?', Roth IRA':''}${hasSpouseSS?', spouse Social Security':''}${isMFJ?' (Married Filing Jointly)':''}${hasRental?', rental/passive income':''}
 ${earlyRetire||hasSSSplit||customBoundaries?'\n## Plan Structure (v5 features in use)':''}${earlyRetire?`
-- **Early retirement (Phase 0 / Pre-59½):** This plan starts at age ${S.startAge}, before the 59½ penalty-free 401k access age. A "Phase 0" bridge runs from age ${S.startAge} to 59.5 with 401k withdrawals locked at $0 by design — the user must rely on cash, equity withdrawals, and any part-time income during this period. The 401k continues compounding untouched until Phase 1. Suggest depletion strategies appropriate to this bridge (Rule 72(t) SEPP is one option but not currently modelled — flag if relevant).`:''}${hasSSSplit?`
+- **Early retirement (Phase 0 / Pre-59½):** This plan starts at age ${S.startAge}, before the 59½ penalty-free 401k access age. A "Phase 0" bridge runs from age ${S.startAge} to 59.5. The user has set 401k access in that bridge to: **${({locked:"LOCKED — no 401k withdrawals; the years are funded from cash, equity, Roth contributions and part-time income, and the 401k compounds untouched until Phase 1",penalty:"WITHDRAW AND PAY THE 10% PENALTY — pre-59½ 401k withdrawals are allowed and the §72(t) 10% additional tax is charged on top of ordinary income tax, shown as its own cost",rule55:"RULE OF 55 — the user asserts they separated from service at 55+, so withdrawals from that employer's plan are penalty-free (ordinary income tax still applies)",disability:"DISABILITY EXCEPTION §72(t)(2)(A)(iii) — withdrawals are penalty-free; ordinary income tax still applies"})[S.earlyAccessMode||"locked"]}**. Suggest depletion strategies appropriate to this bridge. Note the planner still does NOT model a 72(t)/SEPP series or the 5-year seasoning on Roth conversions — flag either if relevant.`:''}${hasSSSplit?`
 - **Social Security claiming-age phase split:** SS claiming age is set to ${ssClaimAge}, which falls mid-phase. The simulation has split that phase into two segments shown below as "${splitSecPhase.label.replace('b','')}" (pre-SS, no SS income) and "${splitSecPhase.label}" (post-SS, with SS active). These two segments are **independently configurable** — the user can set different 401k/cash/equity withdrawals in each. When evaluating tax/ACA/IRMAA position, treat them as separate optimization targets. The pre-SS segment typically has lower MAGI (good for ACA CSR), while the post-SS segment must accommodate SS income in MAGI calculations.`:''}${customBoundaries?`
 - **Custom phase boundaries:** The user has customized phase transition ages from defaults: Phase 1 ends ${S.phaseAge1end||62} (default 62), Phase 2 ends ${S.phaseAge2end||65} (default 65), Phase 3 ends ${S.phaseAge3end||67} (default 67), Phase 4 ends ${S.phaseAge4end||73} (default 73). Treat each phase's age range as the user's intentional planning structure, not the US milestone defaults.`:''}${earlyRetire||hasSSSplit||customBoundaries?'\n':''}
 ## Starting Balances (as of age ${curAge})
@@ -13453,9 +13941,13 @@ const EDU_CONTENT={
   capGainsDist:{title:'Capital-gains distribution',videoId:'',videoCategory:'Taxes & MAGI',
     bodyShort:'<p>A year-end payout from a mutual fund or ETF passing through realised gains from inside the fund. <strong>Taxable and counts toward MAGI even if you reinvest it</strong> and didn\'t sell anything.</p>',
     body:'<p>A <strong>capital-gains distribution</strong> is a (usually December) payout from a mutual fund or ETF that passes through gains the fund realised internally when it sold holdings. You receive it <strong>even if you never sold a share</strong>, and it is <strong>taxable and counts toward MAGI</strong> — including when it\'s automatically reinvested.</p><p>Because the size is set by the fund manager and announced late in the year, it\'s a classic source of <em>unexpected</em> MAGI that can push a carefully-tuned plan over an ACA CSR tier, the 400% FPL subsidy cliff, or an IRMAA threshold.</p><p><em>Tip:</em> broad index funds distribute little; actively-managed funds in a taxable account can distribute a lot. Estimate a typical year and enter it in the per-phase passive-income field so your headroom is realistic.</p>'},
+  // v15: the glossary key the pre-59.5 penalty trace group points at.
+  earlyWithdrawalPenalty:{title:'Early-withdrawal penalty (before 59½)',videoId:'',videoCategory:'Retirement Accounts',
+    bodyShort:'<p>Take money from a Traditional 401k before <strong>59½</strong> and you normally owe ordinary income tax <em>plus</em> an extra <strong>10%</strong> under IRC §72(t). The planner can price that, or apply an exception you qualify for.</p>',
+    body:'<p>Withdrawals from a Traditional 401k before age <strong>59½</strong> normally carry a <strong>10% additional tax</strong> (IRC §72(t)) on top of ordinary income tax. In a plan that starts before 59½ you choose how the account is reached: leave it <strong>locked</strong>, <strong>accept the 10%</strong>, or claim an exception.</p><p>The penalty is charged on the withdrawal that <strong>actually came out</strong> — an account that empties partway through the phase is penalised only on what it paid — and Roth <em>conversions</em> are excluded, because converting is not a distribution.</p><p><strong>Rule of 55:</strong> penalty-free if you separated from service during or after the calendar year you turned 55. It covers only the plan of the employer you <em>just left</em> — not IRAs, not former employers’ plans — and <strong>rolling the balance to an IRA destroys it</strong>. Leaving at 50 and waiting until 55 does not qualify. Public-safety workers qualify at 50.</p><p><strong>Disability:</strong> §72(t)(2)(A)(iii) removes the penalty for those totally and permanently disabled.</p><p><em>Not modelled:</em> a <strong>72(t)/SEPP</strong> series and the <strong>5-year seasoning</strong> on Roth conversions — the two routes that fit a retirement starting well before 55. Talk to a tax professional about those.</p>'},
   rothConversion:{title:'Roth conversion',videoId:'tX1x6vw7VDI',videoDurationS:180,videoCategory:'Retirement Accounts',
     bodyShort:'<p>Moves money from Traditional 401k/IRA to Roth. <strong>Taxed as ordinary income in the year of conversion</strong> (raises MAGI) — but grows tax-free forever after.</p>',
-    body:'<p>A Roth conversion moves money from a Traditional 401k/IRA to a Roth account. The converted amount is <strong>taxed as ordinary income in the year of conversion</strong> and counts toward MAGI (impacting ACA and IRMAA).</p><p>After conversion, the money grows tax-free forever and withdrawals don\'t count as MAGI — perfect ammunition for managing later cliffs.</p><p><em>Sweet spot:</em> low-income years between retirement and Social Security/RMD.</p><p><em>Modelling note:</em> the planner does not model the IRS <strong>5-year seasoning rule</strong> on converted principal — withdrawing a converted amount within 5 years <em>and</em> before age 59½ can incur the 10% early-withdrawal penalty on that amount. Keep at least a 5-year buffer before you plan to spend converted dollars early.</p>'},
+    body:'<p>A Roth conversion moves money from a Traditional 401k/IRA to a Roth account. The converted amount is <strong>taxed as ordinary income in the year of conversion</strong> and counts toward MAGI (impacting ACA and IRMAA).</p><p>After conversion, the money grows tax-free forever and withdrawals don\'t count as MAGI — perfect ammunition for managing later cliffs.</p><p><em>Sweet spot:</em> low-income years between retirement and Social Security/RMD.</p><p><em>Modelling note:</em> each conversion carries its <strong>own</strong> five-year clock (see <em>The two Roth 5-year rules</em>). The planner flags this in Plan health but does not calculate it: it does not model the IRS <strong>5-year seasoning rule</strong> on converted principal — withdrawing a converted amount within 5 years <em>and</em> before age 59½ can incur the 10% early-withdrawal penalty on that amount. Keep at least a 5-year buffer before you plan to spend converted dollars early.</p>'},
   goals:{title:'My Goals — your own success targets',videoId:'',videoCategory:'Modelling & Plan Health',
     bodyShort:'<p>State what success looks like — a target monthly income, a legacy amount, an income floor — and the planner tells you when your plan <strong>achieves your goals</strong>, not just its built-in rules.</p>',
     body:'<p>Most of the dashboard\'s checks grade your plan against sensible built-in rules. <strong>My Goals</strong> adds your own definition of success: a <strong>target net income per month</strong>, a <strong>legacy / final balance</strong> you want left at plan end, a <strong>minimum income floor</strong> for any phase, and (for couples modelling the survivor scenario) a <strong>survivor spending level</strong>.</p><p>The survivor goal can be set two ways with the <strong>$ / %</strong> toggle: a <strong>% of today\'s income</strong> — what the surviving spouse should keep, measured against the couple\'s net income at the year of the first death — or an absolute <strong>survivor income need /mo</strong> in today\'s money.</p><p>Targets are compared in <strong>today\'s money</strong> (inflation-adjusted), so "I need $4,000/mo" keeps meaning what it means today. When goals are enabled: the 🎯 pill at the top of the dashboard tracks your income goal live, the <strong>Plan vs your goals</strong> panel on the Plan Health tab shows every goal as Met / Not Met, your income floor replaces the default $500/mo line in Income Adequacy, and the survivor goal re-benchmarks Survivor Resilience.</p><p>Turn the master toggle off at any time — your values are kept, but every goal surface disappears and the score returns to the built-in checks only.</p>'},
@@ -13621,7 +14113,10 @@ const EDU_CONTENT={
     body:'<p>A <strong>Traditional 401k</strong> or <strong>Traditional IRA</strong> is a pre-tax retirement account. You pay no tax on contributions or on growth — the tax is deferred until withdrawal.</p><p>In retirement, every dollar withdrawn is taxed as <strong>ordinary income</strong> and counts toward <strong>MAGI</strong>. <span data-fact-key="rmd_age">From age 73 you must take <strong>Required Minimum Distributions</strong>.</span></p><p>The interaction with ACA cliffs, IRMAA, and tax brackets is what makes withdrawal strategy non-trivial.</p>'},
   rothMechanics:{title:'Roth IRA / Roth 401k mechanics',videoId:'IqcuHCoxVk0',videoDurationS:120,videoCategory:'Retirement Accounts',
     bodyShort:'<p>After-tax retirement accounts. Contributions taxed today, but <strong>growth is tax-free, withdrawals are tax-free, and they do NOT count toward MAGI</strong> — the lever for managing ACA cliffs.</p>',
-    body:'<p>A <strong>Roth IRA</strong> or <strong>Roth 401k</strong> is an after-tax retirement account. You pay tax on contributions today — but growth is tax-free, withdrawals are tax-free, and crucially, withdrawals <strong>do not count toward MAGI</strong>.</p><p>This MAGI-invisibility is the strategic superpower: in pre-Medicare years you can fund living expenses from Roth without touching ACA or IRMAA thresholds.</p><p>Roth IRAs have <strong>no RMDs</strong>. Roth 401ks did until SECURE 2.0 removed them in 2024.</p>'},
+    body:'<p>A <strong>Roth IRA</strong> or <strong>Roth 401k</strong> is an after-tax retirement account. You pay tax on contributions today — but growth is tax-free, withdrawals are tax-free, and crucially, withdrawals <strong>do not count toward MAGI</strong>.</p><p>This MAGI-invisibility is the strategic superpower: in pre-Medicare years you can fund living expenses from Roth without touching ACA or IRMAA thresholds.</p><p>Roth IRAs have <strong>no RMDs</strong>. Roth 401ks did until SECURE 2.0 removed them in 2024.</p><p><strong>One caveat on &ldquo;tax-free&rdquo;:</strong> that is true of your own contributions at any age, but <em>earnings</em> and <em>converted</em> money each have a five-year rule attached &mdash; and they are two different rules. See <em>The two Roth 5-year rules</em>.</p>'},
+  roth5YearRules:{title:'The two Roth 5-year rules',videoId:'',videoCategory:'Retirement Accounts',
+    bodyShort:'<p>There are <strong>two</strong> of them and they do different jobs. One clock runs from opening your <em>first</em> Roth and decides whether <strong>earnings</strong> are tax-free. A separate clock runs on <strong>each conversion</strong> and decides whether converted money escapes the 10% penalty below 59&frac12;.</p>',
+    body:'<p>Almost everyone merges these into one rule. They are separate, and mixing them up is how a conversion ladder goes wrong.</p><p><strong>1. The account clock &mdash; are my EARNINGS tax-free?</strong> One single clock, starting 1 January of the tax year of your <em>first ever</em> contribution to <em>any</em> Roth IRA. It never restarts, and once it is satisfied it is satisfied for good, across every Roth IRA you own. Meet it <em>and</em> be 59&frac12; (or disabled, or a first-time homebuyer within the $10,000 limit) and your withdrawal is <strong>qualified</strong> &mdash; earnings come out completely tax-free. Miss it and the earnings portion is taxable even if you are past 59&frac12;. That is the trap for someone who opens their first Roth late: at 60, three years after opening, you are past the age test but not the account test.</p><p><strong>2. The conversion clock &mdash; do I owe the 10% PENALTY?</strong> A <em>separate</em> five-year clock for <strong>every single conversion</strong>, each starting 1 January of the tax year of that conversion. Convert in three different years and you are running three independent clocks. This rule exists only to stop people using a conversion to sidestep the early-withdrawal penalty &mdash; convert from a Traditional account, withdraw the next day, penalty avoided. No income tax is at stake here, because you already paid that when you converted. <strong>It stops applying entirely once you reach 59&frac12;</strong>, however recent the conversion.</p><p><strong>Which dollars come out first?</strong> The IRS orders every Roth distribution the same way: your own <strong>contributions</strong> first (always free, any age), then <strong>conversions</strong> oldest-first, then <strong>earnings</strong> last. That ordering is what makes a ladder work &mdash; you spend seasoned money before you ever reach the rung that is still cooling.</p><p><strong>A useful quirk:</strong> both clocks run on <em>tax years</em>, not birthdays. A conversion made in December is treated as though it happened on 1 January of that year, so it seasons after about four years and one month of real time. Converting late in the year effectively buys you most of a year.</p><p><strong>What the planner does:</strong> the <em>Roth Conversion Seasoning</em> check in Plan health watches the conversion clock and warns when your plan spends converted money before it has matured. It does <strong>not</strong> track the account clock, and it holds your Roth as a single balance rather than as individual conversion layers &mdash; so treat both as flags to raise with a tax professional, not as calculated figures.</p>'},
   ukAllowance:{title:'UK personal allowance & tax bands',videoId:'V3HN24H_xH8',videoDurationS:120,videoCategory:'UK & Foreign',
     bodyShort:'<p><span data-fact-key="uk_allowance">UK residents get a <strong>personal allowance</strong> of tax-free income (£12,570 baseline), then 20% basic / 40% higher / 45% additional rates kick in. The allowance <strong>tapers above £100k</strong>.</span></p>',
     body:'<p><span data-fact-key="uk_allowance">For UK residents the income tax system has a personal allowance (baseline £12,570) of tax-free income, then three bands: <strong>20% basic rate</strong>, <strong>40% higher rate</strong>, and <strong>45% additional rate</strong> on income above the higher-band ceiling.</span></p><p>The personal allowance is <strong>tapered</strong> by £1 for every £2 of income above £100k — fully gone by ≈ £125k. This makes income between £100k and £125k effectively taxed at ~60%.</p><p>For US-citizen UK residents, the US-UK treaty plus the Foreign Tax Credit usually prevent double-taxation on overlapping income.</p>'}
@@ -14085,6 +14580,7 @@ const WHY_CONTENT={
   },
   'Portfolio Survives to End':'<p>Checks that core liquid accounts (401k + cash) are not depleted before the final phase, and that they retain at least 10% of total portfolio in non-final phases.</p><p><strong>Why it matters:</strong> running out of accessible cash forces you to sell equities or take loans during a market downturn — sequence-of-returns risk in its purest form. Even if total wealth is high, illiquidity at the wrong moment can collapse the plan.</p>',
   'RMD Compliance':'<p>From age 73 the IRS requires you to withdraw a minimum amount from every Traditional 401k/IRA each year. The check flags any shortfall.</p><p><strong>Why it matters:</strong> the penalty for missing an RMD is <strong>25% of the shortfall</strong> (10% if corrected within two years). Most people don\'t know about RMDs until the IRS reminds them.</p>',
+  'Roth Conversion Seasoning':'<p>Money you <strong>convert</strong> into a Roth has to sit there for <strong>five years</strong> before you can take it out penalty-free below age 59&frac12; &mdash; and every conversion starts its own separate clock.</p><p><strong>Why it matters:</strong> this is how a Roth conversion ladder goes wrong. Your own <em>contributions</em> come out at any age, freely, so a Roth feels like an unlocked account &mdash; but converted principal spent too early carries the same <strong>10% penalty</strong> as an early 401k withdrawal. Convert at 50 and spend it at 52 and you have paid the penalty you were trying to avoid.</p><p><strong>What to do:</strong> start converting five years before you need the money, or cover those years from cash or a taxable account instead. The planner holds your Roth as one balance rather than tracking each conversion separately, so this is a flag to take to a tax professional &mdash; not a calculated figure.</p><p><strong>Note there is a second, different 5-year rule</strong> governing whether your <em>earnings</em> are tax-free, which runs once from opening your first Roth and is not checked here. It only bites if you opened your first Roth within five years of needing the money. See <em>The two Roth 5-year rules</em> in the Glossary.</p>',
   'Income Floor Foundation':'<p>Measures what % of your average monthly income is "guaranteed" — Social Security, pensions, annuities, UK State Pension. Guaranteed income is immune to market crashes.</p><p><strong>Why it matters:</strong> if 70% of your income comes from guaranteed sources, a 50% market crash barely affects your lifestyle. If 90% comes from portfolio withdrawals, that same crash can be catastrophic.</p><p><strong>Thresholds:</strong> for US-based plans the green threshold is 50% (reflecting healthcare exposure and sequence-of-returns risk). For foreign or UK-resident plans — where US healthcare costs and ACA cliffs don\'t apply — the green threshold is 30%, reflecting the different risk profile of expat retirement.</p>',
   'Stress Test Resilient':'<p>Re-runs the entire plan under a bear scenario: investment returns reduced by 3 percentage points and inflation raised to 5%, then checks whether the accounts you actually draw from survive to your target age.</p><p><strong>Why it matters:</strong> historical worst-case sequences (1929, 1973, 2000) looked very much like this. A plan that breaks under these conditions is fragile.</p>'
 };
@@ -14327,7 +14823,12 @@ function renderLearnCard(){
     const headroomPhase=phs.find(p=>{const b=_bindRoom(p);return b&&b.room>5000&&p.cfg&&(p.cfg.w401k||0)>0;});
     if(headroomPhase){
       const b=_bindRoom(headroomPhase);
-      push('bracket12','You have unused income headroom',`In ${headroomPhase.label} you have about ${fmtC(b.room)} of room before ${b.name}. ${hasRoth?'Roth conversions or extra 401k withdrawals':'A little more 401k withdrawal'} up to that amount stays low-taxed.`);
+      // v15: "stays low-taxed" is only true where no §72(t) penalty rides on the extra draw. In a
+      // pre-59½ phase the user has chosen to pay the 10% on, more 401k is 10% dearer no matter how
+      // much bracket room is left — and a Roth CONVERSION is the move that genuinely is untouched
+      // by the penalty, so it is worth naming as the alternative rather than lumping them together.
+      const _hpPen=(headroomPhase.earlyPen_mo||0)>0;
+      push('bracket12','You have unused income headroom',`In ${headroomPhase.label} you have about ${fmtC(b.room)} of room before ${b.name}. ${hasRoth?'Roth conversions or extra 401k withdrawals':'A little more 401k withdrawal'} up to that amount stays low-taxed.${_hpPen?' Note this phase is before 59½ and you have chosen to accept the 10% penalty, so an extra 401k withdrawal still costs that 10% on top — a Roth conversion does not, because converting is not a distribution.':''}`);
     }
   }
   // Rule 5 — RMD shortfall warning
@@ -17023,10 +17524,60 @@ function calcPlanConfidence(phs){
   checks.push({na:lumpNA,pass:!shortPhases.length,warn:shortPhases.length>0,title:'One-Time Expenses Funded',
     desc:lumpDesc||'Add a "money out" lump sum on the Lump sums tab and this check will confirm the accounts you picked can actually cover it.'});
 
-  // For non-USD currencies OR non-US-taxpayer mode, mark the 4 US-specific checks (Tax Brackets, ACA, IRMAA, RMD) as N/A
+  // Check 14 — Roth Conversion Seasoning (v15)
+  //   Each Roth CONVERSION starts its own 5-year clock. Withdraw converted principal before that
+  //   clock runs out AND before 59½ and the 10% §72(t) penalty applies to it — even though the
+  //   account is "a Roth" and even though your own CONTRIBUTIONS come out freely at any age.
+  //   This is the failure mode of a conversion ladder run too fast, and it is the one place the
+  //   planner was flattering a plan: it let you convert and spend in the same phase for free.
+  //
+  //   This is a FLAG, not a calculation. The planner holds Roth money as a single balance with no
+  //   per-conversion layers, so it cannot say which dollars you are spending. It walks year by year
+  //   instead, comparing what has had time to season against what has been spent, and treats the
+  //   STARTING Roth balance as already seasoned (money converted before the plan began).
+  let rcNA=true,rcOk=true,rcWarn=false,rcDesc='';
+  {
+    const anyConv=phs.some(p=>(p.rothConvAnn||0)>0);
+    const anyPreRothW=phs.some(p=>(p.phaseStartAge||0)<59.5&&((p.wActual||{}).wRoth||0)>0);
+    if(anyConv&&anyPreRothW){
+      rcNA=false;
+      // Spread each phase's conversion evenly across its years — that IS how a ladder is run,
+      // one rung a year, and it gives every rung its own clock.
+      const convs=[];
+      phs.forEach(p=>{
+        const a=p.rothConvAnn||0; if(a<=0)return;
+        const yrs=Math.max(1,Math.round((p.months||12)/12));
+        for(let y=0;y<yrs;y++)convs.push({age:(p.phaseStartAge||0)+y,amt:a});
+      });
+      let spent=0,first=null;
+      for(const p of phs){
+        const wMo=((p.wActual||{}).wRoth||0); if(wMo<=0)continue;
+        const yrs=Math.max(1,Math.round((p.months||12)/12));
+        for(let y=0;y<yrs;y++){
+          const age=(p.phaseStartAge||0)+y;
+          if(age>=59.5)continue;                       // past 59½ the seasoning clock stops mattering
+          spent+=wMo*12;
+          const seasoned=(S.balRoth||0)+convs.filter(c=>c.age<=age-5).reduce((t,c)=>t+c.amt,0);
+          if(spent>seasoned&&!first)first={age,over:spent-seasoned,label:p.label};
+        }
+      }
+      rcOk=!first; rcWarn=false;
+      rcDesc=rcOk
+        ?'Your pre-59½ Roth withdrawals stay within money that has had five years to season (or was already in the account). ✓'
+        :`Around age ${Math.floor(first.age)}, your plan has withdrawn about ${fmtC(Math.round(first.over))} more from the Roth than has had five years to season. Each conversion starts its own <strong>5-year clock</strong>, and converted money withdrawn before that clock runs out — and before 59½ — carries the 10% early-withdrawal penalty. Convert earlier, spend less from the Roth in those years, or bridge them from cash or taxable accounts instead. The planner does not track individual conversion layers, so treat this as a flag to check with a tax professional rather than a calculated tax figure.`;
+    }
+  }
+  checks.push({na:rcNA,pass:rcOk,warn:rcWarn,title:'Roth Conversion Seasoning',
+    desc:rcDesc||'Add Roth conversions and a pre-59½ Roth withdrawal and this check will tell you whether the converted money has had time to season.'});
+
+  // For non-USD currencies OR non-US-taxpayer mode, mark the US-specific checks as N/A.
+  // v15: keyed by TITLE, not by array index. It was `[1,2,3,5]`, which silently bound the rule to
+  // the push order — appending a check anywhere but the very end would have marked the wrong ones
+  // N/A, with no error. Same four as before, plus the new Roth one (§72(t) is US law).
   const isUSA=(activeCurrency==='USD');
   const nonUsTaxpayer=(S.subjectToUsTax===false);
-  if(!isUSA||nonUsTaxpayer)[1,2,3,5].forEach(i=>{checks[i]={na:true,title:checks[i].title};});
+  const US_ONLY_CHECKS=['Tax Bracket Efficiency','ACA Subsidy Protected','IRMAA Not Triggered','RMD Compliance','Roth Conversion Seasoning'];
+  if(!isUSA||nonUsTaxpayer)checks.forEach((c,i)=>{if(US_ONLY_CHECKS.includes(c.title))checks[i]={na:true,title:c.title};});
   const activeChecks=checks.filter(c=>!c.na);
   const passCount=activeChecks.filter(c=>c.pass).length;
   const warnCount=activeChecks.filter(c=>!c.pass&&c.warn).length;
@@ -18006,6 +18557,8 @@ function _aiFingerprint(){
       uss:S.uss,ukp:S.ukp,ssStart:S.ssStartAge,birthYear:S.birthYear||0,ssColaRate:S.ssColaRate,spSS:S.spouseSS||0,
       spSSClaim:S.spouseSSBaseAge||62,spAge:S.spouseCurrentAge||0,
       subjectUS:S.subjectToUsTax!==false,
+      // v15: switching pre-59½ 401k access changes both the numbers and the advice worth giving.
+      earlyAccessMode:S.earlyAccessMode||'locked',
       // v6: include dismissed concepts + acknowledged checks so cache busts on changes to either
       dismissedConcepts:(function(){try{return JSON.stringify(_learnDismissed().map(d=>[d.key,d.reason||'']));}catch(e){return '';}})(),
       acknowledgedChecks:(function(){try{return JSON.stringify(_phAcknowledged().map(a=>[a.key,a.reason||'']));}catch(e){return '';}})(),
