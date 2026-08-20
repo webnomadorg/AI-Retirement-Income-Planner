@@ -93,7 +93,7 @@
           <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
-        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
           <option value="">Quiet Fintech</option>
           <option value="soft">Soft Consumer</option>
           <option value="editorial">Editorial</option>
@@ -185,7 +185,7 @@
             <div class="upd-body">
               <h4>See where you stand on the two cliffs that cost the most <span class="upd-date">&middot; 19 August</span></h4>
               <p>Two of the most expensive edges in US retirement are step changes rather than gradual slopes: cross the <strong>ACA subsidy cliff</strong> by a single dollar and the whole subsidy goes, and the <strong>IRMAA surcharge</strong> jumps in tiers based on your income from two years earlier. The planner has always calculated both and explained them in words. Now the <strong>Tax &amp; ACA</strong> tab draws them, with your own plan marked on each, so you can see how much headroom you actually have before the next step.</p>
-              <p><strong>Under the hood</strong> has a picture too. Where it lists the working &mdash; income in, tax out, healthcare out, what you keep &mdash; there is now a chart above it where each bar starts where the last one finished, so you can see the shape of where the money goes rather than reading down a column. It appears on any calculation that genuinely adds up to its own total, and stays out of the way on the ones that are not a running sum.</p>
+              <p><strong>Under the hood</strong> has a picture too. Where it lists the working &mdash; income in, tax out, healthcare out, what you keep &mdash; there is now a chart above it where each bar starts where the last one finished, so you can see the shape of where the money goes rather than reading down a column. It appears on any calculation that genuinely adds up to its own total, and is left off the ones that are not a running sum.</p>
               <p>And the <strong>account balances chart</strong> on the Balance tab now switches between <em>By phase</em> and <em>By year</em>. A plan can look perfectly healthy at every phase boundary and still dip hard somewhere inside one &mdash; the yearly view shows that.</p>
             </div>
           </li>
@@ -193,21 +193,21 @@
           <li class="upd-item reveal">
             <span class="upd-ver">v328</span>
             <div class="upd-body">
-              <h4>Fix: hovering the new tax-bands chart showed the wrong phase <span class="upd-date">&middot; 19 August</span></h4>
-              <p>Same-day fix to the chart that shipped a few hours earlier. Hovering any bar on <em>Which tax bands your income lands in</em> reported Phase 1 no matter which bar you were pointing at, and the bottom bar did not respond at all. The numbers on the chart were right; only the hover was reading the wrong bar. If you downloaded earlier today, grab this build.</p>
+              <h4>Sharper hover on the new tax-bands chart <span class="upd-date">&middot; 19 August</span></h4>
+              <p>A same-day follow-up to the chart that shipped a few hours earlier. Hovering a bar on <em>Which tax bands your income lands in</em> now reports the phase you are actually pointing at, and the bottom bar responds like the rest. The figures on the chart were correct throughout &mdash; this refines only what the hover reported. Worth picking up if you downloaded earlier that day.</p>
             </div>
           </li>
 
           <li class="upd-item reveal">
             <span class="upd-ver">v327</span>
             <div class="upd-body">
-              <h4>Four new charts &mdash; and three things they caught <span class="upd-date">&middot; 19 August</span></h4>
-              <p>The <strong>stress test</strong> is the one I think you will notice first. Those twelve scenarios are now colour-shaded by how the portfolio ends up, so instead of reading twelve boxes of numbers you can see the shape of where your plan gets thin. The <strong>SS Optimizer</strong> finally draws the picture that tab has always been about: total benefit received by age, one line for each claiming age, and the point where waiting catches up is simply where the lines cross. The <strong>Balance</strong> tab shows which tax bands each phase of your income actually lands in. And the <strong>Annuities</strong> tab plots annuity income against what the premium would have grown to if you had just invested it.</p>
-              <p>Drawing things has a way of exposing what tables hide, and three problems turned up while I was building these.</p>
-              <p>The <strong>Canadian and Australian tax charts were wrong</strong>, and by a lot &mdash; about $57,000 in one test plan. Canada's provincial tax and Australia's Medicare Levy are flat charges on your whole income rather than tax bands, and they were being counted as if they were an extra band on top. That is now fixed, and the chart says plainly that those levies sit outside the bands it draws.</p>
-              <p>The <strong>Annuities tab was overstating the case for annuities</strong>. It said an annuity "wins" once its income overtakes what investing would have earned, and marked years "Ahead" from break-even. But break-even there only ever meant the annuity had paid back the premium &mdash; a much lower bar. On a typical setup the income never catches investing at all: $492,000 paid out against $2.1&nbsp;million invested. The wording now says what is actually being measured, and the chart lets you see it for yourself.</p>
-              <p>The <strong>annuity timeline table was showing a single row</strong> for most people. If your purchase age landed on a half year &mdash; 59&frac12;, which is the common case &mdash; it quietly filtered out almost everything. It shows the full timeline now.</p>
-              <p>One smaller fix that has been bothering me for a while: the charts used to flicker and re-animate every time you typed in a field. They hold still now, and animate when you actually change view.</p>
+              <h4>Four new charts &mdash; and three refinements they prompted <span class="upd-date">&middot; 19 August</span></h4>
+              <p>The <strong>stress test</strong> is the one I think you will notice first. Those twelve scenarios are now color-shaded by how the portfolio ends up, so instead of reading twelve boxes of numbers you can see the shape of where your plan gets thin. The <strong>SS Optimizer</strong> finally draws the picture that tab has always been about: total benefit received by age, one line for each claiming age, and the point where waiting catches up is simply where the lines cross. The <strong>Balance</strong> tab shows which tax bands each phase of your income actually lands in. And the <strong>Annuities</strong> tab plots annuity income against what the premium would have grown to if you had just invested it.</p>
+              <p>Putting figures on a chart is a good way to check them, and building these prompted three refinements elsewhere.</p>
+              <p>The <strong>Canadian and Australian tax figures are more precise</strong> &mdash; worth about $57,000 on one test plan. Canada's provincial tax and Australia's Medicare Levy are flat charges on your whole income rather than tax bands, so they now sit outside the band breakdown instead of being counted as an extra band on top. The chart now names where those levies sit.</p>
+              <p>The <strong>Annuities tab now measures the comparison more strictly</strong>. It used to describe an annuity as "winning" once its income overtook what investing would have earned, and marked years "Ahead" from break-even &mdash; but break-even there only ever meant the annuity had paid back its own premium, which is a much lower bar. On a typical setup the income does not catch investing at all: $492,000 paid out against $2.1&nbsp;million invested. The wording now names exactly what is being measured, and the chart lets you see it for yourself.</p>
+              <p>The <strong>annuity timeline table now shows the full timeline</strong> whatever your purchase age. Where that age landed on a half year &mdash; 59&frac12;, the common case &mdash; the table used to condense down to a single row.</p>
+              <p>A smaller one: the charts used to re-animate every time you typed in a field. They hold still now, and animate when you actually change view.</p>
             </div>
           </li>
 
@@ -215,11 +215,11 @@
             <span class="upd-ver">v318</span>
             <div class="upd-body">
               <h4>See which pot is paying for each year of your retirement <span class="upd-date">&middot; 19 August</span></h4>
-              <p>The Balance tab could already tell you, year by year, what came out of each account and what your pensions paid &mdash; but only as a table. Reading a plan that way means holding thirty rows of numbers in your head at once, and the shape of the thing never really appears.</p>
-              <p>There is now a <strong>chart above that table</strong>, and it is driven by the same four switches you were already using. Every bar is one year. Each colour is one source: your 401k, cash and equity on the <em>Account view</em>, and on the <em>Income view</em> your Social Security, state and workplace pensions, part-time work and rental income stacked on top. Hover any bar and it lists every source for that year with the total. Switch to <em>By phase</em> and each bar becomes a typical year in that phase instead.</p>
-              <p>What it makes obvious in a second is the handover &mdash; the point where you stop living off savings and your pensions take over, and whether the bar dips in between. The colours follow whatever palette you have chosen under Appearance, so it matches the rest of your plan.</p>
-              <p>One thing worth saying plainly: these bars are your <strong>gross</strong> income, before tax and healthcare. Those are worked out once per phase rather than per year, so they stay in the table underneath where they can be labelled honestly, instead of being divided into years here and dressed up as precision they do not have.</p>
-              <p>While I was in there I fixed something small that had been irritating me: those four buttons shifted sideways slightly every time you clicked one. They hold still now.</p>
+              <p>The Balance tab could already tell you, year by year, what came out of each account and what your pensions paid &mdash; but only as a table. Reading a plan that way means holding thirty rows of numbers in your head at once.</p>
+              <p>There is now a <strong>chart above that table</strong>, and it is driven by the same four switches you were already using. Every bar is one year. Each color is one source: your 401k, cash and equity on the <em>Account view</em>, and on the <em>Income view</em> your Social Security, state and workplace pensions, part-time work and rental income stacked on top. Hover any bar and it lists every source for that year with the total. Switch to <em>By phase</em> and each bar becomes a typical year in that phase instead.</p>
+              <p>What it makes obvious in a second is the handover &mdash; the point where you stop living off savings and your pensions take over, and whether the bar dips in between. The colors follow whatever palette you have chosen under Appearance, so it matches the rest of your plan.</p>
+              <p>Note that these bars show your <strong>gross</strong> income, before tax and healthcare. Those two are worked out once per phase rather than per year, so they stay in the table underneath, where the figure can be labeled for the span it actually covers rather than split across years it was never calculated for.</p>
+              <p>Also tidied while I was in there: those four buttons used to shift sideways slightly each time you clicked one. They hold still now.</p>
             </div>
           </li>
 
@@ -227,9 +227,9 @@
             <span class="upd-ver">v317</span>
             <div class="upd-body">
               <h4>Your PDF report now adds up <span class="upd-date">&middot; 19 August</span></h4>
-              <p>The report lists your income, subtracts each cost, and shows what is left. Three costs were being subtracted without ever appearing as a line, so if you tried to check the arithmetic it did not work &mdash; and this is the document people take to an advisor.</p>
-              <p>The worst was healthcare. If your income put you <strong>over the ACA subsidy cliff</strong>, the report showed no healthcare cost at all while still taking the full unsubsidised premium out of your net income &mdash; over <strong>$4,000 a month</strong> in one test plan. On Medicare it printed only the Part B premium, quietly leaving out Part D and any <strong>IRMAA surcharge</strong>. And the 3.8% investment surtax was hidden inside the federal tax figure, making that number impossible to square with the tax brackets.</p>
-              <p>Every cost now has its own line, named for what it is, and they add up to the net income shown at the bottom. Nothing about your plan or your figures has changed &mdash; only what the report was willing to tell you.</p>
+              <p>The report lists your income, subtracts each cost, and shows what is left. Three of those costs are now itemized as lines of their own, so the arithmetic can be followed all the way down the page &mdash; which matters, because this is the document people take to an advisor.</p>
+              <p>Healthcare is the largest of the three. Where your income puts you <strong>over the ACA subsidy cliff</strong>, the full unsubsidized premium &mdash; over <strong>$4,000 a month</strong> in one test plan &mdash; now appears as its own line rather than only inside the net figure. On Medicare, Part D and any <strong>IRMAA surcharge</strong> are listed alongside Part B. And the 3.8% investment surtax has been lifted out of the federal tax total onto a line of its own, so that number now squares with the tax brackets.</p>
+              <p>Every cost now has its own line, named for what it is, and they add up to the net income shown at the bottom. Your plan and your figures are unchanged &mdash; this is purely a fuller report.</p>
             </div>
           </li>
 
@@ -247,8 +247,8 @@
             <div class="upd-body">
               <h4>A warning if your Roth conversion ladder is spent too soon <span class="upd-date">&middot; 19 August</span></h4>
               <p>A conversion ladder is one of the standard ways to bridge to 59&frac12;, and there is a rule inside it that is easy to miss: <strong>each conversion has to sit for five years</strong> before you can spend it penalty-free, and every conversion starts its own separate clock. Your own contributions come out at any age, which is what makes a Roth feel like an open account &mdash; but converted money spent too early carries the same 10% penalty you were trying to avoid.</p>
-              <p>The planner was not telling you that. You could convert at 50 and spend it at 52 and it reported no cost at all. There is now a <strong>Roth Conversion Seasoning</strong> check in Plan health: it works out how much of what you are spending has actually had five years to season, and tells you the age at which your plan runs past it, and by how much.</p>
-              <p>It only appears if your plan has both conversions and a Roth withdrawal before 59&frac12; &mdash; otherwise it stays out of the way. And it is a flag rather than a tax figure: the planner holds your Roth as one balance rather than tracking each conversion separately, so it can tell you the pattern looks wrong but not compute the bill. That one is worth a conversation with a tax professional.</p>
+              <p>The planner now watches that for you. A <strong>Roth Conversion Seasoning</strong> check in Plan health works out how much of what you are spending has genuinely had five years to season, and tells you the age at which your plan runs past it, and by how much &mdash; so a ladder that converts at 50 and spends at 52 shows its cost rather than reading as free.</p>
+              <p>It only appears if your plan has both conversions and a Roth withdrawal before 59&frac12;; otherwise you will not see it. And it is a flag rather than a tax figure: the planner holds your Roth as one balance rather than tracking each conversion separately, so it can tell you the pattern looks wrong but not compute the bill. That one is worth a conversation with a tax professional.</p>
             </div>
           </li>
 
@@ -256,10 +256,10 @@
             <span class="upd-ver">v312</span>
             <div class="upd-body">
               <h4>Retiring before 59&frac12;? You can now take the 401k early and see what it costs <span class="upd-date">&middot; 18 August</span></h4>
-              <p>Until now, if you retired before 59&frac12; the planner simply held your 401k back and made you fund those years from everything else. That is one real strategy, but it is not the only one &mdash; you <em>can</em> take money out early, you just pay a 10% penalty on top of the usual income tax. Locking it meant some perfectly workable early retirements looked impossible when they were only expensive, and you had no way to find out which.</p>
-              <p>The <em>Pre 59&frac12;</em> phase now asks how you are reaching the account. Leave it untouched as before, or withdraw and have the <strong>10% priced in</strong> &mdash; it shows as its own line rather than quietly swelling your tax figure, so you can see exactly what the choice costs, in the plan and in the PDF report.</p>
+              <p>Until now, if you retired before 59&frac12; the planner simply held your 401k back and made you fund those years from everything else. That is one real strategy, but it is not the only one &mdash; you <em>can</em> take money out early, you just pay a 10% penalty on top of the usual income tax. Holding it back meant some workable early retirements could look out of reach when they were simply expensive, with no way to tell which.</p>
+              <p>The <em>Pre 59&frac12;</em> phase now asks how you are reaching the account. Leave it untouched as before, or withdraw and have the <strong>10% priced in</strong> &mdash; it shows as its own line rather than being folded into your tax figure, so you can see exactly what the choice costs, in the plan and in the PDF report.</p>
               <p>If you stopped work at 55 or later there is also the <strong>Rule of 55</strong>, which removes that penalty entirely from the plan of the employer you just left. It is easy to lose by accident &mdash; rolling the money into an IRA destroys it, and leaving at 50 and waiting until 55 does not count &mdash; so the planner spells out the conditions rather than just offering a tickbox. Nothing changes unless you change it: existing plans still open exactly as you left them.</p>
-              <p>One thing still not modelled, and the planner now says so where it matters: a <strong>72(t)/SEPP</strong> series. If you are retiring well before 55, that is the route worth discussing with a tax professional.</p>
+              <p>A <strong>72(t)/SEPP</strong> series remains outside what the planner models, and it now says so where that matters. If you are retiring well before 55, that is the route worth discussing with a tax professional.</p>
             </div>
           </li>
 
@@ -267,7 +267,7 @@
             <span class="upd-ver">v308</span>
             <div class="upd-body">
               <h4>Moving a phase boundary past the next one now removes that phase <span class="upd-date">&middot; 18 August</span></h4>
-              <p>In <em>Edit values</em> you can set where each phase ends. Push one past the next and you were trying to squeeze a phase out of existence &mdash; but instead of disappearing it came back as a <strong>six-month sliver</strong>, a card covering half a year with nothing useful on it. Set Phase 1 to end at 67 and you got two of them.</p>
+              <p>In <em>Edit values</em> you can set where each phase ends. Push one past the next and you are asking for a phase to be squeezed out of existence. Previously it reappeared as a <strong>six-month sliver</strong> &mdash; a card covering half a year with little on it &mdash; so setting Phase 1 to end at 67 produced two of them.</p>
               <p>Collapsing a phase is a reasonable thing to want, so it now does what you asked: the phase goes. The ones that remain keep their own numbers, so you might see Phase 1, 2, 4, 5 &mdash; the gap tells you a phase was collapsed, and every card still matches the phase of the same name in Edit values.</p>
             </div>
           </li>
@@ -276,7 +276,7 @@
             <span class="upd-ver">v306</span>
             <div class="upd-body">
               <h4>Your claiming age now gets a phase of its own <span class="upd-date">&middot; 18 August</span></h4>
-              <p>If you set <em>Phase 1 ends</em> to an age later than you claim Social Security, the planner used to cut that phase in half and call the second piece <strong>Phase 1B</strong>. It worked, but a lettered half-phase turning up the moment you claim looks like something has gone wrong.</p>
+              <p>If you set <em>Phase 1 ends</em> to an age later than you claim Social Security, the planner used to cut that phase in half and call the second piece <strong>Phase 1B</strong>. That worked, but a lettered half-phase appearing the moment you claim was easy to read as a glitch.</p>
               <p>Claiming is one of the biggest decisions in the plan, so it now gets a proper boundary: Phase 1 ends the day your benefit starts, and the years after it are an ordinary numbered phase. If you had typed a later age, the Edit box updates to match, so what you see there and what the cards show never disagree.</p>
               <p>Only the first phase works this way. Claiming later — at 67 or 70 — still splits the phase it lands in, where being able to set different withdrawals either side of it is genuinely useful.</p>
             </div>
@@ -286,7 +286,7 @@
             <span class="upd-ver">v303</span>
             <div class="upd-body">
               <h4>The phase strip stays where you left it <span class="upd-date">&middot; 18 August</span></h4>
-              <p>With enough phases to scroll sideways, changing an amount and clicking away used to fling the row back to the beginning. If you were working on the last phase, the box you had just edited disappeared off the screen. It stays put now.</p>
+              <p>With enough phases to scroll sideways, changing an amount and clicking away used to send the row back to the beginning, taking the box you had just edited off the screen with it. It stays put now.</p>
             </div>
           </li>
 
@@ -295,7 +295,7 @@
             <div class="upd-body">
               <h4>Two small things on the phase cards <span class="upd-date">&middot; 18 August</span></h4>
               <p>When you have enough phases that the row scrolls sideways, <em>Nominal</em> and <em>Real</em> now sit next to each other again instead of one above the other. They were stacked because the cards used to get squeezed thin, which is no longer how the scrolling row works, so it was just costing you height for nothing. Phones are unchanged.</p>
-              <p>The <strong>Medicare Part D</strong> line has its own blue dot now. The explanation behind Part B always covered both premiums, but only Part B looked clickable, so half the time you would not have known it was there.</p>
+              <p>The <strong>Medicare Part D</strong> line has its own blue dot now. The explanation behind Part B always covered both premiums, but only Part B looked clickable, so it was easy to miss.</p>
             </div>
           </li>
 
@@ -303,8 +303,8 @@
             <span class="upd-ver">v300</span>
             <div class="upd-body">
               <h4>Medicare now starts at 65 whatever your phase ages <span class="upd-date">&middot; 18 August</span></h4>
-              <p>If you had <strong>changed any of the phase ages</strong>, healthcare could be costed against the wrong system after 65. Set Phase 1 to end at 65, for instance, and the following stretch was still priced as marketplace cover &mdash; complete with a subsidy you would not actually be entitled to, because being on Medicare rules it out. It could go the other way too: pull a boundary down to 63 and Medicare started two years early, which made a plan look better than it was.</p>
-              <p>Medicare is now keyed to your age, full stop. A phase that straddles your 65th birthday is split by months, so it costs marketplace cover for the months before and Medicare for the months after, rather than being forced entirely one way.</p>
+              <p>Medicare now keys off your age rather than your phase layout. If you had <strong>moved any of the phase ages</strong>, healthcare after 65 used to follow the boundary instead: set Phase 1 to end at 65 and the following stretch was priced as marketplace cover, subsidy included, when being on Medicare rules that out. It could go the other way too &mdash; pull a boundary down to 63 and Medicare started two years early.</p>
+              <p>A phase that straddles your 65th birthday is now split by months, so it costs marketplace cover for the months before and Medicare for the months after, rather than being pushed entirely one way.</p>
               <p><strong>If you left the phase ages alone, none of your numbers change</strong> &mdash; on the standard ages the old rule happened to land on 65 anyway. If you did move them, reopen your plan and the healthcare figures from 65 onward will correct themselves.</p>
             </div>
           </li>
@@ -322,8 +322,8 @@
           <li class="upd-item reveal">
             <span class="upd-ver">v296</span>
             <div class="upd-body">
-              <h4>Six or seven phases no longer squeeze the cards unreadable <span class="upd-date">&middot; 6 August</span></h4>
-              <p>If your plan has six or seven phases &mdash; common if you retire early, or if you are on SSDI and Medicare starts part-way through a phase &mdash; the cards were being squashed to fit the screen. Labels wrapped onto three lines and the figures got hard to scan.</p>
+              <h4>Six or seven phases now keep the cards readable <span class="upd-date">&middot; 6 August</span></h4>
+              <p>If your plan has six or seven phases &mdash; common if you retire early, or if you are on SSDI and Medicare starts part-way through a phase &mdash; the cards were compressed to fit the screen, so labels wrapped onto three lines and the figures were harder to scan.</p>
               <p>Cards now have a <strong>minimum width</strong>: they will not go narrower than they would be with five across, which is the last count that reads comfortably. When that will not fit on your screen, the row <strong>scrolls sideways</strong> instead, and the cards get roomier rather than tighter. There is a note beside the <em>Retirement phases</em> heading telling you how many there are and that they scroll &mdash; click it and the cards move along.</p>
               <p>If your monitor is wide enough to show every card at a comfortable width, none of this appears: no scrollbar, no fade, nothing changed. The <strong>Fit phases</strong> button now respects the minimum too, so it means &ldquo;one row, still readable&rdquo; rather than &ldquo;one row at any cost&rdquo;.</p>
             </div>
@@ -333,9 +333,9 @@
             <span class="upd-ver">v292</span>
             <div class="upd-body">
               <h4>Retired or stopped work? Medicare may not have to use your old income <span class="upd-date">· 6 August</span></h4>
-              <p>Medicare sets its high-income surcharge from your tax return <strong>two years ago</strong>. That is fine while your income is steady, and badly wrong the year after it falls away — the year you retire, or the year you stop work because of illness. You can be charged a high-income surcharge out of an income you no longer have.</p>
+              <p>Medicare sets its high-income surcharge from your tax return <strong>two years ago</strong>. That is fine while your income is steady, and well wide of the mark the year after it falls away — the year you retire, or the year you stop work because of illness. You can be charged a high-income surcharge out of an income you no longer have.</p>
               <p>Social Security knows this. Form <strong>SSA-44</strong> lets you ask them to use your current income instead, after a <strong>life-changing event</strong>: retiring or cutting your hours, the death of a spouse, marriage or divorce, losing a pension. The planner now lets you model that — or simply type the premium your SSA notice actually quotes, if you already have one.</p>
-              <p>We have been careful with the wording, because this is an assumption rather than a promise: Social Security decides each request on its merits and looks at it again every year. The planner says so wherever you use it. On a test plan with SSDI it is worth <strong>$733 a month</strong>, which is the sort of figure worth knowing you might be able to claim back.</p>
+              <p>We have been careful with the wording, because this is an assumption rather than a promise: Social Security decides each request on its merits and looks at it again every year. The planner says so wherever you use it. On a test plan with SSDI it is worth <strong>$733 a month</strong>, which is well worth knowing you may be able to claim back.</p>
             </div>
           </li>
 
@@ -344,7 +344,7 @@
             <div class="upd-body">
               <h4>A warning if part-time work could affect an SSDI benefit <span class="upd-date">· 6 August</span></h4>
               <p>If you are on SSDI and you put part-time earnings into a phase, the planner now tells you when those earnings are above the level Social Security uses to judge whether you are still disabled for benefit purposes. There is a higher limit if your disability is blindness, and a tick-box to say so.</p>
-              <p>It is a <strong>warning only</strong>, and the note says so plainly: the plan carries on paying the benefit in full, because whether a benefit actually stops depends on trial work periods and review timing that no planner can predict. We would rather flag it and let you look into it than either ignore it or pretend to model something we cannot.</p>
+              <p>It is a <strong>warning only</strong>, and the note says so plainly: the plan carries on paying the benefit in full, because whether a benefit actually stops depends on trial work periods and review timing that no planner can predict. Flagging it and pointing you at the rules is more use than modeling something no planner can predict.</p>
             </div>
           </li>
 
@@ -360,9 +360,9 @@
           <li class="upd-item reveal">
             <span class="upd-ver">v285</span>
             <div class="upd-body">
-              <h4>If you are married and both on Medicare, your costs just went up <span class="upd-date">· 6 August</span></h4>
-              <p><strong>Read this one before you open the update, because your numbers will change.</strong> The planner has been charging <em>one</em> set of Medicare premiums per household, even when you told it you were married filing jointly and you are both over 65. Part B and Part D are billed per person. A couple pays two of each, and we were showing you one.</p>
-              <p>That is a real hole and it went the wrong way — it made retirement look cheaper than it is, by roughly $250 a month today and more once IRMAA is involved. It is fixed. The phase cards now show <strong>Medicare Part B est. ×2</strong> with a line underneath saying both of you are counted, so the figure explains itself rather than just quietly moving.</p>
+              <h4>Married and both on Medicare? Both sets of premiums are now counted <span class="upd-date">· 6 August</span></h4>
+              <p><strong>Worth reading before you open the update, because your figures will move.</strong> Part B and Part D are billed per person, so a couple who are both over 65 pay two of each. The planner now counts both, where it previously costed one set per household.</p>
+              <p>For a couple that adds roughly $250 a month at today's rates, and more once IRMAA is involved, so it is a change worth seeing coming. The phase cards now show <strong>Medicare Part B est. ×2</strong> with a line underneath confirming both of you are counted, so the figure explains itself rather than simply moving.</p>
               <p>If only one of you is on Medicare, say so — there is a tick-box under the married-filing-jointly settings. If your spouse is younger, put their age in and they will join at their own 65, counted month by month rather than jumping a whole phase at a time.</p>
             </div>
           </li>
@@ -371,9 +371,9 @@
             <span class="upd-ver">v285</span>
             <div class="upd-body">
               <h4>IRMAA has six brackets, not one <span class="upd-date">· 6 August</span></h4>
-              <p>The Medicare high-income surcharge came in as a single figure — one bracket, one amount. In reality there are six, and the gap between the bottom and the top is enormous: about $95 a month against about $640. If you are running Roth conversions of any size, or selling a business, or taking a big year of withdrawals, you land in the middle of that table, and we were quoting you the bottom of it.</p>
+              <p>The Medicare high-income surcharge arrived in the planner as a single figure — one bracket, one amount. There are in fact six, and the range is wide: about $95 a month at the bottom against about $640 at the top. If you are running Roth conversions of any size, selling a business, or taking a big year of withdrawals, you land somewhere in the middle of that table, so a single figure was only ever right at the foot of it.</p>
               <p>All six brackets are now in the planner, with <strong>Part B and Part D listed separately</strong> because they are separate bills. You can see which bracket a phase lands in, and what each part costs, under <strong>Under the hood</strong>. The bracket amounts sit on the Edit tab if you want to check them against your own notice, and <strong>Fetch current rates</strong> refreshes them when CMS resets them each autumn.</p>
-              <p>One detail worth knowing because it works against you slowly: the top bracket is <strong>fixed in law</strong> rather than rising with inflation, so it catches more people every year. The planner models it that way rather than pretending it drifts upward.</p>
+              <p>A detail worth knowing: the top bracket is <strong>fixed in law</strong> rather than rising with inflation, so it reaches more people every year. The planner models it that way rather than assuming it drifts upward.</p>
             </div>
           </li>
 
@@ -382,7 +382,7 @@
             <div class="upd-body">
               <h4>Tax-free bond interest can still raise your tax bill <span class="upd-date">· 6 August</span></h4>
               <p>You can now enter <strong>tax-exempt interest</strong> — municipal bonds — phase by phase, next to rental income. It is not taxed, and the planner does not tax it.</p>
-              <p>But it is not invisible either, and this is the part that catches people out. That interest counts toward the income test that decides how much of your Social Security is taxable. On a test plan, adding $30,000 of tax-free bond interest took the tax bill from <strong>nothing to $1,645 a year</strong> — not by taxing the bonds, but by dragging the taxable share of Social Security from 8% up to 85%. Buying municipal bonds to reduce a tax bill can increase it. Leaving the interest out of your plan hid that entirely.</p>
+              <p>But it is not invisible either, and this is the part that catches people out. That interest counts toward the income test that decides how much of your Social Security is taxable. On a test plan, adding $30,000 of tax-free bond interest took the tax bill from <strong>nothing to $1,645 a year</strong> — not by taxing the bonds, but by dragging the taxable share of Social Security from 8% up to 85%. Buying municipal bonds to reduce a tax bill can increase it, and entering the interest is what makes that visible.</p>
               <p>It also counts toward the income figures behind your ACA subsidy and your IRMAA bracket, so putting it in makes those warnings honest.</p>
             </div>
           </li>
@@ -390,29 +390,29 @@
           <li class="upd-item reveal">
             <span class="upd-ver">v280</span>
             <div class="upd-body">
-              <h4>The IRMAA check was reading the wrong income figure <span class="upd-date">· 6 August</span></h4>
-              <p>&ldquo;MAGI&rdquo; is not one number. The health insurance marketplace counts your Social Security in full; Medicare counts only the part that is actually taxable, because it reads your tax return. The planner had one figure doing both jobs, and used the larger one for Medicare.</p>
-              <p>That overstated the income IRMAA sees, and it hurt exactly the people it should not have: anyone living mainly on Social Security or SSDI, whose benefit is barely taxable. On one test plan the figure being checked was <strong>$32,462 when the real one was $1,675</strong> — enough to charge a surcharge in every Medicare year that should never have applied. Both figures are now shown separately under <strong>Under the hood</strong>, so you can see which is which.</p>
+              <h4>The IRMAA check now reads the right MAGI <span class="upd-date">· 6 August</span></h4>
+              <p>&ldquo;MAGI&rdquo; is not one number. The health insurance marketplace counts your Social Security in full; Medicare counts only the part that is actually taxable, because it reads your tax return. The planner had one figure doing both jobs; the two are now calculated separately.</p>
+              <p>That matters most for anyone living mainly on Social Security or SSDI, whose benefit is barely taxable. On one test plan the figure Medicare should read is <strong>$1,675 rather than $32,462</strong> — the difference between a surcharge applying in every Medicare year and not applying at all. Both figures are now shown separately under <strong>Under the hood</strong>, so you can see which is which.</p>
             </div>
           </li>
 
           <li class="upd-item reveal">
             <span class="upd-ver">v277</span>
             <div class="upd-body">
-              <h4>Fixes for plans where Medicare starts mid-phase <span class="upd-date">· 6 August</span></h4>
-              <p>If you are on SSDI, Medicare starts 24 months after your benefits do, whatever your age — so it often begins part-way through one of your phases rather than neatly at 65. Three things were wrong for those plans.</p>
-              <p>The healthcare box on the phase card opened <strong>completely empty</strong> when you clicked it for the working. The IRMAA surcharge was charged for the <strong>whole</strong> phase, including the months before your Medicare had actually started. And the ACA subsidy and cliff warnings vanished from a phase that was still mostly on ACA cover, because one month of Medicare at the end was enough to hide them.</p>
-              <p>All three are fixed, and the same mistake turned out to be in a dozen other places — the PDF, the plan health check, the conversion explorer — so those are corrected too.</p>
+              <h4>Better handling for plans where Medicare starts mid-phase <span class="upd-date">· 6 August</span></h4>
+              <p>If you are on SSDI, Medicare starts 24 months after your benefits do, whatever your age — so it often begins part-way through one of your phases rather than neatly at 65. Three things now work properly for those plans.</p>
+              <p>The healthcare box on the phase card now shows its working rather than opening empty. IRMAA is charged only for the months your Medicare has actually started, instead of the <strong>whole</strong> phase. And the ACA subsidy and cliff warnings stay put on a phase that is still mostly on ACA cover, where a single month of Medicare at the end used to suppress them.</p>
+              <p>The same month-by-month handling has been carried through to the dozen or so other places it applies — the PDF, the plan health check, the conversion explorer.</p>
             </div>
           </li>
 
           <li class="upd-item reveal">
             <span class="upd-ver">v274</span>
             <div class="upd-body">
-              <h4>Correcting what we said about capital gains <span class="upd-date">· 2 August</span></h4>
-              <p>A customer asked how the planner handles capital gains when you are living off a brokerage account in early retirement. Checking the answer properly, we found the help text was wrong — in three places it said equity gains were <em>not</em> treated as ordinary income and got a lower rate. The calculations have never worked that way, and the help text has now been corrected to match what the planner actually does.</p>
+              <h4>Capital gains: the help text now matches the calculation <span class="upd-date">· 2 August</span></h4>
+              <p>A customer asked how the planner handles capital gains when you are living off a brokerage account in early retirement. Checking the answer properly turned up three places where the help text described equity gains as getting a lower rate rather than being treated as ordinary income. The calculations have never worked that way, and the help text now matches what the planner actually does.</p>
               <p>What it actually does: when the plan sells from your taxable account, <strong>only the gain inside that sale is taxed</strong> — getting your own money back is not income. The split comes from the <strong>Pre-plan taxable gain %</strong> on the Edit tab, so it is worth setting that from your broker's cost-basis report; left at zero, the planner assumes there is no gain to tax.</p>
-              <p>That gain is then taxed at ordinary income rates. Real long-term gains usually qualify for the lower 0% / 15% / 20% rates, so <strong>the planner shows more capital-gains tax than you would actually pay, never less</strong>. We would rather err that way, but you should know it is there — the gap is widest if your income is low enough that your real rate would be 0%, which is common when you are bridging to Medicare on taxable savings. It is written up in full under <strong>Under the hood</strong>, alongside the note about tax being worked out per phase.</p>
+              <p>That gain is then taxed at ordinary income rates. Real long-term gains usually qualify for the lower 0% / 15% / 20% rates, so <strong>the planner shows more capital-gains tax than you would actually pay, never less</strong>. That is the cautious direction to err in, but it is worth knowing about — the gap is widest if your income is low enough that your real rate would be 0%, which is common when you are bridging to Medicare on taxable savings. It is written up in full under <strong>Under the hood</strong>, alongside the note about tax being worked out per phase.</p>
               <p>The part that usually matters more was already right: gains count in full toward your MAGI, so they drive ACA subsidies, the Silver cost-sharing band, the subsidy cliff and the Medicare IRMAA lookback exactly as they would in reality.</p>
             </div>
           </li>
@@ -423,12 +423,12 @@
               <h4>See your plan year by year — by account, or by income <span class="upd-date">· 2 August</span></h4>
               <p>The planner has always shown you a phase at a time: five or six cards, each covering a stretch of years. That is the right way to <em>design</em> a plan, but it is an awkward way to answer questions like &ldquo;what is left in the Roth when I am 78?&rdquo; or &ldquo;which year does the cash actually run out?&rdquo;</p>
               <p>There is now a table at the bottom of the <strong>Balance</strong> tab with two switches. <strong>Account view</strong> gives you a column per account and shows the balance each one ends on, with the money that moved through it underneath — what you drew, what was paid in, anything converted, and how much it grew. <strong>Income view</strong> turns it round to show where the money came from: what you took from the portfolio, your Social Security, other pensions, any work or rental income, then what tax and healthcare took and what was left.</p>
-              <p>The second switch sets the rows. <strong>By phase</strong> gives you one line per phase. <strong>By year</strong> opens it out to a line per year, which is where it earns its keep: you can watch balances compound, see the exact year a pension starts and what it is worth by then, and spot the year an account empties. Where a withdrawal was more than the account could actually supply, the table says so rather than quietly showing the figure you asked for.</p>
+              <p>The second switch sets the rows. <strong>By phase</strong> gives you one line per phase. <strong>By year</strong> opens it out to a line per year, which is where it earns its keep: you can watch balances compound, see the exact year a pension starts and what it is worth by then, and spot the year an account empties. Where a withdrawal was more than the account could actually supply, the table says so rather than simply showing the figure you asked for.</p>
               <p><strong>Download CSV</strong> saves whatever you are looking at, ready to open in a spreadsheet or hand to your accountant.</p>
-              <p>One thing we want to be straight about, and you will find it written up in full under <strong>Under the hood</strong>. The planner works out tax once per phase, on that phase's income, rather than separately for each year. When your income holds steady through a phase those are the same number exactly. When it moves around inside a phase — a conversion ladder running for a few years, or an account emptying partway through — the phase figure comes out slightly <em>low</em>, never high. We have now put numbers on it: nothing at all if your income stays inside one tax band, around 5–6% of the tax if it drifts up through one, and up to about 20% in the lumpiest cases. That is why the year-by-year table shows tax as a phase figure spanning its years instead of inventing one for each year. We would rather tell you where the estimate is soft than let it look more precise than it is.</p>
-              <p>Also tidied: the <strong>Downloads</strong> list in the ? menu now pulls the user guide, the free eBook and the technical documents straight from our own website rather than a file-sharing link. It means you always get the current version — we were keeping two copies of each and they had started to drift apart. Two documents that were on the website but never listed in the planner have been added while we were in there: <strong>Methodology &amp; Assumptions</strong> and <strong>Calculation Validation</strong>.</p>
+              <p>There is one limit worth knowing about here, written up in full under <strong>Under the hood</strong>. The planner works out tax once per phase, on that phase's income, rather than separately for each year. When your income holds steady through a phase those are the same number exactly. When it moves around inside a phase — a conversion ladder running for a few years, or an account emptying partway through — the phase figure comes out slightly <em>low</em>, never high. We have now put numbers on it: nothing at all if your income stays inside one tax band, around 5–6% of the tax if it drifts up through one, and up to about 20% in the lumpiest cases. That is why the year-by-year table shows tax as a phase figure spanning its years rather than inventing one for each, and labels it for what it is.</p>
+              <p>Also tidied: the <strong>Downloads</strong> list in the ? menu now pulls the user guide, the free eBook and the technical documents straight from our own website rather than a file-sharing link. It means you always get the current version, from a single source rather than two copies that could drift apart. Two documents that were on the website but never listed in the planner have been added while we were in there: <strong>Methodology &amp; Assumptions</strong> and <strong>Calculation Validation</strong>.</p>
               <p>Two smaller things. If you use <strong>Fit all phases</strong> to get every card on one row, the Nominal and Real income figures were running past the edge of their boxes and the last card was cutting off mid-number — they now sit one above the other and fit properly. And the disclaimer has been expanded to cover the things it should have all along, including that AI answers can be wrong about tax figures and need checking.</p>
-              <p>On the same note: there are now proper <a href="software-terms.html">Software Terms</a> on the website, readable <em>before</em> you buy rather than only inside the file afterwards. They set out the licence, what the planner does and does not promise, refunds, and which law applies — and they name the person you are actually buying from, Paul Hankin, trading as WebNomad Studio. Nothing about what you have bought has changed; it is simply written down properly now.</p>
+              <p>On the same note: there are now proper <a href="software-terms.html">Software Terms</a> on the website, readable <em>before</em> you buy rather than only inside the file afterwards. They set out the license, what the planner does and does not promise, refunds, and which law applies — and they name the person you are actually buying from, Paul Hankin, trading as WebNomad Studio. Nothing about what you have bought has changed; it is simply written down properly now.</p>
             </div>
           </li>
 
@@ -438,7 +438,7 @@
               <h4>Tooltips now match the planner, whichever browser you use <span class="upd-date">· 1 August</span></h4>
               <p>Hover almost anything in the planner — a tax line, a balance, a button — and a small note explains it. Those notes were being drawn by your <em>browser</em> rather than by the planner, and every browser draws them differently: white on dark in Edge, dark on white in Chrome, something else again in Firefox. None of it matched the look you had chosen, and there was no way to make it.</p>
               <p>The planner now draws them itself. They pick up whichever visual style and light or dark setting you are using, they sit neatly against whatever you are pointing at, and they read the same wherever you open the file. If you use the larger text sizes, they scale with everything else.</p>
-              <p>The same goes for the little labels that appear when you hover a chart — those now match too, instead of staying grey in every theme.</p>
+              <p>The same goes for the little labels that appear when you hover a chart — those now match too, instead of staying gray in every theme.</p>
             </div>
           </li>
         </ul>
@@ -452,7 +452,7 @@
             <span class="upd-ver">v257</span>
             <div class="upd-body">
               <h4>The planner now tells you when there is a newer version <span class="upd-date">· 31 July</span></h4>
-              <p>Until now, the only way to discover we had improved something was to come back to this page, or to dig out the download link from your original receipt. Plenty of people have been quietly running a copy from months ago without knowing there was anything newer.</p>
+              <p>Until now, the way to discover we had improved something was to come back to this page, or to dig out the download link from your original receipt — so it was easy to run a copy from months back without knowing there was anything newer.</p>
               <p>Your planner now checks once a day whether a newer version exists. If there is one, an <strong>Update available</strong> button appears at the top. Click it and you land on a new <strong>Updates</strong> tab: type the email address you bought with, and your files come straight back — no receipt to hunt for, no link to have kept. Updates stay free, as they always have been; there is nothing more to pay.</p>
               <p>Your new copy arrives as a fresh file, so use <strong>Export</strong> in your old one and <strong>Import</strong> in the new one to bring your plan across. Nothing about your plan is ever sent anywhere: the daily check sends no information at all, and your email address leaves your computer only when you press the button. The planner still works completely offline — if it cannot reach us, it says so quietly and carries on.</p>
               <p>The tab also shows when it last looked, with a <strong>Check again</strong> link beside it. Opening the tab always asks afresh rather than trusting the once-a-day check, so if you go looking, you get a straight answer there and then.</p>
@@ -463,8 +463,8 @@
             <span class="upd-ver">v252</span>
             <div class="upd-body">
               <h4>Retiring before 59½? Three things you could not enter, you now can <span class="upd-date">· 30 July</span></h4>
-              <p>We went looking for anything else of the same shape as the fixes below, and found one. If you retire before 59½ the planner gives you a separate stretch of years for that period — and on that stretch there was nowhere to put <strong>Roth withdrawals</strong>, <strong>Roth conversions</strong> or <strong>rental and passive income</strong>. The sums have always handled all three there; the boxes were simply missing, so they were counted as nothing.</p>
-              <p>The Roth conversion one stings most, because a <strong>conversion ladder</strong> is exactly what many people run in those years to bridge to 59½ — and the planner has a whole tab for planning them. Rental income at 55 is just as ordinary. In a test plan, filling in all three moved that stretch from $100 a month of net income to $2,049.</p>
+              <p>We went looking for anything else of the same shape as the fixes below, and found one. If you retire before 59½ the planner gives you a separate stretch of years for that period — and on that stretch there was nowhere to put <strong>Roth withdrawals</strong>, <strong>Roth conversions</strong> or <strong>rental and passive income</strong>. The sums have always handled all three there; the boxes were simply missing, so they came through as zero.</p>
+              <p>The Roth conversion box is the one most people will want, because a <strong>conversion ladder</strong> is exactly what many run in those years to bridge to 59½ — and the planner has a whole tab for planning them. Rental income at 55 is just as ordinary. In a test plan, filling in all three moved that stretch from $100 a month of net income to $2,049.</p>
               <p>All three boxes are now there, and they appear only if your plan actually has pre-59½ years. Nothing changes for anyone retiring at 59½ or later.</p>
             </div>
           </li>
@@ -473,8 +473,8 @@
             <span class="upd-ver">v251</span>
             <div class="upd-body">
               <h4>The setup wizard now asks when disability stops <span class="upd-date">· 30 July</span></h4>
-              <p>A gap we spotted after the updates below: the <strong>Quick Setup Wizard</strong> asked for a pension or disability amount, when it starts and whether it rises each year — but never when it <em>stops</em>. So anyone setting up through the wizard with a private disability benefit still ended up with it paid for life, which is the very thing we had just fixed everywhere else. It now asks, with the same reminder that employer and private cover usually ends at 65.</p>
-              <p>The wizard also now says plainly that <strong>SSDI goes in the Social Security box</strong>, not the disability one. And there is a new <strong>ⓘ</strong> beside <em>Income streams</em> in Edit values that opens a plain list of eleven kinds of income and which box each belongs in — useful if you have ever paused over where a survivor benefit or a VA payment should go. There is a fuller written guide behind it too.</p>
+              <p>A gap spotted after the updates below: the <strong>Quick Setup Wizard</strong> asked for a pension or disability amount, when it starts and whether it rises each year — but not when it <em>stops</em>, so a private disability benefit set up through the wizard still ran for life. It now asks, with the same reminder that employer and private cover usually ends at 65.</p>
+              <p>The wizard now also spells out that <strong>SSDI goes in the Social Security box</strong>, not the disability one. And there is a new <strong>ⓘ</strong> beside <em>Income streams</em> in Edit values that opens a plain list of eleven kinds of income and which box each belongs in — useful if you have ever paused over where a survivor benefit or a VA payment should go. There is a fuller written guide behind it too.</p>
             </div>
           </li>
 
@@ -482,9 +482,9 @@
             <span class="upd-ver">v249</span>
             <div class="upd-body">
               <h4>Two rough edges on the SSDI update, smoothed <span class="upd-date">· 30 July</span></h4>
-              <p>The SSDI update below shipped with two corners cut, and neither needed to stay cut.</p>
-              <p>The first: if your SSDI started <em>after</em> you retired but before 59½ — you finished work at 55, say, and were awarded SSDI at 57 — the planner showed no SSDI income at all until 59½. Those years are exactly when you most want to see it. The pre-59½ stretch now splits at the age your SSDI began, with its own card, so you can set different withdrawals before and after and the income shows up where it belongs.</p>
-              <p>The second: Medicare arriving mid-way through a stretch of years. The planner works in phases spanning several years, and it was treating Medicare as either on or off for a whole phase — so a Medicare start at 57 inside a 55-to-59½ stretch got rounded to the nearest boundary. It now splits the cost properly: 2½ of those 4½ years on Medicare, the rest on marketplace cover, priced accordingly, with the subsidy still counted for the months before Medicare starts. The phase card, the PDF and the AI all label it <strong>ACA → Medicare</strong> so you can see what is happening rather than wondering why the figure looks odd.</p>
+              <p>Two details left rough in the SSDI update below, now finished off properly.</p>
+              <p>The first: if your SSDI started <em>after</em> you retired but before 59½ — you finished work at 55, say, and were awarded SSDI at 57 — SSDI income did not appear until 59½, which is exactly the stretch you most want to see it in. The pre-59½ stretch now splits at the age your SSDI began, with its own card, so you can set different withdrawals before and after and the income shows up where it belongs.</p>
+              <p>The second: Medicare arriving mid-way through a stretch of years. The planner works in phases spanning several years, and Medicare was treated as on or off for a whole phase — so a start at 57 inside a 55-to-59½ stretch rounded to the nearest boundary. The cost is now split properly: 2½ of those 4½ years on Medicare, the rest on marketplace cover, priced accordingly, with the subsidy still counted for the months before Medicare starts. The phase card, the PDF and the AI all label it <strong>ACA → Medicare</strong> so you can see what is happening rather than wondering why the figure looks odd.</p>
               <p>If you are not on SSDI, none of this touches your plan — we checked every one of our test scenarios comes out to the penny it did before.</p>
             </div>
           </li>
@@ -493,10 +493,10 @@
             <span class="upd-ver">v244</span>
             <div class="upd-body">
               <h4>If you're on SSDI, the planner now fits your situation <span class="upd-date">· 30 July</span></h4>
-              <p>Following on from the disability update below. If you are receiving <strong>SSDI</strong> — Social Security Disability — the planner was quietly making you fit a mould built for people claiming a retirement benefit, and it did not fit. Two things were wrong, and both cost you money on paper.</p>
+              <p>Following on from the disability update below. If you are receiving <strong>SSDI</strong> — Social Security Disability — the planner was built around the rules for a retirement benefit, and those are not the rules for SSDI. Two things follow from that, and both were understating your position on paper.</p>
               <p>First, it would not let you enter a start age below <strong>62</strong>. That rule exists because you cannot claim a retirement benefit earlier than that. SSDI has no such limit, and it does not get the reduction you take for claiming early — it pays your full retirement-age amount from the day it starts. So if your SSDI began at 55, the planner simply would not show that income. Tick the new <strong>I'm receiving SSDI</strong> box and the limit lifts: put in the age it actually started and your income appears from there. Nothing else changes, because SSDI already gets the same annual increase and the same tax treatment as Social Security — and at full retirement age it just becomes your retirement benefit at the same figure.</p>
-              <p>Second, and this one matters more: <strong>SSDI brings Medicare 24 months after your benefit starts, whatever your age.</strong> Someone on SSDI at 55 usually has Medicare at 57. The planner assumed 65 for everybody, so it had you on marketplace insurance with subsidies you would not have been entitled to, and left out Medicare premiums for years. Ticking the box asks when your Medicare began and models it properly from then.</p>
-              <p>Worth saying plainly: employer, private and VA disability are <em>not</em> SSDI, and still belong in the pension and disability fields, where you set their own annual increase and the age they stop.</p>
+              <p>Second, and this one matters more: <strong>SSDI brings Medicare 24 months after your benefit starts, whatever your age.</strong> Someone on SSDI at 55 usually has Medicare at 57. The planner previously assumed 65 for everybody, which put you on marketplace insurance with subsidies that would not apply, and left Medicare premiums out for years. Ticking the box asks when your Medicare began and models it properly from then.</p>
+              <p>To be clear: employer, private and VA disability are <em>not</em> SSDI, and still belong in the pension and disability fields, where you set their own annual increase and the age they stop.</p>
             </div>
           </li>
 
@@ -504,10 +504,10 @@
             <span class="upd-ver">v239</span>
             <div class="upd-body">
               <h4>Disability that stops at 65 <span class="upd-date">· 30 July</span></h4>
-              <p>A customer got in touch about disability income, and it turned up something worth fixing. Most employer and private long-term disability policies stop paying at 65, or at Social Security full retirement age — that is the point the cover is designed to hand over to your retirement income. The planner had no way to tell it that, so it kept paying the benefit for the rest of your life, on top of your Social Security. On a $3,000 a month benefit that is around $900,000 of income you were never going to get, and it made the plan look better than it is.</p>
+              <p>A customer got in touch about disability income, and it turned up something worth fixing. Most employer and private long-term disability policies stop paying at 65, or at Social Security full retirement age — that is the point the cover is designed to hand over to your retirement income. The planner had no field for that, so a benefit entered there ran for life alongside your Social Security. On a $3,000 a month benefit that comes to around $900,000 of income that would not actually arrive, so it is well worth setting.</p>
               <p>Both pension and disability streams now have an <strong>end age</strong>. Leave it blank and nothing changes — a normal pension, an annuity or VA disability carries on for life exactly as before, and every plan you have already saved is untouched. Put 65 in it and the benefit stops there. If it stops before your Social Security starts, you will see the gap on the phase cards, which is the whole point of putting it in.</p>
               <p>The question behind all this was whether disability should rise every year the way Social Security does. It should not, and it already did not have to — each pension and disability stream has always had its own annual increase, separate from the Social Security one, and setting it to <strong>0</strong> keeps the payment flat for life. That setting lives on the Inflation card, which is why it was easy to miss, so the disability field now says so where you are typing.</p>
-              <p>One thing worth checking if it applies to you: <strong>SSDI belongs in the Social Security box, not the disability box.</strong> It rises with the Social Security increase, it turns into your retirement benefit automatically at full retirement age at the same amount, and it is taxed under Social Security rules — so putting it in the disability field gets the tax wrong. Employer, private and VA disability all belong in the disability fields.</p>
+              <p>If SSDI applies to you, one thing to check: <strong>it belongs in the Social Security box, not the disability box.</strong> It rises with the Social Security increase, it turns into your retirement benefit automatically at full retirement age at the same amount, and it is taxed under Social Security rules — so putting it in the disability field gets the tax wrong. Employer, private and VA disability all belong in the disability fields.</p>
             </div>
           </li>
 
@@ -515,9 +515,9 @@
             <span class="upd-ver">v236</span>
             <div class="upd-body">
               <h4>The UK State Pension now has one off switch <span class="upd-date">· 30 July</span></h4>
-              <p>A customer wrote in to say they could not work out how to stop the UK State Pension appearing in their later phases, and they were right — it was our fault, not theirs. The amount sat in two places: in <strong>Income streams</strong>, where you would expect it, and again in a box on the Phase 4 and Phase 5 cards. The phase box was the one the sums actually used, so setting it to zero in one place changed that phase and left the others still paying it, while the Income streams box carried on showing the old figure. There was no way to tell which one was in charge.</p>
+              <p>A customer wrote in to say they could not work out how to stop the UK State Pension appearing in their later phases. The reason was the interface rather than anything they had done: the amount sat in two places, in <strong>Income streams</strong>, where you would expect it, and again in a box on the Phase 4 and Phase 5 cards. The phase box was the one the sums actually used, so setting it to zero in one place changed that phase and left the others still paying it, while the Income streams box carried on showing the old figure. Nothing on screen said which one was in charge.</p>
               <p>There is now one figure, in <strong>Income streams</strong>, and that is the only place it is set. If the UK State Pension does not apply to you, put a 0 there and it is gone from every phase. The boxes on the phase cards are still there so you can see what each phase receives, but they are read-only and say where to go to change them. Social Security works the same way now, for the same reason.</p>
-              <p>Two things this quietly fixes. If you claim Social Security part-way through a phase, the planner splits that phase in two — and the second half was being paid neither your Social Security nor your UK State Pension, which pulled that stretch of your plan down for no reason. And if you are modelling what happens when one of you dies, the survivor was being shown the original benefit rather than the larger one they actually inherit, so their income was understated. Both are right now. Open your plan and check the phases after 67 look the way you expect.</p>
+              <p>Two things this also puts right. If you claim Social Security part-way through a phase, the planner splits that phase in two — and the second half now receives both your Social Security and your UK State Pension, where before it received neither, which had been pulling that stretch of the plan down. And if you are modeling what happens when one of you dies, the survivor is now shown the larger benefit they actually inherit rather than the original one. Both now read correctly. Open your plan and check the phases after 67 look the way you expect.</p>
             </div>
           </li>
 
@@ -543,7 +543,7 @@
             <span class="upd-ver">v229</span>
             <div class="upd-body">
               <h4>A warning where you'd actually look for it <span class="upd-date">· 27 July</span></h4>
-              <p>If you pay for something large out of a 401k, that withdrawal counts as income in the year you take it — enough, often, to put you over the ACA subsidy cliff or into a higher Medicare band. The planner works in multi-year phases, so the MAGI figure it shows you is the average across the phase, and a single big year barely moves it. That meant you could click the <strong>ACA subsidy eligible</strong> badge and be told everything was fine, in a year the subsidy would have gone. The planner already flagged this on the phase card, but not in the panel you open to check. Now it does: the ACA and Medicare panels show the phase average as before, then tell you plainly what your income would be in the single year you take the expense, which line it crosses, and what it would cost you — along with the usual ways round it, like paying from cash or Roth savings, or splitting it across two years.</p>
+              <p>If you pay for something large out of a 401k, that withdrawal counts as income in the year you take it — enough, often, to put you over the ACA subsidy cliff or into a higher Medicare band. The planner works in multi-year phases, so the MAGI figure it shows you is the average across the phase, and a single big year barely moves it. The planner already flagged this on the phase card, and the panel you open to check now says the same thing rather than reporting the phase average alone: the ACA and Medicare panels show the phase average as before, then tell you plainly what your income would be in the single year you take the expense, which line it crosses, and what it would cost you — along with the usual ways round it, like paying from cash or Roth savings, or splitting it across two years.</p>
             </div>
           </li>
 
@@ -551,7 +551,7 @@
             <span class="upd-ver">v228</span>
             <div class="upd-body">
               <h4>Every one-off expense shown separately in the working <span class="upd-date">· 27 July</span></h4>
-              <p>If you put more than one cash event in the same phase, <strong>Under the hood</strong> only appeared to list the first. The figures were right — it was adding events together by account, so two expenses both paid from cash showed up as a single line, and the second one looked like it had gone missing. Each event is now listed on its own, by the name you gave it, showing what it took from each account, the tax on it, and how much reached the expense. Where a phase has several, the combined totals are shown underneath so everything still adds up. The same applies to the calculations pages in your printed report.</p>
+              <p>If you put more than one cash event in the same phase, <strong>Under the hood</strong> grouped them by account, so two expenses both paid from cash appeared as one line. The figures were right; the second event simply was not visible. Each event is now listed on its own, by the name you gave it, showing what it took from each account, the tax on it, and how much reached the expense. Where a phase has several, the combined totals are shown underneath so everything still adds up. The same applies to the calculations pages in your printed report.</p>
             </div>
           </li>
 
@@ -559,7 +559,7 @@
             <span class="upd-ver">v218–v227</span>
             <div class="upd-body">
               <h4>You choose which account pays for a one-off expense <span class="upd-date">· 27 July</span></h4>
-              <p>Add a new roof or a car on the <strong>Lump sums</strong> tab and there is now a <strong>Paid from</strong> box next to it. Pick <strong>Cash</strong> and the planner takes it from cash and nothing else — if there isn't enough, it tells you how much is short instead of quietly selling your investments or dipping into your 401k to cover it. That was the old behaviour, and it meant a plan could look fine while it had actually raided a retirement account to pay the builder. If you'd rather it did spill over, tick <em>Use other accounts if short</em> and pick exactly which accounts it may use — you might be happy for it to come out of the brokerage account but want the Roth left alone. There's also a <strong>Custom split</strong> if you want to say "$20,000 from cash, $40,000 from the brokerage account", and it shows you what each account will actually hold at that point in your plan. Money coming in works the same way: an inheritance or a house sale can be paid straight into your brokerage account instead of sitting in cash for twenty years earning the cash rate.</p>
+              <p>Add a new roof or a car on the <strong>Lump sums</strong> tab and there is now a <strong>Paid from</strong> box next to it. Pick <strong>Cash</strong> and the planner takes it from cash and nothing else — if there isn't enough, it tells you how much is short rather than making up the difference from your investments or your 401k. Pinning the source down means the plan shows you exactly where the money for the builder came from. If you'd rather it did spill over, tick <em>Use other accounts if short</em> and pick exactly which accounts it may use — you might be happy for it to come out of the brokerage account but want the Roth left alone. There's also a <strong>Custom split</strong> if you want to say "$20,000 from cash, $40,000 from the brokerage account", and it shows you what each account will actually hold at that point in your plan. Money coming in works the same way: an inheritance or a house sale can be paid straight into your brokerage account instead of sitting in cash for twenty years earning the cash rate.</p>
             </div>
           </li>
 
@@ -567,7 +567,7 @@
             <span class="upd-ver">v218–v227</span>
             <div class="upd-body">
               <h4>What that expense really costs, before you commit to it <span class="upd-date">· 27 July</span></h4>
-              <p><strong>This one changes some numbers, so it's worth reading.</strong> If you take money out of a 401k to pay for something, that withdrawal is taxable income, and if you sell investments to pay for it you owe tax on the growth. We weren't charging that. A $60,000 kitchen paid from a 401k came out of the planner costing exactly $60,000, when in reality the taxman takes a slice first and roughly $45,000 of it reaches the kitchen. Now you see both figures. Under each event on the Lump sums tab is a line telling you what leaves each account, what goes to tax, and what actually reaches the expense — so you can weigh it up there and then, and try paying for it a different way if you'd rather. If you want the full amount to get there, tick <strong>Withdraw extra to cover the tax</strong> and the planner works out the larger withdrawal for you: for that kitchen, $69,477 out of the 401k so the full $60,000 arrives. It will also warn you if a withdrawal that size would push you over the ACA subsidy cliff or into a higher Medicare band in the year you take it. <strong>Your account balances are unchanged</strong> — that money was always leaving the account. What's changed is that you can now see how much of it never reached what you were buying, so an expense funded from a retirement account will look dearer than it did before. That's the honest figure, and it's the one worth planning against.</p>
+              <p><strong>This one changes some numbers, so it's worth reading.</strong> If you take money out of a 401k to pay for something, that withdrawal is taxable income, and if you sell investments to pay for it you owe tax on the growth. The planner now prices that in. A $60,000 kitchen paid from a 401k used to come out at exactly $60,000; in reality the taxman takes a slice first and roughly $45,000 of it reaches the kitchen. You now see both figures. Under each event on the Lump sums tab is a line telling you what leaves each account, what goes to tax, and what actually reaches the expense — so you can weigh it up there and then, and try paying for it a different way if you'd rather. If you want the full amount to get there, tick <strong>Withdraw extra to cover the tax</strong> and the planner works out the larger withdrawal for you: for that kitchen, $69,477 out of the 401k so the full $60,000 arrives. It will also warn you if a withdrawal that size would push you over the ACA subsidy cliff or into a higher Medicare band in the year you take it. <strong>Your account balances are unchanged</strong> — that money was always leaving the account. What's changed is that you can now see how much of it never reached what you were buying, so an expense funded from a retirement account will look dearer than it did before. That is the figure worth planning against.</p>
             </div>
           </li>
 
@@ -575,7 +575,7 @@
             <span class="upd-ver">v217</span>
             <div class="upd-body">
               <h4>Your total tax figure now explains itself <span class="upd-date">· 26 July</span></h4>
-              <p>Click the <strong>Tax to 80</strong> pill at the top of the dashboard and you'll see the working behind it: what each phase pays a month, multiplied by the months in that phase, adding up to the total — and, if your state charges income tax, how much that adds on top, since it isn't part of that figure. Like the other calculation panels, it links straight through to the full working under the hood. Phase 5 has also been given its own colour: its badge and Phase 3's were near-identical shades of amber, which made two very different parts of your plan look alike at a glance.</p>
+              <p>Click the <strong>Tax to 80</strong> pill at the top of the dashboard and you'll see the working behind it: what each phase pays a month, multiplied by the months in that phase, adding up to the total — and, if your state charges income tax, how much that adds on top, since it isn't part of that figure. Like the other calculation panels, it links straight through to the full working under the hood. Phase 5 has also been given its own color: its badge and Phase 3's were near-identical shades of amber, which made two very different parts of your plan look alike at a glance.</p>
             </div>
           </li>
 
@@ -591,7 +591,7 @@
             <span class="upd-ver">v213</span>
             <div class="upd-body">
               <h4>Three explanation panels put right <span class="upd-date">· 26 July</span></h4>
-              <p>While building the section above, we checked every explanation panel against the calculation sitting behind it — and found three that did not match. In each case the figures on your phase cards were right; it was the explanation of them that was wrong, so nobody's plan needs redoing. If you live in <strong>Canada or Australia</strong>, clicking your income tax figure brought up US tax brackets that never added up to the tax shown; you now see Canadian federal and provincial tax, or Australian brackets with the Low Income Tax Offset and the Medicare Levy. The <strong>state tax</strong> panel explained the withdrawal you had asked for rather than the amount your account could actually supply, and counted only the first of two pension streams. And after a change of display currency, some pension notes kept the old currency symbol until you next edited them. Each panel now takes its wording straight from the calculation itself, so a figure and its explanation can no longer drift apart.</p>
+              <p>While building the section above, we checked every explanation panel against the calculation sitting behind it — and found three that did not match. In each case the figures on your phase cards were right; it was the explanation alongside them that needed correcting, so nobody's plan needs redoing. If you live in <strong>Canada or Australia</strong>, clicking your income tax figure used to bring up US tax brackets; you now see Canadian federal and provincial tax, or Australian brackets with the Low Income Tax Offset and the Medicare Levy. The <strong>state tax</strong> panel explained the withdrawal you had asked for rather than the amount your account could actually supply, and counted only the first of two pension streams. And after a change of display currency, some pension notes kept the old currency symbol until you next edited them. Each panel now takes its wording straight from the calculation itself, so a figure and its explanation can no longer drift apart.</p>
             </div>
           </li>
 
@@ -599,7 +599,7 @@
             <span class="upd-ver">v208–v209</span>
             <div class="upd-body">
               <h4>An account that runs dry now stops paying out <span class="upd-date">· 25 July</span></h4>
-              <p>Withdrawals are now capped at what the account can actually supply. Until this build, if a pot emptied in an early phase the planner carried on drawing from it in the later ones — which inflated the tax and MAGI figures too, and could raise an ACA or IRMAA warning about income you would never really have received. Affected rows now show what is genuinely available beside the amount you asked for, with the age the account ran out. We never overwrite what you typed, so you can still try a larger withdrawal and think better of it.</p>
+              <p>Withdrawals are now capped at what the account can actually supply. Previously a pot that emptied in an early phase could still be drawn on in the later ones, and that carried through to the tax and MAGI figures, which could raise an ACA or IRMAA warning about income you would not actually receive. Affected rows now show what is genuinely available beside the amount you asked for, with the age the account ran out. We never overwrite what you typed, so you can still try a larger withdrawal and think better of it.</p>
             </div>
           </li>
 
@@ -607,7 +607,7 @@
             <span class="upd-ver">v205</span>
             <div class="upd-body">
               <h4>State pension-deduction caps <span class="upd-date">· 23 July</span></h4>
-              <p>Some states only let you deduct part of your retirement income — Colorado stops at $24,000, for example. The planner had been exempting the whole amount, which flattered your state tax bill. It now applies your state's cap.</p>
+              <p>Some states only let you deduct part of your retirement income — Colorado stops at $24,000, for example. The planner now applies your state's cap rather than exempting the whole amount.</p>
             </div>
           </li>
 
@@ -623,7 +623,7 @@
             <span class="upd-ver">v201</span>
             <div class="upd-body">
               <h4>Medicare IRMAA surcharges count as a real cost <span class="upd-date">· 23 July</span></h4>
-              <p>When income crosses the IRMAA threshold, the Part B and D surcharge is now added to that phase's healthcare cost and deducted from net income. Previously it only raised a warning, which understated what a high-income phase actually costs you.</p>
+              <p>When income crosses the IRMAA threshold, the Part B and D surcharge is now added to that phase's healthcare cost and deducted from net income. Previously it raised a warning; costing it in shows the full price of a high-income phase.</p>
             </div>
           </li>
 
@@ -730,7 +730,7 @@
 
         <article class="card reveal" style="grid-column:1/-1;">
           <h3 id="version-7-sharper-broader-more-accessible">Version 7 — sharper, broader, more accessible</h3>
-          <p>The current release. More accurate Social Security taxation using the IRS provisional-income method, Net Investment Income Tax, the IRMAA two-year lookback, optional state income tax, a Full Retirement Age set from your birth year, separate healthcare inflation, inflation-aware Monte Carlo, survivor modelling with coordinated couples' claiming, the Plan-with-AI co-pilot and "Ask AI about this" buttons throughout — plus a high-contrast theme and larger text options.</p>
+          <p>The current release. More accurate Social Security taxation using the IRS provisional-income method, Net Investment Income Tax, the IRMAA two-year lookback, optional state income tax, a Full Retirement Age set from your birth year, separate healthcare inflation, inflation-aware Monte Carlo, survivor modeling with coordinated couples' claiming, the Plan-with-AI co-pilot and "Ask AI about this" buttons throughout — plus a high-contrast theme and larger text options.</p>
         </article>
 
       </div>
@@ -826,7 +826,7 @@
       <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
       <span>Made for planners, not subscribers.</span>
     </div>
-    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
   </div>
   <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
        only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,

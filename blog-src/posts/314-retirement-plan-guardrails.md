@@ -14,7 +14,7 @@
 
 **Lead image:** 1
 
-**Image 1 alt:** Editorial illustration of a retirement income path running between low protective barriers, with small coloured markers along the roadside signalling caution well before the edge.
+**Image 1 alt:** Editorial illustration of a retirement income path running between low protective barriers, with small colored markers along the roadside signalling caution well before the edge.
 
 **Image 2 alt:** A planner phase card showing a cash withdrawal of 100 dollars a month with an amber note underneath reading that the account can only provide 48 dollars a month because it ran out at age 69.
 
@@ -24,7 +24,7 @@
 
 **Image 5 alt:** A phase card showing the ACA premium estimate replaced by the words Over FPL cliff, ACA Silver CSR marked with a red cross for MAGI above 250 percent FPL, and an amber 22 percent tax bracket badge.
 
-**Image 6 alt:** A phase card tax block showing a green 12 percent bracket badge, a note that 85 percent of Social Security is taxable, and a grey line giving the estimated required minimum distribution of 776 dollars a month.
+**Image 6 alt:** A phase card tax block showing a green 12 percent bracket badge, a note that 85 percent of Social Security is taxable, and a gray line giving the estimated required minimum distribution of 776 dollars a month.
 
 **Image 7 alt:** The same tax block on a later phase, now with an amber warning that the estimated required minimum distribution is 3,487 dollars a month and the planned withdrawal may be below the IRS minimum by 487 dollars a month.
 
@@ -36,7 +36,7 @@
 
 **Image 11 alt:** A pre-59 and a half phase card for ages 55 to 59.5 showing the 401k withdrawal line locked at zero dollars a month with a padlock, while cash and equity withdrawals of 1,000 dollars a month each fund the phase.
 
-**Image 12 alt:** The ending balances of a healthy phase card with 401k, equity and Roth balances all substantial, a greyed cash balance of zero with no warning icon, and a grey italic note reading cash not included in this scenario.
+**Image 12 alt:** The ending balances of a healthy phase card with 401k, equity and Roth balances all substantial, a grayed cash balance of zero with no warning icon, and a gray italic note reading cash not included in this scenario.
 
 **Image 13 alt:** A later phase card showing a cash withdrawal of 100 dollars a month with an amber note underneath reading that the achievable amount is zero because the account has been empty since age 69.
 
@@ -56,7 +56,7 @@ Retirement income has hard edges. Earn one dollar too much and an ACA subsidy ca
 
 None of those edges announce themselves in a spreadsheet. You find them afterwards, in a tax bill or an insurance letter.
 
-A guardrail is a small badge, coloured figure, or warning line that appears on a plan **because of the numbers you entered** — flagging an edge while you can still do something about it. Read as a group, they answer four questions:
+A guardrail is a small badge, colored figure, or warning line that appears on a plan **because of the numbers you entered** — flagging an edge while you can still do something about it. Read as a group, they answer four questions:
 
 - **Can this plan physically pay?** Is any account being asked for money it does not have?
 - **Am I leaving money on the table?** Is income sitting just the wrong side of a threshold?
@@ -69,7 +69,7 @@ One point of clarification before we start, because the word gets used two ways.
 
 ## Key Takeaways
 
-- **Amber is the useful colour.** Red means you have already crossed something. Amber fires *before* anything is wrong, while a change still costs nothing.
+- **Amber is the useful color.** Red means you have already crossed something. Amber fires *before* anything is wrong, while a change still costs nothing.
 - **A warning is not a verdict.** "Cash runs out at 69" may be exactly what you intended if cash is a bridge to Social Security. The guardrail's job is to make sure it was a decision, not an accident.
 - **The dangerous edges are invisible ones.** Nothing in your income tells you that MAGI is $400 under a cliff. A guardrail can, because it knows both numbers.
 - **Zero is not always failure.** An account you deliberately left out of the plan and an account your withdrawals drained look identical on a balance line. Good guardrails distinguish them.
@@ -98,7 +98,7 @@ In a later phase the wording shifts from "ran out at age 69" to "empty since 69"
 
 This is the hardest failure a plan can report, and notice it never appears alone. Every account has been drained to zero to try to cover the bill, so the same card carries a depletion flag for each one. That crowding is the honest picture: an unfunded expense is not one problem, it is the moment a plan runs out of options.
 
-**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty. A plan modelling early retirement should never let you spend from that account as though the penalty did not exist — either hold it back, or charge the 10% and show it. What it must not do is quietly understate the cost.
+**Access is a constraint too.** Before 59½, tax-deferred withdrawals generally carry a 10% penalty. A plan modeling early retirement should never let you spend from that account as though the penalty did not exist — either hold it back, or charge the 10% and show it. What it must not do is quietly understate the cost.
 
 [IMAGE pre-59 and a half phase card with the 401k line locked 11]
 
@@ -108,7 +108,7 @@ Note what that forces: retiring at 55 means the first four and a half years have
 
 [IMAGE healthy plan with cash deliberately absent 12]
 
-Compare that with the image two above it. Both show a zero balance. This one has healthy six-figure balances beside it, the zero is greyed rather than red, there is no warning icon, and a quiet italic note says *not included in this scenario*. The absence of red is the message.
+Compare that with the image two above it. Both show a zero balance. This one has healthy six-figure balances beside it, the zero is grayed rather than red, there is no warning icon, and a quiet italic note says *not included in this scenario*. The absence of red is the message.
 
 The deeper point is that solvency is not one number at the end. It is a question you can ask of every account in every phase, which is the whole argument for [reading a plan as a timeline of phases](/blog/retirement-income-timeline-phases.html) rather than a single sustainable-withdrawal figure. Ending balances are what carry a plan forward, and they [deserve reading in their own right](/blog/retirement-ending-balance-that-carries-the-plan.html).
 
@@ -142,7 +142,7 @@ The premium estimate is replaced by the reason it cannot be estimated: over the 
 
 `85% of SS taxable` is the Social Security tax torpedo in five words. Social Security is taxed on a sliding scale driven by your other income: at low income none of it is taxable, and as other income rises, more of the benefit becomes taxable — up to 85%. The effect is that an extra $1,000 withdrawal can make several hundred dollars of *previously untaxed* benefit taxable, so your real marginal rate is meaningfully higher than your bracket suggests. A plan that shows only the bracket hides that. [How taxes change the shape of retirement income](/blog/how-taxes-change-retirement-income.html) covers the mechanism in detail.
 
-Also on that card, in plain grey: `Est. RMD: $776/mo`. Nothing is wrong, so nothing is amber. It is simply telling you a requirement exists and is being met — which brings us to the next family.
+Also on that card, in plain gray: `Est. RMD: $776/mo`. Nothing is wrong, so nothing is amber. It is simply telling you a requirement exists and is being met — which brings us to the next family.
 
 ## Guardrail Family 3: Is a Penalty or Surcharge Coming?
 
@@ -152,7 +152,7 @@ The previous family costs you money you could have kept. This one costs you mone
 
 [IMAGE RMD shortfall warning below the IRS minimum 7]
 
-Compare this with the grey `Est. RMD` line in the previous image: same guardrail, different state. It stays quiet while you are compliant and turns amber with a specific shortfall figure when you are not. That is the pattern worth wanting from any warning system — silent until actionable, and specific when it speaks.
+Compare this with the gray `Est. RMD` line in the previous image: same guardrail, different state. It stays quiet while you are compliant and turns amber with a specific shortfall figure when you are not. That is the pattern worth wanting from any warning system — silent until actionable, and specific when it speaks.
 
 The trap here is subtle. RMDs catch people who *did not need the money*. If your income comes mostly from Social Security and a pension, you may have set a modest 401k withdrawal because that was all you wanted. The IRS does not care what you wanted. A plan that models the requirement tells you years ahead, while you still have options — spending the low-bracket space earlier through conversions, for instance, so the eventual RMD is smaller.
 
@@ -174,7 +174,7 @@ The first three families ask whether the plan is legal, solvent, and efficient. 
 
 [IMAGE net income nominal amber and real red after inflation 9]
 
-Two figures from the same phase. Nominal $2,959 a month — the dollars that arrive. Real $1,663 — what those dollars buy in today's money after 19.5 years of 3% inflation. The colours are the guardrail: amber for the first, red for the second.
+Two figures from the same phase. Nominal $2,959 a month — the dollars that arrive. Real $1,663 — what those dollars buy in today's money after 19.5 years of 3% inflation. The colors are the guardrail: amber for the first, red for the second.
 
 That gap is not a rounding error. It is nearly half the purchasing power of the headline figure, and it is the single most common blind spot in a homemade retirement plan, because nominal dollars are what a spreadsheet naturally produces. A plan built on nominal figures does not fail suddenly; it works fine for a decade and then slowly stops being enough. This is why we treat [gross, net, and real income as three different questions](/blog/gross-net-real-retirement-income.html).
 
@@ -188,7 +188,7 @@ $3,070 against a $3,500 target — 88%, amber. The important design decision is 
 
 A plan with thirty warnings is not more informative than one with three. Some practical habits:
 
-**Learn the colour language first.** Green means fine. Red means you have crossed something or run out of money. Amber means you are close to an edge. Amber is where the value is — red usually tells you about a decision you already made.
+**Learn the color language first.** Green means fine. Red means you have crossed something or run out of money. Amber means you are close to an edge. Amber is where the value is — red usually tells you about a decision you already made.
 
 **Scan by family, not by card.** Solvency first (can it pay?), then penalties (is something coming?), then efficiency (am I overpaying?), then adequacy (is it enough?). A card can show a dozen flags; four questions is a manageable number.
 
@@ -196,7 +196,7 @@ A plan with thirty warnings is not more informative than one with three. Some pr
 
 **Treat a warning as a question, not an instruction.** "Cash runs out at 69" is only a problem if you did not plan for it. Deliberately spending cash first to keep MAGI low for ACA purposes will produce that exact warning, and the plan is working as designed. The guardrail exists to make sure it was your intention.
 
-**Do not optimise every amber to green.** Some are genuinely in tension. Keeping MAGI low protects cost-sharing reductions, but it also leaves a tax-deferred balance growing into a bigger future RMD and possible IRMAA exposure. You cannot silence both flags at once. Choosing which one to accept *is* the planning.
+**Do not optimize every amber to green.** Some are genuinely in tension. Keeping MAGI low protects cost-sharing reductions, but it also leaves a tax-deferred balance growing into a bigger future RMD and possible IRMAA exposure. You cannot silence both flags at once. Choosing which one to accept *is* the planning.
 
 ## Why Guardrails Make Planning Easier, Not Harder
 
@@ -204,7 +204,7 @@ There is a reasonable objection here: does a plan covered in warnings not make r
 
 In practice the opposite. Consider what you would otherwise need to know before you could plan confidently: the FPL thresholds and how cost-sharing tiers step, the Social Security taxability formula, the RMD divisor table and start age, the IRMAA tiers and the two-year lookback, and how every one of those is inflation-adjusted differently. That is a serious amount of homework, and it changes annually.
 
-Guardrails invert the problem. You do not need to know the thresholds in advance — you need to recognise a colour and read two numbers. The workflow becomes tight enough to describe in one line:
+Guardrails invert the problem. You do not need to know the thresholds in advance — you need to recognize a color and read two numbers. The workflow becomes tight enough to describe in one line:
 
 **Change one number → scan for amber → click it → ask why.**
 
@@ -273,7 +273,7 @@ Medicare income-related surcharges are generally based on your tax return from t
 
 **Demo CTA:** Open the live demo and look at one pre-Medicare phase card and one Medicare phase card side by side. The first shows ACA subsidy status, the cost-sharing band, and how much MAGI headroom is left; the second shows Medicare Part B and D with any IRMAA flag. Click any badge for an explanation using that plan's figures.
 
-**Product CTA:** The AI Retirement Income Planner shows these guardrails on every phase card — withdrawal shortfalls and account depletion, ACA subsidy and cost-sharing bands with dollar headroom to the next threshold, tax bracket position and Social Security taxability, RMD estimates and shortfalls, IRMAA surcharges with the two-year lookback, and net income in both nominal and real terms. Every badge is clickable for a personalised explanation and hands you a pre-written question for the AI assistant. One-time purchase, no subscription, runs privately in your browser.
+**Product CTA:** The AI Retirement Income Planner shows these guardrails on every phase card — withdrawal shortfalls and account depletion, ACA subsidy and cost-sharing bands with dollar headroom to the next threshold, tax bracket position and Social Security taxability, RMD estimates and shortfalls, IRMAA surcharges with the two-year lookback, and net income in both nominal and real terms. Every badge is clickable for a personalized explanation and hands you a pre-written question for the AI assistant. One-time purchase, no subscription, runs privately in your browser.
 
 ## Facebook Post Snippets
 
@@ -287,7 +287,7 @@ Medicare income-related surcharges are generally based on your tax return from t
 
 ## Newsletter Summary
 
-Retirement income is full of hard edges — ACA subsidy cliffs, cost-sharing tiers, tax brackets, Social Security taxability, RMD minimums, IRMAA surcharge tiers with a two-year lookback, and accounts quietly reaching zero — and none of them announce themselves in a spreadsheet. This article explains guardrails: the badges and warnings a plan displays because of your own numbers, flagging an edge while it is still free to act. It groups them into four questions: can this plan physically pay (withdrawal shortfalls, account depletion, unfunded one-time expenses, pre-59½ access), am I leaving money on the table (ACA subsidy and cost-sharing bands, dollar headroom to the next threshold, bracket position, the Social Security tax torpedo), is a penalty or surcharge coming (RMD shortfalls, IRMAA and its lookback), and is this really enough (nominal versus real income, income goals measured against the worst phase). It covers how to read them without drowning — learn the colour language, scan by family, expect clusters, treat a warning as a question, and accept that some flags are in genuine tension. The closing argument is that guardrails make planning simpler rather than harder: instead of learning every threshold in advance, the workflow becomes change one number, scan for amber, click it, ask why.
+Retirement income is full of hard edges — ACA subsidy cliffs, cost-sharing tiers, tax brackets, Social Security taxability, RMD minimums, IRMAA surcharge tiers with a two-year lookback, and accounts quietly reaching zero — and none of them announce themselves in a spreadsheet. This article explains guardrails: the badges and warnings a plan displays because of your own numbers, flagging an edge while it is still free to act. It groups them into four questions: can this plan physically pay (withdrawal shortfalls, account depletion, unfunded one-time expenses, pre-59½ access), am I leaving money on the table (ACA subsidy and cost-sharing bands, dollar headroom to the next threshold, bracket position, the Social Security tax torpedo), is a penalty or surcharge coming (RMD shortfalls, IRMAA and its lookback), and is this really enough (nominal versus real income, income goals measured against the worst phase). It covers how to read them without drowning — learn the color language, scan by family, expect clusters, treat a warning as a question, and accept that some flags are in genuine tension. The closing argument is that guardrails make planning simpler rather than harder: instead of learning every threshold in advance, the workflow becomes change one number, scan for amber, click it, ask why.
 
 ## Educational Disclaimer
 

@@ -14,7 +14,7 @@
 
 **Lead image:** 1
 
-**Image 1 alt:** Editorial illustration of a single retirement plan viewed through several lenses at once, each lens labelled with an angle like income, taxes, healthcare, balances, and inflation, with green, amber, and red markers.
+**Image 1 alt:** Editorial illustration of a single retirement plan viewed through several lenses at once, each lens labeled with an angle like income, taxes, healthcare, balances, and inflation, with green, amber, and red markers.
 
 **Image 2 alt:** The planner's Confidence tab showing a 0 to 100 Plan Health score, a completeness verdict, and tiered checks marked green, amber, and red.
 
@@ -28,7 +28,7 @@
 
 A retirement plan can look strong from one angle and weak from another. It may produce plenty of monthly income while leaning too hard on portfolio withdrawals. It may keep this year's tax low while building a future required-distribution problem. It may preserve a large ending balance while leaving the retiree with far less income than the plan could actually support. No single number tells the whole story.
 
-[IMAGE one plan viewed through several labelled lenses at once with green amber red markers 1]
+[IMAGE one plan viewed through several labeled lenses at once with green amber red markers 1]
 
 That is why the strongest way to review a plan is from several angles at once, and to treat it like a system rather than a scoreboard. Income matters, but so do taxes, healthcare, ending balances, inflation, account mix, and how the plan holds up when assumptions turn against it. The goal is not a perfect score. It is to find the areas that need attention before you rely on the plan.
 

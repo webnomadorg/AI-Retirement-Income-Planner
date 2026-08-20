@@ -54,7 +54,7 @@ Using the built-in AI Chat requires your own API key from a supported provider (
 
 ## The Six Prompts, One by One
 
-### Summarise & flag risks
+### Summarize & flag risks
 
 This is your start-every-session prompt. It gives a 60-second sanity check: the AI summarizes what your plan is doing and flags the top three or four things worth worrying about. You will often discover risks you did not know were there. Begin here, then dig into specifics with the others.
 
@@ -70,7 +70,7 @@ For anyone retiring before 65, this is the prompt that prevents expensive mistak
 
 Asks the AI to look at how you draw across all phases, 401(k) versus cash versus Roth versus brokerage, and suggest improvements to tax efficiency and account-depletion timing. Most retirees get one of those right and miss the other; the AI is asked to consider both at once.
 
-### Propose optimisations
+### Propose optimizations
 
 This is the action prompt. It proposes specific numeric changes to optimize your plan, aiming to keep you in the 12% bracket and preserve ACA cost-sharing eligibility where possible. Its output is what feeds the proposed-changes panel described below.
 
@@ -118,7 +118,7 @@ A good question to paste alongside it:
     Prompt to copy
   </div>
   <div class="prompt-card-body">
-    <p>Review my withdrawal strategy, identify any optimisation opportunities, flag risks I may have missed, and tell me whether my assumptions look realistic. Do not choose for me; explain the trade-offs.</p>
+    <p>Review my withdrawal strategy, identify any optimization opportunities, flag risks I may have missed, and tell me whether my assumptions look realistic. Do not choose for me; explain the trade-offs.</p>
   </div>
 </div>
 
@@ -136,7 +136,7 @@ No. The AI proposes changes as a panel of exact edits with checkboxes. You choos
 
 ### Which prompt should I start with?
 
-Start with "Summarise & flag risks" for a 60-second sanity check on the whole plan. Then use the more specific prompts, tax bracket check, ACA/CSR check, withdrawal strategy, to dig into anything it surfaced, and "Propose optimisations" or "Roth conversion advice" when you want concrete changes you can apply.
+Start with "Summarize & flag risks" for a 60-second sanity check on the whole plan. Then use the more specific prompts, tax bracket check, ACA/CSR check, withdrawal strategy, to dig into anything it surfaced, and "Propose optimizations" or "Roth conversion advice" when you want concrete changes you can apply.
 
 ### Why does the AI refuse to just tell me the single best plan?
 
@@ -176,7 +176,7 @@ Yes. The built-in AI Chat needs your own key (a few cents per conversation), but
 
 ## Newsletter Summary
 
-The planner's AI Chat tab comes with six one-click prompts, each a carefully written question that automatically attaches your entire plan, so the AI answers about your real numbers. This guide walks through all six: Summarise & flag risks (the start-every-session sanity check), Tax bracket check, ACA / CSR check, Withdrawal strategy, Propose optimisations, and Roth conversion advice, explaining what each does and when to use it. It then covers the proposed-changes panel, where the AI returns exact edits you approve with a checkbox and apply with one click, each dry-run through the planner's own engine first, and the valuable way the AI surfaces trade-offs (such as ACA subsidies versus tax efficiency) rather than choosing for you. It also covers asking your own questions with automatic plan-change tracking, and the copy-and-paste prompt that lets you use any external AI with no API key.
+The planner's AI Chat tab comes with six one-click prompts, each a carefully written question that automatically attaches your entire plan, so the AI answers about your real numbers. This guide walks through all six: Summarize & flag risks (the start-every-session sanity check), Tax bracket check, ACA / CSR check, Withdrawal strategy, Propose optimizations, and Roth conversion advice, explaining what each does and when to use it. It then covers the proposed-changes panel, where the AI returns exact edits you approve with a checkbox and apply with one click, each dry-run through the planner's own engine first, and the valuable way the AI surfaces trade-offs (such as ACA subsidies versus tax efficiency) rather than choosing for you. It also covers asking your own questions with automatic plan-change tracking, and the copy-and-paste prompt that lets you use any external AI with no API key.
 
 ## Educational Disclaimer
 

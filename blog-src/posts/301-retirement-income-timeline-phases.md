@@ -14,7 +14,7 @@
 
 **Lead image:** 1
 
-**Image 1 alt:** Editorial illustration of retirement drawn as a left-to-right timeline broken into labelled phases, each with its own income sources, healthcare, and balance.
+**Image 1 alt:** Editorial illustration of retirement drawn as a left-to-right timeline broken into labeled phases, each with its own income sources, healthcare, and balance.
 
 **Image 2 alt:** The planner's Overview tab showing retirement as a row of phase cards with their age ranges, income, taxes, healthcare, and ending balances.
 

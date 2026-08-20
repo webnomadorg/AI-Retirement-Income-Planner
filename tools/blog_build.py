@@ -133,7 +133,7 @@ CAPTURE_COPY = {
     "abroad": (
         "Free guide",
         "What retiring abroad does to your income",
-        "The same retirement modelled in the US, UK, Canada and Australia — with the method, "
+        "The same retirement modeled in the US, UK, Canada and Australia — with the method, "
         "so you can check it.",
         "Send me the guide",
     ),

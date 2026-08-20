@@ -17,7 +17,7 @@
 
 **Image 1 alt:** AI Retirement Income Planner Plan Confidence Score panel showing an 8 of 8 Strong Plan score, a confidence summary with historical backtest results, and the first Plan Health checks for Income Adequacy, Tax Bracket Efficiency, and ACA Subsidy Protected.
 
-**Image 2 alt:** AI Retirement Income Planner Plan Health panel showing a passing Stress Test Resilient check above four greyed-out not-applicable checks: Survivor Income Resilience, CSR / Subsidy Headroom, Income Goal, and Legacy Goal.
+**Image 2 alt:** AI Retirement Income Planner Plan Health panel showing a passing Stress Test Resilient check above four grayed-out not-applicable checks: Survivor Income Resilience, CSR / Subsidy Headroom, Income Goal, and Legacy Goal.
 
 **Image 3 alt:** AI Retirement Income Planner Income Floor Foundation check with the Why this matters explanation expanded, showing the guaranteed income percentage, why it matters, the 50 percent US and 30 percent expat thresholds, and an Income Floor explainer video button.
 
@@ -25,7 +25,7 @@
 
 **Search intent:** The reader wants step-by-step help using Plan Health inside the planner, including what the checks mean, how to respond to flagged items, and how Plan Health relates to the Plan Confidence score.
 
-**Product fit:** Very high. The AI Retirement Income Planner includes a Plan Health badge and side panel, twelve tiered Plan Health checks, a separate 0 to 100 Plan Confidence score, a Confidence dashboard with a completeness verdict, category sub-scores, Monte Carlo and historical lenses, drawdown strategy ratings, user acknowledgements for accepted flags, Ask AI buttons, scenarios, What-if tools, stress tests, reports, and educational help.
+**Product fit:** Very high. The AI Retirement Income Planner includes a Plan Health badge and side panel, twelve tiered Plan Health checks, a separate 0 to 100 Plan Confidence score, a Confidence dashboard with a completeness verdict, category sub-scores, Monte Carlo and historical lenses, drawdown strategy ratings, user acknowledgments for accepted flags, Ask AI buttons, scenarios, What-if tools, stress tests, reports, and educational help.
 
 **Educational disclaimer:** This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. Planner outputs depend on user inputs and assumptions. Verify major decisions with official sources and qualified professionals before acting.
 
@@ -67,7 +67,7 @@ Use it like this:
 - Up to 12 checks can appear depending on the plan setup and goals.
 - Checks are tiered: Essential, Recommended, Optimization, and Optional.
 - Essential checks decide viability. Optimization checks are efficiency, not failure.
-- Checks that do not fit your plan are marked not applicable and greyed out.
+- Checks that do not fit your plan are marked not applicable and grayed out.
 - Four US-specific checks switch off for non-USD plans and non-US taxpayers.
 - Plan Health and Plan Confidence are related, but they are not the same thing.
 - The 0 to 100 score comes from the checklist. Monte Carlo and history confirm it rather than change it.
@@ -161,7 +161,7 @@ Plan Health rows use icons, and they read in plain language:
 - ✅ Pass: the plan clears that check under the current assumptions.
 - ⚠️ Warning: the check is close enough to deserve attention.
 - ❌ Fail: the check points to a risk or gap.
-- — Not applicable: the check does not fit the current plan setup. The row is greyed out with a note explaining what to turn on.
+- — Not applicable: the check does not fit the current plan setup. The row is grayed out with a note explaining what to turn on.
 - 🔕 Acknowledged: you reviewed a flagged item and accepted it for now.
 
 Not applicable rows are not hidden. They stay visible and tell you what input would activate them, which is often the more useful message.
@@ -274,13 +274,13 @@ The panel also writes the summary for you, in sentences like "Your plan passes 8
 
 The planner lets you accept a flagged check instead of fixing it.
 
-Each failing or warning row carries an "I'm OK with this" button. Clicking it opens a short inline form asking for an optional one-line note, up to 120 characters, with an example like "large cash buffer covers the gap". The row then greys out with a 🔕 icon, shows your note back to you, and gains a Restore button if you change your mind.
+Each failing or warning row carries an "I'm OK with this" button. Clicking it opens a short inline form asking for an optional one-line note, up to 120 characters, with an example like "large cash buffer covers the gap". The row then grays out with a 🔕 icon, shows your note back to you, and gains a Restore button if you change your mind.
 
 Three things are worth knowing about how this behaves:
 
 - **It does not raise your score.** Acknowledged checks still count as not passing, on purpose. The number stays honest.
-- **It cannot wave away an Essential check.** The completeness verdict ignores acknowledgement for Essential items. Only Recommended gaps get resolved this way.
-- **It clears itself.** If the underlying issue later resolves, the planner drops the acknowledgement automatically, so old notes do not linger on checks that now pass.
+- **It cannot wave away an Essential check.** The completeness verdict ignores acknowledgment for Essential items. Only Recommended gaps get resolved this way.
+- **It clears itself.** If the underlying issue later resolves, the planner drops the acknowledgment automatically, so old notes do not linger on checks that now pass.
 
 It also changes how the AI talks to you. Acknowledged checks are passed to the AI as reviewed and accepted, with an instruction not to lead with them or re-flag them as urgent problems.
 
@@ -291,7 +291,7 @@ Use this when a flag is real, but you have a reason to accept it for now:
 - A temporary expense creates a short-term warning.
 - You have outside resources that are not modeled in the plan.
 
-Do not use acknowledgements to hide uncomfortable problems. Use them to document judgment.
+Do not use acknowledgments to hide uncomfortable problems. Use them to document judgment.
 
 The note field is one line, so keep it to the reason: "rental property not modeled here" beats a paragraph. If an item needs a professional's review, that belongs in your own notes rather than a 120-character field.
 
@@ -323,7 +323,7 @@ Avoid these common mistakes:
 - Ignoring a warning because the overall badge looks good.
 - Assuming a not-applicable check is broken rather than switched off.
 - Changing several inputs at once.
-- Expecting an acknowledgement to improve the score.
+- Expecting an acknowledgment to improve the score.
 - Ignoring survivor income.
 - Ignoring healthcare thresholds.
 - Accepting a flagged item without writing why.
@@ -384,7 +384,7 @@ Open the side panel and start with any Essential check that is failing. Read the
 
 ### Does acknowledging a check improve my score?
 
-No. Acknowledged checks still count as not passing, so the score stays honest. Acknowledgement records that you reviewed the item and accepted it, greys the row, keeps your note, and tells the AI not to re-flag it. Essential checks cannot be resolved this way.
+No. Acknowledged checks still count as not passing, so the score stays honest. Acknowledgment records that you reviewed the item and accepted it, grays the row, keeps your note, and tells the AI not to re-flag it. Essential checks cannot be resolved this way.
 
 ### Can AI help explain Plan Health?
 
@@ -436,7 +436,7 @@ Suggested internal links:
 
 ## Newsletter Summary
 
-Plan Health is the AI Retirement Income Planner's live checklist for reviewing income, taxes, healthcare thresholds, RMDs, portfolio survival, stress resilience, survivor income, and user goals. This tutorial explains where to find the badge, how to read the side panel, why the checks are tiered from Essential to Optional, how to respond to warnings, how acknowledgements work, and how Plan Health connects to the Plan Confidence score, Monte Carlo, historical backtesting, scenarios, reports, and optional AI explanations.
+Plan Health is the AI Retirement Income Planner's live checklist for reviewing income, taxes, healthcare thresholds, RMDs, portfolio survival, stress resilience, survivor income, and user goals. This tutorial explains where to find the badge, how to read the side panel, why the checks are tiered from Essential to Optional, how to respond to warnings, how acknowledgments work, and how Plan Health connects to the Plan Confidence score, Monte Carlo, historical backtesting, scenarios, reports, and optional AI explanations.
 
 ## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. Planner results depend on user inputs and assumptions, and real-world outcomes can differ.

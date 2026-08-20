@@ -78,7 +78,7 @@ You can skip any step and fill it in later. When you finish, the Overview tab is
 
 ## Enter Your Numbers in Edit Values
 
-Whether or not you use the wizard, the **Edit values** tab is where all your inputs live, organised into sections. Starting from a clean slate, the Reset control gives you a neutral baseline to build on.
+Whether or not you use the wizard, the **Edit values** tab is where all your inputs live, organized into sections. Starting from a clean slate, the Reset control gives you a neutral baseline to build on.
 
 [IMAGE getting started 4]
 

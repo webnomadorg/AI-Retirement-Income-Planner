@@ -120,7 +120,7 @@ This is where the gap between the headline and the reality shows up, and where a
 
 [IMAGE phase card showing gross income reducing to net after tax and health insurance 4]
 
-> **One thing to know about how this planner handles a taxable brokerage account.** Only the *gain* inside a withdrawal is taxed, not the whole amount — but that gain is taxed at **ordinary income rates**, not the preferential 0/15/20 percent long-term rates. That is a deliberate simplification, and it is deliberately cautious. For a low-income early retiree whose real long-term rate would be **zero**, it reads high — which is exactly the bridge-year case this article is about. It always overstates that tax and never understates it, so a plan that survives here would survive with the real treatment too. If you are modelling a taxable bridge, treat that line as a ceiling rather than an estimate.
+> **One thing to know about how this planner handles a taxable brokerage account.** Only the *gain* inside a withdrawal is taxed, not the whole amount — but that gain is taxed at **ordinary income rates**, not the preferential 0/15/20 percent long-term rates. That is a deliberate simplification, and it is deliberately cautious. For a low-income early retiree whose real long-term rate would be **zero**, it reads high — which is exactly the bridge-year case this article is about. It always overstates that tax and never understates it, so a plan that survives here would survive with the real treatment too. If you are modeling a taxable bridge, treat that line as a ceiling rather than an estimate.
 
 More on the three different numbers people mean by "income" in [gross, net and real retirement income](/blog/gross-net-real-retirement-income.html), and on drawing order in [which account should I withdraw from first](/blog/which-retirement-account-withdraw-from-first.html).
 
@@ -169,7 +169,7 @@ There is a [free Retire Abroad tool](/retire-abroad.html) on this site that comp
 
 "FIRE" covers several quite different plans, and the blind spot that bites hardest depends on which one you are actually running.
 
-| Flavour | The question a multiple cannot answer | Where to look |
+| Flavor | The question a multiple cannot answer | Where to look |
 |---|---|---|
 | **Full FIRE at 40–45** | Seventeen-plus years before the 401(k) unlocks penalty-free — is the bridge funded? | The pre-59½ phase |
 | **Barista FIRE** | Is the part-time work still worth it after its effect on your subsidy? | Part-time income on the phase, and what happens to the FPL headroom |
@@ -229,7 +229,7 @@ Coast FIRE means you have saved enough that existing investments will grow into 
 
 ### Do I need to include Social Security in a FIRE plan?
 
-You do not have to, and leaving it out is conservative. But it arrives at 62 or later and runs for life, so in a fifty-year plan it shapes the back half considerably. Modelling it with a realistic figure — including the zero-earning years — tells you more than ignoring it.
+You do not have to, and leaving it out is conservative. But it arrives at 62 or later and runs for life, so in a fifty-year plan it shapes the back half considerably. Modeling it with a realistic figure — including the zero-earning years — tells you more than ignoring it.
 
 ### Can I model retiring abroad?
 
@@ -266,7 +266,7 @@ Yes. The free Retire Abroad tool on this site compares a US retirement against t
 
 ## Newsletter Summary
 
-The standard FIRE readiness test is a multiple — 25x annual spending, sometimes 33x. It is a good screening test and a poor conclusion, because a multiple describes a portfolio and cannot see the six things that decide whether the years after you stop actually work. This article walks through them: the 59½ wall, where a large part of your net worth is counted by your FIRE number but cannot pay a bill for another seventeen years; health cover before 65, where your premium is set by the income you choose to take and Silver cost-sharing ends abruptly at 250% of the federal poverty level; the difference between expenses and withdrawals once tax and insurance are taken out; sequence-of-returns risk over a fifty-year horizon when the 4% rule was derived for thirty; Social Security arriving twenty years later with zeros in the 35-year average, and an ssa.gov estimate that assumes you never stopped earning; and where you live, both the state and the country. It maps the FIRE flavours — full, barista, coast, lean, fat and geographic arbitrage — onto which blind spot bites each hardest, and closes with an ordered way to test any of it: build the plan you would actually bet on, save it, change exactly one thing, and look at the difference rather than the verdict.
+The standard FIRE readiness test is a multiple — 25x annual spending, sometimes 33x. It is a good screening test and a poor conclusion, because a multiple describes a portfolio and cannot see the six things that decide whether the years after you stop actually work. This article walks through them: the 59½ wall, where a large part of your net worth is counted by your FIRE number but cannot pay a bill for another seventeen years; health cover before 65, where your premium is set by the income you choose to take and Silver cost-sharing ends abruptly at 250% of the federal poverty level; the difference between expenses and withdrawals once tax and insurance are taken out; sequence-of-returns risk over a fifty-year horizon when the 4% rule was derived for thirty; Social Security arriving twenty years later with zeros in the 35-year average, and an ssa.gov estimate that assumes you never stopped earning; and where you live, both the state and the country. It maps the FIRE flavors — full, barista, coast, lean, fat and geographic arbitrage — onto which blind spot bites each hardest, and closes with an ordered way to test any of it: build the plan you would actually bet on, save it, change exactly one thing, and look at the difference rather than the verdict.
 
 ## Educational Disclaimer
 

@@ -14,7 +14,7 @@
 
 **Lead image:** 1
 
-**Image 1 alt:** Editorial illustration of several different income streams flowing along separate channels into a single planning ledger, each channel a distinct colour to show they are handled differently.
+**Image 1 alt:** Editorial illustration of several different income streams flowing along separate channels into a single planning ledger, each channel a distinct color to show they are handled differently.
 
 **Image 2 alt:** The Income streams card in the planner, showing the birth year, Social Security claiming age, SSDI checkbox, Social Security amount, two pension and disability streams each with their own start age and end age, and the UK State Pension field.
 
@@ -95,7 +95,7 @@ If you have worked in the UK you may be entitled to a UK State Pension alongside
 
 ## Everything Else
 
-**Part-time or consulting work** is ordinary earned income, entered on the phases where you actually expect it rather than as a lifelong stream — most people taper off rather than stopping dead, and modelling it year by year is more honest.
+**Part-time or consulting work** is ordinary earned income, entered on the phases where you actually expect it rather than as a lifelong stream — most people taper off rather than stopping dead, and modeling it year by year is more honest.
 
 **Rental, annuity and dividend income** has its own field because it can be taxable or partly a return of your own capital, and that distinction changes both your tax and the income figure the ACA and Medicare look at.
 

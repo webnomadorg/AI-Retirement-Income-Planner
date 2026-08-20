@@ -84,7 +84,7 @@
           <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
-        <select class="theme-select" id="themeSelect" aria-label="Choose colour theme">
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
           <option value="">Quiet Fintech</option>
           <option value="soft">Soft Consumer</option>
           <option value="editorial">Editorial</option>
@@ -162,14 +162,14 @@
 <p>For serious plan analysis and the change proposals, Claude Opus 4.8 or Claude Fable 5 are the recommended models, because the planner's AI prompts and proposal format were developed and tuned against Claude during development. For the lighter "Learn the planner" how-to chat, smaller or local models, including free local models in Ollama, work well and cost nothing to run.</p>
 <p>The rest of this guide explains the two AI modes, each provider's strengths and weaknesses, how to select a model, how to add and protect your API key, and how to get a Claude key step by step.</p>
 <figure class="shot post-img">
-<img src="/assets/img/blog/using-ai-in-the-retirement-planner-4.webp" alt="Branded overview of the planner's AI options: choose a provider (Anthropic Claude recommended, OpenAI, Google Gemini, OpenRouter, Ollama local, or custom), bring your own key, and use AI for insights, stress testing, income and tax optimisation, and Medicare and ACA planning." width="1400" height="1050" loading="lazy">
+<img src="/assets/img/blog/using-ai-in-the-retirement-planner-4.webp" alt="Branded overview of the planner's AI options: choose a provider (Anthropic Claude recommended, OpenAI, Google Gemini, OpenRouter, Ollama local, or custom), bring your own key, and use AI for insights, stress testing, income and tax optimization, and Medicare and ACA planning." width="1400" height="1050" loading="lazy">
 </figure>
 
 <h2 id="the-two-ai-modes-plan-with-ai-and-learn-the-planner">The Two AI Modes: Plan With AI and Learn the Planner</h2>
 <p>The AI Chat tab has two different modes, and it helps to know which one you are in.</p>
 <p><strong>Plan with AI</strong> works on your real plan. You ask for changes in plain English, and it returns specific numeric edits to your withdrawals, tax strategy, Roth conversions, and phase structure. Every proposed change set is checked against the simulation, so <a href="/blog/why-ai-needs-a-retirement-calculator-underneath.html">the AI always has a real retirement calculator underneath it</a>, and you review and approve it (or undo it) with one click. This is the mode that benefits most from a capable model.</p>
 <p><strong>Learn the planner</strong> is a grounded "how do I use this?" chat. It answers questions about the planner itself, such as where to set a claiming age or what an ACA cliff warning means, using the app's own help content. It can even hand a drafted question over to Plan mode for you. Because it is mostly explaining the tool rather than doing heavy analysis, it runs fine on cheaper or local models.</p>
-<p>A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyse and change your plan, and a cheaper or local model when you just want help using the planner. Either way, this is different from pasting your numbers into a general chatbot; <a href="/blog/can-chatgpt-help-with-retirement-planning.html">can ChatGPT help with retirement planning?</a> covers where a chatbot helps and where it should not.</p>
+<p>A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyze and change your plan, and a cheaper or local model when you just want help using the planner. Either way, this is different from pasting your numbers into a general chatbot; <a href="/blog/can-chatgpt-help-with-retirement-planning.html">can ChatGPT help with retirement planning?</a> covers where a chatbot helps and where it should not.</p>
 <figure class="shot post-img">
 <img src="/assets/img/blog/using-ai-in-the-retirement-planner-5.webp" alt="Two-panel illustration comparing Plan with AI, which analyses your plan and proposes changes you approve, with Learn the planner, which explains how to use the app." width="1400" height="1050" loading="lazy">
 </figure>
@@ -242,7 +242,7 @@
 <h2 id="which-model-should-i-use">Which Model Should I Use?</h2>
 <p>The planner is happy to use any of these, but the results are not equal.</p>
 <ul>
-<li><strong>For Plan with AI (analysis and change proposals):</strong> Claude Opus 4.8 or Claude Fable 5. These give the most reliable, best-formatted change proposals because the planner was tuned against Claude during development. This matters most when the AI is doing real work like <a href="/blog/which-retirement-account-withdraw-from-first.html">analysing your withdrawal strategy</a> across phases or hardening the plan against a bad market.</li>
+<li><strong>For Plan with AI (analysis and change proposals):</strong> Claude Opus 4.8 or Claude Fable 5. These give the most reliable, best-formatted change proposals because the planner was tuned against Claude during development. This matters most when the AI is doing real work like <a href="/blog/which-retirement-account-withdraw-from-first.html">analyzing your withdrawal strategy</a> across phases or hardening the plan against a bad market.</li>
 <li><strong>For a good balance of speed and cost:</strong> a "Balanced" Claude Sonnet model, or a mid-tier model from another provider.</li>
 <li><strong>For Learn the planner, or to keep everything free and private:</strong> a small local model in Ollama, or a low-cost model such as Gemini Flash.</li>
 </ul>
@@ -291,20 +291,20 @@
 <p>Once your key is in, you do not have to think up a question from scratch. Both modes offer starter chips you can click.</p>
 <p>In <strong>Plan with AI</strong>, the starters include:</p>
 <ul>
-<li>Summarise and flag risks</li>
+<li>Summarize and flag risks</li>
 <li>Tax bracket check</li>
 <li>ACA / CSR check</li>
 <li>Withdrawal strategy</li>
-<li>Propose optimisations</li>
+<li>Propose optimizations</li>
 <li>Roth conversion advice</li>
 </ul>
-<p>"Propose optimisations" is the one many people use first: it returns specific numeric changes sized to respect your tax brackets, ACA cliff, and IRMAA thresholds, which you can apply with one click. It pairs naturally with questions about <a href="/blog/how-much-can-i-spend-in-retirement.html">how much you can safely spend in retirement</a>.</p>
+<p>"Propose optimizations" is the one many people use first: it returns specific numeric changes sized to respect your tax brackets, ACA cliff, and IRMAA thresholds, which you can apply with one click. It pairs naturally with questions about <a href="/blog/how-much-can-i-spend-in-retirement.html">how much you can safely spend in retirement</a>.</p>
 <p>In <strong>Learn the planner</strong>, the starters are how-to questions such as "Where do I set my Social Security claiming age?" or "How do I add a one-off lump sum like an inheritance?" For a step-by-step guide to working with both modes, see <a href="/blog/how-to-use-the-ai-co-pilot.html">how to use the AI co-pilot</a>.</p>
 <p>You can also send the AI a question straight from elsewhere in the app. Many results, including the stress tests, the <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">Plan Health checks</a>, and <a href="/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">Monte Carlo and historical backtests</a>, have an "Ask AI about this" button that opens the chat with a detailed, plan-aware question already written for you.</p>
 <h3 id="clearing-the-conversation">Clearing the Conversation</h3>
 <p>The AI Chat tab has a <strong>Clear</strong> button in its header. It empties the current conversation so you can start fresh, and it asks you to confirm first because it cannot be undone. Clearing works per mode: it clears whichever conversation, Plan or Learn, you are currently viewing, and in Plan mode it also dismisses any pending change proposals.</p>
 <h2 id="privacy-and-cost-in-one-place">Privacy and Cost, in One Place</h2>
-<p>To summarise the trade-offs:</p>
+<p>To summarize the trade-offs:</p>
 <ul>
 <li><strong>Most private and free:</strong> Ollama, running a local model on your own machine. Nothing leaves your device.</li>
 <li><strong>Best plan analysis:</strong> Anthropic Claude (Opus 4.8 or Fable 5), paid per use, with your plan figures sent to Anthropic under your own account.</li>
@@ -459,7 +459,7 @@
       <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
       <span>Made for planners, not subscribers.</span>
     </div>
-    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalised investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
   </div>
   <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
        only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,

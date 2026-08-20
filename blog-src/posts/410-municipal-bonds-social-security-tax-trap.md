@@ -14,7 +14,7 @@
 
 **Lead image:** 1
 
-**Image 1 alt:** Editorial illustration of a bond certificate labelled tax-free casting a long shadow across a tax return, suggesting that something exempt can still have an effect elsewhere.
+**Image 1 alt:** Editorial illustration of a bond certificate labeled tax-free casting a long shadow across a tax return, suggesting that something exempt can still have an effect elsewhere.
 
 **Image 2 alt:** The planner's Under the hood pane showing the Social Security provisional income working, with tax-exempt interest listed as its own line above the half-your-Social-Security line.
 

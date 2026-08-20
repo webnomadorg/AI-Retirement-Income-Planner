@@ -31,4 +31,4 @@ Suggested internal links:
 ## Newsletter Summary
 
 
-Plan Health is the AI Retirement Income Planner's live checklist for reviewing income, taxes, healthcare thresholds, RMDs, portfolio survival, stress resilience, survivor income, and user goals. This tutorial explains where to find the badge, how to read the side panel, why the checks are tiered from Essential to Optional, how to respond to warnings, how acknowledgements work, and how Plan Health connects to the Plan Confidence score, Monte Carlo, historical backtesting, scenarios, reports, and optional AI explanations.
+Plan Health is the AI Retirement Income Planner's live checklist for reviewing income, taxes, healthcare thresholds, RMDs, portfolio survival, stress resilience, survivor income, and user goals. This tutorial explains where to find the badge, how to read the side panel, why the checks are tiered from Essential to Optional, how to respond to warnings, how acknowledgments work, and how Plan Health connects to the Plan Confidence score, Monte Carlo, historical backtesting, scenarios, reports, and optional AI explanations.

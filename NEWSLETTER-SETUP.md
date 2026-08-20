@@ -11,7 +11,7 @@
 > **redeploy** (env vars bind at deploy time).
 >
 > Everything in "How to switch modes" further down still describes the *old* single-opt-in
-> behaviour and is kept only as history. Do not follow it expecting the current design.
+> behavior and is kept only as history. Do not follow it expecting the current design.
 > The current design is documented in **`Plans/Newsletter-Spam-Prevention.md`** (desktop repo).
 
 ## The two-step flow, end to end

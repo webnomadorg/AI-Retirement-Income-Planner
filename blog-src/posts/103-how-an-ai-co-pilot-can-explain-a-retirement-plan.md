@@ -15,7 +15,7 @@
 
 **Image 1 alt:** Illustration of an AI co-pilot assistant beside a retirement planning dashboard with charts and plan health cards
 **Image 2 alt:** Three-step flow showing a retirement calculator first, then an AI explanation, then user review
-**Image 3 alt:** Infographic showing how to export, import, and organise retirement what-if scenarios in a saved-plan library
+**Image 3 alt:** Infographic showing how to export, import, and organize retirement what-if scenarios in a saved-plan library
 **Image 4 alt:** Balance and legacy insight cards explaining a large 401k balance, remaining portfolio, Roth balance, low cash, and equity concentration at plan end
 
 **Search intent:** The reader wants to know what an AI co-pilot can explain inside a retirement plan, what it should not decide, and why the explanation should be tied to calculator-backed outputs.

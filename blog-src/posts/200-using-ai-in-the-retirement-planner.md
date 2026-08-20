@@ -16,7 +16,7 @@
 
 **Lead image:** 4
 
-**Image 4 alt:** Branded overview of the planner's AI options: choose a provider (Anthropic Claude recommended, OpenAI, Google Gemini, OpenRouter, Ollama local, or custom), bring your own key, and use AI for insights, stress testing, income and tax optimisation, and Medicare and ACA planning.
+**Image 4 alt:** Branded overview of the planner's AI options: choose a provider (Anthropic Claude recommended, OpenAI, Google Gemini, OpenRouter, Ollama local, or custom), bring your own key, and use AI for insights, stress testing, income and tax optimization, and Medicare and ACA planning.
 
 **Image 5 alt:** Two-panel illustration comparing Plan with AI, which analyses your plan and proposes changes you approve, with Learn the planner, which explains how to use the app.
 
@@ -57,7 +57,7 @@ The AI Chat tab has two different modes, and it helps to know which one you are 
 
 **Learn the planner** is a grounded "how do I use this?" chat. It answers questions about the planner itself, such as where to set a claiming age or what an ACA cliff warning means, using the app's own help content. It can even hand a drafted question over to Plan mode for you. Because it is mostly explaining the tool rather than doing heavy analysis, it runs fine on cheaper or local models.
 
-A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyse and change your plan, and a cheaper or local model when you just want help using the planner. Either way, this is different from pasting your numbers into a general chatbot; [can ChatGPT help with retirement planning?](/blog/can-chatgpt-help-with-retirement-planning.html) covers where a chatbot helps and where it should not.
+A simple rule of thumb: use a strong model (Claude Opus 4.8 or Fable 5) when you want the AI to analyze and change your plan, and a cheaper or local model when you just want help using the planner. Either way, this is different from pasting your numbers into a general chatbot; [can ChatGPT help with retirement planning?](/blog/can-chatgpt-help-with-retirement-planning.html) covers where a chatbot helps and where it should not.
 
 [IMAGE 200 ai models 5]
 
@@ -97,7 +97,7 @@ A few notes on the ends of that range:
 
 The planner is happy to use any of these, but the results are not equal.
 
-- **For Plan with AI (analysis and change proposals):** Claude Opus 4.8 or Claude Fable 5. These give the most reliable, best-formatted change proposals because the planner was tuned against Claude during development. This matters most when the AI is doing real work like [analysing your withdrawal strategy](/blog/which-retirement-account-withdraw-from-first.html) across phases or hardening the plan against a bad market.
+- **For Plan with AI (analysis and change proposals):** Claude Opus 4.8 or Claude Fable 5. These give the most reliable, best-formatted change proposals because the planner was tuned against Claude during development. This matters most when the AI is doing real work like [analyzing your withdrawal strategy](/blog/which-retirement-account-withdraw-from-first.html) across phases or hardening the plan against a bad market.
 - **For a good balance of speed and cost:** a "Balanced" Claude Sonnet model, or a mid-tier model from another provider.
 - **For Learn the planner, or to keep everything free and private:** a small local model in Ollama, or a low-cost model such as Gemini Flash.
 
@@ -151,14 +151,14 @@ Once your key is in, you do not have to think up a question from scratch. Both m
 
 In **Plan with AI**, the starters include:
 
-- Summarise and flag risks
+- Summarize and flag risks
 - Tax bracket check
 - ACA / CSR check
 - Withdrawal strategy
-- Propose optimisations
+- Propose optimizations
 - Roth conversion advice
 
-"Propose optimisations" is the one many people use first: it returns specific numeric changes sized to respect your tax brackets, ACA cliff, and IRMAA thresholds, which you can apply with one click. It pairs naturally with questions about [how much you can safely spend in retirement](/blog/how-much-can-i-spend-in-retirement.html).
+"Propose optimizations" is the one many people use first: it returns specific numeric changes sized to respect your tax brackets, ACA cliff, and IRMAA thresholds, which you can apply with one click. It pairs naturally with questions about [how much you can safely spend in retirement](/blog/how-much-can-i-spend-in-retirement.html).
 
 In **Learn the planner**, the starters are how-to questions such as "Where do I set my Social Security claiming age?" or "How do I add a one-off lump sum like an inheritance?" For a step-by-step guide to working with both modes, see [how to use the AI co-pilot](/blog/how-to-use-the-ai-co-pilot.html).
 
@@ -170,7 +170,7 @@ The AI Chat tab has a **Clear** button in its header. It empties the current con
 
 ## Privacy and Cost, in One Place
 
-To summarise the trade-offs:
+To summarize the trade-offs:
 
 - **Most private and free:** Ollama, running a local model on your own machine. Nothing leaves your device.
 - **Best plan analysis:** Anthropic Claude (Opus 4.8 or Fable 5), paid per use, with your plan figures sent to Anthropic under your own account.
@@ -226,12 +226,12 @@ The AI Retirement Income Planner lets you bring your own AI key and get plan-awa
 
 End-of-article CTA:
 
-Want to try the AI features without committing? Start with a small Claude credit balance, or a free local Ollama model for how-to questions, then let Propose optimisations suggest specific, reviewable changes to your plan.
+Want to try the AI features without committing? Start with a small Claude credit balance, or a free local Ollama model for how-to questions, then let Propose optimizations suggest specific, reviewable changes to your plan.
 
 ## Internal Link Suggestions
 
 - Link to `006-which-retirement-account-should-i-withdraw-from-first.md` when discussing the Withdrawal strategy starter.
-- Link to `019-how-much-can-i-spend-in-retirement.md` when discussing Propose optimisations and spending.
+- Link to `019-how-much-can-i-spend-in-retirement.md` when discussing Propose optimizations and spending.
 - Link to `087-monte-carlo-vs-historical-backtesting-for-retirement-planning.md` when discussing Ask AI about this on stress tests.
 - Link to `093`, `094`, `095` (AI cluster) once published.
 

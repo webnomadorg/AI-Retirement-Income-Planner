@@ -4,7 +4,7 @@
 
 
 - Link to `006-which-retirement-account-should-i-withdraw-from-first.md` when discussing the Withdrawal strategy starter.
-- Link to `019-how-much-can-i-spend-in-retirement.md` when discussing Propose optimisations and spending.
+- Link to `019-how-much-can-i-spend-in-retirement.md` when discussing Propose optimizations and spending.
 - Link to `087-monte-carlo-vs-historical-backtesting-for-retirement-planning.md` when discussing Ask AI about this on stress tests.
 - Link to `093`, `094`, `095` (AI cluster) once published.
 
