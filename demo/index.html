@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v334.html on 2026-08-20. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v339.html on 2026-08-20. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -639,7 +639,7 @@
   .bpill.bclk{cursor:pointer;transition:filter 0.12s;}
   .bpill.bclk:hover{filter:brightness(0.94);}
   /* What-if explorer segmented sub-nav */
-  .whatif-subnav{display:flex;flex-wrap:wrap;gap:6px;max-width:880px;margin:14px auto;}
+  .whatif-subnav{display:flex;flex-wrap:wrap;gap:6px;margin:14px auto;}
   .whatif-pill{padding:6px 14px;border-radius:999px;border:0.5px solid var(--border-mid);background:var(--bg-secondary);color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:background 0.12s,color 0.12s,border-color 0.12s;}
   .whatif-pill:hover{background:var(--bg-tertiary);}
   .whatif-pill.active{background:#378ADD;color:#fff;border-color:#378ADD;}
@@ -4103,7 +4103,9 @@ html[data-theme="contrast"] .irow select:focus{
        starting point. Pure exploration — never touches the saved plan.
        ═══════════════════════════════════════════════════════════════ -->
   <div id="tab-whatif" class="tab-content">
-    <div style="max-width:880px;margin:0 auto;">
+    <!-- Wider than the 880px reading measure the setup cards use: these tools are calculators with
+         sliders, result grids and (for Roth) a full-width response curve, not prose to read. -->
+    <div style="max-width:1100px;margin:0 auto;">
       <div class="card">
         <h3 style="margin-bottom:8px;">🧪 What-if explorer</h3>
         <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:0;">
@@ -4135,7 +4137,7 @@ html[data-theme="contrast"] .irow select:focus{
       <div class="card whatif-card" data-whatif="roth">
         <h3 style="margin-bottom:6px;">Roth conversion — size impact</h3>
         <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.55;">
-          Pick a phase and try different annual conversion amounts. See how each one affects your taxable income, MAGI, ACA eligibility, and IRMAA in that phase.
+          Pick a phase and try different annual conversion amounts. See how each one affects your taxable income, MAGI, ACA eligibility, and IRMAA in that phase &mdash; and read the whole range at once on the response curve, which shows where the tax cost per dollar steps up and where the IRMAA and ACA thresholds sit.
           <button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('rothConversion',this)" title="What is a Roth conversion?" aria-label="What is this?">i</button>
         </p>
         <div id="whatif-roth-watch" style="margin-bottom:12px;"></div>
@@ -5008,7 +5010,7 @@ html[data-theme="contrast"] .irow select:focus{
 
         <div class="help-h2">Drawdown Strategies tab <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=3Pz1Mnd7lmg','_blank','noopener');" title="Watch the Withdrawal ordering explainer">&#x25B6; Withdrawal ordering &middot; 3 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=IcxSrDEWXkk','_blank','noopener');" title="Watch the Monte Carlo &amp; sequence risk explainer">&#x25B6; Monte Carlo &middot; 3 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=QNCmRF3lUhc','_blank','noopener');" title="Watch the Income Floor explainer">&#x25B6; Income Floor &middot; 2 min</button></span></div>
         <p class="help-p">The <strong>Drawdown Strategies</strong> tab answers the complementary question to your income plan: <em>"Given my portfolio, what do established strategies say I can safely spend?"</em> Six strategies are available — select one with the strategy buttons and results update instantly.</p>
-        <p class="help-p"><strong>4% Rule:</strong> Withdraw a fixed percentage of your starting portfolio in year 1, then inflation-adjust annually. A rate slider lets you explore from 2.5% to 6%. <strong>Variable % (VPW):</strong> Withdraws an increasing percentage calibrated to your growth rate and remaining horizon — portfolio reaches exactly zero at your life expectancy. <strong>3 Buckets:</strong> Maps your cash, Roth, and 401k/equity balances to short/medium/long-term buckets and shows how well each is funded. <strong>Floor &amp; Upside:</strong> Separates guaranteed income (SS, pensions) from portfolio-dependent income with a phase-by-phase coverage table. <strong>Guardrails:</strong> Starts at 5% with rules to cut spending 10% if markets fall or raise it 10% if they grow strongly. <strong>Monte Carlo:</strong> Runs your full plan with randomised returns — identical to the former Monte Carlo tab, now integrated here.</p>
+        <p class="help-p"><strong>4% Rule:</strong> Withdraw a fixed percentage of your starting portfolio in year 1, then inflation-adjust annually. A rate slider lets you explore from 2.5% to 6%. <strong>Variable % (VPW):</strong> Withdraws an increasing percentage calibrated to your growth rate and remaining horizon — portfolio reaches exactly zero at your life expectancy. <strong>3 Buckets:</strong> Maps your cash, Roth, and 401k/equity balances to short/medium/long-term buckets and shows how well each is funded. <strong>Floor &amp; Upside:</strong> Separates guaranteed income (SS, pensions) from portfolio-dependent income, as a stacked chart of the two tiers over time plus a phase-by-phase coverage table. <strong>Guardrails:</strong> Starts at 5% with rules to cut spending 10% if markets fall or raise it 10% if they grow strongly. <strong>Monte Carlo:</strong> Runs your full plan with randomised returns — identical to the former Monte Carlo tab, now integrated here.</p>
         <p class="help-p">Every strategy shows an <strong>Insights &amp; recommendations</strong> section with specific, actionable observations based on your numbers. Monte Carlo volatility (σ) settings remain in Edit → Monte Carlo settings.</p>
 
         <div class="help-h2">Annuity Calculator tab</div>
@@ -5988,7 +5990,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 334; /* __BUILD__ */
+const APP_BUILD = 339; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -11860,6 +11862,31 @@ function _ddBlendedRate(){
   return(b4*(S.r401k||7)/100+bc*(S.rCash||3.75)/100+be*(S.rEquity||S.r401k||7)/100+br*(S.rRoth||7)/100+bs*(S.rSuper||7)/100)/t;
 }
 function _ddFmtK(v){const c=CURRENCIES[displayCurrency],d=v*c.rate;return d>=1e6?c.symbol+(d/1e6).toFixed(1)+'M':d>=1000?c.symbol+(d/1000).toFixed(0)+'k':c.symbol+Math.round(d);}
+// Gridlines on ROUND numbers. maxV/4 lands on values like 814, which _ddFmtK then prints as "$814"
+// next to two ticks that both round to "$2k" — an axis that looks broken and reads as three different
+// scales. Round the step up to 1/2/2.5/5 × 10^n and let the top tick define the plot's ceiling.
+// Axis-label twin of _ddFmtK. _ddFmtK prints thousands with NO decimal, which is right for a figure
+// in prose but turns a $2,500 gridline into "$3k" sitting on a line that means 2,500. Keep one
+// decimal when the value is not a whole thousand, drop it when it is.
+function _ddAxisK(v){
+  const c=CURRENCIES[displayCurrency],d=v*c.rate;
+  const one=n=>{const t=n.toFixed(1);return t.slice(-2)==='.0'?t.slice(0,-2):t;};
+  if(Math.abs(d)>=1e6)return c.symbol+one(d/1e6)+'M';
+  if(Math.abs(d)>=1000)return c.symbol+one(d/1000)+'k';
+  return c.symbol+Math.round(d);
+}
+function _ddNiceAxis(maxV,ticks){
+  const n=Math.max(2,ticks||4);
+  if(!(maxV>0))return{top:1,step:1,vals:[0,1]};
+  const raw=maxV/n,pow=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/pow;
+  const step=(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*pow;
+  // Exactly `n` divisions, never "however many fit": two axes sharing one set of gridlines (the Roth
+  // curve hangs tax on the left and rate on the right) must produce the SAME number of ticks, or the
+  // pairing silently drifts. step>=maxV/n, so n steps always clear the data.
+  const top=step*n,vals=[];
+  for(let i=0;i<=n;i++)vals.push(step*i);
+  return{top,step,vals};
+}
 function _ddSvgLine(pts,color,w,dash){const d=pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');return'<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="'+(w||2)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>';}
 function _ddSvgFill(pts,color,baseY){const d=pts.map((p,i)=>`${i===0?'M':'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0].toFixed(1)},${baseY} L${pts[0][0].toFixed(1)},${baseY} Z`;return`<path d="${d}" fill="${color}" opacity="0.13"/>`;}
 
@@ -12202,6 +12229,61 @@ function _ddRenderBuckets(pane){
 }
 
 // ── Floor & Upside ─────────────────────────────────────────────
+// ── Floor & Upside: the two tiers as a stacked area ─────────────────────────────
+// The phase table under this chart already holds these exact numbers — this draws the same rows, so
+// the strategy's actual claim ("the guaranteed floor RISES as Social Security and pensions start, and
+// the slice you carry market risk on shrinks") is visible in one look instead of being read out of a
+// column of percentages.
+//
+// Bands are RECTANGLES, not a smoothed curve: income is constant within a phase and steps at the
+// boundary, so sloping between phases would draw a transition the engine never modelled. Width is
+// proportional to the phase's length in years, which is why a long Phase 5 looks like the long haul
+// it is. No text sits on the washes (the heatmap contrast lesson) — the numbers stay in the table.
+function _ddFloorPalette(){
+  const isDark=document.documentElement.classList.contains('dark');
+  return{isDark,cFloor:isDark?'#7ec87a':'#27820a',cPort:isDark?'#60aaee':'#1a6eb5',
+    cNet:isDark?'#e8e6df':'#3b3a36',ax:isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)',
+    lb:isDark?'#a8a89e':'#5f5e5a'};
+}
+function _ddFloorStackChart(bands,pal,tableId){
+  if(!bands||bands.length<1)return'';
+  const W=940,H=260,pL=72,pR=20,pT=16,pB=34,cW=W-pL-pR,cH=H-pT-pB;
+  const a0=bands[0].startAge,a1=bands[bands.length-1].endAge,span=a1-a0;
+  if(!(span>0))return'';
+  const peak=Math.max(...bands.map(b=>b.floor+b.port));
+  if(!(peak>0))return'';
+  // Round the axis in the DISPLAY currency, then convert the ticks back to USD to position them.
+  // Rounding in USD and converting on the way out gives £736 / £1.5k / £2.2k on a GBP plan — round
+  // numbers for a currency the reader is not looking at.
+  const _fxr=CURRENCIES[displayCurrency].rate||1;
+  const axis=_ddNiceAxis(peak*_fxr*1.06,4),maxV=axis.top/_fxr;
+  const xp=a=>pL+((a-a0)/span)*cW, yp=v=>pT+cH*(1-Math.max(0,v)/maxV), baseY=pT+cH;
+  const yLbls=axis.vals.map(dv=>dv/_fxr).map(v=>
+    `<line x1="${pL}" y1="${yp(v).toFixed(1)}" x2="${(pL+cW).toFixed(1)}" y2="${yp(v).toFixed(1)}" stroke="${pal.ax}" stroke-width="0.5"/>`+
+    `<text x="${pL-6}" y="${(yp(v)+4).toFixed(1)}" text-anchor="end" font-size="10" fill="${pal.lb}">${_ddAxisK(v)}</text>`).join('');
+  const rects=bands.map(b=>{
+    const x=xp(b.startAge),w=Math.max(1,xp(b.endAge)-xp(b.startAge)),yF=yp(b.floor),yT=yp(b.floor+b.port);
+    return`<rect x="${x.toFixed(1)}" y="${yF.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(0,baseY-yF).toFixed(1)}" fill="${pal.cFloor}" fill-opacity="0.55"/>`+
+      `<rect x="${x.toFixed(1)}" y="${yT.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(0,yF-yT).toFixed(1)}" fill="${pal.cPort}" fill-opacity="0.34"/>`+
+      `<line x1="${x.toFixed(1)}" y1="${yF.toFixed(1)}" x2="${(x+w).toFixed(1)}" y2="${yF.toFixed(1)}" stroke="${pal.cFloor}" stroke-width="2"/>`+
+      `<line x1="${x.toFixed(1)}" y1="${yT.toFixed(1)}" x2="${(x+w).toFixed(1)}" y2="${yT.toFixed(1)}" stroke="${pal.cPort}" stroke-width="1.5"/>`;
+  }).join('');
+  // Phase boundaries, so the steps read as "this is where the next phase starts" rather than as noise.
+  const divs=bands.slice(1).map(b=>`<line x1="${xp(b.startAge).toFixed(1)}" y1="${pT}" x2="${xp(b.startAge).toFixed(1)}" y2="${baseY}" stroke="${pal.ax}" stroke-width="0.5" stroke-dasharray="2,3"/>`).join('');
+  // Net after tax and healthcare, stepped the same way. It runs INSIDE the stack on purpose: the gap
+  // between it and the top of the blue band is what tax and healthcare take out of gross income.
+  const netPts=[];bands.forEach(b=>{netPts.push([xp(b.startAge),yp(b.net)]);netPts.push([xp(b.endAge),yp(b.net)]);});
+  const netPath=_ddSvgLine(netPts,pal.cNet,1.5,'5,4');
+  const ages=Array.from(new Set([...bands.map(b=>b.startAge),a1]));
+  const xLbls=ages.map((a,i)=>`<text x="${xp(a).toFixed(1)}" y="${H-8}" text-anchor="${i===0?'start':(a===a1?'end':'middle')}" font-size="10" fill="${pal.lb}">${a}</text>`).join('');
+  const cap='Guaranteed floor and portfolio-funded income by phase, in monthly terms. The figures are in the table below this chart.';
+  return`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="${escHtml(cap)}"${tableId?` aria-describedby="${tableId}"`:''}>
+    ${yLbls}${rects}${divs}${netPath}
+    <line x1="${pL}" y1="${pT}" x2="${pL}" y2="${baseY}" stroke="${pal.ax}" stroke-width="1"/>
+    <line x1="${pL}" y1="${baseY}" x2="${(pL+cW).toFixed(1)}" y2="${baseY}" stroke="${pal.ax}" stroke-width="1"/>
+    ${xLbls}</svg>`;
+}
+
 function _ddRenderFloor(pane){
   const total=_ddPortfolioTotal(),floor=_ddGuaranteedFloor();
   const phs=calcAllPhases(S,p5EndAge,lumps);
@@ -12211,10 +12293,15 @@ function _ddRenderFloor(pane){
   const portRequired=portNeed>0?portNeed*12/0.04:0;
   const surplus=total-portRequired;
   const covPct=userAvgNet>0?Math.min(100,floor/userAvgNet*100):0;
-  const phRows=phs.map(p=>{
-    const phFloor=(p.uss_grown||0)+(p.ukp_grown||0)+(p.spSS_grown||0)+(p.cpp_grown||0)+(p.oas_grown||0)+(p.ap_grown||0);
-    const phPort=Math.max(0,p.total_mo-phFloor);
-    const phCov=p.total_mo>0?Math.min(100,phFloor/p.total_mo*100):0;
+  // One per-phase model, read by BOTH the chart and the table below it, so the two can never disagree.
+  const phBands=phs.map(p=>{
+    const floorMo=(p.uss_grown||0)+(p.ukp_grown||0)+(p.spSS_grown||0)+(p.cpp_grown||0)+(p.oas_grown||0)+(p.ap_grown||0);
+    return{p,startAge:p.phaseStartAge,endAge:p.phaseEndAge,floor:floorMo,
+      port:Math.max(0,p.total_mo-floorMo),net:p.net_mo,
+      cov:p.total_mo>0?Math.min(100,floorMo/p.total_mo*100):0};
+  });
+  const phRows=phBands.map(b=>{
+    const p=b.p,phFloor=b.floor,phPort=b.port,phCov=b.cov;
     const covCol=phCov>=60?'var(--green-text)':phCov>=30?'var(--amber-text)':'var(--red-text)';
     return`<tr><td style="padding:6px 8px;border-bottom:0.5px solid var(--border-light);">${p.ages}</td>
       <td style="text-align:right;padding:6px 8px;border-bottom:0.5px solid var(--border-light);color:var(--green-text);">${fmtC(phFloor)}/mo</td>
@@ -12232,7 +12319,20 @@ function _ddRenderFloor(pane){
   if(surplus>0)insights.push(`Your portfolio is <strong>${fmtC(surplus)} above</strong> what's needed to fund the income gap — a healthy cushion. This gives you room to spend a little more, move money into tax-free accounts, or simply keep a larger safety reserve.`);
   else if(surplus<0)insights.push(`Your portfolio is <strong>${fmtC(Math.abs(surplus))} below</strong> what would comfortably fund the income gap. Delaying Social Security to increase your guaranteed income — or planning to spend a little less — would help close this.`);
   if(portNeed<200&&floor>0)insights.push(`Your guaranteed income almost covers everything — the portfolio only needs to provide <strong>${fmtC(portNeed)}/mo</strong> on top. Even modest investment growth is more than enough. This is a very resilient plan.`);
-  insights.push(`The table above shows how your guaranteed income grows over time as Social Security and any pensions kick in — that rising security is the main strength of this approach.`);
+  insights.push(`The chart and table above show how your guaranteed income grows over time as Social Security and any pensions kick in — that rising security is the main strength of this approach.`);
+
+  const _floorPal=_ddFloorPalette();
+  const _floorChart=_ddFloorStackChart(phBands,_floorPal,'ddFloorTable');
+  // The note is read off the drawn bands, not written as a fixed sentence, so it cannot claim a rise
+  // the chart does not show — a flat floor across every phase is a real (and worth-saying) outcome.
+  const _fFirst=phBands[0],_fLast=phBands[phBands.length-1];
+  const _fRise=_fLast&&_fFirst?_fLast.floor-_fFirst.floor:0;
+  const _fStep=phBands.slice(1).reduce((best,b,i)=>{const d=b.floor-phBands[i].floor;return d>best.d?{d,b}:best;},{d:0,b:null});
+  const _floorNote=!_fFirst?'':(_fRise>1
+    ? `Your guaranteed floor rises from ${fmtC(_fFirst.floor)}/mo at ${_fFirst.startAge} to ${fmtC(_fLast.floor)}/mo by ${_fLast.endAge}`
+      +(_fStep.b?`, with the biggest single step at age ${_fStep.b.startAge}`:'')
+      +` — the green band grows and the blue band you depend on markets for shrinks.`
+    : `Your guaranteed floor stays about level at ${fmtC(_fFirst.floor)}/mo across every phase, so the share of your income riding on markets never falls on its own. Delaying Social Security is what usually changes this picture.`);
 
   pane.innerHTML=_ddStratConfCard('floor')+`<div class="card" style="margin-bottom:14px;">
     <div style="margin-bottom:10px;"><h3 style="margin-bottom:4px;">Floor &amp; Upside Strategy <span class="tg-watch-row"><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=QNCmRF3lUhc','_blank','noopener');" title="Watch the Income Floor explainer">&#x25B6; Income Floor &middot; 2 min</button><button class="info-popover-watch" onclick="window.open('https://www.youtube.com/watch?v=3Pz1Mnd7lmg','_blank','noopener');" title="Watch the Withdrawal ordering explainer">&#x25B6; Withdrawal ordering &middot; 3 min</button></span></h3>
@@ -12252,7 +12352,14 @@ function _ddRenderFloor(pane){
         <div style="height:100%;width:${covPct.toFixed(1)}%;background:var(--green-text);border-radius:6px;"></div></div>
       <div style="font-size:11px;color:var(--text-secondary);margin-top:5px;">Guaranteed income covers ${covPct.toFixed(0)}% of your plan avg · portfolio must fund the remaining ${(100-covPct).toFixed(0)}%</div>
     </div>
-    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    ${_floorChart?`<div style="margin-bottom:4px;">${_floorChart}</div>
+    <div class="legend" style="margin-bottom:6px;">
+      <span class="legend-item"><span class="legend-swatch" style="background:${_floorPal.cFloor};opacity:0.75;"></span>Guaranteed floor (SS, pensions)</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:${_floorPal.cPort};opacity:0.6;"></span>Portfolio-funded</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:${_floorPal.cNet};"></span>Net after tax &amp; healthcare</span>
+    </div>
+    <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin:0 0 14px;">${escHtml(_floorNote)}</p>`:''}
+    <table id="ddFloorTable" style="width:100%;border-collapse:collapse;font-size:12px;">
       <thead><tr style="color:var(--text-secondary);">
         <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border-light);">Phase</th>
         <th style="text-align:right;padding:6px 8px;border-bottom:1px solid var(--border-light);">Guaranteed</th>
@@ -15687,6 +15794,80 @@ function _syncRothPhaseOptions(){
   else if(phs.some(p=>p.phaseKey==='p3'))sel.value='p3';
   else if(phs.length)sel.value=phs[0].phaseKey;
 }
+// ── Roth conversion: the response curve ─────────────────────────────────────
+// The sandbox below already re-runs the whole plan for ONE conversion amount and prints three
+// numbers. That is a single point on a curve whose SHAPE is the actual answer: the tax cost is close
+// to linear inside a bracket and kinks upward at each edge, and the IRMAA / ACA thresholds are
+// cliffs you cannot see yourself approaching from one number. Sweeping the slider's own range turns
+// "drag until a chip goes red" into "read where the cheap conversion stops being cheap".
+//
+// ⚠ Nothing here changes a number-producing routine — it is exactly the override-and-recompute the
+// sandbox already does, run across the range and put back afterwards.
+// ⚠ The baseline is CONVERTING NOTHING, not your current plan, so the curve starts at the origin and
+// every point reads "extra tax versus not converting at all". The marker's y is derived from the same
+// baseline (see renderWhatIfRoth), so the dot cannot drift off its own line.
+// ⚠ The sweep is cached against the whole plan because the slider fires oninput on every pixel of a
+// drag; a drag is a cache hit and costs one interpolation, not 41 plan runs.
+const _ROTH_CURVE_STEP=2500;
+let _rothCurveCache={key:'',model:null};
+function _rothCurveModel(phaseKey,maxAmt){return null;}
+
+function _rothCurvePalette(){
+  const isDark=document.documentElement.classList.contains('dark');
+  return{isDark,cTax:isDark?'#60aaee':'#1a6eb5',cRate:isDark?'#5eead4':'#0f746c',
+    cIrmaa:isDark?'#e07070':'#c0392b',cAca:isDark?'#e8a33d':'#a4560a',cDry:isDark?'#b9b2f2':'#534ab7',
+    cMark:isDark?'#e8e6df':'#3b3a36',surface:isDark?'#2a2a28':'#efeee8',
+    ax:isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)',lb:isDark?'#a8a89e':'#5f5e5a'};
+}
+// `markAmt`/`markDTax` are the slider's exact position, passed in rather than interpolated off the
+// sweep — the panel below states that number, and a dot that disagreed with it by a few hundred
+// dollars would be its own small lie. The slider IS the readout here, which is why there is no
+// hover tooltip to hunt for.
+function _rothCurveSvg(m,markAmt,markDTax,pal){
+  if(!m||!m.pts||m.pts.length<2)return'';
+  const W=940,H=250,pL=74,pR=62,pT=20,pB=36,cW=W-pL-pR,cH=H-pT-pB,baseY=pT+cH;
+  const _fxr=CURRENCIES[displayCurrency].rate||1;
+  const taxAxis=_ddNiceAxis(Math.max(Math.max(...m.pts.map(pt=>pt.dTax)),markDTax||0,1)*_fxr*1.06,4),maxTax=taxAxis.top/_fxr;
+  const rates=m.pts.map(pt=>pt.rate).filter(r=>r!=null&&isFinite(r)&&r>0);
+  const rateAxis=_ddNiceAxis(Math.max(rates.length?Math.max(...rates):0.1,0.05)*1.06*100,4),maxRate=rateAxis.top/100;
+  const xp=a=>pL+(a/(m.maxAmt||1))*cW, yt=v=>pT+cH*(1-Math.max(0,v)/maxTax), yr=v=>pT+cH*(1-Math.max(0,v)/maxRate);
+  // One set of gridlines, two scales hung off it: both axes are drawn from the same fractions, so a
+  // tick is always a round number on BOTH sides rather than round on one and arbitrary on the other.
+  const grid=taxAxis.vals.map((dv,i)=>{const v=dv/_fxr,f=v/maxTax,y=pT+cH*(1-f);
+    return`<line x1="${pL}" y1="${y.toFixed(1)}" x2="${(pL+cW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${pal.ax}" stroke-width="0.5"/>`+
+    `<text x="${pL-6}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="10" fill="${pal.lb}">${_ddAxisK(v)}</text>`+
+    `<text x="${(pL+cW+6).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="start" font-size="10" fill="${pal.cRate}">${(rateAxis.vals[i]!=null?Math.round(rateAxis.vals[i]):'')}${rateAxis.vals[i]!=null?'%':''}</text>`;}).join('');
+  const xTicks=[0,0.25,0.5,0.75,1].map(f=>`<text x="${xp(m.maxAmt*f).toFixed(1)}" y="${H-8}" text-anchor="${f===0?'start':(f===1?'end':'middle')}" font-size="10" fill="${pal.lb}">${_ddAxisK(m.maxAmt*f)}</text>`).join('');
+  // Solid up to the point the 401k runs dry, faded and dashed beyond it. Drawing the tail at full
+  // strength would present "tax falls above 75k" as a finding; drawing nothing would hide a real
+  // consequence of converting that much. Faded says: still true, no longer a saving.
+  const dryX=m.dryFrom!=null?xp(m.dryFrom):null;
+  const split=(arr,f)=>{const on=[],off=[];arr.forEach(pt=>{if(m.dryFrom==null||pt.amt<=m.dryFrom)on.push(f(pt));if(m.dryFrom!=null&&pt.amt>=m.dryFrom)off.push(f(pt));});return[on,off];};
+  const seg=(pts,color,w,dash)=>pts.length>1?_ddSvgLine(pts,color,w,dash):'';
+  const [taxOn,taxOff]=split(m.pts,pt=>[xp(pt.amt),yt(pt.dTax)]);
+  const rPts=m.pts.filter(pt=>pt.rate!=null&&isFinite(pt.rate));
+  const [rateOn,rateOff]=split(rPts,pt=>[xp(pt.amt),yr(pt.rate)]);
+  const taxPath=seg(taxOn,pal.cTax,2.5,null)+(taxOff.length>1?`<g opacity="0.4">${seg(taxOff,pal.cTax,2.5,'5,4')}</g>`:'');
+  const ratePath=seg(rateOn,pal.cRate,2,'5,4')+(rateOff.length>1?`<g opacity="0.4">${seg(rateOff,pal.cRate,2,'5,4')}</g>`:'');
+  const dryBand=dryX==null?'':
+    `<rect x="${dryX.toFixed(1)}" y="${pT}" width="${Math.max(0,pL+cW-dryX).toFixed(1)}" height="${cH}" fill="${pal.cDry}" fill-opacity="0.10"/>`+
+    `<line x1="${dryX.toFixed(1)}" y1="${pT}" x2="${dryX.toFixed(1)}" y2="${baseY}" stroke="${pal.cDry}" stroke-width="1.5" stroke-dasharray="4,3"/>`+
+    `<text x="${(dryX+4).toFixed(1)}" y="${baseY-6}" font-size="10" fill="${pal.cDry}">401k runs dry</text>`;
+  const cliff=(amt,color,label)=>amt==null?'':
+    `<line x1="${xp(amt).toFixed(1)}" y1="${pT}" x2="${xp(amt).toFixed(1)}" y2="${baseY}" stroke="${color}" stroke-width="1.5" stroke-dasharray="4,3"/>`+
+    `<text x="${(xp(amt)+4).toFixed(1)}" y="${pT+10}" font-size="10" fill="${color}">${label}</text>`;
+  const markX=xp(Math.min(markAmt,m.maxAmt)),markY=yt(markDTax);
+  const marker=`<line x1="${markX.toFixed(1)}" y1="${pT}" x2="${markX.toFixed(1)}" y2="${baseY}" stroke="${pal.cMark}" stroke-width="1" stroke-dasharray="2,3"/>`+
+    `<circle cx="${markX.toFixed(1)}" cy="${markY.toFixed(1)}" r="5" fill="${pal.cTax}" stroke="${pal.surface}" stroke-width="2"/>`;
+  const cap='Extra tax and effective tax rate against annual Roth conversion amount, with the IRMAA and ACA thresholds marked.';
+  return`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="${escHtml(cap)}">
+    ${grid}${dryBand}${cliff(m.acaFrom,pal.cAca,'ACA cliff')}${cliff(m.irmaaFrom,pal.cIrmaa,'IRMAA')}
+    ${taxPath}${ratePath}${marker}
+    <line x1="${pL}" y1="${pT}" x2="${pL}" y2="${baseY}" stroke="${pal.ax}" stroke-width="1"/>
+    <line x1="${pL}" y1="${baseY}" x2="${(pL+cW).toFixed(1)}" y2="${baseY}" stroke="${pal.ax}" stroke-width="1"/>
+    ${xTicks}</svg>`;
+}
+
 function renderWhatIfRoth(){
   const phEl=document.getElementById('whatif-roth-phase');
   const amtEl=document.getElementById('whatif-roth-amt');
@@ -15722,6 +15903,21 @@ function renderWhatIfRoth(){
   const newIrmaaMagi=(tryP.irmaaMagi!=null?tryP.irmaaMagi:newMagi);
   const irmaaOver=!tryP.foreign&&!tryP.isUkRes&&!tryP.isCanadian&&!tryP.isAustralian&&newIrmaaMagi>(tryP.adjIrmaa||1e9);
   const acaOver=newMagi>(tryP.fpl400||1e9)&&phaseHasAcaMonths(tryP)&&!tryP.foreign;
+  // Response curve: the same override-and-recompute across the slider's whole range (cached).
+  const _rcMax=parseFloat(amtEl.max)||100000;
+  const _rc=_rothCurveModel(phaseKey,_rcMax);
+  const _rcPal=_rothCurvePalette();
+  // Marker y from the CURVE's baseline (converting nothing), not the panel's (your current plan) —
+  // tryP.tax_mo is the absolute tax at this amount, so this is exact rather than interpolated.
+  const _rcMarkDTax=_rc?(tryP.tax_mo*12-_rc.tax0):0;
+  const _rcSvg=_rc?_rothCurveSvg(_rc,amt,_rcMarkDTax,_rcPal):'';
+  const _rcDryNote=(_rc&&_rc.dryFrom!=null)
+    ? ` Above ${fmt(_rc.dryFrom)}/yr the 401k in this phase runs dry, so the line fades: the tax cost falls there only because there is less left to withdraw, not because the conversion got cheaper.`
+    : '';
+  const _rcCliffNote=!_rc?'':[
+    _rc.irmaaFrom!=null?`IRMAA starts at ${fmt(_rc.irmaaFrom)}/yr`:(_rc.irmaaAlready?'IRMAA is already triggered in this phase before any conversion':null),
+    _rc.acaFrom!=null?`the ACA cliff is crossed at ${fmt(_rc.acaFrom)}/yr`:(_rc.acaAlready?'this phase is already over the ACA cliff before any conversion':null)
+  ].filter(Boolean).join(', ');
   // Rate (effective tax rate paid on the conversion)
   const effRate=amt>0?Math.min(99,Math.max(0,Math.round(dTax/amt*100))):0;
   results.innerHTML=`
@@ -15738,6 +15934,16 @@ function renderWhatIfRoth(){
       ${irmaaOver?'<span class="confidence-chip chip-red">⚠ IRMAA triggered</span>':'<span class="confidence-chip chip-green">No IRMAA</span>'}
       ${phaseHasAcaMonths(tryP)&&!tryP.foreign?(acaOver?'<span class="confidence-chip chip-red">⚠ ACA cliff crossed</span>':'<span class="confidence-chip chip-green">ACA subsidy intact</span>'):''}
     </div>
+    ${_rcSvg?`<div style="margin:14px 0 4px;">${_rcSvg}</div>
+    <div class="legend" style="margin-bottom:6px;">
+      <span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cTax};"></span>Extra tax /yr (left)</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cRate};"></span>Effective rate on the conversion (right)</span>
+      ${_rc.irmaaFrom!=null?`<span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cIrmaa};"></span>IRMAA threshold</span>`:''}
+      ${_rc.acaFrom!=null?`<span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cAca};"></span>ACA cliff</span>`:''}
+      ${_rc.dryFrom!=null?`<span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cDry};"></span>401k runs dry</span>`:''}
+      <span class="legend-item"><span class="legend-swatch" style="background:${_rcPal.cMark};"></span>Your slider position</span>
+    </div>
+    <p style="font-size:11px;color:var(--text-secondary);font-style:italic;margin:0 0 10px;">Measured against converting nothing, in ${escHtml(baseP.label)} only. The rate line is what this conversion actually costs per dollar — it steps up as each bracket fills${_rcCliffNote?`. In this phase ${_rcCliffNote}`:''}. ${escHtml(_rcDryNote)} Drag the slider to move the marker; the figures above are that exact point.</p>`:''}
     <details style="margin-bottom:8px;">
       <summary style="font-size:12px;color:var(--text-secondary);cursor:pointer;user-select:none;list-style:none;display:inline-flex;align-items:center;gap:5px;font-weight:500;">
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 3 5 7 8 3"/></svg>

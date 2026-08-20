@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 334, released: '2026-08-20', headline: 'The IRMAA surcharge ladder on the Tax & ACA tab now marks each tier step with a dot, so it is obvious where to hover for the MAGI and the monthly surcharge at that step.' }; /* __LATEST__ */
+const LATEST = { build: 339, released: '2026-08-20', headline: 'The Floor & Upside strategy on the Drawdown tab now draws your guaranteed income and your portfolio-funded income as two stacked bands over time, and the Roth conversion tool in the What-if explorer plots the tax cost across every conversion size at once, with the IRMAA and ACA thresholds marked.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
