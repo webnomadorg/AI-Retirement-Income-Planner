@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v333.html on 2026-08-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v334.html on 2026-08-20. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -5988,7 +5988,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 333; /* __BUILD__ */
+const APP_BUILD = 334; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -9721,6 +9721,9 @@ function _chartTheme(){
     grid:isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',
     gridStrong:isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.10)',
     tick:isDark?'#a8a89e':'#5f5e5a',
+    // Card background, read live so point rings still read correctly on every colour theme
+    // (each theme redefines --bg-secondary, so hardcoding a light/dark pair would be wrong on most).
+    surface:(function(){try{return getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary').trim()||(isDark?'#2a2a28':'#efeee8');}catch(e){return isDark?'#2a2a28':'#efeee8';}})(),
     sym:CURRENCIES[displayCurrency].symbol,
     conv:v=>Math.round(toDisplay(v)),
     reduce};
@@ -10558,7 +10561,9 @@ function _irmaaLadderModel(phs){
   if(!tiers.length)return null;
   const amt=t=>(t.partB||0)+(t.partD||0);
   const pts=[{x:0,y:0}];
-  tiers.forEach(t=>{pts.push({x:t.thr,y:pts[pts.length-1].y});pts.push({x:t.thr,y:amt(t)});});
+  // `dot:true` marks the top of each step — the point worth hovering. The matching bottom-of-step
+  // point sits at the same x, so dotting both would draw a doubled marker on every tier.
+  tiers.forEach(t=>{pts.push({x:t.thr,y:pts[pts.length-1].y});pts.push({x:t.thr,y:amt(t),dot:true});});
   const maxX=tiers[tiers.length-1].thr*1.3;
   pts.push({x:maxX,y:pts[pts.length-1].y});
   const lb=(p.irmaaProximity&&p.irmaaProximity.lookbackMagi!=null)?p.irmaaProximity.lookbackMagi:(p.irmaaMagi||0);
@@ -10571,9 +10576,18 @@ function _renderThresholdChart(canvasId,key,m,opt){
   const money=v=>th.sym+Math.round(v).toLocaleString();
   const maxY=(Math.max.apply(null,m.pts.map(q=>q.y))||1)*1.15;
   const ds=[
+    // Points marked `dot` in the model get a visible ringed marker: the tooltip was already here,
+    // but with pointRadius 0 there was nothing to tell you where to aim. Unmarked points stay at
+    // radius 0, so a model that sets no dots (the ACA curve) renders exactly as before.
     {label:opt.curveLabel,data:m.pts.map(q=>({x:th.conv(q.x),y:th.conv(q.y)})),
      borderColor:opt.curveCol,backgroundColor:_hexToRgba(opt.curveCol,0.10),fill:true,
-     borderWidth:2.5,pointRadius:0,pointHitRadius:6,stepped:!!opt.stepped,tension:0},
+     borderWidth:2.5,stepped:!!opt.stepped,tension:0,
+     pointRadius:m.pts.map(q=>q.dot?4.5:0),
+     pointHoverRadius:m.pts.map(q=>q.dot?7:0),
+     pointBackgroundColor:opt.curveCol,
+     pointBorderColor:th.surface,
+     pointBorderWidth:m.pts.map(q=>q.dot?2:0),
+     pointHitRadius:14},
     // No annotation plugin is bundled, so the threshold gets its own two-point dataset.
     {label:opt.lineLabel,data:[{x:th.conv(opt.lineAt),y:0},{x:th.conv(opt.lineAt),y:th.conv(maxY)}],
      borderColor:opt.lineCol,borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false},
@@ -10646,7 +10660,8 @@ function _renderTaxThresholdCharts(){
     const n=document.getElementById('tg-irmaa-chart-note');
     if(n)n.textContent='Based on '+(irm.p.label||'this phase')+' (age '+(irm.p.ages||'')+'), whose surcharge is set by your MAGI from two years earlier — '+money(irm.lookback)+'. '
       +(irm.tier?('That lands in tier '+irm.tier+', costing '+money(irm.surch)+'/mo.'):'That sits below the first threshold, so no surcharge applies.')
-      +' Every step is a cliff rather than a taper, and the surcharge shown is per person — a couple on Medicare pays it each.';
+      +' Every step is a cliff rather than a taper, and the surcharge shown is per person — a couple on Medicare pays it each.'
+      +' Hover a dot to see the MAGI and the monthly surcharge at that step.';
   }
 }
 
