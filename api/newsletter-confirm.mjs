@@ -27,7 +27,7 @@
 
 import crypto from 'node:crypto';
 import { verifyConfirmToken, signingSecret, emailHash } from '../lib/signup-guard.mjs';
-import { logEvent } from '../lib/signup-quarantine.mjs';
+import { logEvent, requestMeta, claimConfirmOnce } from '../lib/signup-quarantine.mjs';
 import { resolveMagnet, magnetLabel, magnetGroupId } from '../lib/magnets.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
@@ -175,6 +175,13 @@ export default async function handler(req, res) {
   const magnet = resolveMagnet(check.magnet);
   const label = magnetLabel(magnet);
 
+  /* Who actually clicked. This is the half that was missing: the SIGNUP's IP and browser say
+     where the form was filled in, and this says where the link was opened — and when the two
+     disagree wildly (different country, a user agent that is plainly a scanner, a click 40
+     seconds after an email that a person would still be looking for) the pair is far more
+     telling than either alone. */
+  const meta = requestMeta(req);
+
   const added = await addToMailerLite(check.email, check.firstName, magnet);
   if (!added) {
     // The person did everything right; the failure is ours. Say so, and keep the log entry
@@ -185,15 +192,39 @@ export default async function handler(req, res) {
       email: check.email,
       magnet,
       hash: emailHash(check.email, secret),
+      ...meta,
     });
     return res.redirect(302, landing('error'));
+  }
+
+  const hash = emailHash(check.email, secret);
+
+  /* First redemption of this link, or a repeat? A repeat is recorded and then stops here.
+
+     ⚠ The person still sees the ordinary success page. From their side nothing has gone
+     wrong — they are confirmed, they are on the list — and an error screen would be a lie.
+     What a repeat must NOT do is write to MailerLite again or send a second "new signup"
+     notification, because that is what turned one subscriber into two in the inbox. */
+  const first = await claimConfirmOnce(hash, magnet);
+  if (!first) {
+    await logEvent({
+      event: 'confirmed',
+      reason: 'repeat-click',
+      email: check.email,
+      magnet,
+      hash,
+      ...meta,
+      note: 'link opened again — not re-added, no notification sent',
+    });
+    return res.redirect(302, landing('ok', { m: magnet, eid: check.eventId || '' }));
   }
 
   await logEvent({
     event: 'confirmed',
     email: check.email,
     magnet,
-    hash: emailHash(check.email, secret),
+    hash,
+    ...meta,
   });
 
   // Both best-effort — neither may block or fail a confirmation that has already succeeded.
@@ -201,8 +232,8 @@ export default async function handler(req, res) {
     email: check.email,
     magnet,
     eventId: check.eventId || crypto.randomUUID(),
-    clientIp: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || undefined,
-    userAgent: req.headers['user-agent'],
+    clientIp: meta.ip || undefined,
+    userAgent: meta.ua || undefined,
     fbp: check.fbp || undefined,
     fbc: check.fbc || undefined,
   });

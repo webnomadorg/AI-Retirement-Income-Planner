@@ -158,6 +158,10 @@ async function screenAndAdd(rawEmail, rawName, magnet) {
     return false;
   }
 
+  /* ⚠ No requestMeta() here, deliberately. This handler is called by FACEBOOK, not by the
+     person — the IP and user agent on this request belong to Meta's webhook infrastructure.
+     Recording them would fill the log with a fingerprint of Facebook while looking exactly
+     like a fingerprint of the subscriber, which is worse than the blank the v3 fields leave. */
   await logEvent({
     event: 'confirmed',
     email,

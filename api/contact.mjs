@@ -36,7 +36,7 @@ import {
   emailHash,
   BLOCK_MESSAGE_CONTACT,
 } from '../lib/signup-guard.mjs';
-import { logEvent, claimDailySend } from '../lib/signup-quarantine.mjs';
+import { logEvent, claimDailySend, requestMeta } from '../lib/signup-quarantine.mjs';
 
 const MAX_MESSAGE = 5000;
 const MAX_SUBJECT = 200;
@@ -93,6 +93,8 @@ export default async function handler(req, res) {
       email: typeof email === 'string' ? email : '',
       domain: screened.domain || '',
       note: 'contact-form',
+      ...requestMeta(req),
+      fillMs: screened.tokenAgeMs,
     });
     console.warn(`[contact] blocked (${screened.reason})`);
     return res.status(400).json({ error: BLOCK_MESSAGE_CONTACT });
@@ -190,6 +192,8 @@ export default async function handler(req, res) {
         domain: screened.domain,
         hash,
         note: 'contact-form — message still delivered to dev@',
+        ...requestMeta(req),
+        fillMs: screened.tokenAgeMs,
       });
     }
 

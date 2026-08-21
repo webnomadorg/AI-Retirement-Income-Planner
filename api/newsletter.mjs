@@ -38,7 +38,7 @@ import {
   emailHash,
   BLOCK_MESSAGE,
 } from '../lib/signup-guard.mjs';
-import { logEvent, claimConfirmSend } from '../lib/signup-quarantine.mjs';
+import { logEvent, claimConfirmSend, requestMeta } from '../lib/signup-quarantine.mjs';
 import { resolveMagnet, magnetLabel } from '../lib/magnets.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
@@ -163,6 +163,12 @@ export default async function handler(req, res) {
   const chosenMagnet = resolveMagnet(magnet);
   const label = magnetLabel(chosenMagnet);
 
+  /* Read once, attached to every log record this request writes. Nothing here influences
+     whether the signup is accepted — it is evidence for afterwards, not another filter. A
+     rule that silently rejects on IP or user agent would be exactly the invisible failure
+     the quarantine log exists to prevent. */
+  const meta = requestMeta(req);
+
   const screened = await screenSignup({
     honeypot: _honey,
     email,
@@ -182,6 +188,8 @@ export default async function handler(req, res) {
       domain: screened.domain || '',
       magnet: chosenMagnet,
       hash: '',
+      ...meta,
+      fillMs: screened.tokenAgeMs,
     });
     console.warn(`[newsletter] blocked (${screened.reason})`);
     return res.status(400).json({ error: BLOCK_MESSAGE });
@@ -201,6 +209,8 @@ export default async function handler(req, res) {
       domain: screened.domain,
       magnet: chosenMagnet,
       hash,
+      ...meta,
+      fillMs: screened.tokenAgeMs,
     });
     /* Answered as success on purpose. It IS successful from the visitor's side — a
        confirmation is already sitting in that inbox — and an error here would both confuse a
@@ -236,6 +246,8 @@ export default async function handler(req, res) {
     magnet: chosenMagnet,
     hash,
     tokenState: screened.tokenState,
+    ...meta,
+    fillMs: screened.tokenAgeMs,
   });
 
   /* No dev notification and no Meta Lead event here — both belong to confirmation.
