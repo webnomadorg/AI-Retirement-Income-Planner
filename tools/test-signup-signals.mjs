@@ -43,6 +43,21 @@ eq('new: epoch',  n.epoch, 1787000000000);
 // A 16-hex-looking reason must not be mistaken for a key id, and vice versa.
 eq('a short tail is not a key id', parseKey('signup-log/2026-08-21/blocked__honeypot__123-abc.json').kid, '');
 
+/* ⚠ logEvent writes the literal 'nokid' when an address cannot be canonicalised. That is a
+   fourth field which is NOT a key id, and reading the timestamp by position rather than from
+   the end silently returned epoch 0 for every one of them. */
+const NOKID = 'signup-log/2026-08-21/blocked__syntax__nokid__1787000000000-ab12cd34.json';
+eq('nokid: not treated as a key id', parseKey(NOKID).kid, '');
+eq('nokid: the timestamp survives anyway', parseKey(NOKID).epoch, 1787000000000);
+eq('nokid: reason still read', parseKey(NOKID).reason, 'syntax');
+
+/* ⚠ list() returns blob OBJECTS, and passing one straight to parseKey (via `.map(parseKey)`)
+   silently produced "[object Object]" — empty fields, no throw, and a UI that said "no
+   record". It must handle both shapes. */
+const asObject = parseKey({ pathname: NEW, url: 'https://example.invalid/x', size: 123 });
+eq('a blob object works as well as a pathname', asObject.kid, 'bce02e43b6237349');
+eq('  … and still reads the day', asObject.day, '2026-08-21');
+
 /* ----------------------------------------------------------------- verdictFor --- */
 console.log('verdictFor — the judgement, which must lean towards saying nothing');
 
