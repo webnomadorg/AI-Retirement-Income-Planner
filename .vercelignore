@@ -1,0 +1,12 @@
+# Not published, and not needed at runtime.
+#
+# These were previously hidden by a `routes` rule in vercel.json, which had to go: the legacy
+# `routes` array suppresses the modern `headers` property, so the site sent no security headers
+# at all. Excluding the files from the upload is stronger anyway — a file that was never
+# deployed cannot be served by a rule someone deletes later.
+#
+# ⚠ DO NOT add `lib/` here. Those modules are imported at runtime by api/*.mjs; excluding them
+#   breaks every serverless function on the site.
+tools/
+blog-src/
+partials/
