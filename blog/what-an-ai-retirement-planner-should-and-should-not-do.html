@@ -516,7 +516,7 @@
           <li><a href="/affiliates.html">Affiliates</a></li>
           <li><a href="/contact.html">Contact Us</a></li>
           <li><a href="/share.html">Share your experience</a></li>
-          <li><a href="mailto:dev@webnomad.org">dev@webnomad.org</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
           <li><a href="/privacy.html">Privacy Policy</a></li>
           <li><a href="/software-terms.html">Software Terms</a></li>
           <li><a href="/terms.html">Session Terms</a></li>
@@ -537,6 +537,14 @@
   <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
        tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
   <script src="/assets/js/sale.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
 </footer>
 
 <script src="/assets/js/main.js"></script>
