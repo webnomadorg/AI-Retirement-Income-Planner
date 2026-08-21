@@ -28,7 +28,7 @@
 
    Env:
      STRIPE_VERIFY_KEY     — restricted read-only key (Checkout Sessions)
-     BLOB_READ_WRITE_TOKEN — Blob store access (falls back to OIDC)
+     BLOB_READ_WRITE_TOKEN — Blob store access (OIDC works only WITH BLOB_STORE_ID set)
      UPDATE_LOOKUP_PEPPER  — email-hashing secret, see lib/purchase-log.mjs
 
    NOTE: classic Node (req, res) signature — the web-standard handler(request) form

@@ -13,6 +13,7 @@
    Env (Vercel project settings):
      STRIPE_VERIFY_KEY     — restricted Stripe key, READ-ONLY on Checkout Sessions
      BLOB_READ_WRITE_TOKEN — added automatically when the Blob store is
+     (or OIDC + BLOB_STORE_ID — see the note at the get() call; OIDC alone is NOT enough)
                              connected to the project (falls back to OIDC).
 
    NOTE: written in the classic Node (req, res) signature — same as
@@ -88,9 +89,29 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'That file is not part of this purchase.' });
     }
 
+    /* ⚠ THE OIDC FALLBACK IS NOT AUTOMATIC, WHATEVER THE OLD COMMENT HERE SAID.
+       The SDK resolves credentials in this order: an explicit `token` wins (and the store id is
+       derived FROM that token); otherwise it looks for an OIDC token, and OIDC additionally
+       needs a store id from `options.storeId` or the `BLOB_STORE_ID` env var. With neither a
+       read-write token NOR a store id, this get() THROWS.
+
+       That matters more here than anywhere else in the codebase: this is a customer who has
+       already paid, and the throw lands in the catch below as "Something went wrong verifying
+       your purchase — please try again in a minute", which never comes right. Some of them
+       will not email; they will just charge back.
+
+       So if BLOB_READ_WRITE_TOKEN is ever removed from the Vercel project in favour of OIDC,
+       BLOB_STORE_ID must be present FIRST, and a real download must be tested before the token
+       is deleted. See Plans/Direct-Checkout-Migration.md. */
+    if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) {
+      console.error(
+        '[download] FATAL: neither BLOB_READ_WRITE_TOKEN nor BLOB_STORE_ID is set. OIDC cannot ' +
+        'resolve the blob store without a store id, so no customer can download their purchase.'
+      );
+    }
     const result = await get(`products/${zip}`, {
       access: 'private',
-      token: process.env.BLOB_READ_WRITE_TOKEN, // undefined → SDK falls back to OIDC
+      token: process.env.BLOB_READ_WRITE_TOKEN, // absent → OIDC, which needs BLOB_STORE_ID
     });
     if (!result || result.statusCode !== 200 || !result.stream) {
       return res.status(404).json({ error: 'File temporarily unavailable — please try again or contact dev@webnomad.org.' });
