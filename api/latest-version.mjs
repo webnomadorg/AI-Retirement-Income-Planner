@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 356, released: '2026-08-22', headline: 'Fetch current rates now covers every annual figure — the whole IRMAA ladder, Medicare premiums, poverty levels, the RMD age and the Australian tax rates — and shows you every proposed change, old beside new, before anything touches your plan. This copy also ships with the current year’s figures already in it.' }; /* __LATEST__ */
+const LATEST = { build: 365, released: '2026-08-22', headline: 'Fetch current rates now covers every annual figure — the whole IRMAA ladder, Medicare premiums, poverty levels, the RMD age and the Australian tax rates — and shows you every proposed change, old beside new, before anything touches your plan. This copy also ships with the current year’s figures already in it.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
