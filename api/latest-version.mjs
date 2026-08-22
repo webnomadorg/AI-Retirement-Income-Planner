@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 339, released: '2026-08-20', headline: 'The Floor & Upside strategy on the Drawdown tab now draws your guaranteed income and your portfolio-funded income as two stacked bands over time, and the Roth conversion tool in the What-if explorer plots the tax cost across every conversion size at once, with the IRMAA and ACA thresholds marked.' }; /* __LATEST__ */
+const LATEST = { build: 356, released: '2026-08-22', headline: 'Fetch current rates now covers every annual figure — the whole IRMAA ladder, Medicare premiums, poverty levels, the RMD age and the Australian tax rates — and shows you every proposed change, old beside new, before anything touches your plan. This copy also ships with the current year's figures already in it.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 

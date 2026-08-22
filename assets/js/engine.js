@@ -143,17 +143,30 @@ function phaseHasAcaMonths(p){return medUnitsOf(p)<medHeadsOf(p);}
 //     mspendBtTarget.
 //   Persisted ALONGSIDE S (not on it): lumps[], lumpIdCounter, p5EndAge, activeCurrency,
 //     learnDismissed[], phAcknowledged[]  (see autoSave).
+// When the SHIPPED tax/healthcare defaults below were last refreshed against current law by
+// tools/refresh_defaults.py. Read by the Owner Console's Release tab, which nags when it goes stale.
+// It is about the FILE, not about any customer's plan — a customer's own refresh is S.ratesFetchedAt.
+const DEFAULTS_REFRESHED='2026-08-22';
 const D_USD={
   // Free-text plan notes (Markdown-lite). Part of the plan: autosaved, exported in JSON,
   // carried into saved-plan slots, and optionally printed in the PDF report. See _notesMdToHtml.
   notes:'',
   bal401k:100000,balCash:10000,balEquity:10000,
   r401k:7,rCash:3.75,rEquity:10,equityGainPct:10,startAge:59.5,currentAge:0,
+  // ukpBaseAge is 67, not today's 66: the rise from 66 to 67 runs to March 2028, so anyone
+  // PLANNING a future retirement here reaches State Pension age at 67 or later. The phase
+  // boundaries and the help copy assume 67 too. Editable per plan for anyone already at 66.
   ssBaseAge:62,ukpBaseAge:67,
-  uss:1000,ukp:1000,medicare:185,medicareD:47,
+  uss:1000,ukp:1000,medicare:202.9,medicareD:38.99,
   // ── v8: expat/overseas healthcare cost /mo (USD). Used only when US healthcare is excluded
   //         (foreign PHP/THB, UK, Canada, Australia residence). Inflated per phase by healthcareInflation. ──
   expatHealthcare:0,
+  // ⚠ These three are long-run ASSUMPTIONS, not this year's announced figures, and the difference
+  //   matters more than it looks. The planner compounds them for thirty years, so a one-year
+  //   uprating adopted as a perpetual rate quietly rewrites every projection: a 4.8% triple lock
+  //   against 2.7% inflation grows the UK State Pension 84% in REAL terms over a 30-year
+  //   retirement, where 3.0/3.0 holds it flat. A refresh once set them that way; do not let it
+  //   again. They carry `assumption:true` in RATE_FIELDS and are skipped by refresh_defaults.py.
   inflation:3.0,triplelock:3.0,ssColaRate:2.6,
   // ── v8: healthcare-cost inflation. null/blank ⇒ track general inflation (backward-compatible).
   //         A positive % overrides only the Medicare/ACA premium growth, not the rest of the plan.
@@ -237,31 +250,34 @@ const D_USD={
   // ── v2: Roth IRA ──
   balRoth:0,rRoth:7,
   // Single filer brackets
-  stdDed:15000,seniorDed:2050,
-  brk10:12400,brk12:49000,brk22:104000,
+  stdDed:16100,seniorDed:2050,
+  brk10:12400,brk12:50400,brk22:105700,
   irmaa:109000,
   // ── v14: the FULL IRMAA ladder. IRMAA has six income brackets, not one, and the surcharge at the
   //         top is several hundred dollars a month per person — anyone running sizeable Roth
   //         conversions lands in the middle of it. Amounts here are SURCHARGES OVER the standard
   //         premium, not total premiums, so S.medicare stays the single source for the base and the
-  //         ladder is purely additive. Figures are CMS 2026 (standard Part B $202.90).
+  //         ladder is purely additive. Ladder figures are CMS 2026.
+  //         ⚠ Note the base `medicare` default above is a 2025 figure while this ladder is 2026, so
+  //         out of the box they are a year apart. That is deliberate rather than fixed in place: the
+  //         right cure is "Fetch current rates", not a number typed in here from memory — typing in
+  //         a remembered premium is the precise failure this feature exists to replace.
   //         `frozen: true` on the top tier is not a detail — tiers 1-4 are CPI-adjusted each year but
   //         the $500k/$750k bracket is fixed in statute (through at least 2028), so it binds harder
   //         every year exactly like the Social Security provisional-income thresholds already do. ──
-  irmaaPartBStd:202.90,
   irmaaTiers:[
-    {thrSingle:109000, thrMfj:218000, partB: 81.20, partD:14.50},
-    {thrSingle:137000, thrMfj:274000, partB:202.90, partD:37.50},
-    {thrSingle:171000, thrMfj:342000, partB:324.60, partD:60.40},
-    {thrSingle:205000, thrMfj:410000, partB:446.30, partD:83.30},
-    {thrSingle:500000, thrMfj:750000, partB:487.00, partD:91.00, frozen:true}
+    {thrSingle:109000, thrMfj:218000, partB:81.2, partD:14.5},
+    {thrSingle:137000, thrMfj:274000, partB:202.9, partD:37.5},
+    {thrSingle:171000, thrMfj:342000, partB:324.6, partD:60.4},
+    {thrSingle:205000, thrMfj:410000, partB:446.3, partD:83.3},
+    {thrSingle:500000, thrMfj:750000, partB:487, partD:91, frozen:true}
   ],
   // ── v10: IRMAA Tier-1 monthly surcharge. v14 SUPERSEDED it with the full irmaaTiers ladder above,
   //         which now sets the amount. This field survives for one job only: **0 means flag-only** —
   //         warn that the threshold was crossed without costing it. That was a documented escape
   //         hatch and old plans rely on it, so it keeps working. Any non-zero value simply means
   //         "cost it", and the ladder decides how much. ──
-  irmaaSurcharge:88,
+  irmaaSurcharge:95.7,
   // ── v14: how IRMAA decides which year's income to use.
   //   'lookback' — the rule as written: income from two years earlier. Default, and correct for
   //                almost everyone.
@@ -283,14 +299,16 @@ const D_USD={
   //         at 65+). 0 = uncapped (full exemption, prior behaviour). Only used when statePensionExempt. ──
   statePensionDeductionCap:0,
   // ── v2: MFJ brackets (approx double single) ──
-  mfjStdDed:30000,mfjSeniorDed:3200,
-  mfjBrk10:24800,mfjBrk12:98000,mfjBrk22:208000,
+  mfjStdDed:32200,mfjSeniorDed:3300,
+  mfjBrk10:24800,mfjBrk12:100800,mfjBrk22:211400,
   mfjIrmaa:218000,
-  fpl400:60240,fpl250:37650,fpl100:15060,
+  fpl400:62600,fpl250:39125,fpl100:15650,
   // UK tax parameters (stored in USD, converted from GBP at current rate)
-  ukPersonalAllowance:15911, // £12,570 at ~1.266 USD/GBP
-  ukBasicRate:20,ukBasicCeil:63542, // £50,270
-  ukHigherRate:40,ukHigherCeil:158352, // £125,140
+  // GBP source figures, with the rate they were converted at. Kept in step by refresh_defaults.py --
+  // a value refreshed beside a comment asserting the old rate is worse than no comment at all.
+  ukPersonalAllowance:17141, // £12,570 at ~1.364 USD/GBP
+  ukBasicRate:20,ukBasicCeil:68552, // £50,270
+  ukHigherRate:40,ukHigherCeil:170651, // £125,140
   ukAdditionalRate:45,
   ukResident:false,
   // ── v4: residence overrides for CAD/AUD currencies (default true = use country tax regime) ──
@@ -305,17 +323,29 @@ const D_USD={
   cpp:0, cppBaseAge:65, cppColaRate:2.6,
   oas:0, oasBaseAge:65, oasColaRate:2.6,
   // ── v4: Canada tax parameters (federal, stored in CAD-equivalent USD) ──
-  cadPersonalAmount:16129, cadBrk1:57375, cadBrk2:114750, cadBrk3:158519, cadBrk4:220000,
-  cadRate1:15, cadRate2:20.5, cadRate3:26, cadRate4:29, cadRate5:33,
+  cadPersonalAmount:16129, cadBrk1:57375, cadBrk2:114750, cadBrk3:177882, cadBrk4:253414,
+  cadRate1:15, cadRate2:20, cadRate3:26, cadRate4:29, cadRate5:33,
   // Provincial tax: simplified flat rate added on taxable income (representative average ~12%)
-  cadProvincialRate:12,
+  cadProvincialRate:10,
   // ── v4: Australia — Super + Age Pension ──
   superBal:0, rSuper:7,
   agePension:0, agePensionBaseAge:67, agePensionColaRate:2.6,
   // ── v4: Australia tax parameters (federal, stored in AUD-equivalent USD) ──
-  ausTaxFreeThreshold:18200, ausBrk1:45000, ausBrk2:120000, ausBrk3:180000,
-  // Medicare Levy: 2% on income above ~$24,276 (2024-25)
-  ausMedicareLevy:2,
+  //   Bracket ceilings AND the marginal rates that go with them, so both can be refreshed. The
+  //   defaults are the post-Stage-3 figures (16 / 30 / 37 / 45 from 2024-25); the app shipped the
+  //   superseded 19 / 32.5 pair for two years because those two numbers lived in code rather than
+  //   in data, and nothing that lives in code can be corrected by "Fetch current rates".
+  ausTaxFreeThreshold:18200, ausBrk1:45000, ausBrk2:135000, ausBrk3:190000,
+  ausRate1:16, ausRate2:30, ausRate3:37, ausRate4:45,
+  // Medicare Levy: 2% on income above the single-person threshold (A$27,222 for 2024-25)
+  ausMedicareLevy:2, ausLevyThreshold:27222,
+  // ── v16: when the tax/healthcare figures above were last refreshed, and by what. Shown beside the
+  //         Fetch button so a plan carrying figures from two tax years ago says so, instead of
+  //         looking exactly like one refreshed this morning. null = never refreshed (build defaults).
+  ratesFetchedAt:null, ratesFetchedSrc:'',
+  // ── v16: the State Pension age as configured BEFORE a replan overwrote it, so resetReplan can put
+  //         it back. null = no replan has happened. See applyReplan/resetReplan. ──
+  ukpBaseAgeOrig:null,
   // ── v5: Monte Carlo simulation ──
   mcRuns:500, mcSigma:12, mcSigmaCash:4,
   // ── v8: Monte Carlo inflation volatility (annual σ on the inflation rate). 0 = inflation fixed at the plan rate ──
@@ -913,7 +943,8 @@ function acaPrem(magi,fpl100,fpl400,_tg){
 
 // UK income tax calculation
 // UK taxes: 401k withdrawals + UKP + equity gains + part-time income
-// US Social Security is NOT taxed in the UK (treaty Article 17 — taxed only in the US)
+// US Social Security IS taxed in the UK for a UK resident (treaty Article 17(3) — taxable only in
+// the country of residence, and a saved exception to the saving clause)
 function ukIncomeTax(ukTaxableIncome,pa,basicCeil,basicRate,higherCeil,higherRate,addlRate,_tg){
   if(_tg&&ukTaxableIncome>0){
     // Display-only mirror of the band walk below; the return path is untouched.
@@ -923,7 +954,7 @@ function ukIncomeTax(ukTaxableIncome,pa,basicCeil,basicRate,higherCeil,higherRat
     const _bB=Math.max(0,basicCeil-pa),_hB=Math.max(0,higherCeil-basicCeil);
     const _inB=Math.min(_ti,_bB),_inH=Math.min(Math.max(0,_ti-_inB),_hB),_inA=Math.max(0,_ti-_inB-_inH);
     _trRow(_tg,'UK-taxable income',ukTaxableIncome,'usd/yr',{kind:'in',
-      formula:'401k + UK State Pension + equity gains + part-time (US Social Security is excluded by treaty Article 17)'});
+      formula:'US Social Security + 401k + UK State Pension + equity gains + part-time (Article 17(3) taxes social security in the country of residence)'});
     _trRow(_tg,'− personal allowance',_ePA,'usd/yr',{kind:'minus',
       formula:_ePA<pa?'tapered: £1 lost for every £2 of income above the ~£100k equivalent':'full personal allowance'});
     if(_ePA<pa)_trRow(_tg,'allowance lost to the taper',pa-_ePA,'usd/yr',{kind:'flag'});
@@ -976,28 +1007,42 @@ function canadianFedTax(income,pa,b1,b2,b3,b4,r1,r2,r3,r4,r5,_tg){
 }
 
 // ── v4: Australian federal income tax ────────────────────────────
-// Stage 3 tax cuts (2024-25): 19%, 32.5%, 37%, 45%
-// Includes simplified Low Income Tax Offset (LITO, up to $700)
-function australianFedTax(income,free,b1,b2,b3,_tg){
+// Post-Stage-3 rates (2024-25 onward): 16%, 30%, 37%, 45% — the DEFAULTS, not constants.
+// Includes the Low Income Tax Offset (LITO, up to $700)
+// The four marginal rates arrive as data (`r` = {r1,r2,r3,r4}) rather than as literals in the
+// arithmetic. They used to be hardcoded, which is why this function went on charging the pre-Stage-3
+// 19% / 32.5% for two years after those rates were legislated away: "Fetch current rates" can only
+// refresh a number that is a field, and these were not. Defaults preserve the old behaviour for any
+// caller that omits them.
+function _ausLito(income){
+  // Low Income Tax Offset: $700 up to $37,500, reduced 5c per dollar to $45,000 (leaving $325), then
+  // 1.5c per dollar to $66,667. The previous single-taper approximation ran one straight line from
+  // $37,500 at 1.5c, which still stood at $262 when the hard cutoff at $66,667 knocked it to zero —
+  // a $262 cliff the real offset does not have. Two segments, continuous at both joins.
+  if(income<=37500)return 700;
+  if(income<=45000)return 700-(income-37500)*0.05;
+  if(income<=66667)return Math.max(0,325-(income-45000)*0.015);
+  return 0;
+}
+function australianFedTax(income,free,b1,b2,b3,r,_tg){
+  const r1=(r&&r.r1!=null)?r.r1:19, r2=(r&&r.r2!=null)?r.r2:32.5,
+        r3=(r&&r.r3!=null)?r.r3:37, r4=(r&&r.r4!=null)?r.r4:45;
   if(_tg){
     const _s=[Math.max(0,Math.min(income,b1)-free),Math.max(0,Math.min(income,b2)-b1),
-              Math.max(0,Math.min(income,b3)-b2),Math.max(0,income-b3)],_r=[19,32.5,37,45];
+              Math.max(0,Math.min(income,b3)-b2),Math.max(0,income-b3)],_r=[r1,r2,r3,r4];
     _trRow(_tg,'Gross income',income,'usd/yr',{kind:'in',note:'Superannuation withdrawals are tax-free after 60 and are excluded from this figure.'});
     _trRow(_tg,'Tax-free threshold',free,'usd/yr',{kind:'threshold'});
     for(let i=0;i<4;i++)_trRow(_tg,_r[i]+'% band',_s[i]*(_r[i]/100),'usd/yr',{base:_s[i],skipZero:true});
-    const _lito=income<=37500?700:income<=66667?Math.max(0,700-(income-37500)*0.015):0;
-    _trRow(_tg,'− Low Income Tax Offset (LITO)',_lito,'usd/yr',{kind:'minus',skipZero:true,
+    _trRow(_tg,'− Low Income Tax Offset (LITO)',_ausLito(income),'usd/yr',{kind:'minus',skipZero:true,
       formula:'$700 below $37,500, tapering to $0 at $66,667'});
   }
   if(income<=free)return 0;
   let tax;
-  if(income<=b1)       tax=(income-free)*0.19;
-  else if(income<=b2)  tax=(b1-free)*0.19+(income-b1)*0.325;
-  else if(income<=b3)  tax=(b1-free)*0.19+(b2-b1)*0.325+(income-b2)*0.37;
-  else                 tax=(b1-free)*0.19+(b2-b1)*0.325+(b3-b2)*0.37+(income-b3)*0.45;
-  // Low Income Tax Offset: $700 below $37,500, tapers to 0 at $66,667
-  const lito=income<=37500?700:income<=66667?Math.max(0,700-(income-37500)*0.015):0;
-  return Math.max(0,tax-lito);
+  if(income<=b1)       tax=(income-free)*(r1/100);
+  else if(income<=b2)  tax=(b1-free)*(r1/100)+(income-b1)*(r2/100);
+  else if(income<=b3)  tax=(b1-free)*(r1/100)+(b2-b1)*(r2/100)+(income-b2)*(r3/100);
+  else                 tax=(b1-free)*(r1/100)+(b2-b1)*(r2/100)+(b3-b2)*(r3/100)+(income-b3)*(r4/100);
+  return Math.max(0,tax-_ausLito(income));
 }
 
 /**
@@ -1023,7 +1068,8 @@ function _lumpIncrementalTax(o){
   const taxAt=g=>{
     if(o.isCanadian)return canadianFedTax(g,o.cadPA,o.cadB1,o.cadB2,o.cadB3,o.cadB4,o.cadR1,o.cadR2,o.cadR3,o.cadR4,o.cadR5,null)
       +Math.max(0,g-o.cadPA)*((o.cadProvRate||0)/100);
-    if(o.isAustralian)return australianFedTax(g,o.ausFree,o.ausB1,o.ausB2,o.ausB3,null)
+    if(o.isAustralian)return australianFedTax(g,o.ausFree,o.ausB1,o.ausB2,o.ausB3,
+        {r1:o.ausR1,r2:o.ausR2,r3:o.ausR3,r4:o.ausR4},null)
       +Math.max(0,g-o.ausLevyThresh)*((o.ausLevyRate||0)/100);
     // UK residents: the UK bill is the binding one (US tax is largely wiped out by the Foreign Tax
     // Credit), so the incremental cost of a draw is modelled as UK income tax.
@@ -1392,6 +1438,23 @@ function calcPhase(p){
   const _gSs=(isCanadian||isAustralian||!subjectUS||!totalSS_ann)?null:_trGroup(T,'ssprov','How much of your Social Security is taxable','tg-ssprov','ssProvisional');
   const taxExemptInt_ann=p.taxExemptInt||0;   // v14: untaxed, but counts toward MAGI and SS provisional income
   const sp=isCanadian||isAustralian||!subjectUS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
+  // ── US-UK treaty, Article 17(3) ─────────────────────────────────────────────────────────────
+  // "Payments made by a Contracting State under the provisions of the social security or similar
+  //  legislation of that State to a resident of the other Contracting State shall be taxable only
+  //  in that other State."
+  // So for a UK resident, US Social Security is taxable in the UK and NOT in the US -- and it is a
+  // SAVED exception to the saving clause, so a US citizen resident in the UK keeps that treatment
+  // rather than having the US tax it back.
+  //
+  // The planner asserted the exact opposite until v361 ("taxed only in the US, never in the UK"),
+  // which understated tax for UK residents by roughly $3.5k-$12.8k a year: moving SS out of the US
+  // base (85% taxable, behind the standard deduction) and into the UK base (20% from the personal
+  // allowance) costs more than it saves, and the Foreign Tax Credit was already wiping out most of
+  // the US bill so there was nothing left for it to absorb.
+  //
+  // Declared here rather than beside `foreign`/`isUkRes` further down because `gross` is computed
+  // above those, and const declarations cannot be used before they are declared.
+  const ukTaxesSS=!!(p.ukResident&&!p.foreignResident&&subjectUS);
   // Ordinary income varies by country:
   const rentalIncome_ann=rentalTaxable?rentalAnn:0;
   // Canada: CPP + OAS are taxable; SS/UKP also included as ordinary income (treaty nuance not modelled — taxed at full CA rate)
@@ -1400,7 +1463,9 @@ function calcPhase(p){
     ? w_ann+uss_ann+spSS_ann+ukp_ann+cpp_ann+oas_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann
     : isAustralian
       ? w_ann+uss_ann+spSS_ann+ukp_ann+ap_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann
-      : w_ann+(uss_ann+spSS_ann)*sp+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann;
+      // ukTaxesSS ⇒ Article 17(3) puts Social Security beyond US reach entirely, so it leaves the
+      // US base rather than entering it at the 85% provisional share.
+      : w_ann+(ukTaxesSS?0:(uss_ann+spSS_ann)*sp)+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann;
   {// TRACE: what gross taxable income is actually made of. `gross` survives in the result bag but
    // its composition never did, so the UI could only ever show the total.
     const g=_trGroup(T,'income','What counts as taxable income',null,'taxableIncome');
@@ -1520,13 +1585,15 @@ function calcPhase(p){
     // Australian federal income tax — gross excludes Super withdrawals (they're tax-free)
     const adjAusFree=Math.round((p.ausTaxFreeThreshold||18200)*inflMult);
     const adjAusB1=Math.round((p.ausBrk1||45000)*inflMult);
-    const adjAusB2=Math.round((p.ausBrk2||120000)*inflMult);
-    const adjAusB3=Math.round((p.ausBrk3||180000)*inflMult);
+    const adjAusB2=Math.round((p.ausBrk2||135000)*inflMult);
+    const adjAusB3=Math.round((p.ausBrk3||190000)*inflMult);
+    const ausRates={r1:p.ausRate1,r2:p.ausRate2,r3:p.ausRate3,r4:p.ausRate4};
     const _gA=_trGroup(T,'austax','How your Australian income tax is calculated','tg-australia',null);
-    ausTax_a=australianFedTax(gross,adjAusFree,adjAusB1,adjAusB2,adjAusB3,_gA);
-    // Medicare Levy: 2% on income above ~$24,276 (2024-25 threshold)
+    ausTax_a=australianFedTax(gross,adjAusFree,adjAusB1,adjAusB2,adjAusB3,ausRates,_gA);
+    // Medicare Levy: charged on income above the single-person threshold, which is a field now
+    // rather than a literal so it can be refreshed with everything else.
     const medLevyRate=(p.ausMedicareLevy!=null?p.ausMedicareLevy:2);
-    const medLevyThreshold=Math.round(24276*inflMult);
+    const medLevyThreshold=Math.round((p.ausLevyThreshold||27222)*inflMult);
     const medLevy=Math.max(0,gross-medLevyThreshold)*(medLevyRate/100);
     _trRow(_gA,'= federal tax after LITO',ausTax_a,'usd/yr',{kind:'total'});
     _trRow(_gA,'+ Medicare Levy at '+medLevyRate+'%',medLevy,'usd/yr',{base:Math.max(0,gross-medLevyThreshold),
@@ -1545,7 +1612,9 @@ function calcPhase(p){
     if(subjectUS)_trRow(_gF,'= total federal tax',usTaxBeforeFTC,'usd/yr',{kind:'total'});
     tax_a=usTaxBeforeFTC;
     if(isUkRes&&!foreign){
-      const ukTaxableIncome=w_ann+ukp_ann+taxableEquity_ann+partTime_ann;
+      // Social Security in FULL: the 85% provisional-income rule is a US construct with no UK
+      // equivalent, so a UK resident is taxed on the whole payment like any other pension income.
+      const ukTaxableIncome=w_ann+ukp_ann+taxableEquity_ann+partTime_ann+(ukTaxesSS?(uss_ann+spSS_ann):0);
       const adjUkPA=Math.round((p.ukPersonalAllowance||15911)*inflMult);
       const adjUkBasicCeil=Math.round((p.ukBasicCeil||63542)*inflMult);
       const adjUkHigherCeil=Math.round((p.ukHigherCeil||158352)*inflMult);
@@ -1560,7 +1629,7 @@ function calcPhase(p){
         _trRow(g,'− Foreign Tax Credit',ftc_a,'usd/yr',{kind:'minus',formula:'min(UK tax, US tax) — the credit cannot exceed the US liability'});
         _trRow(g,'= US federal tax after the credit',tax_a,'usd/yr',{kind:'total'});
         _trRow(g,'US Social Security',0,'flagv',{kind:'flag',
-          note:'Taxed only in the US under treaty Article 17, so it is excluded from the UK-taxable base above.'});
+          note:'Article 17(3) of the US-UK treaty taxes social security only in the country of residence, so your US Social Security is taxed in the UK and left out of the US figure above. This is a saved exception to the treaty\'s saving clause, so it holds even for US citizens.'});
       }
     } else if(subjectUS&&!foreign&&(p.stateTaxRate||0)>0){
       // v8: flat US state income tax (approximation). SS usually exempt; pension/401k exempt in some states.
@@ -1673,8 +1742,10 @@ function calcPhase(p){
       cadR3:p.cadRate3||26,cadR4:p.cadRate4||29,cadR5:p.cadRate5||33,
       cadProvRate:(p.cadProvincialRate!=null?p.cadProvincialRate:12),
       ausFree:Math.round((p.ausTaxFreeThreshold||18200)*inflMult),ausB1:Math.round((p.ausBrk1||45000)*inflMult),
-      ausB2:Math.round((p.ausBrk2||120000)*inflMult),ausB3:Math.round((p.ausBrk3||180000)*inflMult),
-      ausLevyThresh:Math.round(24276*inflMult),ausLevyRate:(p.ausMedicareLevy!=null?p.ausMedicareLevy:2)
+      ausB2:Math.round((p.ausBrk2||135000)*inflMult),ausB3:Math.round((p.ausBrk3||190000)*inflMult),
+      ausR1:(p.ausRate1!=null?p.ausRate1:16),ausR2:(p.ausRate2!=null?p.ausRate2:30),
+      ausR3:(p.ausRate3!=null?p.ausRate3:37),ausR4:(p.ausRate4!=null?p.ausRate4:45),
+      ausLevyThresh:Math.round((p.ausLevyThreshold||27222)*inflMult),ausLevyRate:(p.ausMedicareLevy!=null?p.ausMedicareLevy:2)
     });
     // Flag-only: a one-year income spike can cross a cliff that the phase AVERAGE never shows. We do
     // not recompute the subsidy (see _lumpIncrementalTax) — we tell the user it would happen.
@@ -2103,7 +2174,6 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       irmaaTiers:(Array.isArray(s.irmaaTiers)&&s.irmaaTiers.length?s.irmaaTiers:null),  // v14: full ladder
       irmaaRelief:s.irmaaRelief||'lookback',
       irmaaManualPremium:s.irmaaManualPremium||0,
-      irmaaPartBStd:s.irmaaPartBStd||202.90,
       mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:s.mfjSeniorDed||3200,
       mfjBrk10:s.mfjBrk10||24800,mfjBrk12:s.mfjBrk12||98000,mfjBrk22:s.mfjBrk22||208000,mfjIrmaa:s.mfjIrmaa||218000,
       fpl100:s.fpl100,fpl250:s.fpl250,fpl400:s.fpl400,medicare:s.medicare,medicareD:s.medicareD||0,expatHealthcare:s.expatHealthcare||0,
@@ -2120,7 +2190,10 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       cadBrk1:s.cadBrk1||57375,cadBrk2:s.cadBrk2||114750,cadBrk3:s.cadBrk3||158519,cadBrk4:s.cadBrk4||220000,
       cadRate1:s.cadRate1||15,cadRate2:s.cadRate2||20.5,cadRate3:s.cadRate3||26,cadRate4:s.cadRate4||29,cadRate5:s.cadRate5||33,
       ausTaxFreeThreshold:s.ausTaxFreeThreshold||18200,
-      ausBrk1:s.ausBrk1||45000,ausBrk2:s.ausBrk2||120000,ausBrk3:s.ausBrk3||180000,
+      ausBrk1:s.ausBrk1||45000,ausBrk2:s.ausBrk2||135000,ausBrk3:s.ausBrk3||190000,
+      ausRate1:(s.ausRate1!=null?s.ausRate1:16),ausRate2:(s.ausRate2!=null?s.ausRate2:30),
+      ausRate3:(s.ausRate3!=null?s.ausRate3:37),ausRate4:(s.ausRate4!=null?s.ausRate4:45),
+      ausLevyThreshold:s.ausLevyThreshold||27222,
       rmdStartAge:s.rmdStartAge||73});
     const phaseUss=s.uss||0; // v13: same single figure the engine was handed above
     const phaseUkp=s.ukp||0;
