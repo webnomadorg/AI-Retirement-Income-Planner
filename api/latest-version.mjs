@@ -51,52 +51,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  /* ── Version-check analytics ───────────────────────────────────────────────────────
-     A planner that sends ?from=<its own build> is telling us which build is still in use.
-     That is the only way to know how many copies are live and how fast a release reaches
-     them — see Website/lib/version-log.mjs for what is stored (a build number and a date,
-     nothing else) and Plans/Admin-Console-Charts.md for why.
-
-     ⚠ THE CACHE IS THE WHOLE DIFFICULTY. The default response is cached at the edge for
-     half an hour, which means most checks never reach this function — fine for serving a
-     constant, useless for counting. So a request carrying ?from= opts out of the cache and
-     is counted; everything else keeps the cheap cached path, byte for byte as before.
-
-     ⚠ NOTHING HERE MAY BE ABLE TO BREAK THE VERSION FEED. Every installed copy depends on
-     this endpoint, and it has been taken down by a one-character mistake before. Hence the
-     dynamic import inside a try/catch: if the logging module is missing, throws on import,
-     or the blob store is unreachable, the customer still gets their answer. */
-  let counted = false;
-  try {
-    const qs = String(req.url || '').indexOf('?');
-    const from = qs === -1 ? null : new URLSearchParams(req.url.slice(qs + 1)).get('from');
-    if (from !== null) {
-      const { logPing, cleanBuild, isConfigured } = await import('../lib/version-log.mjs');
-      /* `isConfigured()` is checked BEFORE opting out of the cache. Without it, a
-         deployment with no blob store would give up the edge cache on every check and
-         store nothing in return — paying the whole cost for none of the benefit, silently.
-         Conversely, once the store IS configured the opt-out is unconditional rather than
-         contingent on the write succeeding: an intermittent failure would otherwise cache
-         intermittently and undercount in a way nobody could see. */
-      if (cleanBuild(from) !== null && isConfigured()) {
-        counted = true;
-        // Awaited on purpose: a serverless function may be frozen the instant it responds,
-        // so a fire-and-forget write is a write that sometimes does not happen.
-        await logPing(from);
-      }
-    }
-  } catch { /* analytics must never cost a customer their update check */ }
-
-  if (counted) {
-    // Must not be cached, or one install's check would be served to all the others and
-    // counted once. This path is only taken by the daily check, so the cost is one
-    // invocation per copy per day.
-    res.setHeader('Cache-Control', 'no-store');
-  } else {
-    // Half an hour at the edge. A new release does not need to propagate instantly —
-    // the app only asks once a day anyway.
-    res.setHeader('Cache-Control', 'public, max-age=1800, s-maxage=1800');
-  }
+  // Half an hour at the edge. A new release does not need to propagate instantly —
+  // the app only asks once a day anyway.
+  res.setHeader('Cache-Control', 'public, max-age=1800, s-maxage=1800');
   return res.status(200).json({
     build: LATEST.build,
     released: LATEST.released,
