@@ -159,7 +159,9 @@
       <span class="eyebrow">Data flow</span>
       <h2 id="exactly-what-leaves-your-computer">Exactly what leaves your computer</h2>
       <p class="lead" style="max-width:64ch;">Every network request the planner is capable of making, when it happens, and what it carries.
-        There is no analytics, no telemetry and no crash reporting anywhere in the file — so this list is the whole of it.</p>
+        There is no behavioural analytics, no tracking, no crash reporting and no identifier of any kind in the file —
+        the one thing it reports is the version number it is running, listed below like everything else. This list is
+        the whole of it.</p>
 
       <!-- ⚠ .table-scroll, NOT .cmp-matrix-wrap. That wrapper is display:none below 820px on
            purpose — the products page swaps it for a JS-rendered stack — so a hand-written
@@ -185,7 +187,12 @@
             <tr>
               <th scope="row">Version check</th>
               <td data-label="When">Once a day, automatically</td>
-              <td data-label="What it sends">Asks our site which build is current. Sends <b>nothing about you or your plan</b> — not even which build you have; your copy compares the answer locally.</td>
+              <td data-label="What it sends">Asks our site which build is current. Sends <b>nothing at all</b> — not even which version you have; your copy compares the answer locally.</td>
+            </tr>
+            <tr>
+              <th scope="row">Version beacon</th>
+              <td data-label="When">Once a day, automatically</td>
+              <td data-label="What it sends"><b>One number: the version of the planner you are running</b> — for example <code>370</code> — so we can tell how quickly an update reaches people instead of guessing. That is the entire message. No name, no email, no identifier, nothing about your plan, and nothing that could link one day&rsquo;s message to another or to you. It is sent and forgotten: the planner does not read the reply, and if it fails nothing changes.</td>
             </tr>
             <tr>
               <th scope="row">Live exchange rates</th>
@@ -226,8 +233,10 @@
         <h3 id="this-website-is-not-the-planner">This website is not the planner</h3>
         <p>Worth separating, because people reasonably assume otherwise. This <em>website</em> uses ordinary analytics,
           which stay switched off until you accept the cookie banner. The <em>planner</em> you download contains none of
-          it — no analytics, no tracking, no accounts. Buying does involve our payment provider, as any purchase must,
-          but the product itself never phones home.</p>
+          it — no analytics, no tracking, no accounts, nothing that knows who you are. Buying does involve our payment
+          provider, as any purchase must. The only thing the product itself ever reports is the version number it is
+          running, once a day, so we can tell whether an update reached anyone; it is in the table above with
+          everything else.</p>
       </div>
     </div>
   </section>

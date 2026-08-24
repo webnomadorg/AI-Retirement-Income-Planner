@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 368, released: '2026-08-22', headline: 'Canadian tax figures corrected — the federal rates and all four bracket ceilings are now a single current set rather than a mix of two years — along with the 2026 Medicare Part D premium. If you plan in Canadian dollars, your figures will shift slightly.' }; /* __LATEST__ */
+const LATEST = { build: 370, released: '2026-08-24', headline: 'Housekeeping only — nothing in the planner works differently, and your figures will not change. Once a day it now tells the site which version it is running, so I can see how quickly an update actually reaches people and stop guessing. It sends that version number and nothing else: no name, no email, nothing about your plan. Update whenever it suits you; there is nothing here you need.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
