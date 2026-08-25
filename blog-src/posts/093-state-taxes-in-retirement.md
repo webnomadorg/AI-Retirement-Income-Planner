@@ -34,7 +34,7 @@ What a plan needs is not a database of fifty states. It needs three answers abou
 2. Does it tax Social Security?
 3. Does it exempt some or all pension and retirement-account income, and is that exemption capped?
 
-[IMAGE PLACEHOLDER - Generated image: an editorial illustration of a single retirement income stream passing through two separate meters, one labeled abstractly as federal and one as state, before reaching a house. No readable text. Prompt for image generation: "Clean editorial illustration, muted ivory and navy palette, one flowing stream of income passing through two sequential meters or valves before reaching a small house. Abstract, no readable words, no logos, no numbers." Suggested alt text: "One retirement income stream passing through a federal meter and a state meter before reaching a household."]
+[IMAGE 093-state-taxes-in-retirement 1]
 
 ## Key Takeaways
 

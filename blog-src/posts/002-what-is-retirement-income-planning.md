@@ -30,7 +30,7 @@ That is the whole definition. Everything else is detail about how.
 
 It is a different job from the one most people have been doing for thirty years. Saving for retirement asks *how big is the pile?* Retirement income planning asks *what does the pile pay me, after everything takes its share, for as long as I need it to?* The first is a number. The second is a schedule.
 
-[IMAGE PLACEHOLDER - Generated image: an editorial illustration of a large reservoir on the left being converted through a regulator into a steady stream of equal drops reaching a small house on the right, month after month. No readable text. Prompt for image generation: "Clean editorial illustration, muted ivory and navy palette, a large reservoir feeding through a regulating valve into a steady even flow toward a small house. Abstract, calm, no readable words, no numbers, no logos." Suggested alt text: "A savings reservoir converted through a regulator into a steady monthly flow reaching a household."]
+[IMAGE 002-what-is-retirement-income-planning 1]
 
 ## Key Takeaways
 
