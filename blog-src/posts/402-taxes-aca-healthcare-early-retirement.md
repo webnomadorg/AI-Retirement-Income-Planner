@@ -78,7 +78,7 @@ One detail worth knowing: the marketplace uses the *prior* year's poverty-level 
 
 The cliff is not the only income trap. Once Medicare starts, a high income triggers **IRMAA**, the income-related monthly adjustment amount, a surcharge added to your Part B and Part D premiums.
 
-IRMAA begins when income crosses a threshold (around $106,000 for a single filer, changing each year), and it uses a **two-year lookback**, so the income that sets this year's surcharge is from two years earlier. The planner models the base Medicare premiums and flags when a phase's MAGI would push you into surcharge territory, which is often caused by large 401(k) withdrawals or required distributions later in the plan. The usual fixes are to reduce those withdrawals or to have done Roth conversions earlier, since Roth withdrawals do not count toward IRMAA income.
+IRMAA begins when income crosses a threshold (around $106,000 for a single filer, changing each year), and it uses a **two-year lookback**, so the income that sets this year's surcharge is from two years earlier. The planner models the base Medicare premiums and flags when a phase's MAGI would push you into surcharge territory, which is often caused by large 401(k) withdrawals or required distributions later in the plan. The usual fixes are to reduce those withdrawals or to have done Roth conversions earlier, since Roth withdrawals do not count toward IRMAA income. Deciding how much to convert in each year, rather than whether to convert at all, is what the [multi-year Roth conversion optimizer](/blog/multi-year-roth-conversion-optimizer.html) is for.
 
 ## Everything Inflates Forward Automatically
 

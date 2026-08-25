@@ -59,7 +59,7 @@ Even a careful plan can be affected by:
 
 Investor.gov explains that investing involves uncertainty and potential financial loss. It also describes risks such as volatility risk, inflation risk, liquidity risk, and interest rate risk. Those risks matter more in retirement because money is leaving the plan while conditions keep changing.
 
-Guardrails turn uncertainty into a response plan.
+Guardrails turn uncertainty into a response plan. Withdrawals are only one place they apply, too — the planner carries [guardrails across the whole plan](/blog/retirement-plan-guardrails.html), flagging healthcare, tax, and balance thresholds the same way.
 
 Instead of asking, "What should I do now?" during a bad year, the retiree can follow rules that were chosen calmly.
 

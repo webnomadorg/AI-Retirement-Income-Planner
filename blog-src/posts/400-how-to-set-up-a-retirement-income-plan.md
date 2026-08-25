@@ -48,6 +48,8 @@ In the AI Retirement Income Planner, the fastest path is a simple two-step rhyth
 - **Editing is live.** Change a withdrawal and the tax estimate, healthcare cost, and balances all recalculate on the spot, so you can find the right mix without guessing.
 - **Your data stays local.** The plan auto-saves in your browser, and you can export a JSON backup whenever you want.
 
+If the phrase itself is new, [what retirement income planning actually is](/blog/what-is-retirement-income-planning.html) sets out the job this guide is the procedure for.
+
 ## Start With the Five Phases
 
 The core idea behind the planner is that retirement income is not the same every year. Your costs change, income sources switch on and off, Social Security begins, Medicare replaces private coverage, and required minimum distributions eventually force money out of tax-deferred accounts whether you need it or not.
@@ -104,6 +106,8 @@ Change how much you pull from your 401k in a phase and watch the ending balance 
 - Watch the **tax bracket** and **healthcare** feedback so a withdrawal does not quietly push you into a higher bracket or over a subsidy threshold.
 
 The planner is constantly checking your income against the thresholds that matter in early retirement. If your income would cost you an ACA subsidy or trigger a Medicare surcharge, it flags it on the card, and the actual cost is built into the numbers so you see what it means in real money. Getting that balance right, drawing from the right account at the right time, is the heart of a good withdrawal plan, and it is covered in more depth in the guides on [how much you can spend](/blog/how-much-can-i-spend-in-retirement.html) and reading gross, net, and [real income](/blog/gross-net-real-retirement-income.html).
+
+If you are unsure which box a particular pension, annuity, or part-time wage belongs in, [where to enter each type of retirement income](/blog/where-to-enter-retirement-income.html) is the field-by-field answer.
 
 ## A Practical First-Time Flow
 

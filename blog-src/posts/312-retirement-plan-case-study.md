@@ -61,6 +61,8 @@ Before opening any tool, they might reason: "I have $605,000, I want $54,000 a y
 
 But the rough estimate assumes the hard parts away. How much of that $54,000 is taxable? How much does healthcare cost before Medicare, and will withdrawals raise it? How much Social Security will be taxable once it starts? How much will inflation erode later income? Which account should the money come from first? Will the traditional IRA grow too large before required minimum distributions? Does the Roth need protecting for later? Will the plan still hold if returns come in lower? None of those have answers yet. That is exactly what a reviewed plan is for.
 
+This is one household followed all the way through. For several shorter examples with different shapes — earlier retirement, a pension, a survivor year — see the [retirement planning case studies](/blog/retirement-planning-case-studies.html).
+
 ## Dividing the Plan Into Phases
 
 The first real improvement is to stop treating retirement as one long block and [split it into phases](/blog/retirement-income-timeline-phases.html), each with a distinct job.
