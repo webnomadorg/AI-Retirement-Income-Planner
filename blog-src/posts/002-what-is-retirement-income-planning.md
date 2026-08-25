@@ -10,8 +10,6 @@
 
 **Suggested URL slug:** what-is-retirement-income-planning
 
-**Image source base:** what is retirement income planning
-
 **Lead image:** 1
 
 **Image 1 alt:** Editorial illustration of a single large reservoir being converted into a steady, regulated flow reaching a household month after month.

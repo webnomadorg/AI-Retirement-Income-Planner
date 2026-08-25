@@ -10,8 +10,6 @@
 
 **Suggested URL slug:** state-taxes-in-retirement
 
-**Image source base:** state taxes retirement
-
 **Lead image:** 1
 
 **Image 1 alt:** Editorial illustration of one retirement income stream passing through two separate meters, a federal one and a state one, before reaching a household.
