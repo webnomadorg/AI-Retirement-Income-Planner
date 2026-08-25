@@ -1,7 +1,7 @@
 # Best Retirement Calculator With Taxes and Healthcare
 
 **SEO title:** Best Retirement Calculator With Taxes and Healthcare  
-**Meta description:** Looking for a retirement calculator with taxes and healthcare? Learn what features matter, why simple calculators miss key costs, and how to compare tools for retirement income planning.  
+**Meta description:** A retirement calculator that includes federal and state tax, taxable Social Security, ACA subsidies before 65, Medicare premiums and IRMAA. What those features change, why simple calculators miss them, and a free tool that shows the after-tax figure.  
 **Primary keyword:** best retirement calculator with taxes and healthcare  
 **Secondary keywords:** retirement calculator with taxes, retirement calculator with healthcare costs, retirement income calculator, retirement calculator Medicare IRMAA, retirement calculator ACA subsidies, tax-aware retirement calculator  
 **Suggested URL slug:** best-retirement-calculator-with-taxes-and-healthcare  
@@ -37,6 +37,8 @@ A calculator that only asks for savings, return, spending, and retirement age ca
 - Withdrawal order.
 
 For people who want a private, no-account, no-bank-link planning tool, the AI Retirement Income Planner is a strong fit because it models taxes, healthcare, Social Security, withdrawals, scenarios, and risk in the same browser-based planning file.
+
+**If you want the number rather than the explanation, start here.** The free [retirement tax calculator](/retire-abroad.html) asks for savings and a monthly withdrawal, then shows the income tax and healthcare cost taken out and the net income left. No sign-up, nothing to install, and it runs entirely in your browser. The rest of this article is about which costs a calculator has to include before that figure means anything.
 
 [IMAGE 091-best-retirement-calculator-with-taxes-and-healthcare 1]
 
@@ -77,7 +79,7 @@ The difference is gross income versus spendable income.
 
 A plan may show enough withdrawals before taxes and healthcare. After taxes, Medicare premiums, ACA costs, IRMAA, prescriptions, and inflation, the answer can change.
 
-## What A Tax-Aware Retirement Calculator Should Include
+## What A Retirement Tax Calculator Should Include
 
 A tax-aware retirement calculator should include more than a single tax-rate box.
 
@@ -163,7 +165,7 @@ For example:
 
 The answer depends on the full timeline.
 
-## Medicare And IRMAA Need A Different Test
+## A Medicare Retirement Calculator: Premiums, IRMAA, And The Two-Year Lookback
 
 At Medicare age, the healthcare question changes.
 
