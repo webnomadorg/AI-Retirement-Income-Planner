@@ -279,6 +279,8 @@ You probably need a stronger planner if:
 
 This is where the AI Retirement Income Planner is designed to fit. It is also a one-time purchase, which the guide to [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares with cloud tools.
 
+If you would rather see the arithmetic than read about it, the free [retirement tax calculator](/retire-abroad.html) does this part with no sign-up: enter savings and a withdrawal once, and it shows the income tax and healthcare cost taken out and the net income left, for the US or as a resident of the UK, Canada or Australia.
+
 [IMAGE PLACEHOLDER - Generated image: A decision tree showing when a simple retirement calculator is enough versus when taxes, healthcare, Social Security, and risk testing call for a full planner. No readable text. Prompt for ChatGPT Images 2: "Create a clean professional decision-tree illustration for choosing between a simple retirement calculator and a full retirement planner. Include abstract icons for taxes, healthcare, Social Security, withdrawals, and risk testing. No readable words, no logos." Suggested alt text: "Decision tree for choosing a retirement calculator or full planner."]
 
 ## Where The AI Retirement Income Planner Fits
