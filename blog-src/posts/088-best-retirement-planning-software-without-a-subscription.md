@@ -56,6 +56,23 @@ Subscription tools can still be excellent for some users. ProjectionLab, MaxiFi,
 - Optional AI features and exchange-rate features can use network access when the user chooses to use them.
 - Buyer-intent readers should verify current prices and terms directly with each vendor before purchasing.
 
+## Free Retirement Planning Software: What Is Actually Free
+
+"Free" and "no subscription" get searched as if they were the same thing, and they are not. No subscription means you are not billed every month. Free means you are not billed at all — and in this market that usually means one of four arrangements, only two of which are genuinely free:
+
+- **Free and funded by something else.** Broker and fund-company planners are free because they are attached to accounts held with that firm. The tool is real; the business model is the assets.
+- **Free and funded by your data.** Aggregators that link your bank and investment accounts are free at the point of use. What is being exchanged is visibility into your finances.
+- **Free tier of a subscription.** Usually a capped version of a paid planner, which is a trial with no end date rather than a free tool.
+- **Free because it is small.** Single-purpose calculators on advice sites cost nothing because they answer one question and stop.
+
+Against that, here is the honest position of the tool this site sells, since a page ranking for "free retirement planning software" ought to say so plainly rather than bury it:
+
+- **The [retirement tax calculator](/retire-abroad.html) is free.** No sign-up, no email, no account. It takes savings and a monthly withdrawal and shows the income tax and healthcare cost taken out, and the net income left.
+- **The [interactive demo](/demo.html) is free.** It is the full planner running on a sample plan, so you can see how the phases, taxes, healthcare and Roth conversions behave before deciding anything.
+- **The planner itself is paid** — once. It is a one-time purchase rather than a subscription, which is the distinction this article is about.
+
+If your requirement is genuinely "$0 forever", a spreadsheet or a broker's planner is the honest answer, and [the spreadsheet comparison](/blog/retirement-spreadsheet-vs-retirement-planning-software.html) sets out what that costs you in time and in modeling depth. If what you actually want is "no recurring bill", that is a different requirement, and it is the one the rest of this page answers.
+
 ## What Counts As No-Subscription Retirement Planning Software?
 
 For this article, "without a subscription" means:

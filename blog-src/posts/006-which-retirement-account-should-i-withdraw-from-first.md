@@ -317,6 +317,14 @@ The right answer depends on:
 
 ## FAQ
 
+### Is there a retirement withdrawal calculator that includes taxes?
+
+Most withdrawal calculators answer a narrower question than the one being asked. They take a balance and a withdrawal rate and report how long the money lasts, with tax either ignored or applied as one flat percentage. That cannot tell you what this page is about, because the whole point of withdrawal order is that the same $60,000 costs different amounts depending on which accounts it comes from. What you want is a calculator that treats a withdrawal as an *income event* — one that runs it through brackets, decides how much of your Social Security becomes taxable, checks it against the ACA and IRMAA thresholds, and reports what is left. The free [retirement tax calculator](/retire-abroad.html) does that part with no sign-up; the full planner does it phase by phase and lets you compare withdrawal orders side by side.
+
+### What about an IRA withdrawal tax calculator specifically?
+
+A traditional IRA withdrawal is ordinary income, so the tax on it is never a property of the withdrawal alone — it depends on everything else in the same year. A single-purpose IRA withdrawal tax calculator will give you a number, and the number will be wrong in exactly the situations that matter: the year you also convert to Roth, the year a capital gain lands, the year the withdrawal tips your MAGI over an ACA cliff or an IRMAA threshold. Model the year, not the withdrawal.
+
 ### Should retirees always spend taxable accounts first?
 
 No. Taxable-first can work for some retirees, but it can also leave larger tax-deferred balances that create bigger RMDs later. Model it against other strategies.

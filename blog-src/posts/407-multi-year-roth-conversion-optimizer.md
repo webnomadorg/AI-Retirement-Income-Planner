@@ -52,9 +52,9 @@ If you do nothing, here is what happens. A traditional IRA that has grown to, sa
 
 Worse, that extra income does not just get taxed once. It pulls more of your Social Security into the taxable zone, and once your income crosses certain thresholds it lifts your Medicare Part B and D premiums through IRMAA. The marginal cost of one extra dollar of RMD income can be far higher than the bracket alone suggests. This is the same web of thresholds covered in [taxes, ACA, and healthcare in early retirement](/blog/taxes-aca-healthcare-early-retirement.html), now working against you in later life. The solution is to voluntarily move money out of the pre-tax account before 73, paying tax today at a known rate, typically 12% or 22%, so it never appears as a forced RMD later.
 
-## Why This Tool Is Different
+## Roth Conversion Software: Why This Optimizer Works Backwards
 
-Most Roth conversion calculators ask you to enter a conversion amount and then tell you the tax cost. That is useful, but it leaves the hardest part, deciding the amount, on you.
+Most Roth conversion calculators ask you to enter a conversion amount and then tell you the tax cost. That is useful, but it leaves the hardest part, deciding the amount, on you. It is also why searching for Roth conversion software and finding a calculator feels like a bait and switch: the two words describe opposite jobs.
 
 This optimizer works the other way around. It maps out your entire conversion window from now until RMDs begin, shows exactly how much bracket space is available in each year, identifies the income cliffs you must not cross, and then calculates the optimal conversion amount for every single year automatically. It does this across six strategies from conservative to aggressive, lets you compare them side by side, scores your chosen strategy against a set of confidence checks, and produces a year-by-year calendar you can act on. Everything runs in your browser: no account, no login, no subscription, and nothing sent anywhere.
 
@@ -101,6 +101,22 @@ The optimizer is a standalone tool, but it integrates tightly with the [AI Retir
 One limitation to know: the optimizer sees your IRA withdrawals, Social Security, and the other income you entered, but it does not know about equity or brokerage withdrawals you may have set up in the planner. If your plan draws from a taxable brokerage during the conversion years, those capital gains count toward your MAGI and can reduce the headroom the optimizer assumed. So after importing, if an ACA or IRMAA check in the planner turns amber or red, simply reduce the conversion in the affected phase until it clears. Together the two tools give the full picture: the optimizer decides how much to convert and why, and the planner shows how those conversions reshape your income all the way to age 90.
 
 ## FAQ
+
+### Is this Roth conversion software, or a calculator?
+
+Both words get used for two quite different things, and the difference is the whole point. A Roth conversion *calculator* takes an amount you have already decided on and reports the tax. Roth conversion *software* is expected to decide the amount for you — to look across every year until RMDs begin, find the bracket space in each, respect the cliffs, and hand back a schedule. This is the second kind. You can find it on the [products page](/products.html); it runs in your browser with no account and no subscription.
+
+### How does this compare with a Roth conversion decision tree?
+
+A decision tree answers "should I convert?" with a series of yes/no branches — are you in a low-income year, do you expect higher rates later, can you pay the tax from outside the account. Useful once. It cannot answer "how much, this year, and what does that do to the following eleven years", because that question is arithmetic rather than logic. A multi-year optimizer exists precisely because the answer changes every year as balances, brackets, and cliffs move.
+
+### Can I use it as a Roth conversion strategy planner for the whole window?
+
+That is what it is for. It maps the conversion window from now until RMDs begin rather than optimising a single year, which matters because a conversion that looks ideal in isolation can spend bracket space a later year needed more. Six strategies from conservative to aggressive are compared side by side, and the result is a year-by-year calendar rather than a single figure.
+
+### Is there a free Roth conversion calculator?
+
+The optimizer is a paid companion tool. Two things near it are free: the [retirement tax calculator](/retire-abroad.html), which shows what tax and healthcare take out of a plan without any conversion modelling, and the [interactive demo](/demo.html), which runs the full planner on a sample plan so you can see how conversions land in a phase before buying anything.
 
 ### What problem does a Roth conversion actually solve?
 

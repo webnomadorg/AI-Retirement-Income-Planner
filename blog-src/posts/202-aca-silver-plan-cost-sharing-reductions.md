@@ -129,6 +129,18 @@ That short loop can be worth more than almost any investment tweak, because it i
 
 ## FAQ
 
+### What is Silver CSR?
+
+Silver CSR is shorthand for the cost-sharing reductions built into Silver marketplace plans. "Silver" is the metal tier; "CSR" is the discount on what you pay when you actually use care. Put together, Silver CSR means a Silver plan whose deductible, copays, and out-of-pocket maximum have been cut because your income qualifies. The same Silver plan bought by someone with a higher income has none of that built in, which is why two people can hold what looks like the same policy and face very different bills.
+
+### What does CSR eligible mean?
+
+It means your projected modified adjusted gross income for the year falls under 250% of the federal poverty level for your household size, so the marketplace will apply cost-sharing reductions if — and only if — you enroll in a Silver plan. Eligible is not the same as enrolled: the eligibility is yours, but the discount only attaches to a Silver policy. Choose Bronze or Gold while CSR eligible and the benefit is simply not applied, with nothing on the checkout page to tell you what you gave up.
+
+### How do MAGI and ACA subsidies fit together?
+
+MAGI is the input; the subsidies are the output. The marketplace looks at your modified adjusted gross income against the federal poverty level, and that one number decides both halves of the help: the premium tax credit that lowers your monthly bill, and the cost-sharing reductions that lower what you pay at the doctor. For an early retiree, MAGI is largely a choice rather than a fact, because it is built from which accounts you draw on — traditional withdrawals, conversions, interest, and capital gains raise it, while Roth withdrawals and spending down cash do not. That is what makes ACA planning a withdrawal-order problem rather than an insurance problem.
+
 ### What is the difference between a premium subsidy and a cost-sharing reduction?
 
 A premium subsidy (the advance premium tax credit) lowers your monthly premium and can be used on any metal tier. A cost-sharing reduction lowers what you pay when you use care, by cutting your deductible, copays, and out-of-pocket maximum, and it is only available on Silver plans. Many people qualify for both, but only capture the CSR half if they choose Silver.
