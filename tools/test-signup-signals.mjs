@@ -10,7 +10,7 @@
    that is too eager is worse: it puts an "automated" flag on a real person, and the owner
    stops emailing someone who did nothing wrong. */
 
-import { parseKey, verdictFor } from '../lib/signup-quarantine.mjs';
+import { parseKey, verdictFor, countHoneypotHits } from '../lib/signup-quarantine.mjs';
 
 let pass = 0, fail = 0;
 const ok = (label, cond, detail = '') => {
@@ -102,6 +102,52 @@ eq('  … but does not condemn anyone', verdictFor(repeat).verdict, 'clean');
 // Order independence: the caller has no obligation to sort.
 eq('records arrive in any order', verdictFor([at(29, 'honeypot', 'blocked'), at(0)]).firstAt,
    new Date(Date.UTC(2026, 7, 20, 17, 0, 0)).toISOString());
+
+/* --------------------------------------------------- countHoneypotHits (block) --- */
+/* The rule that REFUSES a signup, so these assertions are load-bearing in a way the verdict
+   ones are not: verdictFor only ever colours a row in a panel, this decides whether a real
+   person reaches the mailing list. Threshold is 2 hits inside 30 days - see priorHoneypot. */
+console.log('countHoneypotHits - the one signal that actually blocks');
+
+const CUT = '2026-08-01';
+const on = (day, reason = 'honeypot') =>
+  ({ day, event: 'blocked', reason, kid: 'k', epoch: Date.parse(`${day}T17:00:00Z`) });
+
+eq('no records is no hits', countHoneypotHits([], CUT).hits, 0);
+eq('a clean signup is not a hit', countHoneypotHits([on('2026-08-20', 'none')], CUT).hits, 0);
+
+// A SINGLE hit must not block - that is the password-manager case, and it is why the
+// threshold is two. If this ever flips to 1, a hidden-field autofill starts costing real
+// subscribers, silently.
+eq('one honeypot hit is counted', countHoneypotHits([on('2026-08-20')], CUT).hits, 1);
+ok('  ... but one is below the block threshold', countHoneypotHits([on('2026-08-20')], CUT).hits < 2);
+
+// The real signature: jbetts@receptional.com, 6 honeypot hits, then a clean submission.
+const botRun = ['2026-08-20', '2026-08-20', '2026-08-20', '2026-08-20', '2026-08-20', '2026-08-20']
+  .map((d) => on(d))
+  .concat([on('2026-08-20', 'none')]);
+ok('the known bot signature blocks', countHoneypotHits(botRun, CUT).hits >= 2);
+
+// Only the honeypot counts here. Other block reasons are separate rules with their own
+// costs; folding them in would quietly widen this from one rule into four.
+eq('other block reasons do not count', countHoneypotHits(
+  [on('2026-08-20', 'disposable-domain'), on('2026-08-20', 'syntax'), on('2026-08-20', 'submitted-too-fast')], CUT).hits, 0);
+
+// The window is what lets a wrongly-blocked person recover on their own. If the cutoff
+// stops being applied, a single bad day follows an address for the full 90-day retention.
+eq('hits outside the window are ignored', countHoneypotHits(
+  [on('2026-07-01'), on('2026-07-02')], CUT).hits, 0);
+eq('the window is inclusive of its first day', countHoneypotHits([on(CUT)], CUT).hits, 1);
+eq('a mixed history counts only what is in range', countHoneypotHits(
+  [on('2026-07-01'), on('2026-08-20'), on('2026-08-21')], CUT).hits, 2);
+
+// lastAt is the newest hit, whatever order they arrive in.
+eq('lastAt is the most recent hit', countHoneypotHits(
+  [on('2026-08-21'), on('2026-08-05')], CUT).lastAt, Date.parse('2026-08-21T17:00:00Z'));
+eq('lastAt is null when nothing matched', countHoneypotHits([on('2026-08-20', 'none')], CUT).lastAt, null);
+
+// Callers pass whatever the log holds; a malformed record must not throw mid-signup.
+eq('undefined records are survivable', countHoneypotHits(undefined, CUT).hits, 0);
 
 console.log(`\n${fail === 0 ? 'ALL PASS' : 'FAILURES'} — ${pass} passed, ${fail} failed`);
 process.exit(fail === 0 ? 0 : 1);

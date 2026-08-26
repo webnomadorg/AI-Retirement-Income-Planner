@@ -28,8 +28,8 @@
    parse and re-serialise the JSON changes them and every verification fails. */
 
 import crypto from 'node:crypto';
-import { screenSignup, signingSecret, emailHash } from '../lib/signup-guard.mjs';
-import { logEvent } from '../lib/signup-quarantine.mjs';
+import { screenSignup, signingSecret, emailHash, BLOCK_REASONS } from '../lib/signup-guard.mjs';
+import { logEvent, priorHoneypot } from '../lib/signup-quarantine.mjs';
 import { magnetGroupId } from '../lib/magnets.mjs';
 
 export const config = { api: { bodyParser: false } };
@@ -123,6 +123,30 @@ async function screenAndAdd(rawEmail, rawName, magnet) {
       event: 'blocked',
       reason: screened.reason,
       email: rawEmail,
+      domain: screened.domain || '',
+      magnet,
+      note: 'facebook-lead-ads',
+    });
+    return false;
+  }
+
+  /* The honeypot-history check applies HERE TOO, and this path needs it more than the
+     website form does, not less: there is no double opt-in on a Facebook lead, so an address
+     that survives this function is written to MailerLite immediately.
+
+     A lead arrives through Meta's form, so it cannot have tripped OUR honeypot as part of
+     the same submission — a hit means that address was also running at our website forms,
+     which is precisely the cross-surface signature the eight known bots left. Skipping it
+     here would reopen the back door this whole function exists to close.
+
+     ⚠ Uses the canonical address for the same reason as everywhere else, and fails open. */
+  const prior = await priorHoneypot(screened.email);
+  if (prior.blocked) {
+    console.warn(`meta-leads: rejected lead (prior-honeypot, ${prior.hits} hits)`);
+    await logEvent({
+      event: 'blocked',
+      reason: BLOCK_REASONS.PRIOR_HONEYPOT,
+      email: screened.email,
       domain: screened.domain || '',
       magnet,
       note: 'facebook-lead-ads',

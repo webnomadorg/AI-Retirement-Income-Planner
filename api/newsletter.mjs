@@ -37,8 +37,9 @@ import {
   signingSecret,
   emailHash,
   BLOCK_MESSAGE,
+  BLOCK_REASONS,
 } from '../lib/signup-guard.mjs';
-import { logEvent, claimConfirmSend, requestMeta } from '../lib/signup-quarantine.mjs';
+import { logEvent, claimConfirmSend, requestMeta, priorHoneypot } from '../lib/signup-quarantine.mjs';
 import { resolveMagnet, magnetLabel } from '../lib/magnets.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
@@ -192,6 +193,38 @@ export default async function handler(req, res) {
       fillMs: screened.tokenAgeMs,
     });
     console.warn(`[newsletter] blocked (${screened.reason})`);
+    return res.status(400).json({ error: BLOCK_MESSAGE });
+  }
+
+  /* Has this address tripped the honeypot before? (See priorHoneypot in the quarantine log.)
+
+     ⚠ THIS IS THE CHECK THAT ACTUALLY STOPS THE BOTS, and it has to live out here rather
+     than in screenSignup. The script fills the honeypot on most attempts and leaves it alone
+     on exactly one — the one that reaches this line — so the per-request check above cannot
+     see it by design. Only the history gives it away.
+
+     Placed AFTER screenSignup on purpose: it needs `screened.email`, the canonical form.
+     Keying on the raw address would give one bot's dotted variants a fresh history each.
+
+     Placed BEFORE claimConfirmSend on purpose too — that call is a WRITE, and claiming the
+     day's slot for an address we are about to refuse would lock out a genuine signup from
+     the same inbox for 24 hours.
+
+     Logged under its own reason, never folded into 'honeypot', so a false positive is
+     visible as itself in the Signups tab instead of hiding inside the flood. */
+  const prior = await priorHoneypot(screened.email);
+  if (prior.blocked) {
+    await logEvent({
+      event: 'blocked',
+      reason: BLOCK_REASONS.PRIOR_HONEYPOT,
+      email: screened.email,
+      domain: screened.domain,
+      magnet: chosenMagnet,
+      hash: '',
+      ...meta,
+      fillMs: screened.tokenAgeMs,
+    });
+    console.warn(`[newsletter] blocked (prior-honeypot, ${prior.hits} hits)`);
     return res.status(400).json({ error: BLOCK_MESSAGE });
   }
 
