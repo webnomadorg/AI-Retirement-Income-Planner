@@ -209,7 +209,7 @@ export default async function handler(req, res) {
 
     const verdict = verification.verified ? 'verified buyer' : 'UNVERIFIED';
     const consentLabel = quoteOk ? 'quote OK' : 'no quote consent';
-    const draftCmd = `node tools/testimonials/cli.mjs draft ${id} --text "…" --as "…"`;
+    const draftCmd = `node tools/admin/cli.mjs draft ${id} --text "…" --as "…"`;
 
     const notify = await sendEmail({
       from: 'WebNomad Feedback <dev@webnomad.org>',
@@ -240,7 +240,7 @@ export default async function handler(req, res) {
         (!quoteOk
           ? '<p style="color:#666">No publication consent — nothing to do beyond reading it.</p>'
           : stored
-            ? `<p>To propose wording (trim only — never rewrite), open the admin page with <code>node tools/testimonials/cli.mjs serve</code>, or run:</p><pre style="background:#f4f4f4;padding:.7rem;white-space:pre-wrap">${esc(draftCmd)}</pre><p style="color:#666;font-size:.9rem">They still have to approve the exact wording before it can be published.</p>`
+            ? `<p>To propose wording (trim only — never rewrite), open the admin page with <code>node tools/admin/cli.mjs serve</code>, or run:</p><pre style="background:#f4f4f4;padding:.7rem;white-space:pre-wrap">${esc(draftCmd)}</pre><p style="color:#666;font-size:.9rem">They still have to approve the exact wording before it can be published.</p>`
             : '<p style="color:#666">They gave permission to be quoted, but with nothing stored there is no record to draft from.</p>'),
       text:
         `${name} <${email}>\n` +

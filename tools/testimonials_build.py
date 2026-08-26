@@ -26,7 +26,7 @@ to weigh against that.
 
 Every record here must have reached `approved` through api/feedback-approve.mjs. This
 script is a renderer, not a gate: it trusts the data file, and the data file is only ever
-written by `tools/testimonials/cli.mjs publish`, which does check.
+written by `tools/admin/cli.mjs publish`, which does check.
 """
 
 import html

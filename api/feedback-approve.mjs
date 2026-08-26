@@ -86,13 +86,13 @@ async function notifyOwner(record, decision) {
           `<p><strong>${esc(who)}</strong> ${decision === 'approved' ? 'approved' : 'declined'} the wording:</p>` +
           `<blockquote style="border-left:3px solid #1B7165;margin:1em 0;padding:.5em 1em;color:#555">${esc(record.published_text || '')}</blockquote>` +
           (decision === 'approved'
-            ? '<p>It is now <strong>publishable</strong> — but it is not live. Run <code>node tools/testimonials/cli.mjs publish</code> (or the admin page) once you have three approved quotes.</p>'
+            ? '<p>It is now <strong>publishable</strong> — but it is not live. Run <code>node tools/admin/cli.mjs publish</code> (or the admin page) once you have three approved quotes.</p>'
             : '<p>Nothing will be published. No follow-up needed.</p>') +
           `<p style="color:#888;font-size:.85rem">Record ${esc(record.id)}</p>`,
         text:
           `${who} ${decision} the wording:\n\n"${record.published_text || ''}"\n\n` +
           (decision === 'approved'
-            ? 'It is now publishable but NOT live. Run: node tools/testimonials/cli.mjs publish (needs 3 approved).\n'
+            ? 'It is now publishable but NOT live. Run: node tools/admin/cli.mjs publish (needs 3 approved).\n'
             : 'Nothing will be published.\n') +
           `\nRecord ${record.id}\n`,
       }),
