@@ -1,4 +1,4 @@
-# Promo material — How to Set Up a Retirement Income Plan: A Step-by-Step Planner Guide
+# Promo material — How to Set Up a Retirement Income Plan, Step by Step
 
 ## Internal Links To Add
 

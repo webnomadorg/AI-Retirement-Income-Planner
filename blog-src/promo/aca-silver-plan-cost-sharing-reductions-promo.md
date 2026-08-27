@@ -1,4 +1,4 @@
-# Promo material — Silver ACA Plan Before 65: How Cost-Sharing Reductions Save Money
+# Promo material — Silver ACA Plan Before 65 and Cost-Sharing Reductions
 
 ## Facebook Post Snippets
 

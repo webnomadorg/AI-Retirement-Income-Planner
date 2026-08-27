@@ -1,4 +1,4 @@
-# Promo material — Asking Better Retirement Questions and Reviewing Your Plan With AI
+# Promo material — Asking Better Retirement Questions and Reviewing With AI
 
 ## Facebook Post Snippets
 

@@ -1,6 +1,6 @@
 # 50+ Questions to Ask Your Retirement Plan
 
-**SEO title:** 50+ Questions to Ask Your Retirement Plan (A Review Checklist)
+**SEO title:** 50+ Questions to Ask Your Retirement Plan: A Checklist
 
 **Category:** Planning Framework
 

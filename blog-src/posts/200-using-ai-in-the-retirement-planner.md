@@ -1,6 +1,6 @@
 # Using AI in the Retirement Planner: Providers, Models, and API Keys
 
-**SEO title:** Using AI in the Retirement Planner: Providers, Models, and API Keys Explained
+**SEO title:** Using AI in the Retirement Planner: Models and API Keys
 
 **Category:** AI & Retirement
 

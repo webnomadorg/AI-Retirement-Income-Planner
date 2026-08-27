@@ -1,4 +1,4 @@
-# Promo material — Using AI in the Retirement Planner: Providers, Models, and API Keys Explained
+# Promo material — Using AI in the Retirement Planner: Models and API Keys
 
 ## Internal Link Suggestions
 

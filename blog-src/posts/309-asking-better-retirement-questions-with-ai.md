@@ -1,6 +1,6 @@
 # Asking Better Questions About Your Retirement Plan (and Reviewing It With AI)
 
-**SEO title:** Asking Better Retirement Questions and Reviewing Your Plan With AI
+**SEO title:** Asking Better Retirement Questions and Reviewing With AI
 
 **Category:** Planning Framework
 

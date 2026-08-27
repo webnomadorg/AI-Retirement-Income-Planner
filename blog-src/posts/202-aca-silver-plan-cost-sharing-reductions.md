@@ -1,6 +1,6 @@
 # The Silver ACA Plan Advantage Before 65: How Cost-Sharing Reductions Can Save Thousands
 
-**SEO title:** Silver ACA Plan Before 65: How Cost-Sharing Reductions Save Money
+**SEO title:** Silver ACA Plan Before 65 and Cost-Sharing Reductions
 
 **Category:** Healthcare
 

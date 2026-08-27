@@ -1,6 +1,6 @@
 # How to Set Up a Retirement Income Plan: A Step-by-Step Guide
 
-**SEO title:** How to Set Up a Retirement Income Plan: A Step-by-Step Planner Guide
+**SEO title:** How to Set Up a Retirement Income Plan, Step by Step
 
 **Category:** Planner How-To
 

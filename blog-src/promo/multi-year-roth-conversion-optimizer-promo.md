@@ -1,4 +1,4 @@
-# Promo material — The Multi-Year Roth Conversion Optimizer: Plan Your Conversions Year by Year
+# Promo material — Multi-Year Roth Conversion Optimizer: Plan Year by Year
 
 ## Internal Links To Add
 

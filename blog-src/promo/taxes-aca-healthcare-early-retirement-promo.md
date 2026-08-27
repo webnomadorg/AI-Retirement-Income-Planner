@@ -1,4 +1,4 @@
-# Promo material — Taxes, ACA Subsidies, and Healthcare in Early Retirement: How Income Choices Change the Cost
+# Promo material — Taxes, ACA Subsidies, and Healthcare in Early Retirement
 
 ## Internal Links To Add
 

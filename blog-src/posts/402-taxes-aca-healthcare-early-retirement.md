@@ -1,6 +1,6 @@
 # Taxes, ACA Subsidies, and Healthcare in Early Retirement
 
-**SEO title:** Taxes, ACA Subsidies, and Healthcare in Early Retirement: How Income Choices Change the Cost
+**SEO title:** Taxes, ACA Subsidies, and Healthcare in Early Retirement
 
 **Category:** Planner How-To
 

@@ -1,6 +1,6 @@
 # The Multi-Year Roth Conversion Optimizer: Plan Your Conversions Year by Year
 
-**SEO title:** The Multi-Year Roth Conversion Optimizer: Plan Your Conversions Year by Year
+**SEO title:** Multi-Year Roth Conversion Optimizer: Plan Year by Year
 
 **Category:** Planner How-To
 

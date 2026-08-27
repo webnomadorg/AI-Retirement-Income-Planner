@@ -1,4 +1,4 @@
-# Promo material — 50+ Questions to Ask Your Retirement Plan (A Review Checklist)
+# Promo material — 50+ Questions to Ask Your Retirement Plan: A Checklist
 
 ## Facebook Post Snippets
 
