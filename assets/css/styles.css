@@ -1759,12 +1759,35 @@ html.dark .scenario-link{ color:var(--teal); }
    Deliberately plain: real names, real words, no stock photography, no star ratings.
    ⚠ .tm-grid carries its own margin-bottom. This site spaces with bottom margins only,
    so a wrapper without one leaves the next block sitting flush against it. */
+/* FLEX, NOT GRID, and only because of the last row. There is no cap on how many quotes
+   publish (testimonials_build.py renders every approved record; the 3 is a MINIMUM), so any
+   count that is not a multiple of the column number leaves a ragged row — 4 stranded a lone
+   card with 753px of empty space beside it, 5 left a 377px hole on the right.
+
+   ⚠ `repeat(auto-fit,minmax(...))` does NOT fix this, which is the obvious-looking wrong
+   answer. auto-fit collapses tracks that are empty across the WHOLE grid, and with 5 items in
+   3 columns no track is empty — measured byte-identical to repeat(3,1fr). Only a flex row with
+   justify-content:center actually centres the remainder.
+
+   Full rows are pixel-identical to the old grid (348px cards at 1280px), so this changes
+   nothing until a row is short.
+
+   ⚠ The row NEVER becomes flex-direction:column, at any width — the phone breakpoint sets
+   flex-basis:100% instead. A basis follows the main axis, so a column parent would silently
+   reinterpret these widths as HEIGHTS; that trap has already shipped twice on this site (the
+   post-capture email input at 288px tall, the cookie banner at 495px). Keep the axis fixed and
+   it cannot happen here. Remember the base font is 18px, so 1rem = 18px. */
 .tm-grid{
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:clamp(1.1rem,2.2vw,1.6rem); margin:0 0 1.6rem;
+  display:flex; flex-wrap:wrap; justify-content:center;
+  --tm-gap:clamp(1.1rem,2.2vw,1.6rem);
+  gap:var(--tm-gap); margin:0 0 1.6rem;
 }
-@media (max-width:980px){ .tm-grid{ grid-template-columns:repeat(2,1fr); } }
-@media (max-width:640px){ .tm-grid{ grid-template-columns:1fr; } }
+/* 0 1 <basis>: never grow, so a short row keeps the same card width as a full one rather than
+   stretching two cards across the width of three. min-width:0 lets a long unbroken word shrink
+   the card instead of overflowing it. */
+.tm-grid > .tm-card{ flex:0 1 calc((100% - var(--tm-gap) * 2) / 3); min-width:0; }
+@media (max-width:980px){ .tm-grid > .tm-card{ flex-basis:calc((100% - var(--tm-gap)) / 2); } }
+@media (max-width:640px){ .tm-grid > .tm-card{ flex-basis:100%; } }
 
 .tm-card{
   display:flex; flex-direction:column; margin:0;
