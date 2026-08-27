@@ -116,7 +116,7 @@ That is what it is for. It maps the conversion window from now until RMDs begin 
 
 ### Is there a free Roth conversion calculator?
 
-The optimizer is a paid companion tool. Two things near it are free: the [retirement tax calculator](/retire-abroad.html), which shows what tax and healthcare take out of a plan without any conversion modelling, and the [interactive demo](/demo.html), which runs the full planner on a sample plan so you can see how conversions land in a phase before buying anything.
+The optimizer is a paid companion tool. Two things near it are free: the [retirement tax calculator](/retire-abroad.html), which shows what tax and healthcare take out of a plan without any conversion modeling, and the [interactive demo](/demo.html), which runs the full planner on a sample plan so you can see how conversions land in a phase before buying anything.
 
 ### What problem does a Roth conversion actually solve?
 
