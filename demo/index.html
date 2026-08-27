@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v389.html on 2026-08-27. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v390.html on 2026-08-27. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -253,6 +253,11 @@
   .phases-7 .net-block{padding:8px 10px;}
   .edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:14px;}
   /* v9: Edit-tab section sub-nav (pill bar) — splits the many cards into one section at a time. */
+  /* v16: the section pills and the Field-markers control share one line, the control pushed right.
+     It sits OUTSIDE the role="tablist" so that element keeps containing only tabs. */
+  .edit-nav-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 16px;}
+  .edit-nav-row .edit-section-nav{margin:0;flex:1 1 auto;}
+  .edit-nav-row .rate-cov-mode-wrap{margin:0 0 0 auto;}
   .edit-section-nav{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 16px;scroll-margin-top:calc(var(--tabs-sticky-height, 52px) + 12px);}
   /* In the active section, hide tagged cards that belong to other sections (only hides non-matching,
      so a card that is conditionally hidden/shown by currency/MFJ/phase logic still behaves correctly). */
@@ -3499,24 +3504,13 @@ html[data-theme="contrast"] .irow select:focus{
   </div>
 
   <div id="tab-edit" class="tab-content">
-    <!-- v16: display setting for the whole tab, so it sits at the head rather than inside the
-         fetch flow. Always present: it has to be findable weeks after a refresh, when the reason
-         to reach for it (quietening the markers) actually arises. -->
-    <div class="rate-cov-mode-wrap" id="rate-cov-mode-wrap">
-      <label for="rate-cov-mode">Field markers</label>
-      <select id="rate-cov-mode" onchange="setRateCovMode(this.value)">
-        <option value="all">Show all</option>
-        <option value="warn">Only what needs attention</option>
-        <option value="off">Hide</option>
-      </select>
-      <span class="rate-cov-mode-hint" id="rate-cov-mode-hint"></span>
-    </div>
     <!-- v6: First-time tip explaining the blue "changed" dot. Dismissable, hidden permanently after dismiss via localStorage. -->
     <div id="edit-tip" class="edit-tip" style="display:none;">
       <button class="edit-tip-dismiss" onclick="dismissEditTip()" title="Dismiss" aria-label="Dismiss tip">✕</button>
       <strong>Tip:</strong> A <span class="edit-tip-dot"></span> next to a field label means you've changed that value since your <strong>baseline</strong> — the snapshot taken when you loaded, imported, reset, or replanned. It's an at-a-glance audit of what you've touched this session.
       <button type="button" class="info-icon" style="margin-left:6px;" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('changedDot',this)" title="What is this?" aria-label="More about the changed indicator">i</button>
     </div>
+    <div class="edit-nav-row">
     <div class="edit-section-nav" id="edit-section-nav" role="tablist" aria-label="Edit sections">
       <button type="button" class="whatif-pill active" data-esec="accounts" onclick="showEditSection('accounts')">Accounts</button>
       <button type="button" class="whatif-pill" data-esec="income" onclick="showEditSection('income')">Income</button>
@@ -3524,6 +3518,16 @@ html[data-theme="contrast"] .irow select:focus{
       <button type="button" class="whatif-pill" data-esec="taxes" onclick="showEditSection('taxes')">Taxes &amp; healthcare</button>
       <button type="button" class="whatif-pill" data-esec="advanced" onclick="showEditSection('advanced')">Advanced</button>
       <button type="button" class="whatif-pill" data-esec="appearance" onclick="showEditSection('appearance')">Appearance</button>
+      </div>
+      <div class="rate-cov-mode-wrap" id="rate-cov-mode-wrap">
+        <label for="rate-cov-mode">Field markers</label>
+        <select id="rate-cov-mode" onchange="setRateCovMode(this.value)">
+          <option value="all">Show all</option>
+          <option value="warn">Only what needs attention</option>
+          <option value="off">Hide</option>
+        </select>
+        <span class="rate-cov-mode-hint" id="rate-cov-mode-hint"></span>
+      </div>
     </div>
     <div class="edit-grid" id="edit-grid" data-esec="accounts">
       <!-- Appearance: amount-color customizer (rows built by renderAppearancePicker) -->
@@ -6109,7 +6113,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 389; /* __BUILD__ */
+const APP_BUILD = 390; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
