@@ -103,6 +103,43 @@ Useful tax features include:
 
 Two of those lines carry more weight than they look. [State tax in retirement](/blog/state-taxes-in-retirement.html) varies enough between states to change a withdrawal plan on its own. And Social Security taxation depends on provisional income, which counts some sources people assume are exempt. [Tax-free municipal bond interest is the classic trap](/blog/municipal-bonds-social-security-tax-trap.html).
 
+### The Number That Catches People: Taxable Social Security
+
+Social Security is not taxed like other income. What decides the tax is provisional income, which is your other income, plus any tax-exempt interest, plus half of your Social Security benefit.
+
+Two thresholds then decide how much of the benefit is taxable.
+
+| Filing status | Lower threshold | Upper threshold |
+| --- | --- | --- |
+| Single | $25,000 | $34,000 |
+| Married filing jointly | $32,000 | $44,000 |
+
+Below the lower threshold none of the benefit is taxable. Between the two, up to half of it becomes taxable. Above the upper threshold, up to 85% does. It phases in gradually rather than jumping straight to 50% or 85%.
+
+Those thresholds were set in the 1980s and 1990s and they are fixed in statute. They are not adjusted for inflation, and they never have been. Every year of inflation therefore pulls more retirees over the line, which is why this is sometimes called a stealth tax. It is one of the few figures in retirement planning that gets worse simply by the passage of time.
+
+### A Worked Example: Why $10,000 Can Cost $18,500 Of Taxable Income
+
+Take a married couple drawing $40,000 a year in Social Security and $30,000 from a traditional 401k.
+
+Their provisional income is $30,000 plus half of $40,000, which is $50,000. That sits above the $44,000 upper threshold, so $11,100 of the benefit is taxable. That is 27.8% of it.
+
+Now suppose they withdraw $10,000 more.
+
+| | Withdraw $30,000 | Withdraw $40,000 |
+| --- | --- | --- |
+| Provisional income | $50,000 | $60,000 |
+| Taxable Social Security | $11,100 | $19,600 |
+| Share of the benefit taxed | 27.8% | 49.0% |
+
+The extra $10,000 pulled another $8,500 of Social Security into tax. Their taxable income did not rise by $10,000. It rose by $18,500.
+
+Every dollar withdrawn created $1.85 of taxable income. Someone who believes they are in the 12% bracket is paying an effective 22.2% on that withdrawal. In the 22% bracket it is 40.7%.
+
+This is the single clearest reason a retirement tax calculator has to model the interaction rather than apply a rate. A tool that asks for one expected tax rate and multiplies cannot produce that answer, because in its arithmetic the withdrawal and the benefit never touch. The couple above would be told their $10,000 costs $1,200 in tax. The real figure is closer to $2,220.
+
+It also shows why the order you draw accounts in is a tax decision and not just a preference. The same $10,000 taken from a Roth account changes provisional income by nothing at all.
+
 The IRS says required minimum distributions are the minimum amounts that must be withdrawn from certain retirement accounts each year once the rules apply. IRS FAQs say account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts at age 73.
 
 That matters because RMDs can force taxable income later in retirement.
