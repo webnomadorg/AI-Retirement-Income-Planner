@@ -60,7 +60,7 @@ Will my savings last if I withdraw a certain amount each year?
 
 That question matters.
 
-It is not the whole retirement income question.
+It is not the whole retirement income question. That wider job is [what retirement income planning covers](/blog/what-is-retirement-income-planning.html).
 
 Retirees need to know:
 
@@ -100,6 +100,8 @@ Useful tax features include:
 - NIIT where relevant.
 - Medicare IRMAA context.
 - ACA income context before Medicare.
+
+Two of those lines carry more weight than they look. [State tax in retirement](/blog/state-taxes-in-retirement.html) varies enough between states to change a withdrawal plan on its own. And Social Security taxation depends on provisional income, which counts some sources people assume are exempt. [Tax-free municipal bond interest is the classic trap](/blog/municipal-bonds-social-security-tax-trap.html).
 
 The IRS says required minimum distributions are the minimum amounts that must be withdrawn from certain retirement accounts each year once the rules apply. IRS FAQs say account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts at age 73.
 

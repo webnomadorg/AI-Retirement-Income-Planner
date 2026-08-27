@@ -106,7 +106,7 @@ Prices and tiers change. Check each official pricing page before buying.
 
 ## What A Serious Retirement Planner Should Include
 
-A retirement planning tool should do more than ask for a savings balance and a retirement age.
+A retirement planning tool should do more than ask for a savings balance and a retirement age. It has to support the whole job of [retirement income planning](/blog/what-is-retirement-income-planning.html): turning a pot of savings into a monthly income that survives taxes, healthcare, and decades of inflation.
 
 At minimum, look for:
 

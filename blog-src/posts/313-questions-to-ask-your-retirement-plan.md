@@ -66,6 +66,8 @@ Retirement is easier to review [as a timeline of phases](/blog/retirement-income
 - How much of my income is reliable, and how much depends on flexible withdrawals?
 - Which income sources begin later, and which stop or change later?
 
+If you are not sure which box a pension, an annuity, or a part-time paycheck belongs in, [where to enter each type of retirement income](/blog/where-to-enter-retirement-income.html) walks through it.
+
 ## Income Floor Questions
 
 Your income floor is the essential spending that must be covered no matter what, so [separate it from the total](/blog/gross-net-real-retirement-income.html).
@@ -149,7 +151,7 @@ Before 65, income drives the cost of ACA coverage, so [MAGI becomes a planning l
 There is no single best rule, so [compare strategies by fit](/blog/comparing-retirement-withdrawal-strategies.html) rather than by the highest number.
 
 - Which withdrawal strategy best fits this plan, and how does my current plan compare with the 4% rule?
-- Would variable percentage withdrawals fit my spending flexibility, or would guardrails help me manage market risk?
+- Would variable percentage withdrawals fit my spending flexibility, or would [guardrails](/blog/retirement-plan-guardrails.html) help me manage market risk?
 - Would a bucket strategy make the plan easier to actually follow?
 - Should essential and discretionary spending use different strategies?
 - Would I really stick to this strategy during a bad market?
