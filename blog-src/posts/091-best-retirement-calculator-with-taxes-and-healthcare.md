@@ -156,6 +156,22 @@ A good retirement calculator should let users test:
 
 Each source can affect taxable income differently.
 
+### The Three Numbers That Decide An ACA Year
+
+Before Medicare, almost everything turns on where MAGI lands against the federal poverty level for your household size.
+
+- **Below 100% of FPL** there is no Marketplace subsidy, because that band is where Medicaid is meant to apply.
+- **Between 100% and 400% of FPL** the subsidy works as a cap. It pays whatever is needed to hold the benchmark Silver plan below a set share of your income, and that share rises as your income does.
+- **Above 400% of FPL** the subsidy stops. Not tapers, stops.
+
+That last one is the reason ACA planning looks so unlike ordinary tax planning. A dollar of extra income that crosses 400% FPL does not cost you a few cents in tax. It can cost you the entire subsidy for the year, which for an early-retired couple is frequently five figures.
+
+There is a fourth number worth knowing: **250% of FPL** is the ceiling for Silver cost-sharing reductions, which cut your deductible and out-of-pocket maximum rather than your premium. A plan can be optimized to a premium subsidy and still miss the CSR band entirely.
+
+Two cautions on the dollar amounts. The FPL figures depend on **household size**, so a couple's thresholds are meaningfully higher than a single filer's. And they are reissued every year, as are the percentage caps, which have changed more than once in recent years. This is exactly the kind of figure that should be refreshed inside the tool rather than remembered, which is why the planner has a button to fetch current rates instead of asking you to type them in.
+
+The practical consequence for choosing a calculator is narrow and testable: can it show you MAGI for each year separately, and can it tell you which side of these thresholds each year lands on? If it reports one blended tax rate for all of retirement, it cannot, and the ACA years are where that limitation costs the most money.
+
 For ACA planning, the core issue is not whether one account is always best. The issue is whether the calculator shows how the funding choice affects the rest of the plan.
 
 For example:
@@ -177,15 +193,42 @@ Higher-income retirees may also face IRMAA.
 
 IRMAA matters because it connects tax planning with Medicare premiums. Large Roth conversions, RMDs, capital gains, pensions, and IRA withdrawals can all raise income.
 
-A good calculator should let users see:
+### The IRMAA Brackets, In Full
 
-- Medicare cost assumptions.
-- IRMAA threshold context.
-- Two-year lookback behavior.
-- Roth conversion effects.
-- RMD pressure.
-- Taxable brokerage gains.
-- Survivor filing-status risk.
+IRMAA is not one threshold. It is a six-step ladder. The figures below are CMS amounts for 2026, and they are surcharges added on top of the standard premium, per person, per month.
+
+| MAGI, single | MAGI, married filing jointly | Part B surcharge | Part D surcharge |
+| --- | --- | --- | --- |
+| Up to $109,000 | Up to $218,000 | none | none |
+| Over $109,000 | Over $218,000 | $81.20 | $14.50 |
+| Over $137,000 | Over $274,000 | $202.90 | $37.50 |
+| Over $171,000 | Over $342,000 | $324.60 | $60.40 |
+| Over $205,000 | Over $410,000 | $446.30 | $83.30 |
+| Over $500,000 | Over $750,000 | $487.00 | $91.00 |
+
+The standard Part B premium is $202.90 a month in 2026, up from $185.00 in 2025. Part D depends on the drug plan you choose.
+
+One detail in that table is easy to miss. The top bracket, $500,000 single and $750,000 jointly, is fixed in statute rather than adjusted for inflation each year, at least through 2028. The other thresholds move with CPI. The top one does not, so it catches slightly more people every year, in the same way the Social Security provisional-income thresholds do.
+
+### Why IRMAA Is A Cliff, Not A Slope
+
+IRMAA has no phase-in. You are either below a threshold or you are in the next bracket, and the entire surcharge applies from the first dollar over.
+
+Take a married couple who are both on Medicare. Crossing the first threshold costs $81.20 plus $14.50 per person per month, which is $95.70 each, $191.40 for the couple, and **$2,296.80 over a year**.
+
+That is the difference between a MAGI of $218,000 and a MAGI of $218,001.
+
+This is the single clearest reason a retirement calculator needs to model income year by year. A tool that applies one average tax rate across retirement cannot show you a cliff, because in its arithmetic no cliff exists. A tool that tracks MAGI in each year can show you that a Roth conversion sized $1,000 too large costs $2,296.80 in Medicare premiums two years later.
+
+### The Two-Year Lookback Is The Part People Miss
+
+The premium you pay is based on the income you reported two years earlier.
+
+So the Roth conversion you run at 63 sets your Medicare premium at 65. The year you sell a rental property sets your premium two years after that. By the time the surcharge appears, the decision that caused it is long past and cannot be undone.
+
+There is one exception worth knowing. If a life-changing event caused the income drop, including retirement itself, stopping work, disability, divorce or the death of a spouse, form SSA-44 asks Social Security to use current income instead. Social Security decides case by case and re-determines every year, so it is a request rather than a guarantee.
+
+A calculator that ignores the lookback will put the surcharge in the wrong year, which is the same as not modeling it at all.
 
 This is where simple calculators often fail. They may show portfolio survival while missing the Medicare premium effect of taxable income.
 
@@ -364,6 +407,30 @@ A tax and healthcare planner asks more:
 - What if healthcare inflation is higher?
 
 The second set of questions can change the answer.
+
+### What One Of Those Questions Costs In Dollars
+
+Take a single question from that list: what happens when Medicare begins.
+
+Both spouses enrolled, at 2026 rates, before anyone has filled a prescription or seen a specialist:
+
+| | Per person, per month | Couple, per year |
+| --- | --- | --- |
+| Part B standard premium | $202.90 | $4,869.60 |
+| Part D, using the planner's default estimate | $40.79 | $978.96 |
+| Base cost, no IRMAA | $243.69 | $5,848.56 |
+| First IRMAA bracket adds | $95.70 | $2,296.80 |
+| Total, first IRMAA bracket | $339.39 | $8,145.36 |
+
+Part D is the soft figure in that table, because it depends on the drug plan chosen. Part B and the IRMAA surcharges are set by CMS and are the same for everyone in the bracket.
+
+Two things follow, and neither is visible in a savings-balance projection.
+
+The first is that healthcare is a five-figure annual cost for this couple from 65 onward, rising with healthcare inflation for the rest of the plan. It is not a rounding error against a $1,100,000 portfolio, and it arrives every year.
+
+The second is that the couple controls which row they land on. Their MAGI at 63 decides whether they pay $5,848.56 or $8,145.36 at 65. That is what makes the ACA years and the Roth conversion decision the same decision, and it is why the two cannot sensibly be modeled in separate tools.
+
+A calculator that reports only whether the money lasts will answer yes in both cases and never mention the $2,296.80.
 
 ## How To Compare Tools
 

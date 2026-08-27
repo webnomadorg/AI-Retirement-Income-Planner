@@ -127,7 +127,7 @@
         </nav>
         <header class="post-header">
           <h1>Best Retirement Calculator With Taxes and Healthcare</h1>
-          <p class="post-meta"><span class="cat-badge">Software Comparisons</span> · Published July 9, 2026 · 12 min read</p>
+          <p class="post-meta"><span class="cat-badge">Software Comparisons</span> · Published July 9, 2026 · 17 min read</p>
         </header>
         <details class="post-toc">
   <summary>On this page</summary>
@@ -270,6 +270,17 @@
 <li>Social Security before Medicare.</li>
 </ul>
 <p>Each source can affect taxable income differently.</p>
+<h3 id="the-three-numbers-that-decide-an-aca-year">The Three Numbers That Decide An ACA Year</h3>
+<p>Before Medicare, almost everything turns on where MAGI lands against the federal poverty level for your household size.</p>
+<ul>
+<li><strong>Below 100% of FPL</strong> there is no Marketplace subsidy, because that band is where Medicaid is meant to apply.</li>
+<li><strong>Between 100% and 400% of FPL</strong> the subsidy works as a cap. It pays whatever is needed to hold the benchmark Silver plan below a set share of your income, and that share rises as your income does.</li>
+<li><strong>Above 400% of FPL</strong> the subsidy stops. Not tapers, stops.</li>
+</ul>
+<p>That last one is the reason ACA planning looks so unlike ordinary tax planning. A dollar of extra income that crosses 400% FPL does not cost you a few cents in tax. It can cost you the entire subsidy for the year, which for an early-retired couple is frequently five figures.</p>
+<p>There is a fourth number worth knowing: <strong>250% of FPL</strong> is the ceiling for Silver cost-sharing reductions, which cut your deductible and out-of-pocket maximum rather than your premium. A plan can be optimized to a premium subsidy and still miss the CSR band entirely.</p>
+<p>Two cautions on the dollar amounts. The FPL figures depend on <strong>household size</strong>, so a couple's thresholds are meaningfully higher than a single filer's. And they are reissued every year, as are the percentage caps, which have changed more than once in recent years. This is exactly the kind of figure that should be refreshed inside the tool rather than remembered, which is why the planner has a button to fetch current rates instead of asking you to type them in.</p>
+<p>The practical consequence for choosing a calculator is narrow and testable: can it show you MAGI for each year separately, and can it tell you which side of these thresholds each year lands on? If it reports one blended tax rate for all of retirement, it cannot, and the ACA years are where that limitation costs the most money.</p>
 <p>For ACA planning, the core issue is not whether one account is always best. The issue is whether the calculator shows how the funding choice affects the rest of the plan.</p>
 <p>For example:</p>
 <ul>
@@ -284,16 +295,68 @@
 <p>The plan may shift from Marketplace or employer coverage to Medicare, supplemental coverage, Part D, and out-of-pocket costs.</p>
 <p>Higher-income retirees may also face IRMAA.</p>
 <p>IRMAA matters because it connects tax planning with Medicare premiums. Large Roth conversions, RMDs, capital gains, pensions, and IRA withdrawals can all raise income.</p>
-<p>A good calculator should let users see:</p>
-<ul>
-<li>Medicare cost assumptions.</li>
-<li>IRMAA threshold context.</li>
-<li>Two-year lookback behavior.</li>
-<li>Roth conversion effects.</li>
-<li>RMD pressure.</li>
-<li>Taxable brokerage gains.</li>
-<li>Survivor filing-status risk.</li>
-</ul>
+<h3 id="the-irmaa-brackets-in-full">The IRMAA Brackets, In Full</h3>
+<p>IRMAA is not one threshold. It is a six-step ladder. The figures below are CMS amounts for 2026, and they are surcharges added on top of the standard premium, per person, per month.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>MAGI, single</th>
+<th>MAGI, married filing jointly</th>
+<th>Part B surcharge</th>
+<th>Part D surcharge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="MAGI, single">Up to $109,000</td>
+<td data-label="MAGI, married filing jointly">Up to $218,000</td>
+<td data-label="Part B surcharge">none</td>
+<td data-label="Part D surcharge">none</td>
+</tr>
+<tr>
+<td data-label="MAGI, single">Over $109,000</td>
+<td data-label="MAGI, married filing jointly">Over $218,000</td>
+<td data-label="Part B surcharge">$81.20</td>
+<td data-label="Part D surcharge">$14.50</td>
+</tr>
+<tr>
+<td data-label="MAGI, single">Over $137,000</td>
+<td data-label="MAGI, married filing jointly">Over $274,000</td>
+<td data-label="Part B surcharge">$202.90</td>
+<td data-label="Part D surcharge">$37.50</td>
+</tr>
+<tr>
+<td data-label="MAGI, single">Over $171,000</td>
+<td data-label="MAGI, married filing jointly">Over $342,000</td>
+<td data-label="Part B surcharge">$324.60</td>
+<td data-label="Part D surcharge">$60.40</td>
+</tr>
+<tr>
+<td data-label="MAGI, single">Over $205,000</td>
+<td data-label="MAGI, married filing jointly">Over $410,000</td>
+<td data-label="Part B surcharge">$446.30</td>
+<td data-label="Part D surcharge">$83.30</td>
+</tr>
+<tr>
+<td data-label="MAGI, single">Over $500,000</td>
+<td data-label="MAGI, married filing jointly">Over $750,000</td>
+<td data-label="Part B surcharge">$487.00</td>
+<td data-label="Part D surcharge">$91.00</td>
+</tr>
+</tbody>
+</table></div>
+<p>The standard Part B premium is $202.90 a month in 2026, up from $185.00 in 2025. Part D depends on the drug plan you choose.</p>
+<p>One detail in that table is easy to miss. The top bracket, $500,000 single and $750,000 jointly, is fixed in statute rather than adjusted for inflation each year, at least through 2028. The other thresholds move with CPI. The top one does not, so it catches slightly more people every year, in the same way the Social Security provisional-income thresholds do.</p>
+<h3 id="why-irmaa-is-a-cliff-not-a-slope">Why IRMAA Is A Cliff, Not A Slope</h3>
+<p>IRMAA has no phase-in. You are either below a threshold or you are in the next bracket, and the entire surcharge applies from the first dollar over.</p>
+<p>Take a married couple who are both on Medicare. Crossing the first threshold costs $81.20 plus $14.50 per person per month, which is $95.70 each, $191.40 for the couple, and <strong>$2,296.80 over a year</strong>.</p>
+<p>That is the difference between a MAGI of $218,000 and a MAGI of $218,001.</p>
+<p>This is the single clearest reason a retirement calculator needs to model income year by year. A tool that applies one average tax rate across retirement cannot show you a cliff, because in its arithmetic no cliff exists. A tool that tracks MAGI in each year can show you that a Roth conversion sized $1,000 too large costs $2,296.80 in Medicare premiums two years later.</p>
+<h3 id="the-two-year-lookback-is-the-part-people-miss">The Two-Year Lookback Is The Part People Miss</h3>
+<p>The premium you pay is based on the income you reported two years earlier.</p>
+<p>So the Roth conversion you run at 63 sets your Medicare premium at 65. The year you sell a rental property sets your premium two years after that. By the time the surcharge appears, the decision that caused it is long past and cannot be undone.</p>
+<p>There is one exception worth knowing. If a life-changing event caused the income drop, including retirement itself, stopping work, disability, divorce or the death of a spouse, form SSA-44 asks Social Security to use current income instead. Social Security decides case by case and re-determines every year, so it is a request rather than a guarantee.</p>
+<p>A calculator that ignores the lookback will put the surcharge in the wrong year, which is the same as not modeling it at all.</p>
 <p>This is where simple calculators often fail. They may show portfolio survival while missing the Medicare premium effect of taxable income.</p>
 <h2 id="social-security-timing-belongs-in-the-same-calculator">Social Security Timing Belongs In The Same Calculator</h2>
 <p>Social Security is not separate from taxes and healthcare.</p>
@@ -515,6 +578,50 @@
 <li>What if healthcare inflation is higher?</li>
 </ul>
 <p>The second set of questions can change the answer.</p>
+<h3 id="what-one-of-those-questions-costs-in-dollars">What One Of Those Questions Costs In Dollars</h3>
+<p>Take a single question from that list: what happens when Medicare begins.</p>
+<p>Both spouses enrolled, at 2026 rates, before anyone has filled a prescription or seen a specialist:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>Per person, per month</th>
+<th>Couple, per year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="">Part B standard premium</td>
+<td data-label="Per person, per month">$202.90</td>
+<td data-label="Couple, per year">$4,869.60</td>
+</tr>
+<tr>
+<td data-label="">Part D, using the planner's default estimate</td>
+<td data-label="Per person, per month">$40.79</td>
+<td data-label="Couple, per year">$978.96</td>
+</tr>
+<tr>
+<td data-label="">Base cost, no IRMAA</td>
+<td data-label="Per person, per month">$243.69</td>
+<td data-label="Couple, per year">$5,848.56</td>
+</tr>
+<tr>
+<td data-label="">First IRMAA bracket adds</td>
+<td data-label="Per person, per month">$95.70</td>
+<td data-label="Couple, per year">$2,296.80</td>
+</tr>
+<tr>
+<td data-label="">Total, first IRMAA bracket</td>
+<td data-label="Per person, per month">$339.39</td>
+<td data-label="Couple, per year">$8,145.36</td>
+</tr>
+</tbody>
+</table></div>
+<p>Part D is the soft figure in that table, because it depends on the drug plan chosen. Part B and the IRMAA surcharges are set by CMS and are the same for everyone in the bracket.</p>
+<p>Two things follow, and neither is visible in a savings-balance projection.</p>
+<p>The first is that healthcare is a five-figure annual cost for this couple from 65 onward, rising with healthcare inflation for the rest of the plan. It is not a rounding error against a $1,100,000 portfolio, and it arrives every year.</p>
+<p>The second is that the couple controls which row they land on. Their MAGI at 63 decides whether they pay $5,848.56 or $8,145.36 at 65. That is what makes the ACA years and the Roth conversion decision the same decision, and it is why the two cannot sensibly be modeled in separate tools.</p>
+<p>A calculator that reports only whether the money lasts will answer yes in both cases and never mention the $2,296.80.</p>
 <h2 id="how-to-compare-tools">How To Compare Tools</h2>
 <p>Use the same test case in each calculator.</p>
 <p>Enter:</p>
