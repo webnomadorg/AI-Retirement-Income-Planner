@@ -307,6 +307,34 @@ A no-subscription planner can give the user local ownership while reducing formu
 
 For a closer look at that tradeoff, see [retirement spreadsheet vs retirement planning software](/blog/retirement-spreadsheet-vs-retirement-planning-software.html).
 
+## What "Private" Actually Means Here
+
+Privacy is the other half of the no-subscription question, and it is worth being precise about, because vendors use the word to mean two quite different things.
+
+Some tools mean **"we protect the data in your account."** There is an account, the plan lives on their servers, and privacy is a promise about how they handle it.
+
+Others mean **"there is no account to protect."** The plan never leaves your machine, so there is nothing on a server to leak, subpoena or sell.
+
+Neither is automatically the right answer. If you want your plan on your phone, your laptop and your tablet, an account is the mechanism that does that, and a good vendor's promise is worth something. If your instinct is to disclose as little as possible, the second model asks less of you in the first place. Knowing which one a tool means is the point.
+
+## The Privacy Tradeoffs Nobody Advertises
+
+A local planner is not free of downsides, and a comparison that pretends otherwise is not much use.
+
+**Local storage is private, but it is not a backup.** Browser storage lives on one device. Clear the wrong setting, replace the laptop, or have a disk fail, and the plan is gone. Export a JSON copy and keep it somewhere you trust. That is a real chore a cloud tool would have done for you.
+
+**Manual entry discloses less, but it is manual.** No bank connection means no third party holding read access to your accounts. It also means you type your balances and update them yourself.
+
+**Optional AI changes the data flow, and you should treat it as a decision.** In this planner the AI is optional and off until you add a key, but when you do use it, the plan summary goes to whichever provider you chose. So do model discovery, tax-rate lookup, the help-content audit, exchange-rate fetching and the linked videos. Any of those can be left alone; none of them is required to build a plan.
+
+**A local file still needs device security.** Software that keeps your data on your machine has moved the risk rather than removed it. Disk encryption and a screen lock now matter more, not less.
+
+## Private Does Not Mean Feature-Poor
+
+The usual assumption is that staying private means a spreadsheet, and giving up anything sophisticated. That trade stopped being necessary a while ago, which is really the point of the [retirement spreadsheet vs retirement planning software](/blog/retirement-spreadsheet-vs-retirement-planning-software.html) comparison.
+
+A planner that never phones home can still model federal and state tax, taxable Social Security, ACA subsidies and the cliff, Medicare premiums and IRMAA, healthcare inflation, Roth conversions, RMDs, spouse and survivor planning, scenario comparison, stress tests, Monte Carlo and historical backtesting. All of that is arithmetic, and arithmetic does not need a server.
+
 ## Privacy Questions To Ask Before Buying
 
 Before choosing software, ask:
@@ -460,7 +488,7 @@ Look for:
 - Optional AI controls.
 - Clear data ownership.
 
-This is one of the planner's strongest angles. For a privacy-first comparison, see [best private retirement planning software](/blog/best-private-retirement-planning-software.html).
+This is one of the planner's strongest angles.
 
 ### Scenario 5: User Who Wants Cloud Sync And Automatic Updates
 

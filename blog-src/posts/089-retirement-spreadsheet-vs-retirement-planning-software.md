@@ -245,7 +245,7 @@ The planner includes Plan Health checks, Plan Confidence score, Monte Carlo simu
 
 Privacy is not simply spreadsheet versus software.
 
-It depends on the specific tool. If privacy is the deciding factor, [best private retirement planning software](/blog/best-private-retirement-planning-software.html) compares the options through that lens.
+It depends on the specific tool. If privacy is the deciding factor, [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares the options through that lens, privacy included.
 
 Examples:
 

@@ -404,7 +404,7 @@ It includes:
 - What-if tools.
 - Report preview.
 
-It is also a private browser-based file with no account requirement and no bank connection. For a privacy-focused comparison of the options, see [best private retirement planning software](/blog/best-private-retirement-planning-software.html).
+It is also a private browser-based file with no account requirement and no bank connection. For how that compares with the alternatives, privacy included, see [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html).
 
 Optional AI features and exchange-rate tools can use network access when the user chooses to use them.
 

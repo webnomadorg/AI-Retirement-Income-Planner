@@ -185,7 +185,7 @@ For many retirement planners, continuity matters. They may want to look back at 
 
 ## Privacy And Account Requirements
 
-One-time purchase software often appeals to privacy-focused users, which is the whole premise behind [the best private retirement planning software](/blog/best-private-retirement-planning-software.html).
+One-time purchase software often appeals to privacy-focused users, which is the whole premise behind [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html).
 
 The reason goes beyond cost.
 
