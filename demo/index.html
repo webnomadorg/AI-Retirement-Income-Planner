@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v365.html on 2026-08-22. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v389.html on 2026-08-27. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -75,9 +75,12 @@
      this line is edited. Chart.js is inlined, so no CDN is needed in script-src. img-src also allows YouTube's
      cookieless thumbnail hosts (img.youtube.com / i.ytimg.com) used by the video-tutorials tab.
      airetirementincomeplanner.com is allow-listed for the update checker only (see 'UPDATE CHECKER' in the
-     app script): a once-a-day GET of /api/latest-version carrying no data, and — only if the user asks for
-     it — a POST of the email they purchased with to /api/update-download. No plan data ever leaves the
-     machine. The ZIP download itself is a window.open navigation, which CSP fetch directives don't cover. -->
+     app script): a once-a-day GET of /api/latest-version carrying no data; a once-a-day GET of
+     /api/version-ping carrying one number, this file's build, so we can tell how quickly a release reaches
+     people; and — only if the user asks for it — a POST of the email they purchased with to
+     /api/update-download. Nothing identifies the machine or its owner: no name, no email, no identifier,
+     and no plan data. The ZIP download itself is a window.open navigation, which CSP fetch directives
+     don't cover. -->
 
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://img.youtube.com https://i.ytimg.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 https://open.er-api.com https://airetirementincomeplanner.com; object-src 'none'; base-uri 'self'; form-action 'none'"/>
 <style>
@@ -1282,6 +1285,11 @@
   .rr-flagged .rr-label,.rr-flagged .rr-now,.rr-flagged .rr-was,.rr-flagged .rr-arrow{color:var(--amber-text);}
   .rr-warn{font-size:11px;line-height:1.45;margin-top:3px;color:var(--amber-text);}
   .rr-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .rr-tiers{border-collapse:collapse;font-size:11px;margin:0;width:100%;}
+  .rr-tiers th{font-weight:600;font-size:10px;color:var(--text-tertiary);text-align:right;padding:1px 5px;text-transform:uppercase;letter-spacing:.03em;}
+  .rr-tiers td{padding:1px 5px;text-align:right;white-space:nowrap;}
+  .rr-same{color:var(--text-tertiary);}
+  .rr-moved{color:var(--amber-text);font-weight:600;}
   .rr-foot{font-size:11px;color:var(--text-tertiary);line-height:1.55;margin:10px 0 0;font-style:italic;}
   @media (max-width:560px){
     .rr-scroll{max-height:52vh;}
@@ -1386,6 +1394,34 @@
   .ir-import-btn{background:var(--green-bg)!important;color:var(--green-text)!important;border-color:#639922!important;}
   .ir-import-btn:hover{opacity:0.85;}
   .ir-status{font-size:12px;font-weight:500;}
+  /* v16: per-field refresh coverage badges in Edit values. Colour is never the only signal —
+     each badge carries a tick or a warning glyph and its own words, so it survives greyscale
+     printing and colour-blindness. Muted by design: this is provenance, not an alert. */
+  /* Sits UNDER the box it describes (.irow is flex-column), so it never crowds the field name and
+     the eye can run down the column of values with their status directly beneath each one.
+     align-self:flex-start stops it stretching to the full input width. */
+  .rate-cov{display:inline-block;align-self:flex-start;margin:1px 0 0;padding:1px 7px;
+    border-radius:9px;font-size:11px;font-weight:600;line-height:1.5;white-space:nowrap;
+    border:1px solid transparent;cursor:help;}
+  #irmaa-tier-grid+.rate-cov,.rate-cov.rc-grid{margin-top:6px;}
+  .rate-cov-mode-wrap{display:flex;align-items:center;gap:7px;margin:4px 0 2px;font-size:12px;}
+  .rate-cov-mode-wrap label{color:var(--text-secondary);}
+  .rate-cov-mode-hint{color:var(--text-secondary);opacity:.8;font-size:11px;}
+  /* ⚠ a native select inherits the OS scheme, not the page's — declare one concrete scheme so it
+     does not render a light dropdown on a dark page (same trap as the picker furniture fix). */
+  .rate-cov-mode-wrap select{font-size:12px;padding:2px 6px;border-radius:var(--radius-md);
+    border:0.5px solid var(--border-mid);background:var(--bg-primary);color:var(--text-primary);
+    font-family:var(--font);color-scheme:light;}
+  html[data-theme="dark"] .rate-cov-mode-wrap select,
+  html.dark .rate-cov-mode-wrap select{color-scheme:dark;}
+  .rate-cov.rc-upd{color:var(--green-text);border-color:var(--green-text);}
+  .rate-cov.rc-cur{color:var(--ink-faint,#6b7280);border-color:var(--line,#d1d5db);}
+  .rate-cov.rc-dec{color:var(--amber-text,#92400e);border-color:var(--amber-text,#92400e);}
+  .rate-cov.rc-miss{color:var(--red-text);border-color:var(--red-text);font-weight:700;}
+  /* out of scope for this plan: informational only, so it must not read as a warning */
+  .rate-cov.rc-na{color:var(--text-secondary);border-color:var(--border-mid);font-weight:500;opacity:.85;}
+  .rates-cov-sum{font-size:12px;margin:6px 0 2px;color:var(--ink-faint,#6b7280);}
+  .rates-cov-sum.has-missing{color:var(--red-text);font-weight:600;}
   .ir-status.ok{color:var(--green-text);}
   .ir-status.err{color:var(--red-text);}
   .fx-status.custom{color:#BA7517;}
@@ -2503,8 +2539,10 @@ html[data-theme="soft"] .irow select:focus{
   border-color: #d9692f;
   box-shadow: 0 0 0 3px rgba(217, 105, 47, 0.18);
 }
-html[data-theme="soft"] .chg-dot{ background: #d9692f; width: 7px; height: 7px; }
-html[data-theme="soft"] .chg-dot:hover{ box-shadow:0 0 0 3px rgba(217,105,47,0.28); }
+/* v16: the soft theme used to repaint this dot orange-red (#d9692f). It is the "changed since
+   baseline" marker, documented as a BLUE dot in the Glossary and drawn as a blue swatch there,
+   and a red dot reads as an error rather than "you edited this". The override also set the same
+   7x7 geometry the base rule already gives, so removing it changes nothing but the colour. */
 
 html[data-theme="soft"] .sect-hd{
   font-size: 10.5px;
@@ -3461,6 +3499,18 @@ html[data-theme="contrast"] .irow select:focus{
   </div>
 
   <div id="tab-edit" class="tab-content">
+    <!-- v16: display setting for the whole tab, so it sits at the head rather than inside the
+         fetch flow. Always present: it has to be findable weeks after a refresh, when the reason
+         to reach for it (quietening the markers) actually arises. -->
+    <div class="rate-cov-mode-wrap" id="rate-cov-mode-wrap">
+      <label for="rate-cov-mode">Field markers</label>
+      <select id="rate-cov-mode" onchange="setRateCovMode(this.value)">
+        <option value="all">Show all</option>
+        <option value="warn">Only what needs attention</option>
+        <option value="off">Hide</option>
+      </select>
+      <span class="rate-cov-mode-hint" id="rate-cov-mode-hint"></span>
+    </div>
     <!-- v6: First-time tip explaining the blue "changed" dot. Dismissable, hidden permanently after dismiss via localStorage. -->
     <div id="edit-tip" class="edit-tip" style="display:none;">
       <button class="edit-tip-dismiss" onclick="dismissEditTip()" title="Dismiss" aria-label="Dismiss tip">✕</button>
@@ -3911,6 +3961,13 @@ html[data-theme="contrast"] .irow select:focus{
         <div class="irow" data-key="fpl400"><label>ACA 400% FPL cliff — single ($)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('acaCliff',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-fpl400" type="number" step="100" oninput="liveCalcDebounced()"/></div>
         <div class="irow" data-key="fpl250"><label>ACA 250% FPL — Silver CSR ceiling ($)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('acaCsr',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-fpl250" type="number" step="100" oninput="liveCalcDebounced()"/></div>
         <div class="irow" data-key="fpl100"><label>Federal poverty level 100% — single ($)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('acaFloor',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-fpl100" type="number" step="100" oninput="liveCalcDebounced()"/></div>
+        <div class="sect-hd" style="margin-top:12px;">ACA premium cap by income band (applicable percentage)</div>
+        <div class="irow" data-key="acaCap133"><label>ACA premium cap — up to 133% FPL (%)</label><input id="e-acaCap133" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="acaCap150"><label>ACA premium cap — up to 150% FPL (%)</label><input id="e-acaCap150" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="acaCap200"><label>ACA premium cap — up to 200% FPL (%)</label><input id="e-acaCap200" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="acaCap250"><label>ACA premium cap — up to 250% FPL (%)</label><input id="e-acaCap250" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="acaCap300"><label>ACA premium cap — up to 300% FPL (%)</label><input id="e-acaCap300" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
+        <div class="irow" data-key="acaCapTop"><label>ACA premium cap — above 300% FPL (%)</label><input id="e-acaCapTop" type="number" step="0.01" oninput="liveCalcDebounced()"/></div>
         <div class="sect-hd" style="margin-top:12px;">State income tax (flat approximation)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('stateTax',this)" title="What is this?" aria-label="What is this?">i</button></div>
         <div class="irow" data-key="stateName"><label>State</label><input id="e-stateName" type="text" maxlength="20" placeholder="e.g. California" list="us-states-list" autocomplete="off" oninput="liveCalcDebounced();syncStateLookupBtn()"/>
           <datalist id="us-states-list">
@@ -4580,6 +4637,8 @@ html[data-theme="contrast"] .irow select:focus{
         <label class="rates-opt"><input type="checkbox" id="rates-scope-all" onchange="generateRatesPrompt();syncRatesPromptMirror()"/> <span>Ask for every country <em>&mdash; off by default, so you only pay for the figures your plan can actually use</em></span></label>
       </div>
       <p class="rates-stamp" id="rates-stamp"></p>
+      <p class="rates-cov-sum" id="rates-coverage-summary"></p>
+
       <details style="margin-top:10px;">
         <summary style="font-size:12px;color:var(--text-tertiary);cursor:pointer;user-select:none;list-style:none;display:inline-flex;align-items:center;gap:4px;">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 3 5 7 8 3"/></svg>
@@ -5555,7 +5614,7 @@ html[data-theme="contrast"] .irow select:focus{
       <div class="primer-grid">
         <div class="primer-card"><div class="primer-card-icon">📊</div><div class="primer-card-title">MAGI controls your safety nets</div><div class="primer-card-text"><strong>Modified Adjusted Gross Income</strong> is the figure that determines whether you qualify for ACA subsidies and whether you owe Medicare surcharges. It includes 401k withdrawals but <em>not</em> Roth withdrawals. That asymmetry is the most powerful lever in retirement tax planning.</div></div>
         <div class="primer-card"><div class="primer-card-icon">🎂</div><div class="primer-card-title">FRA — Full Retirement Age</div><div class="primer-card-text"><span data-fact-key="fra_age">For most people retiring today, FRA is <strong>67</strong>.</span> <span data-fact-key="ss_early_late">Claim Social Security at 62 and you lose ~30% of your monthly cheque <em>permanently</em>. Wait until 70 and you gain ~24% above FRA.</span> Health and longevity in your family matter more than the breakeven math.</div></div>
-        <div class="primer-card"><div class="primer-card-icon">🚧</div><div class="primer-card-title">ACA cliffs are real</div><div class="primer-card-text">Between retirement and Medicare (age 60–64), unsubsidised health premiums can be <strong>$1,000–1,500/mo</strong>. <span data-fact-key="aca_cliff">The ACA caps your premium at 8.5% of MAGI — but only up to <strong>400% of FPL</strong>. Cross that line by $1 and you lose the entire subsidy.</span> Plan around it.</div></div>
+        <div class="primer-card"><div class="primer-card-icon">🚧</div><div class="primer-card-title">ACA cliffs are real</div><div class="primer-card-text">Between retirement and Medicare (age 60–64), unsubsidised health premiums can be <strong>$1,000–1,500/mo</strong>. <span data-fact-key="aca_cliff">The ACA caps your premium on a sliding <strong>2.1%–9.96% of MAGI</strong> — but only up to <strong>400% of FPL</strong>. Cross that line by $1 and you lose the entire subsidy.</span> Plan around it.</div></div>
         <div class="primer-card"><div class="primer-card-icon">📐</div><div class="primer-card-title">Tax brackets are your spending dial</div><div class="primer-card-text">The <strong>12% bracket</strong> is the sweet spot for retirees. Each dollar above it costs ~22% (nearly double). The dashboard shows how much "headroom" you have in each phase — use it for Roth conversions or extra 401k withdrawals taxed at the lower rate.</div></div>
         <div class="primer-card"><div class="primer-card-icon">⏰</div><div class="primer-card-title">RMDs hit at age 73</div><div class="primer-card-text"><span data-fact-key="rmd_age">From 73, the IRS forces you to withdraw a minimum from every Traditional 401k/IRA each year</span> (~3.7% to start, growing). <span data-fact-key="rmd_penalty">Miss it and the penalty is <strong>25%</strong> of the shortfall.</span> The dashboard estimates your RMD per phase and warns if your withdrawal is below it.</div></div>
         <div class="primer-card"><div class="primer-card-icon">⚠️</div><div class="primer-card-title">Unexpected income can tip you over a cliff</div><div class="primer-card-text">The ACA CSR ceiling (<strong>250% FPL</strong>) and subsidy cliff (<strong>400% FPL</strong>) are all-or-nothing. The usual culprit isn't planned withdrawals — it's <strong>lumpy income that's easy to forget</strong>: dividends, interest, and year-end fund <strong>capital-gains distributions</strong> (taxable even when reinvested). Estimate it on the Edit tab; the phase cards then show your live headroom and warn you before you cross.</div></div>
@@ -6050,7 +6109,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 365; /* __BUILD__ */
+const APP_BUILD = 389; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -6195,7 +6254,7 @@ const D_USD={
   // PLANNING a future retirement here reaches State Pension age at 67 or later. The phase
   // boundaries and the help copy assume 67 too. Editable per plan for anyone already at 66.
   ssBaseAge:62,ukpBaseAge:67,
-  uss:1000,ukp:1000,medicare:202.9,medicareD:38.99,
+  uss:1000,ukp:1000,medicare:202.9,medicareD:40.79,
   // ── v8: expat/overseas healthcare cost /mo (USD). Used only when US healthcare is excluded
   //         (foreign PHP/THB, UK, Canada, Australia residence). Inflated per phase by healthcareInflation. ──
   expatHealthcare:0,
@@ -6296,8 +6355,8 @@ const D_USD={
   //         conversions lands in the middle of it. Amounts here are SURCHARGES OVER the standard
   //         premium, not total premiums, so S.medicare stays the single source for the base and the
   //         ladder is purely additive. Ladder figures are CMS 2026.
-  //         ⚠ Note the base `medicare` default above is a 2025 figure while this ladder is 2026, so
-  //         out of the box they are a year apart. That is deliberate rather than fixed in place: the
+  //         ⚠ The base `medicare` default above and this ladder are BOTH 2026 figures, so they are
+  //         in step as shipped. They will not stay that way, because CMS reissues both every year: the
   //         right cure is "Fetch current rates", not a number typed in here from memory — typing in
   //         a remembered premium is the precise failure this feature exists to replace.
   //         `frozen: true` on the top tier is not a detail — tiers 1-4 are CPI-adjusted each year but
@@ -6341,6 +6400,27 @@ const D_USD={
   mfjBrk10:24800,mfjBrk12:100800,mfjBrk22:211400,
   mfjIrmaa:218000,
   fpl400:62600,fpl250:39125,fpl100:15650,
+  // ── v16: the ACA applicable-percentage ladder. Between 100% and 400% FPL the benchmark Silver
+  //         premium is capped at a share of MAGI that rises with your FPL band. These were literals
+  //         inside acaPrem() until now, which meant "Fetch current rates" could not reach them even
+  //         though the IRS reindexes them every year — the exact "a value that is not a field cannot
+  //         be refreshed" trap that left the Australian rates stale for two years, and the reason
+  //         five pieces of help text still quoted the expired 8.5% ARPA cap in v371.
+  //         ⚠ These are NOT compounded by the engine (they apply to one year's MAGI), so they are
+  //         annual FACTS, not `assumption:true` long-run rates. ──
+  //   2026 figures, verified against IRS Rev. Proc. 2025-25 (not taken from a model answer alone).
+  //   ⚠ The published schedule INTERPOLATES LINEARLY inside each band — 3.14%→4.19% across 133–150%
+  //   FPL, 4.19%→6.60% across 150–200%, 6.60%→8.44% across 200–250%, 8.44%→9.96% across 250–300%.
+  //   This engine STEPS instead, applying one rate per band, so each value here is the band's START
+  //   rate. That is the verifiable figure and it matches how the field notes read, but it means the
+  //   premium is understated within a band, which flatters net income slightly. Moving to true
+  //   interpolation would change calculated results and needs a golden-master recapture.
+  acaCap133:2.10, acaCap150:3.14, acaCap200:4.19, acaCap250:6.60, acaCap300:8.44, acaCapTop:9.96,
+  // ── v16: what the LAST rate refresh actually covered, so Edit values can show it per field.
+  //         {at, seen[], updated[], declined[]}. `seen` is the set the model returned a figure for;
+  //         anything refreshable and NOT in it was never checked, which is the failure this exists
+  //         to surface — a silently omitted field used to be indistinguishable from a confirmed one. ──
+  ratesLastRun:null,
   // UK tax parameters (stored in USD, converted from GBP at current rate)
   // GBP source figures, with the rate they were converted at. Kept in step by refresh_defaults.py --
   // a value refreshed beside a comment asserting the old rate is worse than no comment at all.
@@ -6361,8 +6441,8 @@ const D_USD={
   cpp:0, cppBaseAge:65, cppColaRate:2.6,
   oas:0, oasBaseAge:65, oasColaRate:2.6,
   // ── v4: Canada tax parameters (federal, stored in CAD-equivalent USD) ──
-  cadPersonalAmount:16129, cadBrk1:57375, cadBrk2:114750, cadBrk3:177882, cadBrk4:253414,
-  cadRate1:15, cadRate2:20, cadRate3:26, cadRate4:29, cadRate5:33,
+  cadPersonalAmount:16415, cadBrk1:58375, cadBrk2:116750, cadBrk3:180946, cadBrk4:258394,
+  cadRate1:14, cadRate2:20.5, cadRate3:26, cadRate4:29, cadRate5:33,
   // Provincial tax: simplified flat rate added on taxable income (representative average ~12%)
   cadProvincialRate:10,
   // ── v4: Australia — Super + Age Pension ──
@@ -6927,6 +7007,9 @@ function ssBenefitAtAge(amtAtBase,baseAge,claimAge,fra){
 
 function fedTax(){throw new Error('stripped in demo build');}
 
+// v16: `caps` is the applicable-percentage ladder as DATA (see D_USD.acaCap*). It is optional so
+// the chart call sites keep working unchanged; when absent we read the live plan, then the shipped
+// defaults. Never inline these numbers again — a literal here cannot be refreshed.
 function acaPrem(){throw new Error('stripped in demo build');}
 
 // UK income tax calculation
@@ -7777,6 +7860,10 @@ const SELFTEST_FIXTURES=[];
 // _rateRegistrySelfCheck: a newly refreshable field that is missing here would quietly re-couple the
 // golden master to the shipped defaults and undo all of this.
 const SELFTEST_TAX_BASE=Object.freeze({
+  // v16: the ACA applicable-percentage ladder. Pinned the moment it became refreshable, so fixtures
+  // cannot inherit a live figure. ⚠ These exist ONLY to be constant — never "correct" them to
+  // current law, or a rate refresh can hide an engine regression behind a golden recapture.
+  acaCap133:2.1, acaCap150:3, acaCap200:4, acaCap250:6, acaCap300:8, acaCapTop:9.96,
   ausBrk1:45000, ausBrk2:135000, ausBrk3:190000, ausLevyThreshold:27222,
   ausMedicareLevy:2, ausRate1:16, ausRate2:30, ausRate3:37,
   ausRate4:45, ausTaxFreeThreshold:18200, brk10:12400, brk12:49000,
@@ -9461,6 +9548,10 @@ function populateInputsFromUSD(){
   {const el=document.getElementById('e-usPension2Cola');if(el)el.value=(S.usPension2ColaRate==null||S.usPension2ColaRate==='')?'':S.usPension2ColaRate;}
   s2('e-stdded',S.stdDed);s2('e-seniorded',S.seniorDed);
   s2('e-brk10',S.brk10);s2('e-brk12',S.brk12);s2('e-brk22',S.brk22);s2('e-irmaa',S.irmaa);s2('e-niitThreshold',S.niitThreshold||200000);s2('e-fpl400',S.fpl400);s2('e-fpl250',S.fpl250);s2('e-fpl100',S.fpl100);
+  // v16: the ACA applicable-percentage ladder (see D_USD.acaCap*). Fall back to the shipped default
+  // rather than blank, so a plan saved before v16 shows the real figure instead of an empty box.
+  ['acaCap133','acaCap150','acaCap200','acaCap250','acaCap300','acaCapTop']
+    .forEach(k=>s2('e-'+k,S[k]!=null?S[k]:D_USD[k]));
   // v8: US state income tax (flat)
   {const sn=document.getElementById('e-stateName');if(sn)sn.value=S.stateName||'';}
   s2('e-stateTaxRate',S.stateTaxRate||0);
@@ -9575,6 +9666,7 @@ function populateInputsFromUSD(){
   s2('e-bt-stock-pct',S.btStockPct!=null?S.btStockPct:60);
   // Sync the state-tax AI lookup button to the (possibly loaded) state name
   if(typeof syncStateLookupBtn==='function')syncStateLookupBtn();
+  try{renderRateCoverage();}catch(_){}   // v16: badge each refreshable row with what the last refresh did
 }
 function readInputs(){}
 
@@ -10732,8 +10824,10 @@ function renderCharts(phs,opts){
 // applicable-percentage ladder, so the curve cannot drift from the figure on the phase card.
 //
 // ⚠ One line is duplicated on purpose and must stay in step with calcPhase: over the cliff `acaPrem`
-// returns -1, and the engine turns that into Math.max(magi*0.0996/12, 700). If that changes in
-// calcPhase, change it here too — otherwise the chart's cliff height stops matching the cost charged.
+// returns -1, and the engine turns that into Math.max(magi*(acaCapTop/100)/12, 700). Since v16 both
+// copies read the SAME top rung of the ladder rather than a literal, so a rate refresh can no longer
+// move one and leave the other behind — but the $700/mo floor is still hardcoded in both. If that
+// changes in calcPhase, change it here too, or the chart's cliff height stops matching the cost charged.
 function _acaCurveModel(phs){
   if(typeof acaPrem!=='function')return null;
   const p=(phs||[]).find(q=>q&&q.aca!=null&&q.fpl400>0&&q.fpl100>0);
@@ -10743,7 +10837,10 @@ function _acaCurveModel(phs){
   // ⚠ Mirrors calcPhase — if that changes, change this too, or the drawn cliff height stops matching
   // the cost actually charged. Deliberately the ONLY copy on the rendering side: the captured
   // fallback below stores RAW acaPrem output so both paths run through this one function.
-  const fromRaw=(m,v)=>v===-1?Math.max(m*0.0996/12,700):v;
+  // v16: same proxy as calcPhase's over-cliff estimate, reading the same top rung so the chart and
+  // the phase figures cannot disagree after a rate refresh.
+  const _ovrPct=(S.acaCapTop!=null?S.acaCapTop:D_USD.acaCapTop);
+  const fromRaw=(m,v)=>v===-1?Math.max(m*(_ovrPct/100)/12,700):v;
   const magi=p.magi||0;
   let raw=null;
   try{
@@ -13407,7 +13504,27 @@ function _ratesWebSearchWanted(){
 }
 function _ratesToggleWebSearch(on){try{localStorage.setItem(RATES_WEB_SEARCH_LS,on?'1':'0');}catch(_){}}
 
-function autoFetchRates(){demoToast("Live tax-rate research is available in the full version.");}
+async function autoFetchRates(){
+  const btn=document.getElementById('auto-rates-btn');
+  const status=document.getElementById('auto-rates-status');
+  if(btn){btn.disabled=true;btn.innerHTML='&#x23F3; Fetching…';}
+  if(status){status.className='ir-status';status.textContent='Looking up current figures…';}
+  await new Promise(function(r){setTimeout(r,1500);});
+  if(btn){btn.disabled=false;btn.innerHTML='&#x1F504; Fetch current rates';}
+  var asked=(typeof _rateFieldsFor==='function')?_rateFieldsFor(false).map(function(f){return f.key;}):[];
+  var updated=['medicareD','acaCap150','acaCap200'];
+  var declined=['inflation','ssColaRate'];
+  S.ratesLastRun={at:new Date().toISOString().slice(0,10),seen:asked.slice(),
+                  updated:updated,declined:declined,asked:asked};
+  if(typeof renderRateCoverage==='function')renderRateCoverage();
+  if(status){
+    status.className='ir-status ok';
+    status.innerHTML='<span class="stx-ico" aria-hidden="true">✓</span><span class="stx-txt">'+
+      '<span class="stx-head">'+updated.length+' figures updated</span>'+
+      '<span class="stx-sub">Simulated for this demo — see the markers under each box.</span></span>';
+  }
+  demoToast('Simulated lookup. In the full version this asks your own AI provider for today’s figures, shows every change before anything is applied, and marks what it could not confirm.');
+}
 // ═══════════════════════════════════════════════════════════════
 // HELP CONTENT AUDIT (Tier 3) — read-only AI verification
 // Asks the AI whether each time-sensitive retirement-planning fact
@@ -13573,7 +13690,7 @@ function _auditSaveKeyAndRun(){demoToast("The AI help-content audit is available
 const AUDIT_ITEMS=[
   {key:'rmd_age',          topic:'RMD start age',                    claim:'Required Minimum Distributions begin at age 73 under SECURE Act 2.0 (2022).'},
   {key:'rmd_penalty',      topic:'RMD missed-distribution penalty',  claim:'The penalty for missing an RMD is 25% of the shortfall (10% if corrected within 2 years), per SECURE 2.0.'},
-  {key:'aca_cliff',        topic:'ACA 400% FPL subsidy cliff',       claim:'The ACA 400% FPL "cliff" returned in 2026 — premium subsidies drop to zero above 400% FPL. Below the cliff, premium is capped at 8.5% of MAGI.'},
+  {key:'aca_cliff',        topic:'ACA 400% FPL subsidy cliff',       claim:'The ACA 400% FPL "cliff" returned in 2026 — premium subsidies drop to zero above 400% FPL. Below the cliff, premium is capped on a sliding scale from 2.1% to 9.96% of MAGI.'},
   {key:'aca_csr_band',     topic:'ACA CSR (Cost-Sharing Reductions)', claim:'CSR is available between 138% and 250% of FPL on Silver plans, providing reduced deductibles and out-of-pocket maximums.'},
   {key:'irmaa_lookback',   topic:'IRMAA lookback rule',              claim:'IRMAA Medicare premium surcharges use your tax return from two years prior — so a Roth conversion at age 63 affects premiums at age 65.'},
   {key:'irmaa_tier1',      topic:'IRMAA Tier 1 surcharge mechanics', claim:'IRMAA Tier 1 adds a fixed monthly surcharge to Medicare Part B (and a smaller one to Part D); the surcharge amount is set by CMS and adjusted each year.'},
@@ -13785,6 +13902,7 @@ const RATE_FIELDS=[
    note:'combined monthly IRMAA Tier-1 surcharge, Part B plus Part D (USD per month)'},
   // The ladder, not a scalar. This is the field the old prompt never knew about.
   {key:'irmaaTiers',group:'medicare',kind:'tiers',label:'IRMAA bracket ladder',sKey:'irmaaTiers',
+   covDom:'irmaa-tier-grid',   // v16: no single input, so the coverage badge hangs off the grid
    note:'the FULL six-bracket IRMAA ladder as an array of the FIVE surcharge tiers above the standard '+
         'premium (the sixth bracket is "no surcharge" and is not listed). Each row: thrSingle = the '+
         'single-filer MAGI at which the tier starts, thrMfj = the MFJ MAGI, partB = the Part B '+
@@ -13798,6 +13916,23 @@ const RATE_FIELDS=[
   // The prompt now asks for the household size this plan actually has.
   {key:'fpl100',group:'aca',label:'FPL 100%',unit:'usd',dom:'e-fpl100',band:[8000,60000],
    note:'Federal Poverty Level at 100% (USD)'},
+  // ── v16: the ACA applicable-percentage ladder ──────────────────────────────
+  // The share of MAGI the benchmark Silver premium is capped at, by FPL band. Reindexed by the IRS
+  // annually. Guarded in percentage POINTS, not relative change: an ordinary uprating moves these a
+  // few tenths, and a guard that cries wolf on good data teaches people to tick past warnings.
+  // ⚠ Facts, not assumptions: the engine applies them to one year's MAGI, it does not compound them.
+  {key:'acaCap133',group:'aca',label:'ACA cap — up to 133% FPL',unit:'pct',dom:'e-acaCap133',band:[0,12],
+   note:'ACA applicable percentage for income up to 133% of FPL, as a percentage (e.g. 2.1 for 2.1%)'},
+  {key:'acaCap150',group:'aca',label:'ACA cap — up to 150% FPL',unit:'pct',dom:'e-acaCap150',band:[0,12],
+   note:'ACA applicable percentage for income above 133% and up to 150% of FPL, as a percentage'},
+  {key:'acaCap200',group:'aca',label:'ACA cap — up to 200% FPL',unit:'pct',dom:'e-acaCap200',band:[0,12],
+   note:'ACA applicable percentage for income above 150% and up to 200% of FPL, as a percentage'},
+  {key:'acaCap250',group:'aca',label:'ACA cap — up to 250% FPL',unit:'pct',dom:'e-acaCap250',band:[0,12],
+   note:'ACA applicable percentage for income above 200% and up to 250% of FPL, as a percentage'},
+  {key:'acaCap300',group:'aca',label:'ACA cap — up to 300% FPL',unit:'pct',dom:'e-acaCap300',band:[0,12],
+   note:'ACA applicable percentage for income above 250% and up to 300% of FPL, as a percentage'},
+  {key:'acaCapTop',group:'aca',label:'ACA cap — above 300% FPL',unit:'pct',dom:'e-acaCapTop',band:[0,12],
+   note:'ACA applicable percentage for income above 300% and up to the 400% FPL cliff, as a percentage'},
   {key:'fpl250',group:'aca',label:'FPL 250%',unit:'usd',dom:'e-fpl250',band:[20000,150000],
    note:'Federal Poverty Level at 250% (USD)'},
   {key:'fpl400',group:'aca',label:'FPL 400%',unit:'usd',dom:'e-fpl400',band:[30000,250000],
@@ -13960,6 +14095,11 @@ function generateRatesPrompt(){
   if(!el)return;
   const yr=new Date().getFullYear();
   const fields=_rateFieldsFor(_ratesAskAll());
+  // v16: remember what this request actually ASKED for. The prompt is deliberately scoped to the
+  // plan's active groups, so a USD single-filer plan never requests the UK/Canada/Australia/MFJ
+  // figures at all. Without this, coverage cannot tell "the model ignored a field we asked about"
+  // (a real problem) from "we never asked" (correct, and the common case).
+  window._rateAskedKeys=fields.map(f=>f.key);
   const hh=_rateHouseholdSize();
 
   const notes=fields.filter(f=>f.note).map(f=>'- '+f.key+': '+f.note).join('\n');
@@ -14154,8 +14294,12 @@ function parseRatesResponse(text,opts){
         return !near(r.thrSingle,c.thrSingle)||!near(r.thrMfj,c.thrMfj||c.thrSingle*2)||
                !near(r.partB,c.partB)||!near(r.partD,c.partD);
       });
+      const rounding=tiersChanged&&_rateTierIsRounding(rows,cur);
       proposals.push({f,key:f.key,label:f.label,kind:'tiers',rows,before:cur,
-        changed:tiersChanged,warn:_rateTierWarning(rows)});
+        changed:tiersChanged,
+        warn:_rateTierWarning(rows)||(rounding
+          ? 'every figure is within a dollar of what you already have — this looks like rounding, not a rate change. CMS does not move a surcharge by pennies.'
+          : '')});
       return;
     }
     const n=+raw;
@@ -14207,6 +14351,18 @@ function parseRatesResponse(text,opts){
     }
   });
   return{ok:true,proposals,source:opts.source||''};
+}
+// Is a proposed ladder just the stored one, rounded? Verified case, 2026-08-22: a lookup returned
+// 203 / 324.9 / 446.7 where CMS publishes 202.90 / 324.60 / 446.30 — every figure within a dollar,
+// every one of them WRONG, and offered as an update to a table that was already correct. A change
+// this small is never how CMS moves a surcharge; it is how a model rounds one.
+function _rateTierIsRounding(rows,cur){
+  if(!cur||cur.length!==rows.length)return false;
+  return rows.every((r,i)=>{
+    const c=cur[i]||{};
+    return Math.abs((r.partB||0)-(c.partB||0))<1 && Math.abs((r.partD||0)-(c.partD||0))<1
+        && Math.abs((r.thrSingle||0)-(c.thrSingle||0))<1;
+  });
 }
 function _rateTierWarning(rows){
   for(let i=1;i<rows.length;i++)if(rows[i].thrSingle<=rows[i-1].thrSingle)return'tier thresholds do not ascend';
@@ -14295,8 +14451,24 @@ function renderRatesReview(meta){
     const f=p.f;
     let beforeTxt,afterTxt;
     if(p.kind==='tiers'){
-      beforeTxt=(p.before||[]).length+' tiers';
-      afterTxt=p.rows.length+' tiers · '+p.rows.map(r=>'$'+Math.round(r.partB)).join(' / ');
+      // A summary cannot make a ladder judgeable. Twenty numbers move independently, and a proposal
+      // that is wrong in the third decimal of the third tier looks exactly like one that is right.
+      // So this renders the whole table, marking only the cells that actually differ.
+      const cur=p.before||[];
+      const cell=(nv,ov,money)=>{
+        const same=ov!=null&&Math.abs(nv-ov)<0.005;
+        const fmtv=v=>money?('$'+(Math.round(v*100)/100).toFixed(2)):('$'+Math.round(v).toLocaleString());
+        return same?`<span class="rr-same">${fmtv(nv)}</span>`
+                   :`<span class="rr-moved">${ov!=null?fmtv(ov)+' → ':''}${fmtv(nv)}</span>`;
+      };
+      beforeTxt=cur.length?cur.length+' tiers':'none';
+      afterTxt='<table class="rr-tiers"><tr><th>MAGI (single)</th><th>Part B</th><th>Part D</th></tr>'+
+        p.rows.map((r,i)=>{
+          const c=cur[i]||{};
+          return `<tr><td>${cell(r.thrSingle,c.thrSingle,false)}</td>`+
+                 `<td>${cell(r.partB,c.partB,true)}</td>`+
+                 `<td>${cell(r.partD,c.partD,true)}</td></tr>`;
+        }).join('')+'</table>';
     }else{
       beforeTxt=_rateFmt(f,p.before);
       afterTxt=_rateFmt(f,p.value);
@@ -14307,7 +14479,7 @@ function renderRatesReview(meta){
       `<td class="rr-label">${escHtml(f.label)}${warn}</td>`+
       `<td class="rr-was">${escHtml(beforeTxt)}</td>`+
       `<td class="rr-arrow">&rarr;</td>`+
-      `<td class="rr-now">${escHtml(afterTxt)}</td></tr>`;
+      `<td class="rr-now">${p.kind==='tiers'?afterTxt:escHtml(afterTxt)}</td></tr>`;
   }).join('');
   const flagged=changed.filter(p=>p.warn).length;
   const intro=changed.length
@@ -14336,7 +14508,19 @@ function renderRatesReview(meta){
 function applyRatesReview(){
   if(!_rateReview)return closeRatesReview();
   const take=_rateReview.filter(p=>p.take);
+  // v16: record what this run COVERED before applying. `_rateReview` holds one row per field the
+  // model actually returned, including ones whose value matched — so the three states fall straight
+  // out of it, and everything refreshable that is absent was never checked at all.
+  const seen=_rateReview.map(p=>p.key);
+  const updated=take.map(p=>p.key);
+  const declined=_rateReview.filter(p=>p.changed&&!p.take).map(p=>p.key);
+  // Fall back to the whole registry only if the prompt was never built this session, which would
+  // over-warn rather than under-warn.
+  const asked=(window._rateAskedKeys&&window._rateAskedKeys.length)?window._rateAskedKeys.slice()
+             :RATE_FIELDS.map(f=>f.key);
   const n=applyRateProposals(take);
+  S.ratesLastRun={at:new Date().toISOString().slice(0,10),seen:seen,updated:updated,declined:declined,asked:asked};
+  try{renderRateCoverage();}catch(_){}
   closeRatesReview();
   const visible=el=>!!(el&&el.offsetParent!==null);
   const status=['auto-rates-status','v5-rates-status-m','v5-rates-status']
@@ -14356,6 +14540,134 @@ function applyRatesReview(){
       status.className='ir-status';
       status.textContent='Nothing applied — no figures were selected.';
     }
+  }
+}
+
+// ── v16: per-field refresh coverage ───────────────────────────────────────────────────────────
+// The status line says "N figures updated" and the stamp says when. Neither tells you WHICH, and
+// neither can tell you what the model quietly failed to return — a field it omitted looked exactly
+// like one it checked and confirmed. That is the gap this closes, badging every refreshable row in
+// Edit values with what the last run actually did to it.
+//
+// ⚠ "Declined" is a real state and must not be folded into "confirmed": a change that was offered
+// and left unticked is NOT a figure confirmed current, and saying so would be a lie about the one
+// thing this feature exists to be honest about.
+// v16: how much of the refresh coverage to show. A per-device DISPLAY choice, so localStorage
+// rather than S — it must not travel inside an exported plan.
+// ⚠ Deliberately three states, not an on/off. The ticks are reassurance and go stale as clutter, but
+// the "not returned" badges are the whole point of the feature, and one switch that hid both would let
+// a real gap be quietly suppressed. Whatever the mode, the summary still reports the unchecked COUNT,
+// so the information can be quietened but never actually hidden.
+const RATE_COV_MODE_LS='retirement_v6_rate_coverage_mode';
+function _rateCovMode(){
+  try{const v=localStorage.getItem(RATE_COV_MODE_LS);return (v==='warn'||v==='off')?v:'all';}catch(e){return 'all';}
+}
+function setRateCovMode(m){
+  try{localStorage.setItem(RATE_COV_MODE_LS,(m==='warn'||m==='off')?m:'all');}catch(e){}
+  renderRateCoverage();
+}
+const RATE_GROUP_NAMES={core:'',us:'US',usMfj:'US MFJ',medicare:'Medicare',aca:'ACA',
+  ssdi:'SSDI',uk:'UK',ca:'Canada',au:'Australia'};
+const RATE_COVERAGE_STATES={
+  updated : {cls:'rc-upd',  txt:'updated',           title:'The last rate refresh changed this figure.'},
+  current : {cls:'rc-cur',  txt:'confirmed current', title:'The last rate refresh returned this figure and it matched what you already had.'},
+  declined: {cls:'rc-dec',  txt:'change declined',   title:'The last rate refresh offered a different figure and it was not applied.'},
+  missing : {cls:'rc-miss', txt:'not returned',      title:'This figure WAS requested and the model did not return it, so it was never checked. Re-run (with web search on), or set it by hand.'},
+  notasked: {cls:'rc-na',   txt:'not used by this plan', title:'Not requested, because this plan does not use it — the lookup is scoped to your currency, residence and filing status. Tick "ask for everything" before fetching if you plan to switch residence later.'}
+};
+function _rateCoverageState(key,run){
+  if(!run)return null;
+  if((run.updated||[]).indexOf(key)>=0)return 'updated';
+  if((run.declined||[]).indexOf(key)>=0)return 'declined';
+  if((run.seen||[]).indexOf(key)>=0)return 'current';
+  // ⚠ Absent is NOT automatically a problem. `asked` is the scoped field list the prompt actually
+  // requested; anything outside it was correctly left out because this plan does not use it. Warning
+  // on those would fire ~38 times on an ordinary US plan and train the user to ignore the marker,
+  // which is the one outcome that would make this feature worse than nothing.
+  const asked=run.asked;
+  if(asked&&asked.indexOf(key)<0)return 'notasked';
+  return 'missing';
+}
+// ⚠ Resolve the row by the registry's OWN `dom` id first, and only then by data-key. 18 of the 61
+// refreshable fields sit in an `.irow` that carries no matching data-key (the MFJ, Canadian and
+// Australian sets), so a data-key-only lookup silently badges less than half the registry — and the
+// fields it drops include the Australian ones that really did sit stale for two years.
+function _rateCoverageRow(f){
+  // covDom is for fields with no input of their own (the IRMAA ladder is a whole grid), so the badge
+  // hangs off the container instead. Without it the single most important refreshable field — twenty
+  // figures in one table — is the one field whose status you cannot see.
+  if(f.covDom){const c=document.getElementById(f.covDom);if(c)return c;}
+  const el=f.dom?document.getElementById(f.dom):null;
+  const viaDom=el&&el.closest?el.closest('.irow'):null;
+  return viaDom||document.querySelector('.irow[data-key="'+f.key+'"]');
+}
+function renderRateCoverage(){
+  const run=S.ratesLastRun;
+  document.querySelectorAll('.rate-cov').forEach(el=>el.remove());
+  // ⚠ The control lives OUTSIDE the run check: it is always on the tab, so its hint and value have
+  // to be set even when no refresh has happened yet. Returning first left it silently blank.
+  const sel0=document.getElementById('rate-cov-mode');
+  if(sel0)sel0.value=_rateCovMode();
+  const hint0=document.getElementById('rate-cov-mode-hint');
+  if(hint0)hint0.textContent=run?'':'appear once you fetch current rates';
+  const sum0=document.getElementById('rates-coverage-summary');
+  if(!run&&sum0){sum0.textContent='';sum0.className='rates-cov-sum';}
+  if(!run)return;
+  const missing=[],unbadged=[];
+  let scoped=0;
+  const mode=_rateCovMode();
+  RATE_FIELDS.forEach(f=>{
+    const st=_rateCoverageState(f.key,run);
+    if(!st)return;
+    if(st==='missing')missing.push(f);
+    if(st==='notasked')scoped++;
+    // mode gates only the BADGE. `missing` is collected first, so the summary count below is the
+    // same in every mode.
+    if(mode==='off')return;
+    if(mode==='warn'&&st!=='missing'&&st!=='declined')return;
+    const row=_rateCoverageRow(f);
+    if(!row){
+      // Refreshable but with nowhere to put a badge (rendered by a grid, or not hand-editable).
+      // Naming these in the summary is the only way the user can learn they went unchecked.
+      // Qualify by group: several labels repeat across countries ("Federal rate 1" is Canadian,
+      // "Marginal rate 1" is Australian), and an unqualified list of them tells the user nothing.
+      if(st==='missing')unbadged.push((RATE_GROUP_NAMES[f.group]?RATE_GROUP_NAMES[f.group]+' ':'')+(f.label||f.key));
+      return;
+    }
+    const s=RATE_COVERAGE_STATES[st];
+    const b=document.createElement('span');
+    b.className='rate-cov '+s.cls;
+    b.title=s.title;   // planner draws its own tooltip from title (see themed-tooltip handler)
+    // ⚠ A declined change is NOT a tick. Marking it with one would read as "all fine" and hide the
+    // one thing the user still has to decide about.
+    // ⚠ a tick on "not used by this plan" would read as "checked and fine"; it was neither.
+    const glyph=(st==='missing'||st==='declined')?'⚠ ':(st==='notasked'?'– ':'✓ ');
+    b.textContent=glyph+s.txt+(st==='updated'?' '+run.at:'');
+    // .irow is flex-direction:column, so appending to the ROW (not the label) drops the badge
+    // directly beneath the input it describes rather than crowding the field name.
+    row.appendChild(b);
+  });
+  const sum=document.getElementById('rates-coverage-summary');
+  if(sum){
+    const n=missing.length;
+    let txt=n
+      ? n+' requested '+(n===1?'figure was':'figures were')+' not returned by the last refresh, so '+(n===1?'it was':'they were')+' never checked.'
+      : 'Every figure this plan uses was returned by the last refresh.';
+    if(scoped)txt+=' A further '+scoped+' '+(scoped===1?'figure is':'figures are')+
+      ' not used by this plan and were not requested.';
+    if(unbadged.length)txt+=' '+unbadged.length+' of them '+(unbadged.length===1?'has':'have')+
+      ' no box on this tab: '+unbadged.join(', ')+'.';
+    sum.textContent=txt;
+    sum.className='rates-cov-sum'+(n?' has-missing':'');
+  }
+  const sel=document.getElementById('rate-cov-mode');
+  if(sel){
+    sel.value=mode;
+    // v16: the control stays visible whether or not a refresh has run — it has to be findable
+    // weeks later, when the reason to reach for it actually arises. Before the first refresh the
+    // hint says so, rather than leaving a control that appears to do nothing.
+    const hint=document.getElementById('rate-cov-mode-hint');
+    if(hint)hint.textContent=run?'':'shown after you fetch current rates';
   }
 }
 
@@ -15318,7 +15630,7 @@ const EDU_CONTENT={
     },
     body:()=>{
     const cliff=fmtUSD(S.fpl400||0);
-    return `<p>If your MAGI exceeds <strong>400% of the Federal Poverty Level</strong> (single = <strong>${cliff}</strong> in your current settings), <span data-fact-key="aca_cliff">your premium subsidy drops to <strong>zero</strong> — a cliff, not a phase-out</span>.</p><p>Below the cliff, the ACA caps your premium at 8.5% of MAGI. Above it, you pay the full unsubsidised premium (often $700–1,500/mo for someone aged 60+).</p><p><em>Strategy:</em> in pre-Medicare phases, keep MAGI just below 400% FPL using Roth withdrawals or smaller 401k draws.</p>`;
+    return `<p>If your MAGI exceeds <strong>400% of the Federal Poverty Level</strong> (single = <strong>${cliff}</strong> in your current settings), <span data-fact-key="aca_cliff">your premium subsidy drops to <strong>zero</strong> — a cliff, not a phase-out</span>.</p><p>Below the cliff, the ACA caps your premium on a sliding scale from <strong>2.1% to 9.96% of MAGI</strong>, depending where you sit in the FPL band. Above it, you pay the full unsubsidised premium (often $700–1,500/mo for someone aged 60+).</p><p><em>Strategy:</em> in pre-Medicare phases, keep MAGI just below 400% FPL using Roth withdrawals or smaller 401k draws.</p>`;
   }},
   acaCsr:{title:'ACA CSR — Cost-Sharing Reductions',videoId:'gDbkioAqqQg',videoDurationS:120,videoCategory:'Healthcare & ACA',
     bodyShort:()=>{
@@ -15490,8 +15802,8 @@ const EDU_CONTENT={
     bodyShort:'<p>Dividends from US (and some foreign) stocks held long enough qualify for <strong>long-term capital gains rates</strong> instead of ordinary income — usually a meaningful tax saving.</p>',
     body:'<p>To be a <strong>qualified dividend</strong>, the dividend must come from a US corporation (or a qualified foreign corporation) and the shares must have been held for at least 60 days around the ex-dividend date.</p><p>Qualified dividends are taxed at the same 0/15/20% LTCG rates rather than at ordinary income rates — for someone in the 22% bracket, that\'s a 7+ percentage point saving on every dollar of dividend.</p>'},
   acaSubsidy:{title:'ACA premium subsidy structure',videoId:'sJMUnkn_7FE',videoDurationS:120,videoCategory:'Healthcare & ACA',
-    bodyShort:'<p>Between 100% and 400% FPL, the ACA caps your premium for the benchmark Silver plan at a <strong>sliding 0%–8.5% of MAGI</strong> — anything above that is paid by the federal subsidy.</p>',
-    body:'<p>The ACA premium subsidy is a sliding scale: the federal government pays whatever it takes to keep the benchmark Silver plan\'s premium below <strong>0%–8.5% of MAGI</strong>, depending on your FPL band. The lower your income within the band, the smaller the cap.</p><p>Outside the band — below 100% FPL (no marketplace) or above 400% FPL (the cliff) — the subsidy is zero.</p><p>This is why every dollar of MAGI matters: it slides you up the curve while also being the gating mechanism for the floor and the cliff.</p>'},
+    bodyShort:'<p>Between 100% and 400% FPL, the ACA caps your premium for the benchmark Silver plan at a <strong>sliding 2.1%–9.96% of MAGI</strong> — anything above that is paid by the federal subsidy.</p>',
+    body:'<p>The ACA premium subsidy is a sliding scale: the federal government pays whatever it takes to keep the benchmark Silver plan\'s premium below a <strong>sliding 2.1%–9.96% of MAGI</strong>, depending on your FPL band. The lower your income within the band, the smaller the cap.</p><p>Outside the band — below 100% FPL (no marketplace) or above 400% FPL (the cliff) — the subsidy is zero.</p><p>This is why every dollar of MAGI matters: it slides you up the curve while also being the gating mechanism for the floor and the cliff.</p>'},
   medicare:{title:'Medicare Part B & D premiums',videoId:'AC0ouf4Rgss',videoDurationS:90,videoCategory:'Healthcare & ACA',
     bodyShort:'<p>Monthly costs that begin at 65 — or years earlier on SSDI: <strong>Part B</strong> (doctor visits / outpatient) and <strong>Part D</strong> (prescription drugs). <span data-fact-key="irmaa_lookback">Surcharged by IRMAA if your MAGI from two years prior exceeded the threshold.</span></p>',
     body:'<p>Medicare beneficiaries pay monthly premiums for two parts:</p><p>• <strong>Part B</strong> covers doctor visits and outpatient care. <span data-fact-key="medicare_partb">CMS sets the base rate annually ($202.90/mo in 2026, up from $185.00 in 2025).</span><br>• <strong>Part D</strong> covers prescription drugs, with premiums varying by plan.</p><p><span data-fact-key="irmaa_lookback">Both can be surcharged through <strong>IRMAA</strong> if your MAGI from two years prior exceeded the threshold</span> — and the surcharge is tiered, not a phase-in.</p><p><strong>It does not always start at 65.</strong> Medicare normally begins at 65, but <strong>SSDI</strong> brings it forward — usually 24 months after disability benefits begin, so someone on SSDI at 55 typically has Medicare at 57. Tick the SSDI box under <em>Income streams</em> and the planner will price premiums and IRMAA from the age you enter, and stop assuming you are on an ACA marketplace plan.</p>'},
@@ -18163,6 +18475,9 @@ function _loadExampleFromHelp(i){demoToast("Loading example plans is available i
 // in the CSP in <head> — see the comment there):
 //   GET  /api/latest-version   public constant {build,released,headline,notesUrl}. Sends NOTHING
 //                              about the user or their plan. Asked at most once a day.
+//   GET  /api/version-ping     a separate fire-and-forget beacon carrying only this file's build
+//                              number, so a release can be watched reaching people. Deliberately
+//                              NOT part of the check above — see '_updBeacon' for why.
 //   POST /api/update-download  {email} → download links for that purchase. Only ever called when
 //                              the user types their address and clicks the button.
 // Plan data never leaves the machine. Every failure here is silent by design: this planner is
@@ -18195,6 +18510,50 @@ function _updApplyChip(){
 
 /** Ask the site whether a newer build exists. Cached for a day; never throws, never blocks. */
 async function checkForUpdate(force){}
+
+/* ── Version beacon ────────────────────────────────────────────────────────────────────
+   Tells the site that a copy on THIS build is still in use, so the developer can see how
+   quickly a release actually reaches people. It sends one number — the build — and nothing
+   else. Nothing identifies this machine or its owner. See the CSP note in <head>.
+
+   ⚠ THIS IS DELIBERATELY NOT PART OF THE UPDATE CHECK, AND MUST NOT BECOME PART OF IT.
+   It was built inside checkForUpdate() first and taken back out. The update check is what
+   makes the customer's "Update available" button work, and it abandons its request after 6
+   seconds — so anything slow riding along inside it can stop the planner noticing new
+   releases, silently, because every failure on that path is intentionally silent.
+
+   The isolation is the point, and it is structural rather than careful:
+     • a separate endpoint, so the version feed never touches storage and keeps its cache;
+     • called AFTER the check has finished, never before or during;
+     • NOT awaited — this function returns immediately, so it cannot delay anything;
+     • its own try/catch AND a .catch on the promise, so neither a synchronous throw nor a
+       rejected promise can escape;
+     • nothing reads the result. There is nothing to read; the endpoint returns 204.
+   Delete api/version-ping.mjs on the server and the beacon 404s into that catch, the update
+   button carries on exactly as before, and no other behaviour changes at all. */
+function _updBeacon(build){
+  try{
+    // no-cors: this is a fire-and-forget beacon, so there is no response to read and no
+    // reason to require CORS headers for one.
+    fetch(UPDATE_API+'/api/version-ping?build='+encodeURIComponent(build),
+      {method:'GET',mode:'no-cors',cache:'no-store',signal:AbortSignal.timeout(5000)})
+      .catch(function(){});
+  }catch(e){}
+}
+
+/* Once a day at most, on the same rhythm as the update check but independent of whether it
+   succeeded — a copy that cannot reach the version feed is still a copy in use. */
+const BEACON_INTERVAL=24*60*60*1000;
+function _updMaybeBeacon(){
+  try{
+    const mine=_appBuild();
+    if(!mine)return;
+    const last=parseInt(localStorage.getItem('rp_upd_pinged')||'0',10)||0;
+    if(Date.now()-last<BEACON_INTERVAL)return;
+    localStorage.setItem('rp_upd_pinged',String(Date.now()));
+    _updBeacon(mine);
+  }catch(e){}
+}
 
 function openUpdatesTab(){openHelp();switchHelpTab('updates');}
 
@@ -18286,6 +18645,11 @@ if(!didLoad)setTimeout(maybeShowWelcome,350);
 // Is there a newer build? Deferred so it can never delay first paint, and silent on failure
 // (offline is a completely normal way to run this app). See 'UPDATE CHECKER' above.
 setTimeout(function(){try{checkForUpdate();}catch(e){}},1200);
+/* The beacon rides separately and LATER, on its own timer. Not chained to the check above,
+   not awaited by it, and not sharing its failure path — so nothing about reporting a build
+   number can affect whether the planner notices a new release. See '_updBeacon' above for
+   why that separation is deliberate. */
+setTimeout(function(){try{_updMaybeBeacon();}catch(e){}},4000);
 
 // ═══════════════════════════════════════════════════════════════
 // 18. HELP MODAL
@@ -20190,6 +20554,10 @@ function _aiFingerprint(){
       sga:JSON.stringify([S.sgaLimitMo||0,S.sgaLimitBlindMo||0,!!S.ssdiBlind]),
       stdDed:S.stdDed,brk10:S.brk10,brk12:S.brk12,brk22:S.brk22,
       irmaa:S.irmaa,fpl100:S.fpl100,fpl250:S.fpl250,fpl400:S.fpl400,
+      // v16: the ACA applicable-percentage ladder is editable, so it must bust the cache like the
+      // FPL thresholds beside it. Without this a user can change what their premium is capped at
+      // and the AI keeps answering from the plan it summarised before the edit.
+      acaCaps:[S.acaCap133,S.acaCap150,S.acaCap200,S.acaCap250,S.acaCap300,S.acaCapTop].join(','),
       niitThr:S.niitThreshold,niitThrMfj:S.niitThresholdMfj,
       stateRate:S.stateTaxRate||0,stateSSEx:S.stateSSExempt!==false,statePenEx:!!S.statePensionExempt,statePenCap:S.statePensionDeductionCap||0,stateName:S.stateName||'',
       survEnabled:!!S.survivorEnabled,survDeathAge:S.survivorDeathAge||75,survWho:S.survivorWho||'spouse',survSpendPct:S.survivorSpendPct!=null?S.survivorSpendPct:100,
@@ -21034,6 +21402,17 @@ function buildHealthSnapshot(){
         if(ph.cliffProximity){const cp=ph.cliffProximity;out+=`    ⚠ CSR/SUBSIDY CLIFF PROXIMITY: MAGI is only ${f(cp.headroom)} (${cp.headroomPct}%) below the ${cp.nextLabel} threshold of ${f(cp.nextThreshold)}.${cp.hasOther?'':' No dividend/other taxable income is estimated for this phase — if any is likely, add it to the per-phase rental/passive income field so MAGI is realistic.'} A modest amount of unplanned income (dividends, interest, fund capital-gains distributions) could tip MAGI over.\n`;}
         if(ph.adjIrmaa&&ph.hasMedicare&&(ph.irmaaMagi!=null?ph.irmaaMagi:ph.magi)<=ph.adjIrmaa)out+=`    IRMAA MAGI ${f(ph.irmaaMagi!=null?ph.irmaaMagi:ph.magi)} — headroom to IRMAA: ${f(ph.adjIrmaa-(ph.irmaaMagi!=null?ph.irmaaMagi:ph.magi))}\n`;
       });
+      // v16: the ACA applicable-percentage ladder is user-editable, so the model must be told when
+      // it is NOT the shipped one — otherwise it reasons about premium costs from an assumption the
+      // plan no longer makes. Emitted only when it differs, to keep the context lean for the vast
+      // majority who never touch it.
+      (function(){
+        const ks=['acaCap133','acaCap150','acaCap200','acaCap250','acaCap300','acaCapTop'];
+        if(!ks.some(k=>S[k]!=null&&S[k]!==D_USD[k]))return;
+        out+='\nACA premium cap ladder (EDITED from the shipped defaults) — share of MAGI the benchmark Silver premium is capped at:\n'
+          +'  up to 133% FPL '+S.acaCap133+'% | to 150% '+S.acaCap150+'% | to 200% '+S.acaCap200+'%'
+          +' | to 250% '+S.acaCap250+'% | to 300% '+S.acaCap300+'% | above 300% '+S.acaCapTop+'%\n';
+      })();
     }
 
     // ── UK-resident phases ──────────────────────────────────────
@@ -22860,7 +23239,8 @@ initAiSidebar();
     'style-picker':1,                                // appearance style select
     'whatif-ss-age':1,                               // live SSA-formula slider
     'whatif-roth-phase':1,'whatif-maxspend-gate':1,  // selects covered by frozen variants
-    'primer-noshow':1                                // "don't show again" preference
+    'primer-noshow':1,                               // "don't show again" preference
+    'rate-cov-mode':1                                // display-only: which refresh markers to show
   };
   function lockedInputEl(el){
     if(!el||!el.matches||!el.matches('input,select,textarea'))return null;
