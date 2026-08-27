@@ -1,4 +1,4 @@
-# Promo material — How to Keep Your Retirement Plan's Tax Rates Current in Two Minutes
+# Promo material — How to Keep Your Retirement Plan's Tax Rates Current
 
 ## Internal Links To Add
 

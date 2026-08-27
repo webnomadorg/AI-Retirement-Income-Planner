@@ -1,6 +1,6 @@
 # Monte Carlo vs Historical Backtesting for Retirement Planning
 
-**SEO title:** Monte Carlo vs Historical Backtesting for Retirement Planning  
+**SEO title:** Monte Carlo vs Historical Backtesting for Retirement
 **Meta description:** Learn the difference between Monte Carlo simulation and historical backtesting for retirement planning, when each method helps, where each can mislead, and how to use both with stress tests.  
 **Primary keyword:** Monte Carlo vs historical backtesting retirement planning  
 **Secondary keywords:** Monte Carlo retirement planning, historical backtesting retirement, retirement stress testing, retirement confidence score, sequence of returns risk, retirement risk analysis  

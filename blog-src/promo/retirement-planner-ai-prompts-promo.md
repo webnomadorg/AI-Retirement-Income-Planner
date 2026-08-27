@@ -1,4 +1,4 @@
-# Promo material — The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)
+# Promo material — The Six One-Click AI Prompts in the Retirement Planner
 
 ## Internal Links To Add
 

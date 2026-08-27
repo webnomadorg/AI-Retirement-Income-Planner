@@ -1,4 +1,4 @@
-# Promo material — Your First Retirement Planning Session: Build a Baseline Step by Step
+# Promo material — Your First Retirement Planning Session: Build a Baseline
 
 ## Facebook Post Snippets
 

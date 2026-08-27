@@ -1,6 +1,6 @@
 # Your Monthly Retirement Income Number Is Only the Start
 
-**SEO title:** Retirement Income: Gross vs Net vs Real (and Reliable vs Flexible)
+**SEO title:** Retirement Income: Gross vs Net vs Real
 
 **Category:** Planning Framework
 

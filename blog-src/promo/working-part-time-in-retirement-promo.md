@@ -1,4 +1,4 @@
-# Promo material — Working Part Time In Retirement: What It Changes In Your Plan
+# Promo material — Working Part Time In Retirement: What It Changes
 
 ## Internal Link Suggestions
 

@@ -1,6 +1,6 @@
 # Retirement Planning Case Studies: Early Retirees, Expats, and Digital Nomads
 
-**SEO title:** Retirement Planning Case Studies: Early Retirees, Expats, and Digital Nomads
+**SEO title:** Retirement Planning Case Studies: Retirees, Expats, Nomads
 
 **Category:** Planner How-To
 

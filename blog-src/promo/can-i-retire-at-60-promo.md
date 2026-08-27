@@ -1,4 +1,4 @@
-# Promo material — Can I Retire At 60? How To Test The Five-Year Bridge Before Medicare
+# Promo material — Can I Retire At 60? Testing the Bridge Before Medicare
 
 ## Suggested Internal Links
 

@@ -1,6 +1,6 @@
 # Retirement Withdrawal Guardrails: A Practical Way To Adjust Spending
 
-**SEO title:** Retirement Withdrawal Guardrails: A Practical Way To Adjust Spending  
+**SEO title:** Retirement Withdrawal Guardrails: Adjusting Spending
 **Meta description:** Learn how retirement withdrawal guardrails can help adjust spending when markets, inflation, healthcare, taxes, or account balances change.  
 **Primary keyword:** retirement withdrawal guardrails  
 **Secondary keywords:** retirement spending guardrails, flexible retirement withdrawals, retirement withdrawal strategy, retirement income planner, retirement stress test  

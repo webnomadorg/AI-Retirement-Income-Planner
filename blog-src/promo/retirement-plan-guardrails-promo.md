@@ -1,4 +1,4 @@
-# Promo material — Retirement Plan Guardrails: The Warnings That Keep a Plan Honest
+# Promo material — Retirement Plan Guardrails: Warnings That Keep It Honest
 
 ## Facebook Post Snippets
 

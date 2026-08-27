@@ -1,6 +1,6 @@
 # Build a Retirement Plan You Can Question, Not Just One Number
 
-**SEO title:** Build a Retirement Plan You Can Question (Not Just One Number)
+**SEO title:** Build a Retirement Plan You Can Question
 
 **Category:** Planning Framework
 

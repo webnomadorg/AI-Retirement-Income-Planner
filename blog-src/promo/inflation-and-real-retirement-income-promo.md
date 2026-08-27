@@ -1,4 +1,4 @@
-# Promo material — Inflation and Real Retirement Income: Nominal vs Real, COLA, and the Floor
+# Promo material — Inflation and Real Retirement Income: Nominal vs Real
 
 ## Facebook Post Snippets
 

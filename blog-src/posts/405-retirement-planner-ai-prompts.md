@@ -1,6 +1,6 @@
 # The Six One-Click AI Prompts in the Retirement Planner
 
-**SEO title:** The Six One-Click AI Prompts in the Retirement Planner (and How to Apply the Proposals)
+**SEO title:** The Six One-Click AI Prompts in the Retirement Planner
 
 **Category:** Planner How-To
 

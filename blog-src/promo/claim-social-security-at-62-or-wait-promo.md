@@ -1,4 +1,4 @@
-# Promo material — Should You Claim Social Security at 62 or Wait? What To Model First
+# Promo material — Should You Claim Social Security at 62 or Wait?
 
 ## Internal Link Suggestions
 

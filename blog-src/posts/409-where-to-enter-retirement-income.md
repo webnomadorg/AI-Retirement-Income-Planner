@@ -1,6 +1,6 @@
 # Where Does Each Type of Retirement Income Go?
 
-**SEO title:** Where to Enter Social Security, SSDI, Pensions and Disability Income
+**SEO title:** Where to Enter Social Security, SSDI and Pension Income
 
 **Category:** Planner How-To
 

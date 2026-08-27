@@ -1,4 +1,4 @@
-# Promo material — How Taxes Change the Shape of Retirement Income (Brackets, RMDs, Roth)
+# Promo material — How Taxes Change the Shape of Retirement Income
 
 ## Facebook Post Snippets
 

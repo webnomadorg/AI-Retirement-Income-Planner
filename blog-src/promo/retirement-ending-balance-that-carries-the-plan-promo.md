@@ -1,4 +1,4 @@
-# Promo material — Retirement Ending Balance: The Number That Carries the Plan Forward
+# Promo material — Retirement Ending Balance: The Number That Carries the Plan
 
 ## Facebook Post Snippets
 

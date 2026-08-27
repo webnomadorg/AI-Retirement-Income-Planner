@@ -1,6 +1,6 @@
 # Checking Your Retirement Plan From Several Angles
 
-**SEO title:** How to Check a Retirement Plan From Several Angles (Plan Health)
+**SEO title:** How to Check a Retirement Plan From Several Angles
 
 **Category:** Planning Framework
 

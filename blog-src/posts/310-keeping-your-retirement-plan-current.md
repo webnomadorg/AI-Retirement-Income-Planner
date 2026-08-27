@@ -1,6 +1,6 @@
 # Keeping Your Retirement Plan Current: The Annual Review and Replanning From Today
 
-**SEO title:** Keeping a Retirement Plan Current: Annual Review and Replan From Today
+**SEO title:** Keeping a Retirement Plan Current: Annual Review and Replan
 
 **Category:** Planning Framework
 

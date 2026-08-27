@@ -1,4 +1,4 @@
-# Promo material — How to Save, Load, and Compare Retirement Scenarios Side by Side
+# Promo material — How to Save, Load and Compare Retirement Scenarios
 
 ## Internal Links To Add
 

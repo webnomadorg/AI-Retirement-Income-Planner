@@ -1,4 +1,4 @@
-# Promo material — The Widow's Tax Cliff: Survivor Benefits and Retirement Planning
+# Promo material — The Widow's Tax Cliff: Survivor Benefits Explained
 
 ## Facebook Post Snippets
 

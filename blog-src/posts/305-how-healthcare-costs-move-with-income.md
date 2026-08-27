@@ -1,6 +1,6 @@
 # How Healthcare Costs Move With Income: ACA Before Medicare, IRMAA After
 
-**SEO title:** How Healthcare Costs Move With Income in Retirement (ACA and IRMAA)
+**SEO title:** How Healthcare Costs Move With Income: ACA and IRMAA
 
 **Category:** Planning Framework
 

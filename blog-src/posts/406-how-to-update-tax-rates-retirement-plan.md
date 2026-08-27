@@ -1,6 +1,6 @@
 # How to Keep Your Retirement Plan's Tax Rates Current in Two Minutes
 
-**SEO title:** How to Keep Your Retirement Plan's Tax Rates Current in Two Minutes
+**SEO title:** How to Keep Your Retirement Plan's Tax Rates Current
 
 **Category:** Planner How-To
 

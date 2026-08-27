@@ -1,6 +1,6 @@
 # Working Part Time In Retirement: What It Changes In Your Plan
 
-**SEO title:** Working Part Time In Retirement: What It Changes In Your Plan
+**SEO title:** Working Part Time In Retirement: What It Changes
 
 **Category:** Retirement Income
 

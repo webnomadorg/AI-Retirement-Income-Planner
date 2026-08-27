@@ -1,4 +1,4 @@
-# Promo material — Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe
+# Promo material — Drawdown Strategies and Stress Tests: Is Your Number Safe?
 
 ## Internal Links To Add
 

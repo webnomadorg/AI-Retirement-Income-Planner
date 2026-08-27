@@ -1,4 +1,4 @@
-# Promo material — Keeping a Retirement Plan Current: Annual Review and Replan From Today
+# Promo material — Keeping a Retirement Plan Current: Annual Review and Replan
 
 ## Facebook Post Snippets
 

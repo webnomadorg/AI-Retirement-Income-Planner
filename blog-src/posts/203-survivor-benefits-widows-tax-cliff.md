@@ -1,6 +1,6 @@
 # Survivor Benefits and the Widow's Tax Cliff: Planning as (or for) a Surviving Spouse
 
-**SEO title:** The Widow's Tax Cliff: Survivor Benefits and Retirement Planning
+**SEO title:** The Widow's Tax Cliff: Survivor Benefits Explained
 
 **Category:** Social Security
 

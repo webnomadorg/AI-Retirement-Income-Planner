@@ -1,4 +1,4 @@
-# Promo material — Health Insurance Before Medicare: What Early Retirees Should Model
+# Promo material — Health Insurance Before Medicare for Early Retirees
 
 ## Internal Link Suggestions
 

@@ -1,6 +1,6 @@
 # A Retirement Plan Case Study: From a Rough Estimate to a Reviewed Plan
 
-**SEO title:** Retirement Plan Case Study: From a Rough Estimate to a Reviewed Plan
+**SEO title:** Retirement Plan Case Study: Rough Estimate to Reviewed Plan
 
 **Category:** Planning Framework
 

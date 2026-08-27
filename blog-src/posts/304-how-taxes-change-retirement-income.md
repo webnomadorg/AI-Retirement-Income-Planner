@@ -1,6 +1,6 @@
 # How Taxes Change the Shape of Retirement Income
 
-**SEO title:** How Taxes Change the Shape of Retirement Income (Brackets, RMDs, Roth)
+**SEO title:** How Taxes Change the Shape of Retirement Income
 
 **Category:** Planning Framework
 

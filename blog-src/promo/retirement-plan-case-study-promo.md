@@ -1,4 +1,4 @@
-# Promo material — Retirement Plan Case Study: From a Rough Estimate to a Reviewed Plan
+# Promo material — Retirement Plan Case Study: Rough Estimate to Reviewed Plan
 
 ## Facebook Post Snippets
 

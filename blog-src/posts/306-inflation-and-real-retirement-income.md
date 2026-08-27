@@ -1,6 +1,6 @@
 # Inflation and Real Income: What Your Retirement Money Will Actually Buy
 
-**SEO title:** Inflation and Real Retirement Income: Nominal vs Real, COLA, and the Floor
+**SEO title:** Inflation and Real Retirement Income: Nominal vs Real
 
 **Category:** Planning Framework
 

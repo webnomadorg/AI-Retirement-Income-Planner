@@ -1,6 +1,6 @@
 # Comparing Retirement Withdrawal Strategies: 4%, VPW, Guardrails, Buckets, Floor and Upside
 
-**SEO title:** Comparing Retirement Withdrawal Strategies (4%, VPW, Guardrails, Buckets)
+**SEO title:** Comparing Retirement Withdrawal Strategies: 4%, VPW, Buckets
 
 **Category:** Planning Framework
 

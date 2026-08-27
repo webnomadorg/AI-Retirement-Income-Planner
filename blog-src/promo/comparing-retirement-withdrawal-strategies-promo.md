@@ -1,4 +1,4 @@
-# Promo material — Comparing Retirement Withdrawal Strategies (4%, VPW, Guardrails, Buckets)
+# Promo material — Comparing Retirement Withdrawal Strategies: 4%, VPW, Buckets
 
 ## Facebook Post Snippets
 

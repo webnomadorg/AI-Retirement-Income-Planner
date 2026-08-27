@@ -1,6 +1,6 @@
 # Your First Retirement Planning Session: Building a Baseline Step by Step
 
-**SEO title:** Your First Retirement Planning Session: Build a Baseline Step by Step
+**SEO title:** Your First Retirement Planning Session: Build a Baseline
 
 **Category:** Planning Framework
 

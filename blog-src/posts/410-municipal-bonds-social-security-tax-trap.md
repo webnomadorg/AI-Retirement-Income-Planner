@@ -1,6 +1,6 @@
 # Tax-Free Bonds Can Still Raise Your Tax Bill
 
-**SEO title:** How Municipal Bond Interest Raises the Tax on Your Social Security
+**SEO title:** How Municipal Bond Interest Raises Social Security Tax
 
 **Category:** Taxes & Roth
 

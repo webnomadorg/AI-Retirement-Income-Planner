@@ -1,6 +1,6 @@
 # Should You Claim Social Security at 62 or Wait?
 
-**SEO title:** Should You Claim Social Security at 62 or Wait? What To Model First
+**SEO title:** Should You Claim Social Security at 62 or Wait?
 
 **Category:** Social Security
 

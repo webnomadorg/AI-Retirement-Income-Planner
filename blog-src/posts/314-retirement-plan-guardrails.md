@@ -1,6 +1,6 @@
 # Retirement Plan Guardrails: How a Plan Warns You Before a Number Bites
 
-**SEO title:** Retirement Plan Guardrails: The Warnings That Keep a Plan Honest
+**SEO title:** Retirement Plan Guardrails: Warnings That Keep It Honest
 
 **Category:** Planning Framework
 

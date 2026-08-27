@@ -1,4 +1,4 @@
-# Promo material — How Healthcare Costs Move With Income in Retirement (ACA and IRMAA)
+# Promo material — How Healthcare Costs Move With Income: ACA and IRMAA
 
 ## Facebook Post Snippets
 

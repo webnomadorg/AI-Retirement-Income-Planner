@@ -1,6 +1,6 @@
 # When to Take Social Security: How to Model 62 vs 67 vs 70
 
-**SEO title:** When to Take Social Security: How to Model 62 vs 67 vs 70 in Your Plan
+**SEO title:** When to Take Social Security: Model 62 vs 67 vs 70
 
 **Category:** Planner How-To
 

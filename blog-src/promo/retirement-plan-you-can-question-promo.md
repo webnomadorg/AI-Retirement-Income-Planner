@@ -1,4 +1,4 @@
-# Promo material — Build a Retirement Plan You Can Question (Not Just One Number)
+# Promo material — Build a Retirement Plan You Can Question
 
 ## Facebook Post Snippets
 

@@ -1,4 +1,4 @@
-# Promo material — How to Check a Retirement Plan From Several Angles (Plan Health)
+# Promo material — How to Check a Retirement Plan From Several Angles
 
 ## Facebook Post Snippets
 

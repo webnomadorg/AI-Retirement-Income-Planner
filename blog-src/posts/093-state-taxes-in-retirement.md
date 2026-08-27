@@ -1,6 +1,6 @@
 # State Taxes in Retirement: the Line Most Calculators Leave Out
 
-**SEO title:** State Taxes in Retirement: How Your State Changes the Net Income
+**SEO title:** State Taxes in Retirement: How Your State Changes Net Income
 
 **Category:** Taxes & Roth
 

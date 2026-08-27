@@ -1,6 +1,6 @@
 # Health Insurance Before Medicare: What Early Retirees Should Model
 
-**SEO title:** Health Insurance Before Medicare: What Early Retirees Should Model
+**SEO title:** Health Insurance Before Medicare for Early Retirees
 
 **Category:** Healthcare
 

@@ -1,6 +1,6 @@
 # The Ending Balance That Carries the Plan Forward
 
-**SEO title:** Retirement Ending Balance: The Number That Carries the Plan Forward
+**SEO title:** Retirement Ending Balance: The Number That Carries the Plan
 
 **Category:** Planning Framework
 

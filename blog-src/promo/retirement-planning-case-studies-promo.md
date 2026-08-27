@@ -1,4 +1,4 @@
-# Promo material — Retirement Planning Case Studies: Early Retirees, Expats, and Digital Nomads
+# Promo material — Retirement Planning Case Studies: Retirees, Expats, Nomads
 
 ## Internal Links To Add
 

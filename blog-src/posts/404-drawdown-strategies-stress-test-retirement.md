@@ -1,6 +1,6 @@
 # Drawdown Strategies and Stress Tests: How to Know Your Number Is Safe
 
-**SEO title:** Drawdown Strategies and Stress Tests: How to Know Your Retirement Number Is Safe
+**SEO title:** Drawdown Strategies and Stress Tests: Is Your Number Safe?
 
 **Category:** Planner How-To
 

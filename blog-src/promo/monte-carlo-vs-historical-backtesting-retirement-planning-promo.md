@@ -1,4 +1,4 @@
-# Promo material — Monte Carlo vs Historical Backtesting for Retirement Planning
+# Promo material — Monte Carlo vs Historical Backtesting for Retirement
 
 ## Internal Links To Add
 

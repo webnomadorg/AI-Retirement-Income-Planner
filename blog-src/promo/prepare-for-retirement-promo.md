@@ -1,4 +1,4 @@
-# Promo material — How to Prepare for Retirement: Building an Income Plan for the Next 30 Years
+# Promo material — How to Prepare for Retirement: Build a 30-Year Income Plan
 
 ## Facebook Post Snippets
 

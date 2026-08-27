@@ -1,6 +1,6 @@
 # Preparing for Retirement: You Worked 30 Years for Your Income, Now Plan the Next 30
 
-**SEO title:** How to Prepare for Retirement: Building an Income Plan for the Next 30 Years
+**SEO title:** How to Prepare for Retirement: Build a 30-Year Income Plan
 
 **Category:** Retirement Income
 

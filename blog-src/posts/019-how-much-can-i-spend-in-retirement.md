@@ -1,6 +1,6 @@
 # How Much Can I Spend In Retirement?
 
-**SEO title:** How Much Can I Spend In Retirement? A Practical Planning Method  
+**SEO title:** How Much Can I Spend In Retirement? A Practical Method
 **Meta description:** Learn how to estimate retirement spending using income, taxes, withdrawals, healthcare, inflation, Social Security, RMDs, and stress tests.  
 **Primary keyword:** how much can I spend in retirement  
 **Secondary keywords:** retirement spending plan, safe retirement spending, retirement withdrawal planning, retirement income planner, retirement budget after retiring  

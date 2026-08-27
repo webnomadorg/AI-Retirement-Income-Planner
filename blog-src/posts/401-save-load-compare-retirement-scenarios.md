@@ -1,6 +1,6 @@
 # How to Save, Load, and Compare Retirement Scenarios
 
-**SEO title:** How to Save, Load, and Compare Retirement Scenarios Side by Side
+**SEO title:** How to Save, Load and Compare Retirement Scenarios
 
 **Category:** Planner How-To
 

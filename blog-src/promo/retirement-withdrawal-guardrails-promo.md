@@ -1,4 +1,4 @@
-# Promo material — Retirement Withdrawal Guardrails: A Practical Way To Adjust Spending
+# Promo material — Retirement Withdrawal Guardrails: Adjusting Spending
 
 ## Suggested Internal Links
 

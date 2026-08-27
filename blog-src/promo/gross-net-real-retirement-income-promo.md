@@ -1,4 +1,4 @@
-# Promo material — Retirement Income: Gross vs Net vs Real (and Reliable vs Flexible)
+# Promo material — Retirement Income: Gross vs Net vs Real
 
 ## Facebook Post Snippets
 

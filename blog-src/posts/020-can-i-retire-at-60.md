@@ -1,6 +1,6 @@
 # Can I Retire At 60?
 
-**SEO title:** Can I Retire At 60? How To Test The Five-Year Bridge Before Medicare  
+**SEO title:** Can I Retire At 60? Testing the Bridge Before Medicare
 **Meta description:** Retiring at 60 can work, but you need to test healthcare before Medicare, Social Security timing, early withdrawals, taxes, spending, inflation, and market risk.  
 **Primary keyword:** can I retire at 60  
 **Secondary keywords:** retire at 60, early retirement at 60, retire before Medicare, retirement bridge years, retirement income planner  

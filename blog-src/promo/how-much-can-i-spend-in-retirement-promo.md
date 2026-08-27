@@ -1,4 +1,4 @@
-# Promo material — How Much Can I Spend In Retirement? A Practical Planning Method
+# Promo material — How Much Can I Spend In Retirement? A Practical Method
 
 ## Suggested Internal Links
 
