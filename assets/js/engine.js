@@ -157,7 +157,7 @@ const D_USD={
   // PLANNING a future retirement here reaches State Pension age at 67 or later. The phase
   // boundaries and the help copy assume 67 too. Editable per plan for anyone already at 66.
   ssBaseAge:62,ukpBaseAge:67,
-  uss:1000,ukp:1000,medicare:202.9,medicareD:38.99,
+  uss:1000,ukp:1000,medicare:202.9,medicareD:40.79,
   // ── v8: expat/overseas healthcare cost /mo (USD). Used only when US healthcare is excluded
   //         (foreign PHP/THB, UK, Canada, Australia residence). Inflated per phase by healthcareInflation. ──
   expatHealthcare:0,
@@ -258,8 +258,8 @@ const D_USD={
   //         conversions lands in the middle of it. Amounts here are SURCHARGES OVER the standard
   //         premium, not total premiums, so S.medicare stays the single source for the base and the
   //         ladder is purely additive. Ladder figures are CMS 2026.
-  //         ⚠ Note the base `medicare` default above is a 2025 figure while this ladder is 2026, so
-  //         out of the box they are a year apart. That is deliberate rather than fixed in place: the
+  //         ⚠ The base `medicare` default above and this ladder are BOTH 2026 figures, so they are
+  //         in step as shipped. They will not stay that way, because CMS reissues both every year: the
   //         right cure is "Fetch current rates", not a number typed in here from memory — typing in
   //         a remembered premium is the precise failure this feature exists to replace.
   //         `frozen: true` on the top tier is not a detail — tiers 1-4 are CPI-adjusted each year but
@@ -303,6 +303,27 @@ const D_USD={
   mfjBrk10:24800,mfjBrk12:100800,mfjBrk22:211400,
   mfjIrmaa:218000,
   fpl400:62600,fpl250:39125,fpl100:15650,
+  // ── v16: the ACA applicable-percentage ladder. Between 100% and 400% FPL the benchmark Silver
+  //         premium is capped at a share of MAGI that rises with your FPL band. These were literals
+  //         inside acaPrem() until now, which meant "Fetch current rates" could not reach them even
+  //         though the IRS reindexes them every year — the exact "a value that is not a field cannot
+  //         be refreshed" trap that left the Australian rates stale for two years, and the reason
+  //         five pieces of help text still quoted the expired 8.5% ARPA cap in v371.
+  //         ⚠ These are NOT compounded by the engine (they apply to one year's MAGI), so they are
+  //         annual FACTS, not `assumption:true` long-run rates. ──
+  //   2026 figures, verified against IRS Rev. Proc. 2025-25 (not taken from a model answer alone).
+  //   ⚠ The published schedule INTERPOLATES LINEARLY inside each band — 3.14%→4.19% across 133–150%
+  //   FPL, 4.19%→6.60% across 150–200%, 6.60%→8.44% across 200–250%, 8.44%→9.96% across 250–300%.
+  //   This engine STEPS instead, applying one rate per band, so each value here is the band's START
+  //   rate. That is the verifiable figure and it matches how the field notes read, but it means the
+  //   premium is understated within a band, which flatters net income slightly. Moving to true
+  //   interpolation would change calculated results and needs a golden-master recapture.
+  acaCap133:2.10, acaCap150:3.14, acaCap200:4.19, acaCap250:6.60, acaCap300:8.44, acaCapTop:9.96,
+  // ── v16: what the LAST rate refresh actually covered, so Edit values can show it per field.
+  //         {at, seen[], updated[], declined[]}. `seen` is the set the model returned a figure for;
+  //         anything refreshable and NOT in it was never checked, which is the failure this exists
+  //         to surface — a silently omitted field used to be indistinguishable from a confirmed one. ──
+  ratesLastRun:null,
   // UK tax parameters (stored in USD, converted from GBP at current rate)
   // GBP source figures, with the rate they were converted at. Kept in step by refresh_defaults.py --
   // a value refreshed beside a comment asserting the old rate is worse than no comment at all.
@@ -323,8 +344,8 @@ const D_USD={
   cpp:0, cppBaseAge:65, cppColaRate:2.6,
   oas:0, oasBaseAge:65, oasColaRate:2.6,
   // ── v4: Canada tax parameters (federal, stored in CAD-equivalent USD) ──
-  cadPersonalAmount:16129, cadBrk1:57375, cadBrk2:114750, cadBrk3:177882, cadBrk4:253414,
-  cadRate1:15, cadRate2:20, cadRate3:26, cadRate4:29, cadRate5:33,
+  cadPersonalAmount:16415, cadBrk1:58375, cadBrk2:116750, cadBrk3:180946, cadBrk4:258394,
+  cadRate1:14, cadRate2:20.5, cadRate3:26, cadRate4:29, cadRate5:33,
   // Provincial tax: simplified flat rate added on taxable income (representative average ~12%)
   cadProvincialRate:10,
   // ── v4: Australia — Super + Age Pension ──
@@ -920,15 +941,48 @@ function fedTax(ti,brk10,brk12,brk22,_tg){
   return brk10*0.10+(brk12-brk10)*0.12+(brk22-brk12)*0.22+(ti-brk22)*0.24;
 }
 
-function acaPrem(magi,fpl100,fpl400,_tg){
+// v16: `caps` is the applicable-percentage ladder as DATA (see D_USD.acaCap*). It is optional so
+// the chart call sites keep working unchanged; when absent we read the live plan, then the shipped
+// defaults. Never inline these numbers again — a literal here cannot be refreshed.
+function acaPrem(magi,fpl100,fpl400,_tg,caps){
+  const _c=caps||(typeof S!=='undefined'&&S&&S.acaCap133!=null?S:D_USD);
+  // v17: the published table INTERPOLATES LINEARLY between breakpoints (IRS Rev. Proc. 2025-25);
+  // it does not apply one rate per band. Stepping used each band's START rate for the whole band,
+  // which understated the premium everywhere except the band's first dollar, and understating a cost
+  // flatters net income — the wrong direction for a planner to be wrong in.
+  //
+  // ⚠ The stored values did not change and need no migration: they were already the breakpoint
+  // rates, the step model just held each one flat across its band. What changed is how they are READ.
+  // ⚠ The KEY NAMES are legacy and now read a band late — `acaCap150` is the rate AT 133% FPL, where
+  // the slope starts, not a rate for the 133-150 band. Renaming would churn RATE_FIELDS, the AI
+  // prompt, the SELFTEST pins and every saved plan for no behaviour change, so the labels and notes
+  // carry the truth instead. ANCHORS below is the authority; read it, not the key names.
+  // ⚠ The jump at 133% is real, not a rounding artefact: the table is flat at 2.10% below it and
+  // restarts at 3.14% on it, so the discontinuity is in the statute and must survive.
+  const ANCHORS=[[1.33,_c.acaCap150],[1.50,_c.acaCap200],[2.00,_c.acaCap250],
+                 [2.50,_c.acaCap300],[3.00,_c.acaCapTop]];
+  const _cap=r=>{
+    if(r<=1.33)return _c.acaCap133;              // flat below the first breakpoint
+    if(r>=3.00)return _c.acaCapTop;              // flat from 300% FPL to the cliff
+    for(let i=1;i<ANCHORS.length;i++){
+      if(r<=ANCHORS[i][0]){
+        const x0=ANCHORS[i-1][0],y0=ANCHORS[i-1][1],x1=ANCHORS[i][0],y1=ANCHORS[i][1];
+        return y0+(y1-y0)*(r-x0)/(x1-x0);
+      }
+    }
+    return _c.acaCapTop;
+  };
   if(_tg){
     _trRow(_tg,'Your MAGI',magi,'usd/yr',{kind:'in'});
     _trRow(_tg,'400% FPL subsidy cliff',fpl400,'usd/yr',{kind:'threshold'});
     if(magi>0&&magi<=fpl400){
-      const _p=magi/fpl100,_cp=_p<=1.33?0.021:_p<=1.5?0.030:_p<=2.0?0.040:_p<=2.5?0.060:_p<=3.0?0.080:0.0996;
+      const _p=magi/fpl100,_cp=_cap(_p)/100;
       _trRow(_tg,'as a share of the poverty level',_p*100,'pct',{kind:'rate',base:fpl100,baseAs:'of',formula:'MAGI ÷ 100% FPL'});
       _trRow(_tg,'Premium capped at this share of income',_cp*100,'pct',{kind:'rate',
-        formula:'ACA applicable-percentage ladder: ≤133% → 2.1%, ≤150% → 3.0%, ≤200% → 4.0%, ≤250% → 6.0%, ≤300% → 8.0%, else 9.96%'});
+        formula:'ACA applicable percentage, interpolated between the published breakpoints: '
+          +'below 133% FPL '+_c.acaCap133+'%, then '+_c.acaCap150+'% at 133% rising to '+_c.acaCap200
+          +'% at 150%, '+_c.acaCap250+'% at 200%, '+_c.acaCap300+'% at 250%, '+_c.acaCapTop
+          +'% at 300% and flat to the cliff'});
       _trRow(_tg,'= estimated premium',magi*_cp/12,'usd/mo',{kind:'total',formula:'MAGI × cap% ÷ 12'});
     }else if(magi>fpl400){
       _trRow(_tg,'Over the cliff — no subsidy',0,'flagv',{kind:'flag',
@@ -937,7 +991,7 @@ function acaPrem(magi,fpl100,fpl400,_tg){
   }
   if(magi<=0)return 0;if(magi>fpl400)return-1;
   const p=magi/fpl100;
-  const cp=p<=1.33?0.021:p<=1.5?0.030:p<=2.0?0.040:p<=2.5?0.060:p<=3.0?0.080:0.0996;
+  const cp=_cap(p)/100;
   return magi*cp/12;
 }
 
@@ -1931,10 +1985,16 @@ function calcPhase(p){
     let acaCost=0,_gA=null;
     if(needsAca){
       _gA=_trGroup(T,'aca',medUnits>0?'How your ACA premium is estimated (the months before Medicare)':'How your ACA premium is estimated','tg-aca','acaSubsidy');
-      acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA);
-      acaCost=acaVal===-1?Math.max(magi*0.0996/12,700):acaVal;
+      acaVal=acaPrem(magi,adjFpl100,adjFpl400,_gA,p.acaCap133!=null?p:null);
+      // v16: above the cliff there is no cap at all, so this is a PROXY for what an unsubsidised
+      // plan costs, not an applicable percentage. It reads the top rung anyway so a refreshed ladder
+      // cannot leave this estimate quoting a rate the rest of the app has stopped using.
+      // ⚠ The $700/mo floor is still a hardcoded figure and is NOT refreshable — see the note in
+      //   Plans/SEO-Search-Console-Actions.md; making it a field is a separate decision.
+      const _ovr=(p.acaCapTop!=null?p.acaCapTop:D_USD.acaCapTop);
+      acaCost=acaVal===-1?Math.max(magi*(_ovr/100)/12,700):acaVal;
       if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
-        formula:'the greater of about 9.96% of MAGI or a $700/mo floor for an older enrollee'});
+        formula:'the greater of about '+_ovr+'% of MAGI or a $700/mo floor for an older enrollee'});
     }
     health_mo=medUnits*medCostPer+acaShare*acaCost;
     if(medUnits>0){
@@ -2176,7 +2236,12 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       irmaaManualPremium:s.irmaaManualPremium||0,
       mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:s.mfjSeniorDed||3200,
       mfjBrk10:s.mfjBrk10||24800,mfjBrk12:s.mfjBrk12||98000,mfjBrk22:s.mfjBrk22||208000,mfjIrmaa:s.mfjIrmaa||218000,
-      fpl100:s.fpl100,fpl250:s.fpl250,fpl400:s.fpl400,medicare:s.medicare,medicareD:s.medicareD||0,expatHealthcare:s.expatHealthcare||0,
+      fpl100:s.fpl100,fpl250:s.fpl250,fpl400:s.fpl400,
+      // v16: the ACA applicable-percentage ladder travels with the other ACA figures. Miss this
+      // line and acaPrem silently falls back to the shipped defaults, ignoring the user's plan.
+      acaCap133:s.acaCap133,acaCap150:s.acaCap150,acaCap200:s.acaCap200,
+      acaCap250:s.acaCap250,acaCap300:s.acaCap300,acaCapTop:s.acaCapTop,
+      medicare:s.medicare,medicareD:s.medicareD||0,expatHealthcare:s.expatHealthcare||0,
       // v8: healthcare-cost inflation (null ⇒ track general inflation) + NIIT thresholds + state tax
       healthcareInflationRate:(s.healthcareInflation!=null&&s.healthcareInflation!=='')?s.healthcareInflation:null,
       niitThreshold:s.niitThreshold||200000,niitThresholdMfj:s.niitThresholdMfj||250000,
