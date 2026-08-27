@@ -181,6 +181,18 @@
         <ul class="upd-list">
 
           <li class="upd-item reveal">
+            <span class="upd-ver">v390</span>
+            <div class="upd-body">
+              <h4>ACA premium figures corrected, and a refresh now shows its working <span class="upd-date">&middot; 27 August</span></h4>
+              <p><strong>If your plan has ACA years before Medicare, your figures will move slightly with this update, and not in your favor.</strong> The ACA caps your premium at a share of your income that climbs as your income does. The planner was carrying those percentages rounded &mdash; 3%, 4%, 6% and 8% &mdash; where the published 2026 schedule is 3.14%, 4.19%, 6.60% and 8.44%. Small differences on their own, but they apply to every ACA month in the plan.</p>
+              <p><strong>The help text was out of date in a way that mattered more.</strong> It told you the ACA caps your premium at 8.5% of your income. That was the enhanced-subsidy cap, and it expired at the end of last year alongside the return of the 400% cliff. Five places in the planner said it. All five now describe the real sliding scale.</p>
+              <p><strong>Those percentages can be refreshed now, like every other tax figure.</strong> They had been written into the calculation itself rather than stored as settings, which meant <em>Fetch current rates</em> could not reach them &mdash; they were only correctable by me, in a release, which is how they came to drift without anyone noticing. They are ordinary figures on the Edit values tab now, and the annual refresh picks them up with the rest.</p>
+              <p><strong>After a refresh, each figure now tells you what happened to it.</strong> The old summary said how many figures were updated and stopped there, which left the more useful question unanswered: what about all the others? Every figure is now marked &mdash; updated, confirmed as already correct, changed but not applied, or requested and not returned. That last one is the case worth catching: a figure the lookup quietly skipped used to look exactly like one it had checked and found fine. A control on the Edit values tab quietens the markers once you have read them, though the count of anything unchecked stays visible either way.</p>
+              <p>Smaller thing in the same release: the blue dot marking a value you have changed since your baseline was rendering red in one of the color themes, which read as an error rather than a note to yourself. It is blue everywhere again.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
             <span class="upd-ver">v370</span>
             <div class="upd-body">
               <h4>Housekeeping: the planner now tells me which version it is <span class="upd-date">&middot; 24 August</span></h4>

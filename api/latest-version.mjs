@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 370, released: '2026-08-24', headline: 'Housekeeping only — nothing in the planner works differently, and your figures will not change. Once a day it now tells the site which version it is running, so I can see how quickly an update actually reaches people and stop guessing. It sends that version number and nothing else: no name, no email, nothing about your plan. Update whenever it suits you; there is nothing here you need.' }; /* __LATEST__ */
+const LATEST = { build: 390, released: '2026-08-27', headline: 'If you use the ACA years before Medicare, your figures will move a little with this update, and not in your favour. The share of your income the ACA caps your premium at was rounded here — 3%, 4%, 6%, 8% — where the published 2026 schedule is 3.14%, 4.19%, 6.60% and 8.44%. The help text was also still quoting the 8.5% cap that expired with the enhanced subsidies at the end of last year. Both are right now. Two things follow from it: “Fetch current rates” can finally refresh those ACA percentages, which it had no way to reach before, and after any refresh every figure is marked with what actually happened to it — updated, confirmed, or never checked — so you are not taking “six figures updated” on trust.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
