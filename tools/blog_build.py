@@ -699,7 +699,12 @@ def jsonld_post(post, images, faq_pairs):
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
             {"@type": "ListItem", "position": 2, "name": "Blog", "item": SITE + "/blog.html"},
-            {"@type": "ListItem", "position": 3, "name": post["category"]},
+            # The category level MUST carry an "item" — Google rejects the whole
+            # BreadcrumbList with 'Missing field "item"' when an intermediate ListItem
+            # has none (only the final, current-page item may omit it). This mirrors the
+            # visible breadcrumb's link exactly: /blog.html#cat=<slug> deep-links the chip.
+            {"@type": "ListItem", "position": 3, "name": post["category"],
+             "item": f"{SITE}/blog.html#cat={post['cat_slug']}"},
             {"@type": "ListItem", "position": 4, "name": post["title"], "item": url},
         ],
     })
