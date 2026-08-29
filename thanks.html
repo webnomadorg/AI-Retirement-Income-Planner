@@ -349,7 +349,11 @@
           var value = (res.body.amount_total || 0) / 100;
           var currency = (res.body.currency || 'usd').toUpperCase();
           if (typeof gtag === 'function') gtag('event', 'purchase', { transaction_id: sid, value: value, currency: currency });
-          if (typeof fbq === 'function') fbq('track', 'Purchase', { value: value, currency: currency });
+          // eventID must match the server-side Purchase in api/stripe-webhook.mjs, which
+          // reports the same sale from Stripe's webhook. Same id = Meta counts ONE
+          // conversion when both arrive, and still counts the sale when this one is
+          // blocked or consent was declined.
+          if (typeof fbq === 'function') fbq('track', 'Purchase', { value: value, currency: currency }, { eventID: 'purchase-' + sid });
         }
       } catch (e) { /* analytics must never break downloads */ }
     })

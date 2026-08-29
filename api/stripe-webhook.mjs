@@ -8,6 +8,7 @@
      3. Records the purchase in the email→sessions lookup index (see lib/purchase-log.mjs)
         so the buyer can later pull updated files from inside the planner itself,
         knowing only the address they bought with.
+     4. Reports the sale to Meta's Conversions API, server-side (see sendCapiPurchase).
 
    Signature is verified manually (no Stripe SDK — this project uses fetch only)
    against STRIPE_WEBHOOK_SECRET. Raw body is required for that, so body parsing
@@ -18,6 +19,11 @@
      STRIPE_VERIFY_KEY     — restricted read-only key, used to expand line items
      RESEND_API_KEY        — already set; used for both emails
      UPDATE_LOOKUP_PEPPER  — secret for hashing emails into blob keys (step 3)
+     META_PIXEL_ID         — already set; the Conversions API Purchase below (unset = log-only)
+     META_CAPI_TOKEN       — already set; the same pair api/newsletter-confirm.mjs uses
+     META_CAPI_TEST_CODE   — OPTIONAL. Set it and events land in Events Manager → Test events
+                             instead of counting for real, so the wiring can be proved without
+                             waiting for a live sale. Leave unset in normal operation.
 
    NOTE: classic Node (req, res) signature — same as the other functions here. */
 
@@ -70,6 +76,90 @@ async function sendEmail(key, payload) {
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+}
+
+/* Best-effort Meta Conversions API "Purchase".
+
+   thanks.html fires a browser Purchase too, but that pixel starts consent-revoked and is
+   routinely blocked, so a real sale often reaches Facebook as nothing at all: the ad then
+   optimises against no purchase signal, and the campaign report under-counts revenue that
+   Stripe can see plainly. Same reasoning as the server-side Lead in api/newsletter-confirm.mjs
+   -- declining the banner should mean LESS is sent, not that the sale becomes invisible to
+   the business that made it.
+
+   Both events carry the SAME event_id (`purchase-<checkout session id>`), so if both arrive
+   Meta counts one conversion, and if only one arrives it counts that one. That also makes a
+   duplicate webhook delivery harmless.
+
+   WARNING: deliberately NO client_ip_address / client_user_agent. This request comes from
+   Stripe, not from the buyer -- passing Stripe's server details off as the customer's would
+   poison matching rather than improve it. There is no fbp/fbc for the same reason: Stripe's
+   hosted checkout carries none of our cookies.
+
+   Never throws, never blocks the emails, never changes the 200 -- analytics is not the product. */
+async function sendCapiPurchase(opts) {
+  const pixelId = process.env.META_PIXEL_ID;
+  const token = process.env.META_CAPI_TOKEN;
+  if (!pixelId || !token) {
+    console.log(`[capi] not configured - would have sent Purchase (event_id=${opts.eventId}, value=${opts.value})`);
+    return;
+  }
+  const sha256 = (v) => crypto.createHash('sha256').update(String(v)).digest('hex');
+  // Meta wants identifiers lowercased and stripped of punctuation and spaces before hashing;
+  // an un-normalised value hashes to something that can never match.
+  const norm = (v) => String(v || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9@.+_-]/g, '');
+  const hashed = (v) => { const n = norm(v); return n ? [sha256(n)] : undefined; };
+
+  // customer_details.name is a single field; Meta takes first and last separately.
+  const nameParts = String(opts.name || '').trim().split(/\s+/).filter(Boolean);
+  const first = nameParts.length ? nameParts[0] : '';
+  const last = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+
+  const userData = {
+    em: hashed(opts.email),
+    fn: hashed(first),
+    ln: hashed(last),
+    country: hashed(opts.country),
+  };
+  for (const k of Object.keys(userData)) if (!userData[k]) delete userData[k];
+  if (!Object.keys(userData).length) {
+    console.warn('[capi] Purchase skipped - no identifier to match on');
+    return;
+  }
+
+  const testCode = process.env.META_CAPI_TEST_CODE;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v21.0/${pixelId}/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: [
+          {
+            event_name: 'Purchase',
+            event_time: opts.eventTime,
+            event_id: opts.eventId,
+            event_source_url: `${SITE}/thanks.html`,
+            action_source: 'website',
+            user_data: userData,
+            custom_data: {
+              value: opts.value,
+              currency: opts.currency,
+              order_id: opts.orderId,
+              content_type: 'product',
+              ...(opts.contentIds.length ? { content_ids: opts.contentIds } : {}),
+              ...(opts.contentName ? { content_name: opts.contentName } : {}),
+            },
+          },
+        ],
+        access_token: token,
+        ...(testCode ? { test_event_code: testCode } : {}),
+      }),
+    });
+    if (!r.ok) console.error('[capi] Purchase rejected:', r.status, await r.text());
+    else if (testCode) console.log(`[capi] Purchase sent as TEST (code=${testCode}) - counts for nothing`);
+  } catch (err) {
+    console.error('[capi] Purchase failed (non-fatal):', err);
+  }
 }
 
 export default async function handler(req, res) {
@@ -135,6 +225,7 @@ export default async function handler(req, res) {
         const items = full.line_items?.data ?? [];
         products = items
           .map((li) => ({
+            id: li.price?.product?.id,
             name: li.price?.product?.name ?? li.description,
             book: li.price?.product?.metadata?.book,
             zip: li.price?.product?.metadata?.zip,
@@ -171,6 +262,25 @@ export default async function handler(req, res) {
       ? products.map((p) => p.name).join(', ')
       : '(unknown — could not expand line items)';
     const amountStr = amount != null ? `${currency} ${amount.toFixed(2)}` : 'unknown';
+
+    // Report the sale to Meta. Ahead of the emails and of the RESEND_API_KEY bail-out below,
+    // so a missing email key can never also cost the conversion event.
+    if (amount != null) {
+      await sendCapiPurchase({
+        eventId: `purchase-${sessionId}`,
+        eventTime: Number(sessionObj.created) || Number(event.created) || Math.floor(Date.now() / 1000),
+        value: amount,
+        currency,
+        orderId: sessionId,
+        email: buyerEmail,
+        name: sessionObj.customer_details?.name,
+        country: sessionObj.customer_details?.address?.country,
+        contentIds: products.map((p) => p.id).filter(Boolean),
+        contentName: products.length ? products.map((p) => p.name).join(', ') : '',
+      });
+    } else {
+      console.warn('stripe-webhook: no amount_total - Purchase not reported to Meta');
+    }
 
     if (!resendKey) {
       console.error('stripe-webhook: RESEND_API_KEY not set — cannot email; purchase was:', productNames, amountStr, buyerEmail);
