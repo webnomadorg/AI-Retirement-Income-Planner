@@ -8,7 +8,9 @@
      3. Records the purchase in the email→sessions lookup index (see lib/purchase-log.mjs)
         so the buyer can later pull updated files from inside the planner itself,
         knowing only the address they bought with.
-     4. Reports the sale to Meta's Conversions API, server-side (see sendCapiPurchase).
+     4. Reports the sale to Meta's Conversions API, server-side (see sendCapiPurchase),
+        and states the outcome in the owner alert from (1) so the next REAL purchase
+        proves the wiring without anyone having to go and look.
 
    Signature is verified manually (no Stripe SDK — this project uses fetch only)
    against STRIPE_WEBHOOK_SECRET. Raw body is required for that, so body parsing
@@ -102,7 +104,7 @@ async function sendCapiPurchase(opts) {
   const token = process.env.META_CAPI_TOKEN;
   if (!pixelId || !token) {
     console.log(`[capi] not configured - would have sent Purchase (event_id=${opts.eventId}, value=${opts.value})`);
-    return;
+    return 'NOT SENT - META_PIXEL_ID / META_CAPI_TOKEN missing in this environment';
   }
   const sha256 = (v) => crypto.createHash('sha256').update(String(v)).digest('hex');
   // Meta wants identifiers lowercased and stripped of punctuation and spaces before hashing;
@@ -124,7 +126,7 @@ async function sendCapiPurchase(opts) {
   for (const k of Object.keys(userData)) if (!userData[k]) delete userData[k];
   if (!Object.keys(userData).length) {
     console.warn('[capi] Purchase skipped - no identifier to match on');
-    return;
+    return 'NOT SENT - no email or name on the session to match against';
   }
 
   const testCode = process.env.META_CAPI_TEST_CODE;
@@ -155,10 +157,19 @@ async function sendCapiPurchase(opts) {
         ...(testCode ? { test_event_code: testCode } : {}),
       }),
     });
-    if (!r.ok) console.error('[capi] Purchase rejected:', r.status, await r.text());
-    else if (testCode) console.log(`[capi] Purchase sent as TEST (code=${testCode}) - counts for nothing`);
+    if (!r.ok) {
+      const detail = await r.text();
+      console.error('[capi] Purchase rejected:', r.status, detail);
+      return `REJECTED by Meta (HTTP ${r.status}) - ${detail.slice(0, 300)}`;
+    }
+    if (testCode) {
+      console.log(`[capi] Purchase sent as TEST (code=${testCode}) - counts for nothing`);
+      return `sent as a TEST event (code ${testCode}) - it will NOT count. Unset META_CAPI_TEST_CODE.`;
+    }
+    return 'sent OK';
   } catch (err) {
     console.error('[capi] Purchase failed (non-fatal):', err);
+    return `FAILED to reach Meta - ${String(err && err.message ? err.message : err).slice(0, 200)}`;
   }
 }
 
@@ -265,8 +276,9 @@ export default async function handler(req, res) {
 
     // Report the sale to Meta. Ahead of the emails and of the RESEND_API_KEY bail-out below,
     // so a missing email key can never also cost the conversion event.
+    let capiStatus = 'NOT SENT - the session carried no amount_total';
     if (amount != null) {
-      await sendCapiPurchase({
+      capiStatus = await sendCapiPurchase({
         eventId: `purchase-${sessionId}`,
         eventTime: Number(sessionObj.created) || Number(event.created) || Math.floor(Date.now() / 1000),
         value: amount,
@@ -298,8 +310,11 @@ export default async function handler(req, res) {
 <p><strong>Amount:</strong> ${esc(amountStr)}</p>
 <p><strong>Buyer email:</strong> ${buyerEmail ? `<a href="mailto:${esc(buyerEmail)}">${esc(buyerEmail)}</a>` : '(not provided)'}</p>
 <p><strong>Includes session:</strong> ${sessions.length ? 'Yes — booking email sent to buyer' : 'No'}</p>
+<p><strong>Reported to Meta:</strong> ${capiStatus === 'sent OK'
+          ? 'sent OK'
+          : `<span style="color:#a33">${esc(capiStatus)}</span>`}</p>
 <p style="color:#777"><strong>Session id:</strong> ${esc(sessionId || '')}</p>`,
-        text: `New purchase\nProduct(s): ${productNames}\nAmount: ${amountStr}\nBuyer: ${buyerEmail || '(not provided)'}\nIncludes session: ${sessions.length ? 'Yes' : 'No'}\nSession id: ${sessionId || ''}`,
+        text: `New purchase\nProduct(s): ${productNames}\nAmount: ${amountStr}\nBuyer: ${buyerEmail || '(not provided)'}\nIncludes session: ${sessions.length ? 'Yes' : 'No'}\nReported to Meta: ${capiStatus}\nSession id: ${sessionId || ''}`,
       });
     } catch (e) {
       console.error('stripe-webhook: owner email failed', e);
