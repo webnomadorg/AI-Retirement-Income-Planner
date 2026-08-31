@@ -5,22 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Drawdown Strategies and Stress Tests: Is Your Number Safe?</title>
 <!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
-     Tracking consent starts DENIED (Google Consent Mode v2 / Meta consent API);
-     the cookie banner (assets/js/consent.js) upgrades it when the visitor accepts. -->
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
 <script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('consent', 'default', {
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    analytics_storage: 'denied'
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
   });
   gtag('js', new Date());
   gtag('config', 'G-6VX12DHPY3');
 </script>
-<!-- Meta Pixel (consent-revoked until the banner is accepted) -->
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
 <script>
   !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -30,7 +45,7 @@
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window,document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('consent', 'revoke');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
   fbq('init', '2106222783607307');
   fbq('track', 'PageView');
 </script>

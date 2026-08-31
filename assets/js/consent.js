@@ -1,12 +1,18 @@
 /* Cookie consent — the Google Analytics + Meta (Facebook) Pixel tags live inline
-   in every page's <head> (visible in the page source), but start with tracking
-   consent DENIED via Google Consent Mode v2 and Meta's consent API. This script
-   is only the consent SWITCH: accepting the banner upgrades consent, declining
-   (or withdrawing later) keeps/returns it to denied. The choice is stored in
-   localStorage('wn-consent') as 'granted' or 'denied'. First-party Vercel Web
-   Analytics is cookieless and loads independently of this. A "Cookie settings"
-   link is added to the footer Support column so consent can be changed or
-   withdrawn at any time. */
+   in every page's <head> (visible in the page source), where consent starts DENIED
+   unless the visitor has already accepted. This script is only the consent SWITCH:
+   accepting the banner upgrades consent, declining (or withdrawing later) keeps or
+   returns it to denied. The choice is stored in localStorage('wn-consent') as
+   'granted' or 'denied'. First-party Vercel Web Analytics is cookieless and loads
+   independently of this. A "Cookie settings" link is added to the footer Support
+   column so consent can be changed or withdrawn at any time.
+
+   ⚠ This file is DEFERRED, so it runs after GA4 has already sent this page's
+   page_view. It therefore must NOT be the place a saved 'granted' is restored —
+   that has to happen synchronously in <head> (see partials/head-analytics.html),
+   or the page_view goes out consent-denied and GA4 never counts the visit. What
+   this file still owes GA4 is countPageView(): a first-time visitor who accepts
+   had their page_view sent as denied a moment ago, and gtag will not re-send it. */
 (function () {
   var KEY = 'wn-consent';
 
@@ -39,7 +45,23 @@
     if (b) b.remove();
   }
 
-  function accept() { setChoice('granted'); removeBanner(); applyConsent(true); }
+  // GA4 already sent this page's page_view with consent denied, and gtag never re-sends
+  // it — so without this, a first-time visitor who accepts is simply missing from GA4.
+  // The Meta pixel needs no equivalent: fbq queues events while revoked and flushes the
+  // queued PageView on grant, which is why Facebook's counts were right all along.
+  // Fires at most once, and never when the page already loaded with consent granted
+  // (head-analytics.html restores that synchronously, so that page_view was counted).
+  var countedAtLoad = (window.wnConsent === 'granted');
+  var counted = false;
+  function countPageView() {
+    if (countedAtLoad || counted) return;
+    counted = true;
+    try {
+      if (typeof window.gtag === 'function') window.gtag('event', 'page_view');
+    } catch (e) {}
+  }
+
+  function accept() { setChoice('granted'); removeBanner(); applyConsent(true); countPageView(); }
   function decline() { setChoice('denied'); removeBanner(); applyConsent(false); }
 
   function showBanner() {
@@ -89,8 +111,10 @@
     }
   }
 
-  // Upgrade consent immediately if previously granted; the banner shows only
-  // when no choice has been made yet.
+  // Belt and braces: <head> already restored a saved 'granted' before the page_view
+  // went out, so this is a no-op on a correctly built page. It stays because a page
+  // that somehow ships without the head bootstrap should still honour the visitor's
+  // choice for every event after this point, even though its page_view is lost.
   if (getChoice() === 'granted') applyConsent(true);
 
   function init() {

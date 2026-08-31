@@ -3035,17 +3035,23 @@ html[data-theme="contrast"] .irow select:focus{
 
 
 <!-- Google Analytics + Meta Pixel — same tags as every page of the site (visible here
-     in the source). Tracking consent starts DENIED (Google Consent Mode v2 / Meta
-     consent API); the cookie banner (../assets/js/consent.js) upgrades it on accept. -->
+     in the source). Consent starts DENIED unless the visitor already accepted,
+     whose saved choice is read SYNCHRONOUSLY below, before gtag('config') sends the
+     page_view — a deferred restore lands after that hit has already gone out denied,
+     and gtag never re-sends it. Mirrors Website/partials/head-analytics.html. -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
 <script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('consent', 'default', {
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    analytics_storage: 'denied'
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
   });
   gtag('js', new Date());
   gtag('config', 'G-6VX12DHPY3');
@@ -3059,7 +3065,7 @@ html[data-theme="contrast"] .irow select:focus{
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window,document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('consent', 'revoke');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
   fbq('init', '2106222783607307');
   fbq('track', 'PageView');
 </script>
