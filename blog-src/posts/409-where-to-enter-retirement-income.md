@@ -105,8 +105,8 @@ If you have worked in the UK you may be entitled to a UK State Pension alongside
 
 It is tempting to think that income is income, and that a hundred dollars is a hundred dollars wherever you put it. In a retirement plan it genuinely is not, for three reasons:
 
-- **Tax.** Social Security is taxed under its own rules, and only partly. A pension is ordinary income. VA disability is not taxed at all. The same figure in three different boxes produces three different tax bills.
-- **The income that decides your healthcare costs.** Marketplace subsidies before 65 and Medicare surcharges after it are both driven by an income figure that counts some kinds of income and not others. Misfiling a benefit can push you over a threshold you would never really have crossed — or hide one you would.
+- **Tax.** Social Security is taxed under its own rules, and only partly. A pension is ordinary income. VA disability is not taxed at all. The same figure in three different boxes produces three different tax bills, which is the subject of [how taxes change retirement income](/blog/how-taxes-change-retirement-income.html).
+- **The income that decides your healthcare costs.** Marketplace subsidies before 65 and Medicare surcharges after it are both driven by an income figure that counts some kinds of income and not others. That figure is [MAGI, and there is more than one definition of it](/blog/what-is-magi.html). Misfiling a benefit can push you over a threshold you would never really have crossed — or hide one you would.
 - **Time.** Some income is for life, some stops at a set age, some has not started yet. A plan is mostly a story about *when*, and the boxes are how you tell it.
 
 ## FAQ

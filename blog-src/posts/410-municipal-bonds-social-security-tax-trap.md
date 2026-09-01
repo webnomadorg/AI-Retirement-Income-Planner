@@ -76,7 +76,7 @@ Social Security tax is the trap people miss, but it is not the only one.
 
 **Medicare IRMAA.** The IRMAA definition of income is, in so many words, adjusted gross income *plus tax-exempt interest*. It is named in the rule. Muni interest can put you into a higher Medicare bracket two years later, which is a surcharge on both Part B and Part D, for both spouses if you are married.
 
-So the same interest can be working against you in three places at once while your brokerage statement calls it tax-free.
+So the same interest can be working against you in three places at once while your brokerage statement calls it tax-free. Each of those three uses a different definition of income, which is worth understanding on its own: see [what MAGI is](/blog/what-is-magi.html).
 
 ## How to Check Your Own Position
 

@@ -81,11 +81,11 @@ Notice how many of those are *conditional*. "My state is good for retirees" is a
 
 ## The Year You Move Is Its Own Problem
 
-Moving states in retirement is one of the few genuinely large, genuinely controllable tax decisions left after you stop working. It is also the one people model least carefully.
+Moving states in retirement is one of the few genuinely large, genuinely controllable tax decisions left after you stop working. It is also the one people model least carefully. Moving abroad raises the same question with more moving parts, covered in [expat retirement taxes](/blog/expat-retirement-taxes-what-to-model.html).
 
 Two things to be aware of:
 
-- **The year of the move is usually split.** Most states handle it as part-year residency, taxing the income you earned while a resident of each. That means a single year with two state returns, and it means the timing of a large withdrawal or a Roth conversion inside that year is not a neutral detail.
+- **The year of the move is usually split.** Most states handle it as part-year residency, taxing the income you earned while a resident of each. That means a single year with two state returns, and it means the timing of a large withdrawal or a [Roth conversion](/blog/roth-conversions-before-rmds.html) inside that year is not a neutral detail.
 - **Where you live is a question of fact, not preference.** States that lose high-income residents have well-established tests for residency and domicile. Keeping a home, a driver's license, or the bulk of your time in the old state can matter.
 
 For planning purposes, the useful move is to model the destination's rules from the year you expect to be fully resident, and to treat the transition year as its own scenario rather than assuming it splits neatly down the middle.
