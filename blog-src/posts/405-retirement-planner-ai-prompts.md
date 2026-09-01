@@ -52,6 +52,28 @@ The six buttons sit under the chat box in the AI Chat tab. What makes them power
 
 Using the built-in AI Chat requires your own API key from a supported provider (a few cents per conversation), which the [AI setup guide](/blog/using-ai-in-the-retirement-planner.html) covers. If you would rather not connect a key, skip to the copy-and-paste method at the end, which works in every version. Either way, the AI is plan-aware: it knows your dollar headroom to the next tax bracket, the IRMAA threshold, and the ACA cliff, and it treats your passing [Plan Health checks](/blog/how-to-use-plan-health-ai-retirement-income-planner.html) as constraints it should not break.
 
+## Writing Your Own: The Five-Part Formula
+
+The six buttons cover the common questions. When you want to ask something they do not, the prompts that work follow the same shape, and it is worth knowing because it is the difference between a useful answer and a confident guess.
+
+Give the AI five things: the **role** it is playing, the **context** of what you are comparing, the **planner output** itself, the **task**, and the **limits** on what it may conclude.
+
+<div class="prompt-card">
+  <div class="prompt-card-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Prompt to copy
+  </div>
+  <div class="prompt-card-body">
+    <p><strong>Role:</strong> Use AI for education and scenario review only.</p>
+    <p><strong>Context:</strong> I am comparing <span class="prompt-card-fill">[scenario A]</span> and <span class="prompt-card-fill">[scenario B]</span>.</p>
+    <p><strong>Planner output:</strong> <span class="prompt-card-fill">[paste the calculated summary]</span></p>
+    <p><strong>Task:</strong> Explain what changed and why.</p>
+    <p><strong>Limits:</strong> Do not choose for me. List the assumptions I should verify through official sources or a qualified professional.</p>
+  </div>
+</div>
+
+The last part is doing more work than it looks. Without it, an AI asked a retirement question will happily supply the numbers you did not give it. Naming the limits is what turns the answer into something you can check.
+
 ## The Six Prompts, One by One
 
 ### Summarize & flag risks
