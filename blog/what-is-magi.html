@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Is MAGI in Retirement Planning?</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="MAGI, or modified adjusted gross income, can affect ACA Marketplace savings, Medicare IRMAA, Social Security taxation, Roth conversions, and retirement withdrawals.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/what-is-magi.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="What Is MAGI in Retirement Planning?">
+<meta property="og:description" content="MAGI, or modified adjusted gross income, can affect ACA Marketplace savings, Medicare IRMAA, Social Security taxation, Roth conversions, and retirement withdrawals.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/what-is-magi-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/what-is-magi.html">
+<meta property="article:published_time" content="2026-09-02">
+<meta property="article:modified_time" content="2026-09-02">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "What Is MAGI in Retirement Planning?", "description": "MAGI, or modified adjusted gross income, can affect ACA Marketplace savings, Medicare IRMAA, Social Security taxation, Roth conversions, and retirement withdrawals.", "datePublished": "2026-09-02", "dateModified": "2026-09-02", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/what-is-magi.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/what-is-magi-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Taxes & Roth", "item": "https://airetirementincomeplanner.com/blog.html#cat=taxes-roth"}, {"@type": "ListItem", "position": 4, "name": "What Is MAGI in Retirement Planning?", "item": "https://airetirementincomeplanner.com/blog/what-is-magi.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does MAGI stand for?", "acceptedAnswer": {"@type": "Answer", "text": "MAGI stands for modified adjusted gross income."}}, {"@type": "Question", "name": "Is MAGI the same as AGI?", "acceptedAnswer": {"@type": "Answer", "text": "Sometimes MAGI may be close to AGI, but it is not always the same. MAGI starts with AGI and then adds back items required by the rule being applied."}}, {"@type": "Question", "name": "Why does MAGI matter for early retirees?", "acceptedAnswer": {"@type": "Answer", "text": "Early retirees may use ACA Marketplace coverage before Medicare. HealthCare.gov says Marketplace savings are based on expected household income for the coverage year and that MAGI is used for eligibility."}}, {"@type": "Question", "name": "Why does MAGI matter after age 65?", "acceptedAnswer": {"@type": "Answer", "text": "Medicare IRMAA can raise Part B and Part D costs for higher-income beneficiaries. SSA Form SSA-44 shows that IRMAA uses MAGI from tax-return information."}}, {"@type": "Question", "name": "Can a Roth conversion raise MAGI?", "acceptedAnswer": {"@type": "Answer", "text": "Usually, yes. A Roth conversion generally adds taxable income in the conversion year, which can increase AGI and may increase MAGI for tax, ACA, or Medicare planning."}}, {"@type": "Question", "name": "Can Roth withdrawals help manage MAGI?", "acceptedAnswer": {"@type": "Answer", "text": "Qualified Roth distributions may be treated differently from taxable IRA withdrawals. The effect depends on the account, distribution type, and rule being applied. Verify the treatment before relying on it."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=taxes-roth">Taxes & Roth</a>
+        </nav>
+        <header class="post-header">
+          <h1>What Is MAGI?</h1>
+          <p class="post-meta"><span class="cat-badge">Taxes & Roth</span> · Published September 2, 2026 · 9 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#magi-in-plain-english">MAGI In Plain English</a></li>
+      <li><a href="#marketplace-magi">Marketplace MAGI</a></li>
+      <li><a href="#medicare-irmaa-magi">Medicare IRMAA MAGI</a></li>
+      <li><a href="#magi-and-social-security-taxation">MAGI And Social Security Taxation</a></li>
+      <li><a href="#magi-and-the-net-investment-income-tax">MAGI And The Net Investment Income Tax</a></li>
+      <li><a href="#three-definitions-one-table">Three Definitions, One Table</a></li>
+      <li><a href="#retirement-moves-that-can-raise-magi">Retirement Moves That Can Raise MAGI</a></li>
+      <li><a href="#example">Example</a></li>
+      <li><a href="#how-to-model-magi-in-the-planner">How To Model MAGI In The Planner</a></li>
+      <li><a href="#common-mistakes">Common Mistakes</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>MAGI stands for modified adjusted gross income. It usually starts with adjusted gross income, or AGI, and then adds back certain income items for a specific rule or program.</p>
+<p>In retirement planning, MAGI matters because it can affect ACA Marketplace savings before Medicare, Medicare IRMAA premiums after Medicare starts, Social Security taxation, Roth conversion planning, taxable-account sales, RMD years, and withdrawal-order choices.</p>
+<p>There is not one universal MAGI definition. Four different ones matter in retirement: Marketplace MAGI, Medicare IRMAA MAGI, the Social Security taxation test, and the net investment income tax. They start from the same AGI and add back different things, so the useful question is never "what is my MAGI" but "which MAGI, in which year, against which threshold".</p>
+<aside class="cta-box cta-soft">
+  <p>MAGI is easier to understand when it is connected to real retirement choices. The AI Retirement Income Planner lets you test withdrawals, Roth conversions, Social Security timing, ACA years, Medicare years, RMDs, and Plan Health together.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>MAGI usually starts with AGI and then adds back specific items.</li>
+<li>Different rules can define MAGI differently.</li>
+<li>ACA Marketplace savings use a Marketplace MAGI definition.</li>
+<li>Medicare IRMAA uses MAGI from tax-return information and can use income from an earlier tax year.</li>
+<li>Social Security taxation has its own income test that refers to modified adjusted gross income plus half of benefits.</li>
+<li>The net investment income tax uses a fourth definition, and its thresholds are not indexed for inflation.</li>
+<li>Roth conversions, IRA withdrawals, capital gains, pensions, work income, and tax-exempt interest can all matter.</li>
+<li>The planner's Tax &amp; ACA tools help users see MAGI-sensitive years inside the full retirement plan.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/what-is-magi-1.webp" alt="Editorial illustration of one wide river of income passing through a gate and splitting into three separate channels, each with its own gate at a different point, running to a medical cross, a shield and a government building." width="1400" height="1000" loading="lazy">
+</figure>
+
+<h2 id="magi-in-plain-english">MAGI In Plain English</h2>
+<p>Think of AGI as a starting point from the tax return. MAGI modifies that number for a specific purpose.</p>
+<p>The word modified is doing the work. A program or tax rule may say, in effect:</p>
+<p>Start with AGI, then add back certain items so we can decide whether this household qualifies for a credit, pays a premium surcharge, or has taxable benefits.</p>
+<p>That is why MAGI can confuse retirees. The same household may hear the word MAGI in several places:</p>
+<ul>
+<li>ACA Marketplace coverage.</li>
+<li>Medicare IRMAA.</li>
+<li>Social Security benefit taxation.</li>
+<li>Net investment income tax.</li>
+<li>Roth IRA eligibility during working years.</li>
+<li>Student aid or other programs outside retirement planning.</li>
+</ul>
+<p>This article focuses on retirement planning uses.</p>
+<h2 id="marketplace-magi">Marketplace MAGI</h2>
+<p>HealthCare.gov says Marketplace savings are based on expected household income for the year the household wants coverage. It also says the Marketplace uses MAGI to determine eligibility for premium tax credits and other savings.</p>
+<p>For Marketplace purposes, HealthCare.gov describes MAGI as AGI plus certain additions, including untaxed foreign income, non-taxable Social Security benefits, and tax-exempt interest. HealthCare.gov also says Marketplace applications ask for current monthly income and yearly income.</p>
+<p>For early retirees, this matters because income can be flexible.</p>
+<p>A household may control timing for:</p>
+<ul>
+<li>IRA withdrawals.</li>
+<li>401k withdrawals.</li>
+<li>Roth conversions.</li>
+<li>Taxable brokerage sales.</li>
+<li>Capital gains.</li>
+<li>Part-time work.</li>
+<li>Pension start dates.</li>
+<li>Social Security claiming.</li>
+<li>Cash use.</li>
+</ul>
+<p>That timing can affect Marketplace income estimates before Medicare begins. The cost-sharing side of this is covered in more depth in <a href="/blog/aca-silver-plan-cost-sharing-reductions.html">ACA Silver plan cost-sharing reductions</a>, and the wider picture in <a href="/blog/taxes-aca-healthcare-early-retirement.html">taxes, ACA subsidies and healthcare in early retirement</a>.</p>
+<h2 id="medicare-irmaa-magi">Medicare IRMAA MAGI</h2>
+<p>Medicare IRMAA is an income-related monthly adjustment amount that can raise Part B and Part D costs for higher-income beneficiaries.</p>
+<p>SSA Form SSA-44 shows that Medicare IRMAA uses modified adjusted gross income from tax-return information. The form describes MAGI for this purpose as adjusted gross income plus tax-exempt interest.</p>
+<p>This matters because retirement income decisions can affect Medicare premium planning:</p>
+<ul>
+<li>Roth conversions.</li>
+<li>Large IRA withdrawals.</li>
+<li>RMDs.</li>
+<li>Pension income.</li>
+<li>Taxable capital gains.</li>
+<li>Annuity income.</li>
+<li>Part-time work.</li>
+<li>Survivor filing status changes.</li>
+</ul>
+<p>IRMAA also has a timing issue because Medicare premiums can be based on tax-return information from an earlier year. A large income event may affect a later Medicare premium year.</p>
+<p>In the planner, review Medicare and IRMAA-sensitive years when testing Roth conversions, RMD pressure, taxable-account sales, or survivor scenarios. Conversions are the lever most likely to move this number, which is the subject of <a href="/blog/roth-conversions-before-rmds.html">Roth conversions before RMDs</a>.</p>
+<h2 id="magi-and-social-security-taxation">MAGI And Social Security Taxation</h2>
+<p>Social Security taxation uses another income test.</p>
+<p>IRS Topic No. 423 says benefits are not taxable unless the sum of modified adjusted gross income plus one half of Social Security benefits is more than the base amount for the filing status. The IRS points taxpayers to Publication 915 and Form 1040 instructions for worksheets.</p>
+<p>For retirement planning, this means Social Security should not be modeled as a standalone check. Other income can affect how much of the benefit becomes taxable.</p>
+<p>Income sources that can matter include:</p>
+<ul>
+<li>IRA withdrawals.</li>
+<li>RMDs.</li>
+<li>Pension income.</li>
+<li>Work income.</li>
+<li>Taxable interest.</li>
+<li>Dividends.</li>
+<li>Capital gains.</li>
+<li>Roth conversions.</li>
+<li>Rental income.</li>
+</ul>
+<p>The planner's tax views can help show when Social Security timing and withdrawal timing interact, and <a href="/blog/how-taxes-change-retirement-income.html">how taxes change retirement income</a> walks through that interaction in full.</p>
+<h2 id="magi-and-the-net-investment-income-tax">MAGI And The Net Investment Income Tax</h2>
+<p>There is a fourth definition worth knowing, because it catches people who sell an investment or a property in retirement.</p>
+<p>The net investment income tax adds 3.8% on investment income once MAGI passes a threshold. The IRS sets that threshold at $200,000 for single filers and $250,000 for married filing jointly. Two things make it different from the others.</p>
+<p>First, this MAGI is AGI with certain foreign earned income added back, which is a narrower adjustment than the Marketplace version.</p>
+<p>Second, and more useful to know: <strong>these thresholds are not indexed for inflation.</strong> ACA figures, tax brackets, the standard deduction and IRMAA tiers all move each year. The NIIT thresholds have not moved since the tax began. Every year of inflation therefore pulls slightly more households over the line without anyone earning more in real terms.</p>
+<p>For most retirees this never bites. It matters in the year of a large one-off event: selling a rental, a business, or a concentrated stock position.</p>
+<h2 id="three-definitions-one-table">Three Definitions, One Table</h2>
+<p>This is the part most explanations skip. Here are the retirement-relevant MAGI definitions side by side.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Roughly what MAGI means</th>
+<th>When it bites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Rule">ACA Marketplace</td>
+<td data-label="Roughly what MAGI means">AGI plus tax-exempt interest, non-taxable Social Security, and untaxed foreign income</td>
+<td data-label="When it bites">Every year you buy Marketplace cover before 65</td>
+</tr>
+<tr>
+<td data-label="Rule">Medicare IRMAA</td>
+<td data-label="Roughly what MAGI means">AGI plus tax-exempt interest</td>
+<td data-label="When it bites">Two years after the income year, once Medicare starts</td>
+</tr>
+<tr>
+<td data-label="Rule">Social Security taxation</td>
+<td data-label="Roughly what MAGI means">Modified AGI plus half your benefits, against a fixed base amount</td>
+<td data-label="When it bites">Any year you receive benefits alongside other income</td>
+</tr>
+<tr>
+<td data-label="Rule">Net investment income tax</td>
+<td data-label="Roughly what MAGI means">AGI plus certain foreign earned income</td>
+<td data-label="When it bites">Only above $200,000 single or $250,000 joint</td>
+</tr>
+</tbody>
+</table></div>
+<p>They overlap but they are not interchangeable. A plan that manages one can quietly worsen another, which is why the useful question is never "what is my MAGI" but "which MAGI, in which year, against which threshold".</p>
+<h2 id="retirement-moves-that-can-raise-magi">Retirement Moves That Can Raise MAGI</h2>
+<p>Common retirement decisions that may raise MAGI include:</p>
+<ul>
+<li>Converting traditional IRA money to Roth.</li>
+<li>Taking larger IRA or 401k withdrawals.</li>
+<li>Selling investments with capital gains.</li>
+<li>Starting pension income.</li>
+<li>Starting Social Security.</li>
+<li>Receiving taxable interest and dividends.</li>
+<li>Taking RMDs.</li>
+<li>Selling rental property.</li>
+<li>Working part time.</li>
+<li>Losing a deduction that reduced AGI.</li>
+</ul>
+<p>Some income sources may not raise MAGI in the same way. For example, HealthCare.gov says qualified distributions from a designated Roth account are not included in its retirement or pension income item. HSA distributions for qualified medical expenses are also generally treated differently from taxable IRA withdrawals, though HSA rules should be verified separately.</p>
+<p>The key is not to memorize every rule. The key is to know which years and decisions are income-sensitive.</p>
+<h2 id="example">Example</h2>
+<p>Assume a 62-year-old retiree needs Marketplace coverage for three years before Medicare.</p>
+<p>Base plan:</p>
+<ul>
+<li>$45,000 spending from cash and taxable accounts.</li>
+<li>No Social Security yet.</li>
+<li>No Roth conversion.</li>
+<li>Low taxable income.</li>
+</ul>
+<p>Scenario A:</p>
+<ul>
+<li>Add a $40,000 Roth conversion.</li>
+<li>Keep spending the same.</li>
+<li>Review taxable income and Marketplace MAGI.</li>
+</ul>
+<p>Scenario B:</p>
+<ul>
+<li>Use more cash for one year.</li>
+<li>Delay the Roth conversion.</li>
+<li>Review Marketplace MAGI and future RMD estimates.</li>
+</ul>
+<p>The conversion may still be useful long term, but the retiree needs to see how it changes current-year income, healthcare cost assumptions, future RMDs, Medicare years, and ending balances.</p>
+<p>That is why MAGI belongs in scenario planning rather than a glossary box alone.</p>
+<h2 id="how-to-model-magi-in-the-planner">How To Model MAGI In The Planner</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>Enter current income, spending, balances, and healthcare assumptions.</li>
+<li>Open or review the Tax &amp; ACA area.</li>
+<li>Save a base plan.</li>
+<li>Identify MAGI-sensitive years: ACA years, Medicare years, RMD years, Roth conversion years, and survivor years.</li>
+<li>Create one scenario at a time.</li>
+<li>Change one income item, such as a Roth conversion or withdrawal amount.</li>
+<li>Review tax, ACA, Medicare, IRMAA, RMD, balance, Plan Health, and Plan Confidence results.</li>
+<li>Save notes explaining what changed.</li>
+<li>Verify current rules with official sources and qualified professionals.</li>
+</ol>
+<figure class="shot post-img">
+<img src="/assets/img/blog/what-is-magi-2.webp" alt="A planner phase card showing one MAGI figure driving three outcomes at once: ACA subsidy eligibility above 100 percent of the federal poverty level, cost-sharing reductions lost above 250 percent, and an IRMAA proximity warning that this MAGI will set a later phase's Medicare premiums." width="419" height="185" loading="lazy">
+</figure>
+
+<h2 id="common-mistakes">Common Mistakes</h2>
+<ul>
+<li>Treating MAGI as the same number for every program.</li>
+<li>Looking only at federal tax and ignoring ACA or Medicare effects.</li>
+<li>Forgetting that Roth conversions can raise income in the conversion year.</li>
+<li>Forgetting taxable capital gains.</li>
+<li>Forgetting tax-exempt interest for some MAGI calculations.</li>
+<li>Assuming Social Security timing affects only monthly cash flow.</li>
+<li>Forgetting RMD years.</li>
+<li>Ignoring survivor filing-status changes.</li>
+<li>Using last year's income for Marketplace planning when the expected coverage-year income is different.</li>
+<li>Treating one low-tax year as the whole retirement plan.</li>
+</ul>
+<aside class="cta-box cta-demo">
+  <p>Try a demo scenario, add a Roth conversion or IRA withdrawal, and review how the Tax & ACA area changes before and after the adjustment.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-does-magi-stand-for">What does MAGI stand for?</h3>
+<p>MAGI stands for modified adjusted gross income.</p>
+<h3 id="is-magi-the-same-as-agi">Is MAGI the same as AGI?</h3>
+<p>Sometimes MAGI may be close to AGI, but it is not always the same. MAGI starts with AGI and then adds back items required by the rule being applied.</p>
+<h3 id="why-does-magi-matter-for-early-retirees">Why does MAGI matter for early retirees?</h3>
+<p>Early retirees may use ACA Marketplace coverage before Medicare. HealthCare.gov says Marketplace savings are based on expected household income for the coverage year and that MAGI is used for eligibility.</p>
+<h3 id="why-does-magi-matter-after-age-65">Why does MAGI matter after age 65?</h3>
+<p>Medicare IRMAA can raise Part B and Part D costs for higher-income beneficiaries. SSA Form SSA-44 shows that IRMAA uses MAGI from tax-return information.</p>
+<h3 id="can-a-roth-conversion-raise-magi">Can a Roth conversion raise MAGI?</h3>
+<p>Usually, yes. A Roth conversion generally adds taxable income in the conversion year, which can increase AGI and may increase MAGI for tax, ACA, or Medicare planning.</p>
+<h3 id="can-roth-withdrawals-help-manage-magi">Can Roth withdrawals help manage MAGI?</h3>
+<p>Qualified Roth distributions may be treated differently from taxable IRA withdrawals. The effect depends on the account, distribution type, and rule being applied. Verify the treatment before relying on it.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>HealthCare.gov, what is included as income: https://www.healthcare.gov/income-and-household-information/income/</li>
+<li>HealthCare.gov, saving money on health insurance: https://www.healthcare.gov/lower-costs/</li>
+<li>IRS Topic No. 423, Social Security and equivalent Railroad Retirement benefits: https://www.irs.gov/taxtopics/tc423</li>
+<li>IRS Publication 915 information page: https://www.irs.gov/forms-pubs/about-publication-915</li>
+<li>SSA Form SSA-44, Medicare income-related monthly adjustment amount life-changing event: https://www.ssa.gov/forms/ssa-44.pdf</li>
+<li>IRS, questions and answers on the net investment income tax: https://www.irs.gov/newsroom/questions-and-answers-on-the-net-investment-income-tax</li>
+<li>IRS Topic No. 559, net investment income tax: https://www.irs.gov/taxtopics/tc559</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. MAGI definitions vary by program and rule. Confirm tax, ACA Marketplace, Medicare, Social Security, RMD, Roth conversion, and planning decisions with official sources and qualified professionals.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-what-is-magi">Leave this blank</label>
+      <input type="text" id="pc-honey-what-is-magi" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-what-is-magi">Email address</label>
+    <input type="email" id="pc-email-what-is-magi" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Use the AI Retirement Income Planner when you want a private, browser-based way to review MAGI-sensitive scenarios across taxes, ACA Marketplace planning, Medicare IRMAA, Roth conversions, RMDs, withdrawal order, and retirement confidence.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/roth-conversions-before-rmds.html">Roth Conversions Before RMDs: What Retirees Should Model</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/state-taxes-in-retirement.html">State Taxes in Retirement: How Your State Changes Net Income</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/municipal-bonds-social-security-tax-trap.html">How Municipal Bond Interest Raises Social Security Tax</a> <span class="post-meta">· Taxes & Roth</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

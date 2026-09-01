@@ -50,7 +50,7 @@ If you do nothing, here is what happens. A traditional IRA that has grown to, sa
 
 [IMAGE roth optimizer 2]
 
-Worse, that extra income does not just get taxed once. It pulls more of your Social Security into the taxable zone, and once your income crosses certain thresholds it lifts your Medicare Part B and D premiums through IRMAA. The marginal cost of one extra dollar of RMD income can be far higher than the bracket alone suggests. This is the same web of thresholds covered in [taxes, ACA, and healthcare in early retirement](/blog/taxes-aca-healthcare-early-retirement.html), now working against you in later life. The solution is to voluntarily move money out of the pre-tax account before 73, paying tax today at a known rate, typically 12% or 22%, so it never appears as a forced RMD later.
+Worse, that extra income does not just get taxed once. It pulls more of your Social Security into the taxable zone, and once your income crosses certain thresholds it lifts your Medicare Part B and D premiums through IRMAA. The marginal cost of one extra dollar of RMD income can be far higher than the bracket alone suggests. This is the same web of thresholds covered in [taxes, ACA, and healthcare in early retirement](/blog/taxes-aca-healthcare-early-retirement.html), now working against you in later life. The solution is to voluntarily move money out of the pre-tax account before 73, paying tax today at a known rate, typically 12% or 22%, so it never appears as a forced RMD later. For the case behind that decision, rather than the tool that plans it, see [Roth conversions before RMDs](/blog/roth-conversions-before-rmds.html).
 
 ## Roth Conversion Software: Why This Optimizer Works Backwards
 

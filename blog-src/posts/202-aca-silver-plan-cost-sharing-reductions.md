@@ -82,7 +82,7 @@ That is why an unplanned bit of income late in the year, a larger-than-expected 
 
 ## The Lever Early Retirees Actually Have: MAGI
 
-Eligibility is based on your **modified adjusted gross income (MAGI)**, and this is where early retirees have an advantage most workers do not: in your 60s, before Social Security and required minimum distributions force your hand, you often have real control over your taxable income.
+Eligibility is based on your **modified adjusted gross income (MAGI)**, and this is where early retirees have an advantage most workers do not: in your 60s, before Social Security and required minimum distributions force your hand, you often have real control over your taxable income. Worth knowing before you rely on that control: [MAGI is not one number](/blog/what-is-magi.html), and the Marketplace version differs from the one Medicare uses later.
 
 The key is that different income sources hit MAGI differently:
 

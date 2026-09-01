@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roth Conversions Before RMDs: What Retirees Should Model</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Learn why Roth conversions before required minimum distributions may help some retirees manage future taxes, Medicare IRMAA, ACA subsidies, and survivor income planning.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/roth-conversions-before-rmds.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Roth Conversions Before RMDs: What Retirees Should Model">
+<meta property="og:description" content="Learn why Roth conversions before required minimum distributions may help some retirees manage future taxes, Medicare IRMAA, ACA subsidies, and survivor income planning.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/roth-conversions-before-rmds-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/roth-conversions-before-rmds.html">
+<meta property="article:published_time" content="2026-09-02">
+<meta property="article:modified_time" content="2026-09-02">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Roth Conversions Before RMDs: What Retirees Should Model", "description": "Learn why Roth conversions before required minimum distributions may help some retirees manage future taxes, Medicare IRMAA, ACA subsidies, and survivor income planning.", "datePublished": "2026-09-02", "dateModified": "2026-09-02", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/roth-conversions-before-rmds.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/roth-conversions-before-rmds-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Taxes & Roth", "item": "https://airetirementincomeplanner.com/blog.html#cat=taxes-roth"}, {"@type": "ListItem", "position": 4, "name": "Roth Conversions Before RMDs: What Retirees Should Model", "item": "https://airetirementincomeplanner.com/blog/roth-conversions-before-rmds.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Are Roth conversions taxable?", "acceptedAnswer": {"@type": "Answer", "text": "Often, yes. A conversion from pre-tax retirement money generally adds taxable income for the year. Amounts that were already taxed may be treated differently. Check IRS rules and work with a tax professional for your specific case."}}, {"@type": "Question", "name": "When do RMDs start?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says traditional IRA, SEP IRA, SIMPLE IRA, and retirement plan account owners generally must start RMDs at age 73. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan."}}, {"@type": "Question", "name": "Are Roth accounts subject to RMDs?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive. Beneficiaries can still be subject to RMD rules."}}, {"@type": "Question", "name": "Can an RMD be converted to a Roth?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says RMD amounts cannot be rolled over. Since a Roth conversion is a type of rollover to a Roth account, the required distribution itself cannot be converted away."}}, {"@type": "Question", "name": "Can a Roth conversion affect Medicare IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, it can. IRMAA is based on income, and a Roth conversion can increase income for the year. The SSA has a process to request a lower IRMAA after certain life-changing events that reduce household income, but that does not remove the need to plan carefully."}}, {"@type": "Question", "name": "Can a Roth conversion affect ACA subsidies?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. HealthCare.gov says IRA and 401k withdrawals generally count as income, and Marketplace savings are based on income and household size. A conversion may affect premium tax credits or cost-sharing reductions before Medicare."}}, {"@type": "Question", "name": "Should every retiree do Roth conversions before RMDs?", "acceptedAnswer": {"@type": "Answer", "text": "No. Roth conversions are most useful when they fit the household's tax, healthcare, cash-flow, estate, and survivor planning picture. Model several conversion amounts before deciding."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=taxes-roth">Taxes & Roth</a>
+        </nav>
+        <header class="post-header">
+          <h1>Roth Conversions Before RMDs: What Retirees Should Model</h1>
+          <p class="post-meta"><span class="cat-badge">Taxes & Roth</span> · Published September 2, 2026 · 11 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#what-is-a-roth-conversion">What Is A Roth Conversion?</a></li>
+      <li><a href="#why-the-years-before-rmds-matter">Why The Years Before RMDs Matter</a></li>
+      <li><a href="#a-simple-example">A Simple Example</a></li>
+      <li><a href="#five-questions-to-model-before-converting">Five Questions To Model Before Converting</a></li>
+      <li><a href="#can-you-convert-an-rmd-to-a-roth">Can You Convert An RMD To A Roth?</a></li>
+      <li><a href="#how-to-test-a-roth-conversion-in-the-planner">How To Test A Roth Conversion In The Planner</a></li>
+      <li><a href="#a-practical-modeling-framework">A Practical Modeling Framework</a></li>
+      <li><a href="#signs-a-roth-conversion-may-be-worth-modeling">Signs A Roth Conversion May Be Worth Modeling</a></li>
+      <li><a href="#signs-to-be-careful">Signs To Be Careful</a></li>
+      <li><a href="#the-mistake-to-avoid">The Mistake To Avoid</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>A Roth conversion before RMDs can be useful when you have lower-income years before required minimum distributions begin. The tradeoff is simple but important: you may pay more tax now so you might have lower taxable withdrawals later.</p>
+<p>That does not make Roth conversions automatically good. A conversion can also push income into a higher tax bracket, raise Medicare IRMAA costs, reduce ACA premium tax credits, or create a cash-flow problem if you do not have money available to pay the tax.</p>
+<p>The real question is not "Should I convert?" It is:</p>
+<p>What happens if I convert this amount, in this year, under my actual retirement income plan?</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/roth-conversions-before-rmds-1.webp" alt="Timeline of ages 60 to 75 marking the lower-income Roth conversion window that runs from 60 to 72, with required minimum distributions beginning at 73." width="1400" height="991" loading="lazy">
+</figure>
+
+<h2 id="what-is-a-roth-conversion">What Is A Roth Conversion?</h2>
+<p>A Roth conversion moves money from a pre-tax retirement account, such as a traditional IRA or certain 401k balances, into a Roth account.</p>
+<p>In plain English, it means you choose to recognize taxable income now instead of leaving all of that money in a tax-deferred account for later. The money moved into the Roth may then grow in a different tax bucket, subject to Roth rules.</p>
+<p>That sounds simple, but the planning question gets complicated because one decision can affect several other parts of retirement:</p>
+<ul>
+<li>Federal tax</li>
+<li>State tax</li>
+<li>Future RMDs</li>
+<li>Medicare IRMAA</li>
+<li>ACA premium tax credits before Medicare</li>
+<li>Survivor tax filing status</li>
+<li>Cash available to pay the conversion tax</li>
+<li>Long-term account balances</li>
+</ul>
+<p>This is why Roth conversion planning belongs inside a full retirement income model, not in a one-line calculator.</p>
+<h2 id="why-the-years-before-rmds-matter">Why The Years Before RMDs Matter</h2>
+<p>The IRS says required minimum distributions are minimum amounts that many retirement account owners must withdraw each year. Traditional IRA, SEP IRA, SIMPLE IRA, and many retirement plan accounts generally start RMDs when the account owner reaches age 73.</p>
+<p>RMDs are taxable in most cases. The IRS also states that Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive, although beneficiaries can have RMD rules after the owner's death.</p>
+<p>That creates a planning window for some households:</p>
+<ul>
+<li>They retire before age 73.</li>
+<li>Their wages fall or stop.</li>
+<li>Social Security may not have started yet.</li>
+<li>Pension income may not have started yet.</li>
+<li>They have pre-tax retirement balances that will eventually create RMDs.</li>
+</ul>
+<p>In those years, a retiree may have room to convert some pre-tax money to Roth at a tax cost that feels acceptable compared with future taxable income.</p>
+<p>The word "may" matters. The same strategy can help one household and hurt another.</p>
+<h2 id="a-simple-example">A Simple Example</h2>
+<p>Suppose a married couple retires at 62. They plan to delay Social Security until 70. They have a large traditional IRA, modest taxable savings, and no pension.</p>
+<p>From age 62 to 69, their taxable income may be lower than it was while they were working. That might give them room to convert part of the IRA each year.</p>
+<p>Now change the facts.</p>
+<p>Suppose the same couple needs ACA Marketplace coverage until Medicare. HealthCare.gov says IRA and 401k withdrawals generally count as income for Marketplace purposes. A Roth conversion can raise income, which may affect premium tax credits or cost-sharing reductions.</p>
+<p>The same conversion that looks appealing from a tax-bracket view may look less appealing after healthcare costs are included. The income measure doing the damage here is MAGI, and it is not one number: see <a href="/blog/what-is-magi.html">what MAGI is</a> for why the ACA, IRMAA and Social Security versions differ. The cost-sharing tier specifically is covered in <a href="/blog/aca-silver-plan-cost-sharing-reductions.html">ACA Silver plan cost-sharing reductions</a>.</p>
+<p>That is why the model needs to include healthcare and taxes together.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/roth-conversions-before-rmds-2.webp" alt="A planner phase card showing federal income tax and an ACA premium estimate, with ACA subsidy eligibility and Silver cost-sharing reductions both ticked, and a warning that MAGI is 3,595 dollars below the 250 percent federal poverty level ceiling." width="416" height="140" loading="lazy">
+</figure>
+
+<h2 id="five-questions-to-model-before-converting">Five Questions To Model Before Converting</h2>
+<h3 id="1-what-tax-bracket-are-you-filling">1. What tax bracket are you filling?</h3>
+<p>The basic Roth conversion idea is often described as "filling up" a lower tax bracket. That can be a useful mental model, but it is incomplete.</p>
+<p>A conversion adds taxable income. The extra income may be taxed at your marginal rate. It may also affect other tax items that phase in or out based on income.</p>
+<p>Instead of asking how much room is left in a bracket, ask:</p>
+<ul>
+<li>What is my projected taxable income before the conversion?</li>
+<li>What happens after a $10,000 conversion?</li>
+<li>What happens after a $25,000 conversion?</li>
+<li>What happens after a $50,000 conversion?</li>
+<li>Does the added income change anything else in the plan?</li>
+</ul>
+<h3 id="2-will-the-conversion-affect-medicare-irmaa">2. Will the conversion affect Medicare IRMAA?</h3>
+<p>Medicare IRMAA is an income-related monthly adjustment amount for Medicare Part B and Part D. A higher-income year can affect later Medicare premiums.</p>
+<p>The Social Security Administration says people who had a life-changing event that reduced household income can ask to lower IRMAA, with examples including marriage, divorce, death of a spouse, loss of income, and employer settlement payment. That relief process is useful to know, but it is not a planning substitute.</p>
+<p>If you are close to Medicare age, test conversions with Medicare premiums in mind.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/roth-conversions-before-rmds-3.webp" alt="A planner phase card showing Medicare Part B and Part D estimates with a red IRMAA warning that MAGI from two years prior of 128,162 dollars exceeds the 122,680 dollar threshold, adding 99 dollars a month to healthcare." width="427" height="161" loading="lazy">
+</figure>
+
+<h3 id="3-will-the-conversion-affect-aca-subsidies-before-medicare">3. Will the conversion affect ACA subsidies before Medicare?</h3>
+<p>Retirees who leave work before Medicare may use Marketplace coverage. HealthCare.gov says retirees may qualify for premium tax credits and lower out-of-pocket costs based on income and household size.</p>
+<p>A Roth conversion can raise income for the year. For a pre-Medicare retiree, that means the conversion may change the real cost of health insurance.</p>
+<p>This does not mean pre-Medicare retirees should never convert. It means healthcare cost changes need to be included in the test.</p>
+<h3 id="4-do-you-have-cash-to-pay-the-tax">4. Do you have cash to pay the tax?</h3>
+<p>A Roth conversion creates a tax bill. Many planners prefer paying the tax from taxable cash instead of withholding from the converted retirement account, but the right answer depends on age, cash reserves, and tax details.</p>
+<p>The practical question is:</p>
+<p>Can the household pay the tax without weakening the emergency fund or forcing extra withdrawals later?</p>
+<p>If the conversion tax drains too much cash, the long-term projection may look better while the short-term plan becomes fragile.</p>
+<h3 id="5-what-happens-to-the-surviving-spouse">5. What happens to the surviving spouse?</h3>
+<p>Roth conversions are often discussed as a lifetime tax-bracket issue, but survivor planning can matter even more.</p>
+<p>When one spouse dies, the surviving spouse may move from married filing jointly to single filer status. Income may not fall as much as the tax brackets do. Future RMDs, pension income, Social Security survivor benefits, and investment income can create a higher tax burden for the surviving spouse.</p>
+<p>For married couples, a Roth conversion test should compare:</p>
+<ul>
+<li>Both spouses living through the full plan</li>
+<li>One spouse dying earlier than expected</li>
+<li>The survivor's taxable income</li>
+<li>The survivor's ending balances</li>
+<li>The survivor's healthcare and Medicare cost assumptions</li>
+</ul>
+<p>This is where a household-level model can reveal issues a simple conversion calculator will miss.</p>
+<h2 id="can-you-convert-an-rmd-to-a-roth">Can You Convert An RMD To A Roth?</h2>
+<p>The IRS says RMD amounts cannot be rolled over into another tax-deferred account. Its rollover guidance also lists required minimum distributions as distributions that cannot be rolled over.</p>
+<p>In practical terms, once RMDs begin, the required distribution has to be handled first. Extra eligible amounts may still be candidates for conversion, but the RMD itself is not converted away.</p>
+<p>That is one reason people often look at conversions before RMD age. If you want to plan a sequence of conversions rather than a single one, the <a href="/blog/multi-year-roth-conversion-optimizer.html">multi-year Roth conversion optimizer</a> walks through doing it year by year.</p>
+<h2 id="how-to-test-a-roth-conversion-in-the-planner">How To Test A Roth Conversion In The Planner</h2>
+<p>The AI Retirement Income Planner is useful here because the decision touches many parts of the plan.</p>
+<p>A good workflow:</p>
+<ol>
+<li>Enter the household's retirement age, Social Security timing, account balances, pension income, and healthcare assumptions.</li>
+<li>Use the Edit values tab to confirm pre-tax, Roth, taxable, and cash balances.</li>
+<li>Add a sample Roth conversion amount in the relevant planning years.</li>
+<li>Review the Tax &amp; ACA tab for tax and healthcare effects.</li>
+<li>Open Plan Health to see whether the change creates new warnings or improves weak spots.</li>
+<li>Use What-if? to test different annual conversion amounts.</li>
+<li>Use Scenarios to compare no conversion, modest conversion, and larger conversion cases.</li>
+<li>Check Confidence, ending balances, taxable income patterns, and survivor outcomes.</li>
+</ol>
+<h2 id="a-practical-modeling-framework">A Practical Modeling Framework</h2>
+<p>Use this sequence when comparing conversion choices:</p>
+<h3 id="baseline">Baseline</h3>
+<p>Run the plan with no conversion. Save the result.</p>
+<p>Record:</p>
+<ul>
+<li>Confidence score</li>
+<li>Ending balances</li>
+<li>Taxable income pattern by age</li>
+<li>RMD pressure after 73</li>
+<li>Estimated healthcare costs</li>
+<li>Survivor plan health</li>
+</ul>
+<h3 id="small-conversion">Small Conversion</h3>
+<p>Add a modest annual conversion during lower-income years. Do not start with the biggest number.</p>
+<p>Record the same outputs.</p>
+<h3 id="moderate-conversion">Moderate Conversion</h3>
+<p>Increase the annual conversion and watch for tradeoffs.</p>
+<p>Look for:</p>
+<ul>
+<li>Higher current tax</li>
+<li>Lower later RMDs</li>
+<li>Changes in Medicare or ACA estimates</li>
+<li>Lower pre-tax balances</li>
+<li>Higher Roth balances</li>
+<li>Better or worse survivor results</li>
+</ul>
+<h3 id="stress-test">Stress Test</h3>
+<p>Run the plan through market, inflation, longevity, and healthcare stress cases.</p>
+<p>A conversion that looks good in the average case may look different when markets are weak or healthcare costs rise.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/roth-conversions-before-rmds-4.webp" alt="The planner Stress test tab showing a grid of average net monthly income across bear, base and bull returns crossed with four inflation rates, alongside a historical backtest reporting success across 71 overlapping retirement start years." width="1400" height="664" loading="lazy">
+</figure>
+
+<h2 id="signs-a-roth-conversion-may-be-worth-modeling">Signs A Roth Conversion May Be Worth Modeling</h2>
+<p>A Roth conversion may deserve a closer look if:</p>
+<ul>
+<li>You retire several years before RMD age.</li>
+<li>Your income is temporarily lower than normal.</li>
+<li>You have a large pre-tax IRA or 401k balance.</li>
+<li>You plan to delay Social Security.</li>
+<li>You are concerned about survivor tax rates.</li>
+<li>You want more tax diversification in retirement.</li>
+<li>You expect future taxable income to rise.</li>
+<li>You have taxable cash available to pay conversion taxes.</li>
+</ul>
+<p>These are reasons to model the idea, not automatic reasons to convert.</p>
+<h2 id="signs-to-be-careful">Signs To Be Careful</h2>
+<p>Be careful if:</p>
+<ul>
+<li>You need ACA coverage and are near subsidy-sensitive income ranges.</li>
+<li>You are near Medicare IRMAA thresholds.</li>
+<li>You would need to drain cash reserves to pay the conversion tax.</li>
+<li>You may move to a different state with different tax rules.</li>
+<li>You expect a very low-income year later.</li>
+<li>You are unsure whether the converted money can stay invested long enough.</li>
+<li>You do not understand the five-year Roth rules that may apply to your situation.</li>
+</ul>
+<p>This is also a good place to involve a tax professional. A planner can show scenarios, but it does not replace tax advice.</p>
+<h2 id="the-mistake-to-avoid">The Mistake To Avoid</h2>
+<p>The common mistake is treating Roth conversion planning as a yes-or-no decision.</p>
+<p>The better question is usually:</p>
+<p>How much, in which years, and under what assumptions?</p>
+<p>A $10,000 conversion may be fine. A $60,000 conversion may create problems. Or the opposite may be true if future RMDs and survivor taxes are a bigger issue than current taxes.</p>
+<p>Retirement income planning is full of these tradeoffs. The best answer is rarely universal.</p>
+<h2 id="faq">FAQ</h2>
+<h3 id="are-roth-conversions-taxable">Are Roth conversions taxable?</h3>
+<p>Often, yes. A conversion from pre-tax retirement money generally adds taxable income for the year. Amounts that were already taxed may be treated differently. Check IRS rules and work with a tax professional for your specific case.</p>
+<h3 id="when-do-rmds-start">When do RMDs start?</h3>
+<p>The IRS says traditional IRA, SEP IRA, SIMPLE IRA, and retirement plan account owners generally must start RMDs at age 73. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan.</p>
+<h3 id="are-roth-accounts-subject-to-rmds">Are Roth accounts subject to RMDs?</h3>
+<p>The IRS says Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive. Beneficiaries can still be subject to RMD rules.</p>
+<h3 id="can-an-rmd-be-converted-to-a-roth">Can an RMD be converted to a Roth?</h3>
+<p>The IRS says RMD amounts cannot be rolled over. Since a Roth conversion is a type of rollover to a Roth account, the required distribution itself cannot be converted away.</p>
+<h3 id="can-a-roth-conversion-affect-medicare-irmaa">Can a Roth conversion affect Medicare IRMAA?</h3>
+<p>Yes, it can. IRMAA is based on income, and a Roth conversion can increase income for the year. The SSA has a process to request a lower IRMAA after certain life-changing events that reduce household income, but that does not remove the need to plan carefully.</p>
+<h3 id="can-a-roth-conversion-affect-aca-subsidies">Can a Roth conversion affect ACA subsidies?</h3>
+<p>Yes. HealthCare.gov says IRA and 401k withdrawals generally count as income, and Marketplace savings are based on income and household size. A conversion may affect premium tax credits or cost-sharing reductions before Medicare.</p>
+<h3 id="should-every-retiree-do-roth-conversions-before-rmds">Should every retiree do Roth conversions before RMDs?</h3>
+<p>No. Roth conversions are most useful when they fit the household's tax, healthcare, cash-flow, estate, and survivor planning picture. Model several conversion amounts before deciding.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>IRS, Required Minimum Distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>IRS, Rollovers of Retirement Plan and IRA Distributions: https://www.irs.gov/retirement-plans/plan-participant-employee/rollovers-of-retirement-plan-and-ira-distributions</li>
+<li>Social Security Administration, Request to Lower an Income-Related Monthly Adjustment Amount: https://www.ssa.gov/medicare/lower-irmaa</li>
+<li>HealthCare.gov, Health Care Coverage for Retirees: https://www.healthcare.gov/retirees/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Roth conversions can affect income tax, Medicare IRMAA premiums, ACA premium tax credits, cash flow, and survivor income, and the rules, thresholds and contribution limits change over time. Screenshots show a sample plan and are illustrative only. Verify current rules with official sources such as IRS.gov, Medicare.gov and HealthCare.gov, and confirm any conversion with a qualified tax professional before acting.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-roth-conversions-before-rmds">Leave this blank</label>
+      <input type="text" id="pc-honey-roth-conversions-before-rmds" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-roth-conversions-before-rmds">Email address</label>
+    <input type="email" id="pc-email-roth-conversions-before-rmds" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>The AI Retirement Income Planner models income, taxes, Social Security, healthcare and withdrawals month by month, privately in your browser.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/what-is-magi.html">What Is MAGI in Retirement Planning?</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/state-taxes-in-retirement.html">State Taxes in Retirement: How Your State Changes Net Income</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/municipal-bonds-social-security-tax-trap.html">How Municipal Bond Interest Raises Social Security Tax</a> <span class="post-meta">· Taxes & Roth</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

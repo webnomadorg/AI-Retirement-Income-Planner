@@ -60,6 +60,7 @@ PAGES = {
     "cross-border-methodology.html": "",
     "worked-example-retiring-at-62.html": "",
     "about.html": "",
+    "product-facts.html": "",
     "press.html": "",
     "private.html": "",
     "thanks.html": "",

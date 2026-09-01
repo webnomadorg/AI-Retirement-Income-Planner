@@ -116,7 +116,7 @@ Keep the same starting balances, ages, and Social Security decisions at first. T
 
 Taxes can change the answer quickly.
 
-For many US retirees, the starting point is that US citizens and resident aliens abroad are generally subject to US tax on worldwide income. That means the abroad scenario should not simply erase US tax.
+For many US retirees, the starting point is that US citizens and resident aliens abroad are generally subject to US tax on worldwide income. That means the abroad scenario should not simply erase US tax. The tax side has enough moving parts to deserve its own treatment, which is in [expat retirement taxes: what to model before moving](/blog/expat-retirement-taxes-what-to-model.html).
 
 Compare:
 

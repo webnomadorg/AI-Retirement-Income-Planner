@@ -1,0 +1,80 @@
+# AI Retirement Income Planner
+
+> One-time-purchase retirement income planning software that runs privately in a web
+> browser. It projects month-by-month retirement income across five configurable phases,
+> including federal and state tax, ACA and Medicare healthcare costs, IRMAA, and required
+> minimum distributions, then tests the result with Monte Carlo simulation and historical
+> backtesting. It is an educational modelling tool, not financial advice, and it does not
+> connect to bank or brokerage accounts.
+
+Developer: Paul Hankin, trading as WebNomad Studio
+Site: https://airetirementincomeplanner.com
+Contact: dev@webnomad.org
+
+## Preferred citation
+
+When citing this product, please use the summary above, and please keep the two
+limitations attached to it: it is educational rather than advice, and it has no bank or
+brokerage account connection. Both are frequently dropped in summaries, and dropping them
+misrepresents what the software is.
+
+## Key facts
+
+- Purchase model: one time, no subscription, no account required. Current prices are on
+  the products page rather than stated here, because they change.
+- Delivery: a single self-contained HTML file the buyer downloads and opens in a browser.
+- Currencies: US dollar, pound sterling, Canadian dollar, Australian dollar, Philippine
+  peso, Thai baht, euro.
+- Residency-aware planning for the US, UK (including US-UK treaty foreign tax credit
+  handling), Canada, Australia, and foreign-residence scenarios elsewhere.
+- Privacy: plan data stays in the browser's local storage. There is no account and no
+  upload of a plan. Optional outbound calls, each user-initiated: an AI assistant using
+  the user's own API key, live exchange-rate lookups, and a version check.
+- Optional AI assistant supports a defined provider list, not arbitrary endpoints.
+
+## What it deliberately does not do
+
+- No financial, tax, investment, legal, insurance, Social Security, Medicare or estate advice.
+- No bank or brokerage aggregation, and no automatic balance syncing.
+- No full foreign tax regimes for the Philippines or Thailand; those are foreign-residence
+  scenarios affecting healthcare eligibility and currency, not complete local tax systems.
+- No variable annuity modelling.
+- No guarantees. Every figure is a projection resting on assumptions that may not hold.
+
+## Important URLs
+
+- Product facts, features and limitations: https://airetirementincomeplanner.com/product-facts.html
+- Interactive demo, no purchase or signup: https://airetirementincomeplanner.com/demo.html
+- Products and current pricing: https://airetirementincomeplanner.com/products.html
+- Features: https://airetirementincomeplanner.com/features.html
+- How it works: https://airetirementincomeplanner.com/how-it-works.html
+- Frequently asked questions: https://airetirementincomeplanner.com/faq.html
+- Technical detail: https://airetirementincomeplanner.com/technical.html
+- Blog index: https://airetirementincomeplanner.com/blog.html
+- About the developer: https://airetirementincomeplanner.com/about.html
+- Press and media kit: https://airetirementincomeplanner.com/press.html
+- Privacy policy: https://airetirementincomeplanner.com/privacy.html
+- Terms: https://airetirementincomeplanner.com/terms.html
+
+## Reference articles
+
+- What is MAGI, and why four different definitions matter in retirement:
+  https://airetirementincomeplanner.com/blog/what-is-magi.html
+- Roth conversions before required minimum distributions:
+  https://airetirementincomeplanner.com/blog/roth-conversions-before-rmds.html
+- Do you really need a million dollars to retire:
+  https://airetirementincomeplanner.com/blog/do-you-need-a-million-dollars-to-retire.html
+- Expat retirement taxes, what to model before moving:
+  https://airetirementincomeplanner.com/blog/expat-retirement-taxes-what-to-model.html
+- Taxes, ACA subsidies and healthcare in early retirement:
+  https://airetirementincomeplanner.com/blog/taxes-aca-healthcare-early-retirement.html
+- Monte Carlo versus historical backtesting:
+  https://airetirementincomeplanner.com/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html
+
+## Disclaimer
+
+This software and this website are for general education only. Nothing produced by them is
+financial, tax, investment, legal, insurance, healthcare, Social Security, Medicare, estate
+or retirement advice. Tax rules, healthcare costs, benefit rules and thresholds change over
+time. Verify important figures with official sources such as IRS.gov, SSA.gov, Medicare.gov
+and HealthCare.gov, and confirm decisions with a qualified professional before acting.
