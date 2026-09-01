@@ -304,7 +304,7 @@ The goal is not to force one answer. The goal is to make the tradeoffs visible.
 
 ### Can I retire at 60 with $1 million?
 
-Maybe. It depends on spending, healthcare costs, Social Security timing, taxes, account types, investment returns, inflation, debt, and how long retirement lasts. A $1 million portfolio can support very different lifestyles depending on the household.
+Maybe. It depends on spending, healthcare costs, Social Security timing, taxes, account types, investment returns, inflation, debt, and how long retirement lasts. A $1 million portfolio can support very different lifestyles depending on the household, which is the subject of [do you really need a million dollars to retire](/blog/do-you-need-a-million-dollars-to-retire.html).
 
 ### Can I get Social Security at 60?
 

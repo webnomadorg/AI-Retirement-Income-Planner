@@ -6,8 +6,6 @@
 
 **Published:** 2026-09-01
 
-**Draft:** true
-
 **Meta description:** The million-dollar retirement target is an average of strangers. Here is why it moved $200,000 in a year, what it cannot know about your situation, and how to find the only number that matters: what your own savings pays per month after tax and healthcare.
 
 **Suggested URL slug:** do-you-need-a-million-dollars-to-retire
@@ -22,11 +20,11 @@
 
 **Target reader:** People within ten years of retirement who have heard the million-dollar figure repeatedly, cannot tell whether it applies to them, and want a way to work out their own number from their own spending.
 
-**Image 1 alt:** Editorial illustration of a large round number on a signpost pointing one way, while a smaller path beside it is marked with a household's own monthly figures.
+**Image 1 alt:** Editorial illustration of one oversized target marker standing alone on a tall post, beside a path marked by many smaller markers of differing heights, none of them matching the single large one.
 
 **Image 2 alt:** The planner's What-if explorer showing the Maximum sustainable spending tool on a one million dollar sample plan, giving a maximum sustainable net income of 7,506 dollars a month against 5,673 dollars a month in the current plan, about 169 percent of planned withdrawals, with 5,774 dollars a month in today's money.
 
-**Image 3 alt:** Editorial illustration of two identical stacks of coins on a balance scale, each tilting differently because of the different labels beneath them for pension, healthcare, housing and taxes.
+**Image 3 alt:** Editorial illustration of a balance scale holding two identical stacks of discs, tipping unevenly because different shapes representing housing, healthcare, guaranteed income and taxes sit beneath each side.
 
 **Image 4 alt:** A planner phase card showing gross withdrawals reduced by tax and healthcare to a net monthly income figure, with the real inflation-adjusted value shown underneath.
 
@@ -194,6 +192,34 @@ The same balance, two different retirements.
 **Household B** retires at 58. No Social Security for four to nine years depending on when they claim, seven years of buying their own health cover before Medicare, a mortgage with eleven years left, and $85,000 of annual spending. Almost all of the savings is in a 401k, so every dollar withdrawn is ordinary income, and the withdrawals they need push their income high enough to reduce the healthcare help they might otherwise qualify for.
 
 Same million. One household is comfortable, the other is running a genuinely tight plan. No target number distinguishes them, because everything that separates them lives outside the balance.
+
+## What Tips the Answer Either Way
+
+Across the two households above, the same handful of factors keep doing the work. If you want a quick read on which side of the line you are likely to fall, these are the ones that matter.
+
+A million dollars is **more likely to be enough** when:
+
+- Retirement starts at or near Medicare age, so there are no expensive bridge years to fund.
+- Social Security covers a meaningful share of the spending, rather than a token amount.
+- Spending is moderate relative to the portfolio, and some of it is genuinely discretionary.
+- Housing costs are stable and the mortgage is gone or nearly gone.
+- Savings are spread across account types, so withdrawals can be managed for tax.
+- The household could cut back in a bad market year without real hardship.
+- Large one-time costs, such as a roof or a car, are already in the plan rather than waiting to surprise it.
+- The survivor is provided for, because one benefit stops and the tax brackets narrow.
+
+It is **less likely to be enough** when:
+
+- Retirement starts well before 65, adding years of self-funded healthcare.
+- Nearly all the savings sit in pre-tax accounts, so every dollar out is ordinary income.
+- Annual spending is high and most of it is fixed.
+- Debt payments are large and run well into retirement.
+- The plan only works if returns are good, with no margin for a poor first decade.
+- There is no flexibility, so a bad market forces a decision rather than an adjustment.
+- Long-term care risk is simply left out.
+- The survivor would be materially worse off and nothing offsets it.
+
+Notice that only one item on either list is about the size of the portfolio. The rest are about timing, structure, and flexibility.
 
 ## How to Run This on Your Own Numbers
 
