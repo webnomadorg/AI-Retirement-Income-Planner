@@ -1989,8 +1989,9 @@ function calcPhase(p){
       // v16: above the cliff there is no cap at all, so this is a PROXY for what an unsubsidised
       // plan costs, not an applicable percentage. It reads the top rung anyway so a refreshed ladder
       // cannot leave this estimate quoting a rate the rest of the app has stopped using.
-      // ⚠ The $700/mo floor is still a hardcoded figure and is NOT refreshable — see the note in
-      //   Plans/SEO-Search-Console-Actions.md; making it a field is a separate decision.
+      // The $700/mo floor is hardcoded and not refreshable. That is a CLOSED DECISION (owner,
+      // 2026-08-27) and deliberate: above the cliff there is no cap, so this stands in for what an
+      // unsubsidised plan costs rather than tracking a published rate. Do not raise it again.
       const _ovr=(p.acaCapTop!=null?p.acaCapTop:D_USD.acaCapTop);
       acaCost=acaVal===-1?Math.max(magi*(_ovr/100)/12,700):acaVal;
       if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
