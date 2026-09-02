@@ -11,6 +11,7 @@
 **Calendar priority:** Week 9 pillar  
 **Content type:** comparison
 **Published:** 2026-07-09
+**Updated:** 2026-09-02
 **Image 1 alt:** Split illustration contrasting a private, one-time-purchase retirement planner on the left with a recurring-subscription cloud tool on the right.
 **Image 2 alt:** AI Retirement Income Planner Overview tab with the Plan Confidence Score panel open, showing Plan Health checks, Monte Carlo, and historical backtest results.
 
@@ -98,11 +99,15 @@ They are different from owning a planning file.
 |---|---|---:|---:|---:|---|---|
 | AI Retirement Income Planner | Privacy-focused retirement income planning | No subscription for downloaded planner | No | No | One-time purchase, local browser-based modeling, taxes, healthcare, Social Security, scenarios, risk tools, optional AI | User enters data manually and manages backups |
 | Spreadsheet template | Simple DIY model | Usually no | No, unless cloud-hosted | No | Flexible and familiar | Easy to break formulas or miss tax and healthcare logic |
-| ProjectionLab | Visual web-based financial planning | Yes for Premium and Pro tiers | Yes | No bank link required for manual planning based on public page comments and product positioning | Strong modeling, Monte Carlo, historical backtesting, tax tools, reports, scenarios | Annual subscription for paid tiers |
+| ProjectionLab | Visual web-based financial planning | Yes for Premium and Pro tiers | Yes | Not required for manual planning | Strong modeling, Monte Carlo, historical backtesting, tax tools, reports, scenarios | Annual subscription for paid tiers |
 | MaxiFi | Economics-based lifetime planning | Yes | Yes | Not positioned as bank aggregation | Lifetime spending, Social Security, tax, Monte Carlo, Roth conversion features | Annual subscription tiers |
-| Boldin | Guided account-based planning | Upgrade tier | Yes | Not necessary for basic planning workflow based on signup page | Free start, Chance of Success Score, Monte Carlo, guided workflow | Paid upgrade and account-based web app |
+| Boldin | Guided account-based planning | Upgrade tier | Yes | Not required to start | Free start, Chance of Success Score, Monte Carlo, guided workflow | Paid upgrade and account-based web app |
+| Pralana Gold (Excel) | Detailed DIY modelling in a spreadsheet | No, one-time purchase with optional paid renewals | No | No | Deep tax and Roth conversion modelling, highly detailed inputs | Runs in Excel, so it inherits spreadsheet fragility and a steep learning curve |
+| Pralana Online | The same modelling as a web app | Yes, annual | Yes | No | Same depth without the spreadsheet | Annual subscription, and your plan lives on their service |
 
-Prices and tiers change. Check each official pricing page before buying.
+Prices and tiers change, and the bank-connection column reflects what each tool requires to build a plan rather than what it optionally supports. Check each official pricing page before buying.
+
+**A note on Pralana, because it is the closest comparison.** It is the best-known name in one-time-purchase retirement planning, and it is worth understanding how it is sold. The Excel product, Pralana Gold, is bought once at around $99 with optional paid renewals of about $49 a year, which keep the tax tables current. The web product, Pralana Online, is a genuine annual subscription at roughly $119 for the first year and $89 after that. So the same brand sits on both sides of this comparison, which is a useful reminder that "no subscription" is a spectrum rather than a badge. Figures were checked in September 2026 and will move; the vendor's pricing page is the authority.
 
 ## What A Serious Retirement Planner Should Include
 
@@ -609,6 +614,8 @@ It can. In the AI Retirement Income Planner, optional AI features can make netwo
 
 ## Source Links
 
+- Pralana Retirement Calculator, purchase and pricing: https://pralanaretirementcalculator.com/get-prc/
+- Can I Retire Yet, Pralana Online review: https://www.caniretireyet.com/pralana-online-retirement-calculator-review/
 - AI Retirement Income Planner official site: https://airetirementincomeplanner.com/
 - WebNomad product overview: https://webnomad.webflow.io/pages/ai-ready-retirement-income-planner
 - ProjectionLab pricing: https://projectionlab.com/pricing

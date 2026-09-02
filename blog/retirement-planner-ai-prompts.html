@@ -142,7 +142,7 @@
         </nav>
         <header class="post-header">
           <h1>The Six One-Click AI Prompts in the Retirement Planner</h1>
-          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published July 24, 2026 · 9 min read</p>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published July 24, 2026 · 11 min read</p>
         </header>
         <details class="post-toc">
   <summary>On this page</summary>
@@ -150,6 +150,7 @@
       <li><a href="#quick-answer">Quick Answer</a></li>
       <li><a href="#key-takeaways">Key Takeaways</a></li>
       <li><a href="#how-the-prompts-work">How the Prompts Work</a></li>
+      <li><a href="#writing-your-own-the-five-part-formula">Writing Your Own: The Five-Part Formula</a></li>
       <li><a href="#the-six-prompts-one-by-one">The Six Prompts, One by One</a></li>
       <li><a href="#applying-the-ais-proposed-changes">Applying the AI's Proposed Changes</a></li>
       <li><a href="#the-trade-off-the-ai-will-show-you">The Trade-Off the AI Will Show You</a></li>
@@ -187,6 +188,24 @@
 </figure>
 
 <p>Using the built-in AI Chat requires your own API key from a supported provider (a few cents per conversation), which the <a href="/blog/using-ai-in-the-retirement-planner.html">AI setup guide</a> covers. If you would rather not connect a key, skip to the copy-and-paste method at the end, which works in every version. Either way, the AI is plan-aware: it knows your dollar headroom to the next tax bracket, the IRMAA threshold, and the ACA cliff, and it treats your passing <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">Plan Health checks</a> as constraints it should not break.</p>
+<h2 id="writing-your-own-the-five-part-formula">Writing Your Own: The Five-Part Formula</h2>
+<p>The six buttons cover the common questions. When you want to ask something they do not, the prompts that work follow the same shape, and it is worth knowing because it is the difference between a useful answer and a confident guess.</p>
+<p>Give the AI five things: the <strong>role</strong> it is playing, the <strong>context</strong> of what you are comparing, the <strong>planner output</strong> itself, the <strong>task</strong>, and the <strong>limits</strong> on what it may conclude.</p>
+<div class="prompt-card">
+  <div class="prompt-card-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Prompt to copy
+  </div>
+  <div class="prompt-card-body">
+    <p><strong>Role:</strong> Use AI for education and scenario review only.</p>
+    <p><strong>Context:</strong> I am comparing <span class="prompt-card-fill">[scenario A]</span> and <span class="prompt-card-fill">[scenario B]</span>.</p>
+    <p><strong>Planner output:</strong> <span class="prompt-card-fill">[paste the calculated summary]</span></p>
+    <p><strong>Task:</strong> Explain what changed and why.</p>
+    <p><strong>Limits:</strong> Do not choose for me. List the assumptions I should verify through official sources or a qualified professional.</p>
+  </div>
+</div>
+
+<p>The last part is doing more work than it looks. Without it, an AI asked a retirement question will happily supply the numbers you did not give it. Naming the limits is what turns the answer into something you can check.</p>
 <h2 id="the-six-prompts-one-by-one">The Six Prompts, One by One</h2>
 <h3 id="summarize-flag-risks">Summarize &amp; flag risks</h3>
 <p>This is your start-every-session prompt. It gives a 60-second sanity check: the AI summarizes what your plan is doing and flags the top three or four things worth worrying about. You will often discover risks you did not know were there. Begin here, then dig into specifics with the others.</p>

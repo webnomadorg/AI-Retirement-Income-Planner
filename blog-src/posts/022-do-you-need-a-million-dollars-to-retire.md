@@ -129,7 +129,7 @@ Social Security, any pension, annuity income, rental income, part-time earnings,
 
 That number, not the million, is your target. And it is almost never one number for the whole of retirement, because the gap is largest in the years before Social Security and Medicare arrive, then shrinks.
 
-That is why a plan built in phases beats a single lifetime average. The bridge years are the hard part, and averaging them away hides exactly the problem you were trying to find.
+That is why a plan built in phases beats a single lifetime average. The bridge years are the hard part, and averaging them away hides exactly the problem you were trying to find. Not every tool works this way, which is part of what separates them: [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares what the main options actually model.
 
 ## What Your Actual Savings Produces
 

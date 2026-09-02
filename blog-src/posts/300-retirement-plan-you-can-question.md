@@ -120,7 +120,7 @@ It is a useful summary, but it is only a summary. A single percentage can look h
 
 ### Do I need special software, or can I use a spreadsheet?
 
-A carefully built spreadsheet can work. The practical issue is review speed: retirement planning is an adjustment process, and a structured tool lets you change one assumption and see the effect on taxes, healthcare, and later phases immediately. The more moving parts, the more that matters.
+A carefully built spreadsheet can work. The practical issue is review speed: retirement planning is an adjustment process, and a structured tool lets you change one assumption and see the effect on taxes, healthcare, and later phases immediately. The more moving parts, the more that matters. If you are weighing the options, [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html) compares the one-time-purchase tools against the subscription ones.
 
 ### What is the single most useful first step?
 
