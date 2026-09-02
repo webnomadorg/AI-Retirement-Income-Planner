@@ -364,6 +364,19 @@ def parse_post(md_path):
     head = text[:body_start] if body_start != -1 else text
     body = text[body_start + 1:] if body_start != -1 else ""
 
+    # ⚠ FRONT MATTER COMES IN TWO FORMS AND BOTH HAVE TO BE READ.
+    # Newer drafts bold their keys (`**Suggested URL slug:**`); older ones do not
+    # (`Suggested slug:`). Only the bold form was parsed, so a legacy draft lost its SEO title,
+    # its meta description AND its slug -- silently, because every one of those has a fallback:
+    # the title fell back to the H1, the description to empty, and the slug to the FILENAME. Six
+    # of the thirty staged posts would have published at /blog/003-how-rmds-can-change-your-
+    # retirement-tax-bill.html with no description, and the only visible symptom would have been
+    # the internal-link check failing on the links other posts had already made to the real slug.
+    # blog-release.ps1 has always accepted both forms, which is why nothing flagged it.
+    #
+    # Bold wins where a key appears both ways: collect the plain ones separately and merge them
+    # in underneath, so adding this can never override front matter that was already being read.
+    plain = {}
     for line in head.splitlines():
         m = re.match(r"^#\s+(.*)", line)
         if m:
@@ -372,11 +385,18 @@ def parse_post(md_path):
         m = re.match(r"^\*\*(.+?):\*\*\s*(.*)$", line)
         if m:
             meta[m.group(1).strip().lower()] = m.group(2).strip()
+            continue
+        m = re.match(r"^([A-Za-z][A-Za-z0-9 /&'-]{0,48}):\s*(.*)$", line)
+        if m:
+            plain.setdefault(m.group(1).strip().lower(), m.group(2).strip())
+    for k, v in plain.items():
+        meta.setdefault(k, v)
 
     if not title:
         sys.exit(f"{md_path.name}: no '# Title' line found")
 
-    slug = meta.get("suggested url slug") or md_path.stem
+    # "suggested slug" is the legacy spelling of the same field.
+    slug = meta.get("suggested url slug") or meta.get("suggested slug") or md_path.stem
     slug = re.sub(r"[^a-z0-9-]", "", slug.lower().replace(" ", "-"))
 
     category = meta.get("category")
@@ -1045,8 +1065,37 @@ def main():
     ap = argparse.ArgumentParser(description="Build the blog from blog-src/")
     ap.add_argument("--images", default=str(DEFAULT_IMAGES_DIR),
                     help="Directory holding source images (default: ../Blog Posts/Images)")
+    ap.add_argument("--preview", metavar="MD",
+                    help="Render ONE post from any .md path into --preview-out and write "
+                         "nothing else. Used by the Owner Console's Blog tab to show a staged "
+                         "draft as a reader would see it, before it is published.")
+    ap.add_argument("--preview-out", metavar="DIR",
+                    help="Directory --preview writes into. Required with --preview.")
     args = ap.parse_args()
     images_dir = Path(args.images)
+
+    # ── Preview mode redirects every output path before anything is written ──────────────
+    # The render path writes in exactly three places, all of them module globals read at call
+    # time: the page (OUT_DIR), the images (IMG_OUT, via prepare_images and
+    # prepare_square_thumb), and the promo file (PROMO_DIR, inside render_post). Rebinding all
+    # three sends the whole lot into a scratch directory, so a preview cannot leave anything
+    # behind in Website/ -- no half-staged post that the next push would publish, and no webp
+    # for an unpublished article sitting in the public assets folder.
+    #
+    # ⚠ It follows that adding a FOURTH write to the render path silently breaks that promise.
+    # If you add one, give it a global and rebind it here too.
+    global OUT_DIR, IMG_OUT, PROMO_DIR
+    if args.preview:
+        if not args.preview_out:
+            sys.exit("--preview also needs --preview-out")
+        preview_md = Path(args.preview)
+        if not preview_md.exists():
+            sys.exit(f"No such post: {preview_md}")
+        preview_root = Path(args.preview_out)
+        OUT_DIR = preview_root
+        IMG_OUT = preview_root / "assets" / "img" / "blog"
+        PROMO_DIR = preview_root / "promo"
+        IMG_OUT.mkdir(parents=True, exist_ok=True)
 
     templates = {
         "post": (TEMPLATES / "post.html").read_text(encoding="utf-8"),
@@ -1070,6 +1119,22 @@ def main():
     check_capture_config(posts)
 
     square_dir = images_dir / "square images"
+
+    if args.preview:
+        # The post being previewed is not in blog-src yet, so it is parsed straight from its
+        # draft and slotted into the corpus. It has to be IN the list rather than rendered
+        # against it: related-post blocks and the series navigation are drawn from the whole
+        # set, and a preview that quietly rendered them from a corpus missing this article
+        # would be showing something other than what publishing produces.
+        target = parse_post(preview_md)
+        others = [p for p in posts if p["slug"] != target["slug"]]
+        every = sorted(others + [target], key=lambda p: p["published"], reverse=True)
+        images = prepare_images(target, images_dir)
+        target["sq_thumb"] = prepare_square_thumb(target, square_dir)
+        render_post(target, every, templates, partials, images)
+        # The console reads this line to find the page it just asked for.
+        print(f"PREVIEW-PAGE {OUT_DIR / (target['slug'] + '.html')}")
+        return
 
     print(f"Building {len(posts)} post(s)...")
     for post in posts:
