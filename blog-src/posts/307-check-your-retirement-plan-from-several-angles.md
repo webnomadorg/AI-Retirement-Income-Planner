@@ -61,7 +61,7 @@ A practical review covers several categories, and they deliberately overlap:
 - **Tax bracket efficiency**: is taxable income being shaped on purpose, or pushed into higher brackets by accident?
 - **ACA and healthcare sensitivity**, and **IRMAA exposure**: is income near a threshold that changes healthcare cost?
 - **Required-distribution pressure**: will a large pre-tax balance force taxable income later?
-- **Withdrawal sustainability**: is the withdrawal reasonable over the whole timeline, not just this year?
+- **Withdrawal sustainability**: is the withdrawal reasonable over the whole timeline, not just this year? Measuring [withdrawals against current balances](/blog/is-my-retirement-income-sustainable.html) is the angle that catches a plan drawing down faster than it looks.
 - **Stress-test resilience**: does the plan survive lower returns, higher inflation, or a weak early market?
 - **Account mix and flexibility**: are the assets usable, with enough Roth and cash for tax-sensitive years?
 

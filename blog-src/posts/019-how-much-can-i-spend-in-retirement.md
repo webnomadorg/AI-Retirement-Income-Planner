@@ -306,7 +306,7 @@ Your retirement spending level may be too high if:
 - You need to sell investments during every market decline
 - The plan has no emergency reserve
 
-These signs do not mean retirement is impossible. They mean the spending level needs testing.
+These signs do not mean retirement is impossible. They mean the spending level needs testing. If you are already retired, that test runs backwards from where you are now, [measuring current withdrawals against current balances](/blog/is-my-retirement-income-sustainable.html) rather than against the spending plan you set on your retirement date.
 
 ## Signs You May Be Spending Less Than You Could
 

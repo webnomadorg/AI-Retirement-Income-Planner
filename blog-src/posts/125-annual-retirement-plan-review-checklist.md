@@ -69,7 +69,7 @@ Review:
 - Home equity, if it is part of the plan.
 - Debt balances.
 
-The annual review should not rely on last year's portfolio value. Retirement projections are highly sensitive to current balances, especially once withdrawals have started.
+The annual review should not rely on last year's portfolio value. Retirement projections are highly sensitive to current balances, especially once withdrawals have started, which is why a [sustainability check works from current balances and current spending](/blog/is-my-retirement-income-sustainable.html) rather than from the retirement date you originally planned around.
 
 ## 2. Compare Actual Spending With Planned Spending
 

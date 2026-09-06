@@ -73,7 +73,7 @@ Some changes should not wait for the annual review. A retirement-date change, jo
 
 ## Review Plan Health After Updates
 
-Do not assume an update is neutral. A new tax bracket can change your Roth conversion room, a new FPL value can shift ACA planning, a new IRMAA threshold can change Medicare exposure, a new balance can change withdrawal sustainability, and a higher inflation assumption can weaken real income. So after updating, run the review again and ask whether the health score changed, which check moved, which phase caused it, whether the change came from updated values or a planning decision, and whether it needs action. This is the same multi-angle review from earlier in the series, just repeated on the new numbers, which is why [checking the plan from several angles](/blog/check-your-retirement-plan-from-several-angles.html) becomes an annual habit rather than a one-time task.
+Do not assume an update is neutral. A new tax bracket can change your Roth conversion room, a new FPL value can shift ACA planning, a new IRMAA threshold can change Medicare exposure, a new balance can change [withdrawal sustainability](/blog/is-my-retirement-income-sustainable.html), and a higher inflation assumption can weaken real income. So after updating, run the review again and ask whether the health score changed, which check moved, which phase caused it, whether the change came from updated values or a planning decision, and whether it needs action. This is the same multi-angle review from earlier in the series, just repeated on the new numbers, which is why [checking the plan from several angles](/blog/check-your-retirement-plan-from-several-angles.html) becomes an annual habit rather than a one-time task.
 
 ## Keep It Practical
 
