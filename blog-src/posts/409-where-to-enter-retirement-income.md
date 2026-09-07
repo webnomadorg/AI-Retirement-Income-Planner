@@ -97,7 +97,7 @@ If you have worked in the UK you may be entitled to a UK State Pension alongside
 
 **Part-time or consulting work** is ordinary earned income, entered on the phases where you actually expect it rather than as a lifelong stream — most people taper off rather than stopping dead, and modeling it year by year is more honest.
 
-**Rental, annuity and dividend income** has its own field because it can be taxable or partly a return of your own capital, and that distinction changes both your tax and the income figure the ACA and Medicare look at.
+**Rental, annuity and dividend income** has its own field because it can be taxable or partly a return of your own capital, and that distinction changes both your tax and the income figure the ACA and Medicare look at. For a rental, what belongs in the box is [the net figure after vacancy, repairs and management](/blog/retirement-with-rental-income.html), since the planner does not model those costs separately.
 
 **An inheritance, a house sale or a large one-off expense** is not an income stream at all — it is a single event in a single year, and it belongs in lump sums. Spreading a windfall across a phase as though it were monthly income would understate what it does to your tax in the year it lands.
 

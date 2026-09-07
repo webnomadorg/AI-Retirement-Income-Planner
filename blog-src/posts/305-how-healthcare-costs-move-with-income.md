@@ -61,7 +61,7 @@ ACA premium tax credits and cost-sharing reductions are linked to income, so a r
 - A qualified **Roth** withdrawal usually does not raise it either.
 - A **traditional IRA/401(k)** withdrawal usually raises it in full.
 - A **brokerage** sale raises income only by the gain portion.
-- **Part-time work** or rental income can raise MAGI.
+- **Part-time work** or [rental income](/blog/retirement-with-rental-income.html) can raise MAGI.
 
 So the ACA-years question is not just "can I afford the premium." It is "how does my income plan change the premium."
 

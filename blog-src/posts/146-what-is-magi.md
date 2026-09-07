@@ -139,7 +139,7 @@ First, this MAGI is AGI with certain foreign earned income added back, which is 
 
 Second, and more useful to know: **these thresholds are not indexed for inflation.** ACA figures, tax brackets, the standard deduction and IRMAA tiers all move each year. The NIIT thresholds have not moved since the tax began. Every year of inflation therefore pulls slightly more households over the line without anyone earning more in real terms.
 
-For most retirees this never bites. It matters in the year of a large one-off event: selling a rental, a business, or a concentrated stock position.
+For most retirees this never bites. It matters in the year of a large one-off event: [selling a rental](/blog/retirement-with-rental-income.html), a business, or a concentrated stock position.
 
 ## Three Definitions, One Table
 

@@ -335,7 +335,7 @@ Guaranteed or reliable income may include:
 - Social Security
 - Pension income
 - Income annuities
-- Certain rental income, if realistic and net of costs
+- Certain rental income, if [realistic and net of costs](/blog/retirement-with-rental-income.html)
 - Part-time work, if truly dependable
 
 Portfolio withdrawals may cover:
