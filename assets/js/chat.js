@@ -166,16 +166,18 @@
       '<div class="wn-chat-head">' +
         '<div class="wn-chat-head-text">' +
           '<strong class="wn-chat-title">Ask about the planner</strong>' +
-          '<span class="wn-chat-note">' + esc(cfg && cfg.disclaimer ? cfg.disclaimer : "") +
-          " You are chatting with an AI assistant.</span>" +
+          /* ⚠ Both halves are required and neither may be dropped to save a line: that this
+             is an AI, and that it is not advice. Shortened, not removed. */
+          '<span class="wn-chat-note">AI assistant · educational information, not ' +
+          "financial advice.</span>" +
         "</div>" +
         '<button type="button" class="wn-chat-close" aria-label="Close">&times;</button>' +
       "</div>" +
       '<div class="wn-chat-log" id="wnChatLog" aria-busy="false"></div>' +
       '<p class="wn-chat-sr sr-only" id="wnChatLive" role="status" aria-live="polite"></p>' +
       '<div class="wn-chat-foot">' +
-        '<p class="wn-chat-hint">Conversations are stored so the site can be improved. ' +
-        "Please do not type personal or financial details.</p>" +
+        '<p class="wn-chat-hint">Stored to improve the site. Please don’t type ' +
+        "personal details.</p>" +
         '<form class="wn-chat-form" novalidate>' +
           '<div class="sr-only" aria-hidden="true">' +
             '<label for="wnChatHoney">Leave this blank</label>' +
@@ -189,13 +191,15 @@
             '<path d="M4 12h15M13 6l6 6-6 6"/></svg>' +
           "</button>" +
         "</form>" +
-        '<p class="wn-chat-count" id="wnChatCount"></p>' +
+        '<div class="wn-chat-meta">' +
+          '<p class="wn-chat-count" id="wnChatCount"></p>' +
         /* A quiet line, not a modal and not a banner. It selects the people who found the
            assistant useful, which is a value exchange rather than a toll on the way in --
            the reason it survives alongside the decision not to gate on an email. */
-        '<p class="wn-chat-share" id="wnChatShare" hidden>' +
-          '<button type="button" class="wn-chat-sharelink">Email me this conversation</button>' +
-        "</p>" +
+          '<p class="wn-chat-share" id="wnChatShare" hidden>' +
+            '<button type="button" class="wn-chat-sharelink">Email me this</button>' +
+          "</p>" +
+        "</div>" +
         '<form class="wn-chat-shareform" id="wnChatShareForm" hidden novalidate>' +
           '<div class="sr-only" aria-hidden="true">' +
             '<label for="wnChatShareHoney">Leave this blank</label>' +
