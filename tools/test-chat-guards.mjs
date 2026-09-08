@@ -502,5 +502,25 @@ console.log('  live-run regressions');
     /I cannot answer any more questions just now/.test(widget));
 }
 
+/* ---------------------------------------- 16. the head goes out before the body */
+console.log('  streaming headers');
+{
+  /* ⚠ THE BUG THAT BROKE THE FIRST REAL CONVERSATION, and it was invisible from the outside.
+     Set-Cookie was set AFTER the reply had streamed. res.write() flushes the headers, so
+     setHeader() threw, and the throw landed between the last text chunk and the closing
+     {done} line. The visitor saw a complete, correct answer. Underneath, the message count
+     never incremented and no conversation signature was issued -- so the NEXT question
+     arrived with history and no signature, was refused as a possible forgery, and the panel
+     disappeared. Nothing errored anywhere a person would look. */
+  const api = readFileSync(new URL('../api/chat.mjs', import.meta.url), 'utf8');
+  const afterStreaming = api.slice(api.indexOf('const line = (o) =>'));
+  ok('no header is set once the body has started', !/res\.setHeader\(/.test(afterStreaming));
+  ok('the head is written lazily, with the first line', /function sendHead\(/.test(api));
+  ok('the cookie rides that head', /h\['Set-Cookie'\] = cookie/.test(api));
+  /* A turn the model never answered must not spend one of the visitor's ten. */
+  ok('the error path sends no cookie', /headOnly\(\)/.test(api));
+  ok('and headOnly means exactly that', /const headOnly = \(\) => sendHead\(false\)/.test(api));
+}
+
 console.log('\n  ' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + ` — ${pass} passed, ${fail} failed\n`);
 process.exit(fail === 0 ? 0 : 1);

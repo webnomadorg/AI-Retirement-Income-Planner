@@ -297,9 +297,42 @@ export default async function handler(req, res) {
   const messages = [...history, { role: 'user', content: question }];
   const client = new Anthropic({ apiKey });
 
-  res.status(200);
-  res.setHeader('Content-Type', 'application/x-ndjson; charset=utf-8');
-  const line = (o) => res.write(JSON.stringify(o) + '\n');
+  /* ⚠ HEADERS GO OUT WITH THE FIRST BODY BYTE, NOT AFTER IT.
+
+     This is where the assistant broke on its first real conversation. The Set-Cookie
+     carrying the visitor's message count used to be set AFTER the reply had been streamed
+     — but res.write() flushes the headers, so setHeader() then threw, and the throw landed
+     after the last text chunk and before the closing {done} line. The visitor saw a
+     complete answer and nothing looked wrong. Underneath, two things had failed silently:
+     the count never incremented, and no conversation signature was issued. The next
+     question therefore arrived with history but no signature, was refused as a possible
+     forgery, and the panel went away.
+
+     So the head is written lazily, at the first line of output. By then the model has
+     produced a token, which is the proof that the turn is real and worth counting.
+
+     ⚠ The error path calls headOnly() instead, which sends the same head WITHOUT the
+     cookie — a turn the model never answered must not spend one of the visitor's ten. */
+  const next = { ...state, n: state.n + 1 };
+  let headSent = false;
+
+  function sendHead(withCookie) {
+    if (headSent) return;
+    headSent = true;
+    const h = {
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'private, no-store',
+      'X-Content-Type-Options': 'nosniff',
+    };
+    if (withCookie) {
+      const cookie = stateCookie(next);
+      if (cookie) h['Set-Cookie'] = cookie;
+    }
+    res.writeHead(200, h);
+  }
+
+  const line = (o) => { sendHead(true); res.write(JSON.stringify(o) + '\n'); };
+  const headOnly = () => sendHead(false);
 
   let answer = '';
   let usage = null;
@@ -333,17 +366,17 @@ export default async function handler(req, res) {
        visitor's ten messages — otherwise a bad hour at the API silently exhausts people
        who never got an answer. Ends by saying what still works, the _aiFriendlyError()
        convention from the planner. */
-    line({ error: 'I could not reach the assistant just then. The pages themselves have '
-      + 'the same information, and the contact page will always reach a person.' });
+    headOnly();
+    res.write(JSON.stringify({ error: 'I could not reach the assistant just then. '
+      + 'The pages themselves have the same information, and the contact page will '
+      + 'always reach a person.' }) + String.fromCharCode(10));
     return res.end();
   }
 
   /* ---- account for it ------------------------------------------------------------- */
   const usd = costOf(model, usage);
   noteLocalSpend(usd);
-  const next = { ...state, n: state.n + 1 };
-  const cookie = stateCookie(next);
-  if (cookie) res.setHeader('Set-Cookie', cookie);
+  /* The cookie already went out with the head, above - it cannot be set here. */
 
   const nextHistory = [...messages, { role: 'assistant', content: answer }].slice(-MAX_TURNS);
   const remaining = Math.max(0, maxMessages - next.n);
