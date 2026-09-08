@@ -157,6 +157,13 @@ ok('the input cap is enforced in one place', ctx.MAX_QUESTION_CHARS === 1000);
   /* The rule allows relaying an offer the OWNER has written, and forbids inventing one.
      Both halves are asserted, because loosening it to let the owner publish a discount
      is exactly the change that could quietly remove the protection. */
+  /* ⚠ The accuracy pass caught this one live. The rule used to read "never rate, rank,
+     criticise or compare a named competitor" and the model read "compare" narrowly: it
+     declined to rank them and then described one anyway, from memory, in a paragraph about
+     their pricing tiers and business model. The word DESCRIBE is what closed it. */
+  ok('the cached block forbids describing a competitor', /or DESCRIBE another company/.test(a));
+  ok('and says why, so the rule is not just a prohibition',
+    /nothing about them is in the material you have been given/.test(a));
   ok('the cached block forbids inventing a concession', /Never INVENT or improvise/.test(a));
   ok('and forbids agreeing to one', /never agree to one on the business/.test(a));
   ok('while allowing a published offer to be relayed', /You MAY state a policy or an offer/.test(a));
