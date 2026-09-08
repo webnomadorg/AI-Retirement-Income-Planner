@@ -392,6 +392,12 @@
   <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
        tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
   <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
   <!-- Email addresses are assembled here rather than written into the HTML, so an address
        harvester fetching the page source finds no address to take. The link works without
        JavaScript too: it points at the contact form until this upgrades it.

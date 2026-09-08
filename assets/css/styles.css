@@ -2134,3 +2134,194 @@ html.dark .search-result mark{ background:rgba(193,154,46,.38); color:#FFF0CC; }
   .search-page-form{ flex-wrap:wrap; }
   .search-page-form .blog-search{ flex:1 1 100%; }
 }
+
+/* ---- 22. Site assistant -----------------------------------------------------
+   The floating launcher and its panel. Built entirely from existing tokens
+   (--surface, --ink, --line, --teal, --radius, --shadow), which is why there is
+   no dark-mode block below and no per-theme overrides: light, dark and the four
+   alternate palettes all work for free. ⚠ A hardcoded hex here would owe six
+   variants, and would be wrong in five of them the day it is written.
+
+   Z-INDEX SLOT: 160-190. Above .search-overlay (120) and .scroll-top-fab (150),
+   below .skip (200), .lightbox (300) and .cookie-banner (1200). A lightbox should
+   cover the chat; the cookie banner must stay on top and be dealt with first.
+   ------------------------------------------------------------------------- */
+
+/* ⚠ The back-to-top FAB already occupies right:20px bottom:20px (section 16).
+   Lift it above the launcher rather than letting the two overlap. These offsets
+   are paired with .wn-chat-fab below -- change one and you must change the other,
+   in BOTH the base rule and the phone media query. */
+body.wn-chat-on .scroll-top-fab{ bottom:78px; }
+@media (max-width:480px){
+  body.wn-chat-on .scroll-top-fab{ bottom:68px; }
+}
+
+/* ---- launcher ---- */
+/* A labelled pill, not a bare circle. A bare bubble in this corner reads as a
+   pushy live-chat rep to the audience this site is for, and gets dismissed on
+   sight; a label says what it actually is. It collapses to a circle below 480px
+   where there is no room for the words. */
+.wn-chat-fab{
+  position:fixed; right:20px; bottom:20px; z-index:160;
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.6rem 1rem .6rem .85rem;
+  border:1px solid var(--line); border-radius:999px;
+  background:var(--surface); color:var(--ink);
+  font-family:var(--font-sans); font-size:.95rem; font-weight:500; line-height:1;
+  box-shadow:var(--shadow); cursor:pointer;
+  opacity:0; visibility:hidden; transform:translateY(8px);
+  transition:opacity .22s ease, transform .22s ease, visibility .22s,
+             border-color .15s, color .15s;
+}
+.wn-chat-fab.visible{ opacity:1; visibility:visible; transform:translateY(0); }
+.wn-chat-fab:hover{ color:var(--teal); border-color:var(--teal); }
+.wn-chat-fab:focus-visible{ outline:none; box-shadow:var(--ring); border-color:var(--teal); }
+.wn-chat-fab svg{ width:19px; height:19px; flex:0 0 auto; pointer-events:none; }
+@media (max-width:480px){
+  .wn-chat-fab{ right:14px; bottom:14px; width:46px; height:46px; padding:0;
+    justify-content:center; border-radius:50%; }
+  .wn-chat-fab .wn-chat-fab-label{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  .wn-chat-fab{ transition:none; }
+}
+
+/* ---- panel ---- */
+/* ⚠ .wn-chat-panel[hidden] is REQUIRED: the base rule sets display:flex, which
+   beats the browser's own [hidden]{display:none} on specificity, so the panel
+   would never hide. Same escape hatch .search-overlay needs. */
+.wn-chat-panel{
+  position:fixed; right:20px; bottom:20px; z-index:170;
+  width:min(400px, calc(100vw - 40px));
+  height:min(600px, calc(100vh - 40px));
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--surface); color:var(--ink);
+  border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+}
+.wn-chat-panel[hidden]{ display:none; }
+
+.wn-chat-head{
+  display:flex; align-items:flex-start; gap:.6rem;
+  padding:.85rem 1rem; border-bottom:1px solid var(--line-soft); flex:0 0 auto;
+}
+.wn-chat-head-text{ flex:1; min-width:0; }
+.wn-chat-title{
+  display:block; font-family:var(--font-display); font-size:1rem; color:var(--ink);
+}
+/* The disclaimer is on screen while someone is forming an impression, not buried
+   in a footer they have scrolled past. ⚠ Do not move it behind a toggle: AI text
+   reads as more authoritative than static prose precisely because it answers you. */
+.wn-chat-note{
+  display:block; margin-top:.15rem; font-size:.78rem; color:var(--ink-faint);
+  line-height:1.35;
+}
+.wn-chat-close{
+  flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+  border:1px solid transparent; background:none; color:var(--ink-soft);
+  font-size:1.25rem; line-height:1; cursor:pointer;
+}
+.wn-chat-close:hover{ color:var(--teal); border-color:var(--line); }
+.wn-chat-close:focus-visible{ outline:none; box-shadow:var(--ring); }
+
+.wn-chat-log{
+  flex:1 1 auto; overflow-y:auto; padding:1rem;
+  display:flex; flex-direction:column; gap:.8rem;
+  font-size:.95rem; line-height:1.5;
+}
+.wn-chat-msg{ max-width:88%; padding:.6rem .8rem; border-radius:var(--radius-sm); }
+.wn-chat-msg p{ margin:0 0 .55rem; }
+.wn-chat-msg p:last-child{ margin-bottom:0; }
+.wn-chat-msg ul{ margin:.2rem 0 .55rem; padding-left:1.1rem; }
+.wn-chat-from-user{
+  align-self:flex-end; background:var(--sky); color:var(--ink);
+}
+.wn-chat-from-bot{
+  align-self:flex-start; background:var(--surface-soft);
+  border:1px solid var(--line-soft); color:var(--ink);
+}
+html.dark .wn-chat-from-user{ background:rgba(42,181,164,.14); }
+
+/* Action buttons the model asks for, rendered from its [[token]]s. Prose becomes
+   a click, which is the whole point of the assistant on a marketing page. */
+.wn-chat-acts{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.6rem; }
+.wn-chat-act{
+  display:inline-flex; align-items:center; gap:.3rem;
+  padding:.36rem .7rem; border-radius:999px;
+  border:1px solid var(--teal); background:transparent; color:var(--teal);
+  font-family:var(--font-sans); font-size:.83rem; cursor:pointer; text-decoration:none;
+}
+.wn-chat-act:hover{ background:var(--teal); color:#fff; }
+.wn-chat-act:focus-visible{ outline:none; box-shadow:var(--ring); }
+
+/* Starter chips. They matter far more on a phone than on a laptop: typing a
+   question on a touch keyboard is enough friction to produce a shorter, vaguer
+   question and therefore a worse answer. Tapping one costs nothing. */
+.wn-chat-starters{ display:flex; flex-wrap:wrap; gap:.4rem; }
+.wn-chat-starter{
+  padding:.4rem .7rem; border-radius:999px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+  font-family:var(--font-sans); font-size:.85rem; text-align:left; cursor:pointer;
+}
+.wn-chat-starter:hover{ border-color:var(--teal); color:var(--teal); }
+.wn-chat-starter:focus-visible{ outline:none; box-shadow:var(--ring); }
+
+.wn-chat-typing{ display:inline-flex; gap:.22rem; align-items:center; padding:.2rem 0; }
+.wn-chat-typing i{
+  width:6px; height:6px; border-radius:50%; background:var(--ink-faint);
+  animation:wn-chat-blink 1.2s infinite both;
+}
+.wn-chat-typing i:nth-child(2){ animation-delay:.18s; }
+.wn-chat-typing i:nth-child(3){ animation-delay:.36s; }
+/* ⚠ Finite iteration count on purpose. An INFINITE animation makes the preview
+   screenshot tool hang, and this element is on screen during exactly the moment
+   a screenshot is most likely to be taken. */
+@keyframes wn-chat-blink{ 0%,80%,100%{ opacity:.25 } 40%{ opacity:1 } }
+@media (prefers-reduced-motion:reduce){ .wn-chat-typing i{ animation:none; } }
+
+.wn-chat-foot{ flex:0 0 auto; border-top:1px solid var(--line-soft); padding:.7rem .8rem; }
+/* Told BEFORE they type, not scrubbed afterwards. Cheaper for the visitor and
+   for us than relying on scrubMessage() to catch what should never arrive. */
+.wn-chat-hint{ margin:0 0 .5rem; font-size:.75rem; color:var(--ink-faint); line-height:1.35; }
+.wn-chat-form{ display:flex; gap:.5rem; align-items:flex-end; }
+/* ⚠ A bare <input>/<textarea> outside a .form-group inherits NO field styling --
+   that is where styles.css puts it -- so this needs its own. Without it the
+   composer renders as browser-default Arial at 13px. */
+.wn-chat-input{
+  flex:1 1 auto; min-width:0; resize:none;
+  padding:.5rem .65rem; border:1px solid var(--line); border-radius:var(--radius-sm);
+  background:var(--paper); color:var(--ink);
+  font-family:var(--font-sans); font-size:.95rem; line-height:1.4;
+  max-height:96px;
+}
+.wn-chat-input:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
+.wn-chat-send{
+  flex:0 0 auto; width:38px; height:38px; border-radius:50%;
+  border:none; background:var(--teal); color:#fff; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.wn-chat-send:disabled{ opacity:.45; cursor:default; }
+.wn-chat-send:focus-visible{ outline:none; box-shadow:var(--ring); }
+.wn-chat-send svg{ width:17px; height:17px; pointer-events:none; }
+.wn-chat-count{ margin:.45rem 0 0; font-size:.72rem; color:var(--ink-faint); }
+
+/* ---- phone: a sheet, not a shrunken panel ---- */
+@media (max-width:600px){
+  .wn-chat-panel{
+    right:0; bottom:0; left:0; top:0;
+    width:100%; border:none; border-radius:0;
+    /* ⚠ 100vh is WRONG on iOS Safari -- it counts the browser chrome, so the
+       composer sits clipped behind the URL bar. dvh follows the visible area;
+       the vh line is the fallback for browsers without it, and JS overrides
+       both with the real visualViewport height while the keyboard is open. */
+    height:100vh; height:100dvh;
+    max-height:none;
+  }
+  .wn-chat-msg{ max-width:92%; }
+}
+
+/* When the panel is open on a phone the page behind must not scroll under it. */
+html.wn-chat-open{ overflow:hidden; }
+@media (min-width:601px){
+  html.wn-chat-open{ overflow:auto; }
+}

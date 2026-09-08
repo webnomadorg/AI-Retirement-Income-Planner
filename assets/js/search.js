@@ -466,6 +466,20 @@
         ? hits.map(function (r, i) { return resultHTML(r, ts, "wn-opt-" + i); }).join("")
         : (ready() ? '<p class="search-empty">Nothing matched “' + esc(q) +
                      "”. Try fewer words.</p>" : "");
+      /* A search that finds nothing is the highest-intent moment on the site -- the
+         visitor has just told us, in their own words, about something they could not
+         find. If the assistant is live, offer it here rather than leaving a dead end.
+         ⚠ Deliberately decoupled: chat.js publishes wnChatOfferFor and this only calls
+         it when present, so neither file has to know whether the other shipped. */
+      if (!hits.length && ready() && window.wnChatOfferFor) {
+        var offer = window.wnChatOfferFor(q);
+        if (offer) {
+          var holder = document.createElement("div");
+          holder.style.marginTop = ".6rem";
+          holder.appendChild(offer);
+          list.appendChild(holder);
+        }
+      }
       input.setAttribute("aria-expanded", hits.length ? "true" : "false");
     }
 
