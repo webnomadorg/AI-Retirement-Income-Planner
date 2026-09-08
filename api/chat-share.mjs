@@ -23,11 +23,13 @@ import { screenSignup, signingSecret, canonicaliseEmail, emailHash } from '../li
 import { requestMeta } from '../lib/signup-quarantine.mjs';
 import { readConfig } from '../lib/chat-config.mjs';
 import { ipHash, claimIpSlot } from '../lib/chat-quota.mjs';
+import { dayOfConversation } from '../lib/chat-log.mjs';
 import {
   signShareToken, verifyShareToken, claimShare, readTranscript, shareEmail, LINK_TTL_DAYS,
 } from '../lib/chat-share.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
+const SHARE_PER_IP_PER_DAY = 3;
 
 function esc(s) {
   return String(s == null ? '' : s)
@@ -128,8 +130,11 @@ ${turns}
   if (!cfg || !cfg.enabled || !secret) return same();
 
   const id = String(body.cid || '');
-  const day = String(body.day || '');
-  if (!/^[0-9]{10,}-[0-9a-f]{8}$/.test(id) || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return same();
+  if (!/^[0-9]{10,}-[0-9a-f]{8}$/.test(id)) return same();
+  /* ⚠ Derived, not taken from the request. The browser's idea of the day and the server's
+     disagree across midnight UTC, and trusting the browser's would send the lookup to the
+     wrong folder. Same derivation the transcript was filed under. */
+  const day = dayOfConversation(id);
 
   const screen = await screenSignup({
     honeypot: body._honey,
@@ -146,13 +151,31 @@ ${turns}
   const canon = canonicaliseEmail(body.email);
   if (!canon) return same();
 
-  // A per-IP daily cap on top of the once-per-conversation claim, so the endpoint cannot be
-  // used to mail one address repeatedly by starting new conversations.
+  /* A per-IP daily cap on top of the once-per-conversation claim, so the endpoint cannot be
+     used to mail one address repeatedly by starting new conversations. Three rather than
+     one: a household shares two transcripts, or somebody mistypes their address and tries
+     again, and a silent refusal there looks exactly like the mail never arriving. */
   const meta = requestMeta(req);
-  if (!(await claimIpSlot('share-' + ipHash(meta.ip), 1))) return same();
+  let allowed = false;
+  for (let slot = 1; slot <= SHARE_PER_IP_PER_DAY; slot += 1) {
+    if (await claimIpSlot('share-' + ipHash(meta.ip), slot)) { allowed = true; break; }
+  }
+  if (!allowed) return same();
 
+  /* ⚠ DO NOT GATE ON THE TRANSCRIPT BEING READABLE YET.
+
+     The share link is offered the moment the first answer appears -- which is the same
+     moment the transcript was written, and a blob takes appreciable time to become
+     readable (measured here at close to a minute, far longer than this project's notes
+     assume). Requiring the read to succeed therefore dropped most genuine requests on the
+     floor while telling the visitor it was on its way.
+
+     Nothing is lost by sending anyway: the link is signed and expiring, the GET handler
+     already renders a plain "no longer here" page if the conversation really is missing,
+     and by the time anyone clicks a link in their inbox the write has long since landed.
+     The read is kept only so a genuinely absent conversation is visible in the logs. */
   const doc = await readTranscript(id, day);
-  if (!doc || !(doc.turns || []).length) return same();
+  if (!doc) console.warn('[chat-share] transcript not readable yet, sending the link anyway:', id);
 
   if (!(await claimShare(id, emailHash(canon.email, secret)))) return same();
 

@@ -34,7 +34,7 @@ import {
   recordSpend, noteLocalSpend, spendStatus, ipGroup, IP_DAILY_ALLOWANCE,
 } from '../lib/chat-quota.mjs';
 import {
-  writeTranscript, newConversationId, scrubMessage, maybeRollover,
+  writeTranscript, newConversationId, dayOfConversation, scrubMessage, maybeRollover,
 } from '../lib/chat-log.mjs';
 import {
   retrieve, buildSystem, isContentGap, pickQa, MAX_QUESTION_CHARS, corpusReady,
@@ -250,6 +250,16 @@ export default async function handler(req, res) {
 
   /* ---- the wall ------------------------------------------------------------------- */
   const spend = await spendStatus();
+  /* ⚠ FAIL CLOSED WHEN THE TOTAL CANNOT BE READ. spendStatus() reports `unknown` when the
+     blob listing failed and it has no cached figure to fall back on -- and it reports
+     dayUsd:0 alongside it, because there is no honest number to give. Treating that as
+     "nothing spent yet" is precisely how a storage outage turns into an unbounded bill:
+     every instance would read zero and keep going. This is the only layer that is supposed
+     to be a wall, so when it cannot see, it stops. */
+  if (spend.unknown) {
+    console.error('[chat] spend total unreadable — refusing rather than spending blind');
+    return silent(res);
+  }
   const overDay = cfg.dailyCeilingUsd > 0 && spend.dayUsd >= cfg.dailyCeilingUsd;
   const overHour = cfg.hourlyCeilingUsd > 0 && spend.hourUsd >= cfg.hourlyCeilingUsd;
   if (overDay || overHour) {
@@ -357,7 +367,8 @@ export default async function handler(req, res) {
     recordSpend(usd),
     writeTranscript({
       id: convoId,
-      day: new Date().toISOString().slice(0, 10),
+      // Derived from the id, so a conversation crossing midnight UTC still files in one place.
+      day: dayOfConversation(convoId),
       startedAt: body.startedAt || new Date().toISOString(),
       model,
       turns: [

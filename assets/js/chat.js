@@ -325,7 +325,11 @@
   }
 
   function open(seed) {
-    if (!cfg || !cfg.enabled) return;
+    /* ⚠ showsHere, not enabled. In test mode the endpoint refuses any page without
+       ?chatbot=on, so opening on `enabled` alone gave a panel that accepted a question and
+       then silently failed -- reachable through the ?ask= deep link, which does not go
+       through the launcher. One gate, in the one place every door passes through. */
+    if (!cfg || !cfg.enabled || !cfg.showsHere) return;
     if (!box) build();
     lastFocus = document.activeElement;
     box.hidden = false;
@@ -478,7 +482,13 @@
     els.log.setAttribute("aria-busy", "true");
 
     if (!cid) {
-      cid = String(Date.now()) + "-" + Math.random().toString(16).slice(2, 10);
+      /* ⚠ Padded to exactly eight hex characters. The server validates this shape and
+         quietly mints its own id when it does not match — which would file every turn
+         as a separate conversation and break the share link, with nothing visible to
+         show for it. Math.random().toString(16) almost always gives thirteen digits,
+         but values like 0.5 give one, and "almost always" is not a validation rule. */
+      var rand = ("0000000" + Math.floor(Math.random() * 0x100000000).toString(16)).slice(-8);
+      cid = String(Date.now()) + "-" + rand;
       startedAt = new Date().toISOString();
     }
 
