@@ -37,7 +37,7 @@ import {
   writeTranscript, newConversationId, scrubMessage, maybeRollover,
 } from '../lib/chat-log.mjs';
 import {
-  retrieve, buildSystem, isContentGap, MAX_QUESTION_CHARS, corpusReady,
+  retrieve, buildSystem, isContentGap, pickQa, MAX_QUESTION_CHARS, corpusReady,
 } from '../lib/chat-context.mjs';
 
 export const DISCLAIMER = 'Educational information about the planner — not financial advice.';
@@ -246,6 +246,7 @@ export default async function handler(req, res) {
     hits,
     sale,                           // volatile by nature — kept out of the cached block
     houseNotes: cfg.houseNotes,
+    qa: pickQa(question, cfg.qa),   // the owner's own wording, when any of it fits
   });
 
   const messages = [...history, { role: 'user', content: question }];

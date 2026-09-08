@@ -208,5 +208,39 @@ console.log('  sharing');
   ok('share retention matches the link expiry', log.SHARE_RETAIN_DAYS === share.LINK_TTL_DAYS);
 }
 
+/* ------------------------------------------------------- 7. the owner's own answers */
+console.log('  written answers');
+{
+  const qa = [
+    { q: 'Is it a subscription?', a: 'No. One payment, updates free for life.' },
+    { q: 'Does it work on a Mac?', a: 'Yes, it opens in any modern browser.' },
+    { q: 'Do you support retiring abroad?', a: 'Yes: UK, Canada, Australia and expat scenarios.' },
+  ];
+  const picked = (q) => ctx.pickQa(q, qa).map((e) => e.q);
+  ok('a matching question finds its answer',
+    picked('is this a subscription or do I pay monthly')[0] === 'Is it a subscription?');
+  /* ⚠ Prefix matching, and the reason it is here: exact tokens miss "macbook" against an
+     entry written about a "mac", which is the commonest way a hand-written entry fails. */
+  ok('a near word still matches', picked('will it run on my macbook')[0] === 'Does it work on a Mac?');
+  ok('a different tense still matches',
+    picked('I am retiring to Spain, will it help')[0] === 'Do you support retiring abroad?');
+  ok('an unrelated question matches nothing', picked('what is the ACA subsidy cliff').length === 0);
+  ok('an empty list is safe', ctx.pickQa('anything', []).length === 0);
+  ok('a malformed list is safe', ctx.pickQa('anything', null).length === 0);
+
+  const [stat] = ctx.buildSystem({ hits: [], qa });
+  ok('written answers never enter the CACHED block', stat === ctx.staticBlock());
+  const [, vol] = ctx.buildSystem({ hits: ctx.retrieve('subscription', 3), qa: [qa[0]] });
+  ok('they are shown to the model', vol.includes('One payment, updates free for life.'));
+  /* The owner's wording should be read before a page paraphrase of the same thing. */
+  ok('they are placed ahead of the site extracts',
+    vol.indexOf('OWNER HAS ALREADY WRITTEN') < vol.indexOf('SITE EXTRACTS'));
+  ok('the model is told they do not override the rules', /do not override any rule/.test(vol));
+
+  ok('the stored list is capped', cfgm.normalise({ qa: new Array(80).fill({ q: 'a', a: 'b' }) }).qa.length === 40);
+  ok('entries without both halves are dropped',
+    cfgm.normalise({ qa: [{ q: 'only a question' }, { a: 'only an answer' }, { q: 'x', a: 'y' }] }).qa.length === 1);
+}
+
 console.log('\n  ' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + ` — ${pass} passed, ${fail} failed\n`);
 process.exit(fail === 0 ? 0 : 1);
