@@ -31,7 +31,7 @@ import { readConfig, pauseForSpend, showsOn } from '../lib/chat-config.mjs';
 import { readState as readSaleState, resolveActive, publicView } from '../lib/sale-state.mjs';
 import {
   readState, stateCookie, signHistory, verifyHistory, ipHash, claimIpSlot,
-  recordSpend, noteLocalSpend, spendStatus, IP_DAILY_ALLOWANCE,
+  recordSpend, noteLocalSpend, spendStatus, ipGroup, IP_DAILY_ALLOWANCE,
 } from '../lib/chat-quota.mjs';
 import {
   writeTranscript, newConversationId, scrubMessage, maybeRollover,
@@ -52,8 +52,38 @@ const PRICES = {
 };
 const FALLBACK_PRICE = PRICES['claude-sonnet-5'];
 
-const MAX_TURNS = 24;               // 12 exchanges; the visitor cap stops it long before
+/* ⚠ THIS NUMBER IS THE SECOND BIGGEST COST LEVER, AFTER max_tokens.
+
+   The API is stateless, so the ENTIRE history is re-sent and re-billed on every turn, and
+   none of it is cached — only the fixed system block is. History therefore grows the cost
+   of each message linearly: measured over a ten-message conversation at 24 turns, message
+   one cost about $0.007 and message ten about $0.030.
+
+   Ten turns is five exchanges, which is ample for a bounded FAQ conversation — nobody
+   needs the model to recall the first question of a ten-question chat verbatim — and it
+   caps what the last message can carry instead of letting it grow to the visitor's limit. */
+const MAX_TURNS = 10;
 const MIN_GAP_MS = 900;             // a reply arriving faster than this is not someone reading
+
+/* A per-instance speed bump, the same shape as api/search-log.mjs and api/feedback.mjs.
+   ⚠ Serverless instances are ephemeral and there may be several at once, so this is NOT a
+   wall — it is the cheapest possible first line, costing one Map lookup before any blob
+   read or model call. The cross-instance limit is the Vercel WAF rule; the wall is the
+   spend ceiling. */
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 12;
+const hits = new Map();
+
+function rateLimited(ip) {
+  const now = Date.now();
+  const recent = (hits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 500) {
+    for (const [k, v] of hits) if (!v.some((t) => now - t < RATE_WINDOW_MS)) hits.delete(k);
+  }
+  return recent.length > RATE_MAX;
+}
 
 function priceOf(model) {
   return PRICES[model] || FALLBACK_PRICE;
@@ -139,12 +169,13 @@ export default async function handler(req, res) {
   /* ---- GET: what the widget needs to decide whether to exist at all ---------------- */
   if (req.method === 'GET') {
     const path = String((req.query && req.query.path) || '/');
+    const preview = String((req.query && req.query.preview) || '') === '1';
     const live = Boolean(cfg && cfg.enabled && secret && process.env.ANTHROPIC_API_KEY);
     const cookie = stateCookie(state);
     if (cookie) res.setHeader('Set-Cookie', cookie);
     return res.status(200).json({
       enabled: live,
-      showsHere: live && showsOn(cfg, path),
+      showsHere: live && showsOn(cfg, path, preview),
       remaining: Math.max(0, (cfg?.maxMessagesPerVisitor ?? 10) - state.n),
       disclaimer: DISCLAIMER,
       token: secret ? issueFormToken(secret) : '',
@@ -164,6 +195,10 @@ export default async function handler(req, res) {
     return silent(res);
   }
 
+  /* Before anything that costs: no blob read, no model call, one Map lookup. */
+  const early = requestMeta(req);
+  if (rateLimited(ipGroup(early.ip))) return silent(res);
+
   const body = readBody(req);
 
   // Honeypot: hidden from real users, filled by bots. Same `_honey` convention as the
@@ -172,6 +207,10 @@ export default async function handler(req, res) {
 
   const tok = verifyFormToken(body.token, secret);
   if (tok.state !== 'ok') return silent(res);
+
+  /* ⚠ Test mode is enforced on the ENDPOINT too, not just in the widget. Otherwise anyone
+     who found the URL could POST to it while the assistant was supposedly hidden. */
+  if (cfg.previewOnly && body.preview !== true) return silent(res);
 
   const question = String(body.q || '').trim();
   if (!question) return silent(res);
@@ -198,8 +237,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ limit: true, remaining: 0 });
   }
 
-  const meta = requestMeta(req);
-  const hash = ipHash(meta.ip);
+  const hash = ipHash(early.ip);
   /* The slot number is the visitor's own count, so a cleared cookie restarts at 1 and
      collides with a slot this address already used. Allowance is generous on purpose: a
      household, an office and a mobile carrier's NAT all share one address, and this is a

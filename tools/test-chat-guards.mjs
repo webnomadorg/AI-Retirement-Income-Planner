@@ -242,5 +242,43 @@ console.log('  written answers');
     cfgm.normalise({ qa: [{ q: 'only a question' }, { a: 'only an answer' }, { q: 'x', a: 'y' }] }).qa.length === 1);
 }
 
+/* ------------------------------------------------- 8. no invisible control characters */
+console.log('  source hygiene');
+{
+  /* ⚠ This exists because it happened, twice, in one afternoon. A tool that rewrites these
+     files turned an intended "\b" into a literal BACKSPACE inside a regex, so
+     /[?&]chatbot=on\b/ could never match and the owner's test mode was silently dead --
+     no error, no symptom, just a feature that never switched on. A second slip put a NUL
+     where a space was meant, inside the HMAC separator.
+
+     Neither is visible in an editor or a diff. A byte scan is the only thing that catches
+     them, and it costs nothing. */
+  const { readFileSync, readdirSync } = await import('node:fs');
+  const { fileURLToPath } = await import('node:url');
+  const { dirname, join } = await import('node:path');
+  const here = dirname(fileURLToPath(import.meta.url));
+  const root = join(here, '..');
+
+  const files = [
+    'assets/js/chat.js', 'assets/js/search.js', 'assets/js/consent.js',
+    ...readdirSync(join(root, 'lib')).filter((f) => f.startsWith('chat-') && f.endsWith('.mjs')).map((f) => 'lib/' + f),
+    ...readdirSync(join(root, 'api')).filter((f) => f.startsWith('chat') && f.endsWith('.mjs')).map((f) => 'api/' + f),
+  ];
+  let dirty = [];
+  for (const rel of files) {
+    const text = readFileSync(join(root, rel), 'utf8');
+    for (let i = 0; i < text.length; i += 1) {
+      const c = text.charCodeAt(i);
+      // Everything below space except tab, newline and carriage return.
+      if (c < 32 && c !== 9 && c !== 10 && c !== 13) {
+        dirty.push(rel + ' @' + i + ' = 0x' + c.toString(16));
+        break;
+      }
+    }
+  }
+  ok('no stray control characters in the shipped assistant files', dirty.length === 0, dirty.join(', '));
+  ok('the scan actually found files to check', files.length >= 6);
+}
+
 console.log('\n  ' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + ` — ${pass} passed, ${fail} failed\n`);
 process.exit(fail === 0 ? 0 : 1);

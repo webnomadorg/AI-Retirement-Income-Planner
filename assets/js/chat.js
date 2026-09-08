@@ -57,6 +57,22 @@
     "Is it a subscription?"
   ];
 
+  /* ?chatbot=on — the owner's test switch. With test mode on in the console the assistant
+     answers only where this parameter is present, so it can be tried on the live site
+     before anyone else sees it. It survives across the visit, so following a link from the
+     first page does not lose it. */
+  var preview = false;
+  try {
+    /* URLSearchParams rather than a regex: a regex here needs a word-boundary escape,
+       and one mangled backslash makes it silently never match -- which is exactly what
+       happened once, leaving test mode permanently off with nothing to see. */
+    preview = new URLSearchParams(location.search).get("chatbot") === "on";
+  } catch (e) { preview = false; }
+  try {
+    if (preview) sessionStorage.setItem("wn-chat-preview", "1");
+    else if (sessionStorage.getItem("wn-chat-preview") === "1") preview = true;
+  } catch (e) { /* private mode: the parameter still works, it just will not persist */ }
+
   var cfg = null;        // { enabled, showsHere, remaining, disclaimer, token }
   var box = null;        // the panel element
   var fab = null;        // the launcher
@@ -85,7 +101,7 @@
   function ask(then) {
     if (asked) { then && then(); return; }
     asked = true;
-    fetch(API + "?path=" + encodeURIComponent(location.pathname), {
+    fetch(API + "?path=" + encodeURIComponent(location.pathname) + (preview ? "&preview=1" : ""), {
       credentials: "same-origin",
       headers: { "Accept": "application/json" }
     }).then(function (r) {
@@ -276,9 +292,12 @@
 
   function renderCount() {
     if (!cfg || typeof cfg.remaining !== "number") { els.count.textContent = ""; return; }
-    els.count.textContent = cfg.remaining > 0
-      ? cfg.remaining + (cfg.remaining === 1 ? " question left" : " questions left")
-      : "";
+    if (cfg.remaining <= 0) { els.count.textContent = ""; return; }
+    /* Say what happens next on the LAST one. Running out is fine; running out with no
+       warning and no way onward is what makes it feel like a wall. */
+    els.count.textContent = cfg.remaining === 1
+      ? "Last question — then I’ll point you to a person"
+      : cfg.remaining + " questions left";
   }
 
   /* ⚠ THE KEYBOARD, which is the single most common chat-widget bug on a phone.
@@ -411,16 +430,30 @@
     stick();
   }
 
-  /* The end of the road: the free guide first, the contact page second. Offered once
-     the visitor has had real value, rather than as a toll on the way in. */
+  /* ⚠ Assembled here rather than written into the markup, for the same reason every other
+     address on this site is: a harvester reading the page source finds nothing to take.
+     The sitewide a.eml upgrader in the footer runs ONCE at load, so it never sees anything
+     this script adds later — a plain a.eml here would stay unupgraded and dead. */
+  function contactEmail() {
+    return "dev" + String.fromCharCode(64) + "webnomad.org";
+  }
+
+  /* The end of the road. The free guide first, then a real person — offered once the
+     visitor has had value, rather than as a toll on the way in. The address is spelled out
+     as well as linked, because somebody who has just been told "no" should not have to hunt
+     for how to reach a human. */
   function addLimit() {
+    var addr = contactEmail();
     var d = addMsg("bot",
-      "<p>That is all the questions I can take in one visit. If you would like to keep " +
-      "reading, the free guide covers most of this in more depth — and the contact page " +
-      "will always reach a person.</p>");
+      "<p>That is all the questions I can take in one visit — but you are not stuck. " +
+      "The free guide covers most of this in more depth, or email " +
+      '<a href="mailto:' + addr + '">' + addr + "</a>.</p>");
     addActions(d, ["ebook", "contact"]);
     els.input.disabled = true;
     els.send.disabled = true;
+    /* ⚠ Keep this SHORT. The composer is a one-line textarea, so a placeholder that wraps is
+       simply clipped -- the address belongs in the message above, where it is clickable. */
+    els.input.placeholder = "No questions left";
     els.count.textContent = "";
   }
 
@@ -454,6 +487,7 @@
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        preview: preview,
         q: q,
         history: history,
         mac: mac,
@@ -578,6 +612,7 @@
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        preview: preview,
         email: addr,
         cid: cid,
         day: (startedAt || new Date().toISOString()).slice(0, 10),
