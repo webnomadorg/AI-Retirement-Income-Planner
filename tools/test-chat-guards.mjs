@@ -472,5 +472,35 @@ console.log('  test mode');
     /cfg\.previewOnly && body\.preview !== true/.test(src));
 }
 
+/* ------------------------------------------- 15. the bugs found on the first live run */
+console.log('  live-run regressions');
+{
+  /* Three separate faults, all found by one person asking one question and then clicking a
+     suggested chip. Each is asserted so none of them can come back quietly. */
+  const api = readFileSync(new URL('../api/chat.mjs', import.meta.url), 'utf8');
+  const widget = readFileSync(new URL('../assets/js/chat.js', import.meta.url), 'utf8');
+
+  /* 1. The per-address claim used the visitor's own message count as its key, so EVERY
+        visitor's first message claimed slot 1. The second person behind a shared address
+        was refused before asking anything, and the advertised allowance was unreachable. */
+  ok('the address claim is keyed per conversation, not per message',
+    /claimConversation\(ipHash\([^)]*\), state\.sid\)/.test(api));
+  ok('and it only runs on the first message of a conversation',
+    /state\.n === 0 && !\(await claimConversation/.test(api));
+  ok('the old colliding slot scheme is gone', !/claimIpSlot\(hash, slot\)/.test(api));
+  ok('several conversations are allowed from one address', q.IP_DAILY_CONVERSATIONS >= 3);
+
+  /* 2. The starter chips called send() directly, so they still fired after the composer had
+        been locked at the limit -- and the refusal that produced is what removed the panel. */
+  ok('send() respects the limit lock', /els\.input\.disabled\) return;/.test(widget));
+  ok('and the chips are disabled at the limit', /chips\[i\]\.disabled = true/.test(widget));
+
+  /* 3. A silent refusal used to close the panel and remove the launcher mid-conversation.
+        A chat window that vanishes mid-sentence reads as broken software. */
+  ok('a refusal no longer closes the panel', !/if \(meta\.off\) \{[\s\S]{0,200}?close\(\);/.test(widget));
+  ok('it explains itself and offers a person instead',
+    /I cannot answer any more questions just now/.test(widget));
+}
+
 console.log('\n  ' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + ` — ${pass} passed, ${fail} failed\n`);
 process.exit(fail === 0 ? 0 : 1);

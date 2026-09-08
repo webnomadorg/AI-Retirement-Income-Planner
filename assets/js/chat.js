@@ -455,6 +455,9 @@
     addActions(d, ["ebook", "contact"]);
     els.input.disabled = true;
     els.send.disabled = true;
+    // The chips are buttons, not text: leaving them live is an invitation to a dead click.
+    var chips = box.querySelectorAll(".wn-chat-starter");
+    for (var i = 0; i < chips.length; i++) { chips[i].disabled = true; }
     /* ⚠ Keep this SHORT. The composer is a one-line textarea, so a placeholder that wraps is
        simply clipped -- the address belongs in the message above, where it is clickable. */
     els.input.placeholder = "No questions left";
@@ -464,7 +467,10 @@
   /* ---- sending ---------------------------------------------------------------- */
 
   function send() {
-    if (busy || !cfg || !cfg.enabled) return;
+    /* ⚠ els.input.disabled is the limit lock. The starter chips call send() directly rather
+       than going through the form, so without this they kept firing after the visitor had
+       used their allowance -- and the refused request is what made the panel disappear. */
+    if (busy || !cfg || !cfg.enabled || els.input.disabled) return;
     var q = (els.input.value || "").trim();
     if (!q) return;
     if (q.length > MAX_CHARS) q = q.slice(0, MAX_CHARS);
@@ -564,10 +570,23 @@
   function finish(q, res, bot) {
     var meta = res.meta || {};
     if (meta.off) {
-      // Switched off between page load and this question. Say nothing about why.
-      bot.parentNode && bot.parentNode.removeChild(bot);
-      close();
-      if (fab) { fab.classList.remove("visible"); }
+      /* The server declined without saying why — it might have been switched off between
+         page load and this question, or a check might have tripped.
+
+         ⚠ It used to close the panel and remove the launcher on the spot. That was wrong:
+         a chat window that vanishes mid-sentence reads as broken software, which is a worse
+         impression than any refusal, and it strands somebody who was mid-thought. The
+         launcher still goes on the next page load, because the GET will say so — that is
+         where "off means it disappears" belongs, not in the middle of a conversation. */
+      bot.innerHTML = "<p>I cannot answer any more questions just now, I am afraid. " +
+        "The pages have the same information, and a real person reads " +
+        '<a href="mailto:' + contactEmail() + '">' + contactEmail() + "</a>.</p>";
+      addActions(bot, ["ebook", "contact"]);
+      els.input.disabled = true;
+      els.send.disabled = true;
+      var offChips = box.querySelectorAll(".wn-chat-starter");
+      for (var j = 0; j < offChips.length; j++) { offChips[j].disabled = true; }
+      els.count.textContent = "";
       done();
       return;
     }

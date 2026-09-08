@@ -30,8 +30,8 @@ import { requestMeta } from '../lib/signup-quarantine.mjs';
 import { readConfig, pauseForSpend, showsOn } from '../lib/chat-config.mjs';
 import { readState as readSaleState, resolveActive, publicView } from '../lib/sale-state.mjs';
 import {
-  readState, stateCookie, signHistory, verifyHistory, ipHash, claimIpSlot,
-  recordSpend, noteLocalSpend, spendStatus, ipGroup, IP_DAILY_ALLOWANCE,
+  readState, stateCookie, signHistory, verifyHistory, ipHash,
+  recordSpend, noteLocalSpend, spendStatus, ipGroup, claimConversation,
 } from '../lib/chat-quota.mjs';
 import {
   writeTranscript, newConversationId, dayOfConversation, scrubMessage, maybeRollover,
@@ -237,13 +237,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ limit: true, remaining: 0 });
   }
 
-  const hash = ipHash(early.ip);
-  /* The slot number is the visitor's own count, so a cleared cookie restarts at 1 and
-     collides with a slot this address already used. Allowance is generous on purpose: a
-     household, an office and a mobile carrier's NAT all share one address, and this is a
-     backstop against resetting cookies, not a second per-person limit. */
-  const slot = Math.min(state.n + 1, IP_DAILY_ALLOWANCE + 1);
-  if (!(await claimIpSlot(hash, slot))) {
+  /* ⚠ Only on the FIRST message of a conversation. After that the signed cookie governs and
+     it is exact, so there is nothing for the address check to add — and doing it per message
+     was what made two people behind one address collide. See claimConversation(). */
+  if (state.n === 0 && !(await claimConversation(ipHash(early.ip), state.sid))) {
     // Same shape as hitting the personal cap: the widget offers the hand-off, not an error.
     return res.status(200).json({ limit: true, remaining: 0 });
   }
