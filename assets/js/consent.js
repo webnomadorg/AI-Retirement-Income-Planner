@@ -75,7 +75,11 @@
     bar.innerHTML =
       '<div class="cookie-banner-text">' +
         '<strong>We value your privacy</strong>' +
-        '<p>We use cookies only to measure site traffic and improve our content — ' +
+        /* ⚠ "only to measure site traffic" stopped being exactly true when the site
+           assistant began setting a functional cookie to count a visitor's questions.
+           That one is strictly necessary and sits outside this choice, but the banner
+           should not quietly claim it does not exist. */
+        '<p>The cookies you can choose about here are only for measuring site traffic — ' +
         'your retirement plan always stays on your device. See our ' +
         '<a href="/privacy.html">Privacy Policy</a>.</p>' +
       '</div>' +
