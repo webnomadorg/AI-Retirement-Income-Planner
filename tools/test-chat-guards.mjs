@@ -93,10 +93,17 @@ console.log('  http');
   ok('GET never shows the launcher when off', r.body && r.body.showsHere === false);
   ok('GET carries the disclaimer', r.body && r.body.disclaimer === DISCLAIMER);
   ok('GET issues a form token', Boolean(r.body && r.body.token));
-  ok('GET sets a state cookie', String(r.headers['set-cookie'] || '').startsWith('wn_chat='));
-  ok('cookie is HttpOnly + Secure + Lax',
-    /HttpOnly/.test(r.headers['set-cookie']) && /Secure/.test(r.headers['set-cookie'])
-    && /SameSite=Lax/.test(r.headers['set-cookie']));
+  /* ⚠ The GET must set NOTHING. It fires when a visitor merely scrolls far enough for the
+     widget to ask whether it should appear -- long before they have requested anything, and
+     for many people who never will. The counting cookie is exempt from consent only because
+     it is strictly necessary for a service the visitor EXPLICITLY REQUESTED, and setting it
+     speculatively erodes the words that exemption rests on. It goes out with the first POST. */
+  ok('GET sets no cookie at all', !r.headers['set-cookie']);
+  /* The flags still matter, so check them where the cookie is actually minted. */
+  const c = q.stateCookie(q.newState());
+  ok('the cookie is HttpOnly, Secure and SameSite=Lax',
+    /HttpOnly/.test(c) && /Secure/.test(c) && /SameSite=Lax/.test(c));
+  ok('and it expires within a day', c.indexOf('Max-Age=86400;') > -1);
   ok('never cached', String(r.headers['cache-control']).includes('no-store'));
 }
 {
@@ -277,6 +284,11 @@ console.log('  source hygiene');
     'assets/js/chat.js', 'assets/js/search.js', 'assets/js/consent.js',
     ...readdirSync(join(root, 'lib')).filter((f) => f.startsWith('chat-') && f.endsWith('.mjs')).map((f) => 'lib/' + f),
     ...readdirSync(join(root, 'api')).filter((f) => f.startsWith('chat') && f.endsWith('.mjs')).map((f) => 'api/' + f),
+    /* ⚠ Including this file. It sat outside the sweep, and that is exactly how a literal
+       BACKSPACE reached a regex in here -- /Max-Age=86400/ became /Max-Age=86400<BS>/,
+       which cannot match anything, so the assertion failed for a reason no amount of
+       reading the line would reveal. The tool that scans for this must scan itself. */
+    'tools/test-chat-guards.mjs',
   ];
   let dirty = [];
   for (const rel of files) {

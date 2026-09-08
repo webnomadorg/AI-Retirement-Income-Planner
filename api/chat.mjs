@@ -171,8 +171,15 @@ export default async function handler(req, res) {
     const path = String((req.query && req.query.path) || '/');
     const preview = String((req.query && req.query.preview) || '') === '1';
     const live = Boolean(cfg && cfg.enabled && secret && process.env.ANTHROPIC_API_KEY);
-    const cookie = stateCookie(state);
-    if (cookie) res.setHeader('Set-Cookie', cookie);
+    /* ⚠ NO COOKIE HERE, DELIBERATELY. This GET fires when a visitor merely scrolls far
+       enough for the widget to ask whether it should appear -- before they have asked for
+       the assistant, and for plenty of people who never will.
+
+       The counting cookie is exempt from consent because it is strictly necessary to
+       provide a service the visitor EXPLICITLY REQUESTED. Setting it speculatively, for
+       everyone who scrolls, weakens exactly the words that exemption rests on. It is set
+       on the first POST instead, when they have actually sent a question, and nothing is
+       stored for anyone who only reads the page. */
     return res.status(200).json({
       enabled: live,
       showsHere: live && showsOn(cfg, path, preview),
