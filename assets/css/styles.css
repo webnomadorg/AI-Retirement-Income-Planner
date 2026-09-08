@@ -2304,6 +2304,21 @@ html.dark .wn-chat-from-user{ background:rgba(42,181,164,.14); }
 .wn-chat-send:focus-visible{ outline:none; box-shadow:var(--ring); }
 .wn-chat-send svg{ width:17px; height:17px; pointer-events:none; }
 .wn-chat-count{ margin:.45rem 0 0; font-size:.72rem; color:var(--ink-faint); }
+.wn-chat-share{ margin:.5rem 0 0; }
+.wn-chat-sharelink{
+  padding:0; border:none; background:none; color:var(--ink-soft); cursor:pointer;
+  font-family:var(--font-sans); font-size:.78rem; text-decoration:underline;
+  text-underline-offset:3px;
+}
+.wn-chat-sharelink:hover{ color:var(--teal); }
+.wn-chat-sharelink:focus-visible{ outline:none; box-shadow:var(--ring); border-radius:4px; }
+.wn-chat-shareform{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+.wn-chat-shareform[hidden]{ display:none; }
+/* ⚠ flex-basis follows the main axis. This row never turns into a column, but if it ever
+   does, reset these children (flex:0 0 auto; width:100%) or the 12rem becomes 12rem of
+   HEIGHT -- 216px at this site's 18px base. It has shipped twice here already. */
+.wn-chat-shareform .wn-chat-input{ flex:1 1 12rem; }
+.wn-chat-shareform .wn-chat-hint{ flex:1 1 100%; }
 
 /* ---- phone: a sheet, not a shrunken panel ---- */
 @media (max-width:600px){

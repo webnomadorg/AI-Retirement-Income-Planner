@@ -190,6 +190,23 @@
           "</button>" +
         "</form>" +
         '<p class="wn-chat-count" id="wnChatCount"></p>' +
+        /* A quiet line, not a modal and not a banner. It selects the people who found the
+           assistant useful, which is a value exchange rather than a toll on the way in --
+           the reason it survives alongside the decision not to gate on an email. */
+        '<p class="wn-chat-share" id="wnChatShare" hidden>' +
+          '<button type="button" class="wn-chat-sharelink">Email me this conversation</button>' +
+        "</p>" +
+        '<form class="wn-chat-shareform" id="wnChatShareForm" hidden novalidate>' +
+          '<div class="sr-only" aria-hidden="true">' +
+            '<label for="wnChatShareHoney">Leave this blank</label>' +
+            '<input type="text" id="wnChatShareHoney" name="_honey" tabindex="-1" autocomplete="off">' +
+          "</div>" +
+          '<input type="email" class="wn-chat-input" id="wnChatEmail" ' +
+            'placeholder="you@example.com" aria-label="Your email address" autocomplete="email">' +
+          '<button type="submit" class="wn-chat-act">Send</button>' +
+          '<p class="wn-chat-hint" style="margin:.45rem 0 0">We send a link to this ' +
+            'conversation and nothing else. This does not subscribe you to anything.</p>' +
+        "</form>" +
       "</div>";
     document.body.appendChild(box);
 
@@ -201,6 +218,10 @@
     els.honey = box.querySelector("#wnChatHoney");
     els.count = box.querySelector("#wnChatCount");
     els.close = box.querySelector(".wn-chat-close");
+    els.share = box.querySelector("#wnChatShare");
+    els.shareForm = box.querySelector("#wnChatShareForm");
+    els.email = box.querySelector("#wnChatEmail");
+    els.shareHoney = box.querySelector("#wnChatShareHoney");
 
     els.close.addEventListener("click", close);
     els.form.addEventListener("submit", function (e) { e.preventDefault(); send(); });
@@ -210,6 +231,13 @@
     els.input.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
     });
+
+    box.querySelector(".wn-chat-sharelink").addEventListener("click", function () {
+      els.share.hidden = true;
+      els.shareForm.hidden = false;
+      els.email.focus();
+    });
+    els.shareForm.addEventListener("submit", function (e) { e.preventDefault(); shareIt(); });
 
     armViewport();
     greet();
@@ -516,6 +544,9 @@
     if (typeof meta.remaining === "number") cfg.remaining = meta.remaining;
 
     // Announced ONCE, now that it is complete.
+    // Offered only once there is a conversation worth having: after the first real answer.
+    if (els.share && els.shareForm.hidden) els.share.hidden = false;
+
     els.live.textContent = parts.prose.slice(0, 400);
     done();
     renderCount();
@@ -528,6 +559,28 @@
     if (!els.input.disabled) { els.send.disabled = false; els.input.focus(); }
     lastReplyAt = Date.now();
     stick();
+  }
+
+  /* Answers the same way whatever happened, because the server does. Telling the visitor
+     "already sent" or "we don't know that address" would hand a prober a way to test both. */
+  function shareIt() {
+    var addr = (els.email.value || "").trim();
+    if (!addr || !cid) return;
+    els.shareForm.innerHTML = '<p class="wn-chat-hint" style="margin:0">' +
+      "If that address is valid, the conversation is on its way. The link works for 30 days " +
+      "and does not subscribe you to anything.</p>";
+    fetch("/api/chat-share", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: addr,
+        cid: cid,
+        day: (startedAt || new Date().toISOString()).slice(0, 10),
+        token: cfg.token,
+        _honey: els.shareHoney.value
+      })
+    })["catch"](function () { /* the message above is already the whole answer */ });
   }
 
   /* ---- the other three doors -------------------------------------------------- */

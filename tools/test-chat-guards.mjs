@@ -22,6 +22,7 @@ const q = await import('../lib/chat-quota.mjs');
 const cfgm = await import('../lib/chat-config.mjs');
 const ctx = await import('../lib/chat-context.mjs');
 const log = await import('../lib/chat-log.mjs');
+const share = await import('../lib/chat-share.mjs');
 
 let pass = 0;
 let fail = 0;
@@ -181,6 +182,31 @@ ok('an age and a balance are kept', log.scrubMessage('I am 62 with 400k').scrubb
 ok('retention matches the published promise', log.RETAIN_DAYS === 90);
 ok('held transcripts live outside the pruned prefix',
   log.HOLD_PREFIX !== log.LOG_PREFIX && !log.HOLD_PREFIX.startsWith(log.LOG_PREFIX));
+
+/* ------------------------------------------------------------------- 6. sharing */
+console.log('  sharing');
+{
+  const id = '1750000000000-abcdef01';
+  const day = '2026-09-08';
+  const tok = share.signShareToken(id, day);
+  const back = share.verifyShareToken(tok);
+  ok('a share link round-trips', back && back.id === id && back.day === day);
+  ok('a tampered link is rejected', share.verifyShareToken(tok.slice(0, -3) + 'aaa') === null);
+  ok('a token minted for another purpose is rejected',
+    share.verifyShareToken(Buffer.from(JSON.stringify({ k: 'form', t: Date.now() })).toString('base64url') + '.x') === null);
+  ok('garbage is rejected', share.verifyShareToken('nonsense') === null);
+
+  const mail = share.shareEmail('https://example.com/x');
+  /* The point of the whole design. If the transcript ever reached the mail body, this
+     endpoint would be a way to send attacker-written text to an address of their choosing,
+     out of this site's own domain. The body stays fixed text plus the link. */
+  ok('the mail body carries the link', mail.text.includes('https://example.com/x'));
+  ok('the mail body has no slot a transcript could fill', !/\$\{|%s/.test(mail.text));
+  ok('the mail says it subscribes nobody', /subscribed/.test(mail.text));
+  ok('the mail carries the disclaimer', /not financial/.test(mail.text));
+  ok('share records expire sooner than transcripts', log.SHARE_RETAIN_DAYS < log.RETAIN_DAYS);
+  ok('share retention matches the link expiry', log.SHARE_RETAIN_DAYS === share.LINK_TTL_DAYS);
+}
 
 console.log('\n  ' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + ` — ${pass} passed, ${fail} failed\n`);
 process.exit(fail === 0 ? 0 : 1);
