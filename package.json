@@ -1,8 +1,9 @@
 {
   "name": "ai-retirement-income-planner-site",
   "private": true,
-  "description": "Static marketing site + serverless purchase-delivery function (see /api/download.mjs)",
+  "description": "Static marketing site + serverless functions: purchase delivery (api/download.mjs) and the site AI assistant (api/chat.mjs)",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
     "@vercel/blob": "^2.3.0"
   }
 }
