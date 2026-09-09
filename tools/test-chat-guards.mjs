@@ -281,6 +281,42 @@ console.log('  sharing');
   ok('an ip hash cannot masquerade as a share claim',
     /^[0-9a-f]+$/.test(q.ipHash('203.0.113.7')) && !q.ipHash('203.0.113.7').startsWith('share-'));
 
+  /* ⚠ THE TRANSCRIPT MUST BE WRITTEN WHILE THE RESPONSE IS STILL OPEN.
+     Bookkeeping used to run after res.end(), where the platform is free to stop the
+     invocation before the write lands. Measured on the live store: six answered questions,
+     six small spend rows, but only three transcripts -- and the lost one was a conversation
+     a visitor had asked us to email them. Order is the whole control, so assert it. */
+  /* ⚠ Comments stripped, and this bit me while writing the assertion: the block comment
+     explaining the fix mentions maybeRollover(), so a plain indexOf found the PROSE and the
+     check passed without ever looking at the call. Blank the comments out — preserving
+     length, so every offset still lines up with the real file. */
+  const chatApiRaw = readFileSync(new URL('../api/chat.mjs', import.meta.url), 'utf8');
+  const chatApi = chatApiRaw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
+  /* ⚠ The FIRST end after the closing {done} line, not the last. Anchoring on lastIndexOf
+     looked right and was not: an `res.end()` added ahead of the writes would still leave a
+     later one behind them, so the broken ordering passed. I only found that because the
+     negative test I wrote to prove this assertion failed to trip it. Once the response has
+     ended, a second end changes nothing -- the first one is the deadline. */
+  const doneLine = chatApi.indexOf('done: true');
+  const endAt = chatApi.indexOf('res.end()', doneLine);
+  ok('the answer is closed off with a done line', doneLine > 0);
+  ok('the response ends after it', endAt > doneLine);
+  for (const [what, needle] of [
+    ['the transcript', 'writeTranscript('],
+    ['the spend row the ceiling depends on', 'recordSpend('],
+    ['the rollover enforcing the 90-day deletion', 'maybeRollover()'],
+  ]) {
+    const at = chatApi.lastIndexOf(needle);
+    ok(`${what} is written before the response ends`, at > 0 && at < endAt, `${needle} @${at}`);
+  }
+  ok('a bookkeeping failure is logged, not swallowed', /transcript not stored for/.test(chatApiRaw));
+
+  /* ⚠ The not-found page must not invent a reason. It told the first person to see it that
+     a thirty-second-old conversation had aged out after 90 days. */
+  ok('the not-found page does not assert an age it cannot know',
+    !/deleted after 90 days\.\s*This one has probably/.test(shareApi));
+  ok('and it offers a route to a person', /contact\.html/.test(shareApi));
+
   /* ⚠ The widget must not announce a send it has not had confirmed. It used to print "on
      its way" BEFORE the fetch and swallow every failure, which is why a completely dead
      endpoint looked perfect from the browser for a day. */

@@ -85,8 +85,20 @@ complete. Conversations are deleted on a schedule, so an old one may simply be g
     }
     const doc = await readTranscript(claim.id, claim.day);
     if (!doc) {
-      return res.status(404).send(page('Conversation not found', `<h1>This conversation is no longer here</h1>
-<p class="sub">Conversations are deleted after 90 days. This one has probably passed that point.</p>
+      /* ⚠ DO NOT ASSERT A REASON THIS PAGE CANNOT KNOW.
+         It used to say "conversations are deleted after 90 days, this one has probably
+         passed that point" — and the first person to see it was reading it about a
+         conversation thirty seconds old, whose transcript had been lost to a write that
+         never completed. A confident wrong explanation sent the reader away satisfied and
+         cost a day before the real fault was looked for. Say what is true, offer the route
+         to a person, and let the logs say why. */
+      const old = claim.day < new Date(Date.now() - 7 * 86400_000).toISOString().slice(0, 10);
+      return res.status(404).send(page('Conversation not available', `<h1>We could not retrieve that conversation</h1>
+<p class="sub">${old
+  ? `This one is from ${esc(claim.day)}, and conversations are deleted after 90 days.`
+  : `This one is from ${esc(claim.day)}, so it is recent enough that it should still be here —
+     which means something went wrong at our end rather than at yours.`}</p>
+<p>If you still need it, <a href="${SITE}/contact.html">contact us</a> and mention the date above.</p>
 <p><a href="${SITE}/">Go to the site</a></p>`));
     }
     const turns = (doc.turns || []).map((t) => `<div class="turn">

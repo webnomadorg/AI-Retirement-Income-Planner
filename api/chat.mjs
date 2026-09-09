@@ -393,14 +393,30 @@ export default async function handler(req, res) {
     mac: signHistory(next.sid, nextHistory),
     limit: remaining === 0,
   });
-  res.end();
+  /* ⚠ THE BOOKKEEPING RUNS BEFORE res.end(), AND THAT ORDER IS THE WHOLE POINT.
 
-  /* Everything below is bookkeeping and happens after the visitor has their answer. */
+     It used to sit after it, on the reasoning that a visitor should never wait on
+     housekeeping. That reasoning is right about the visitor and wrong about the platform:
+     once the response is ended the invocation is finished as far as Vercel is concerned,
+     and any I/O still in flight may simply never complete. Nothing errors, nothing is
+     logged, and the writes that survive are whichever happened to be quickest.
+
+     Measured, not theorised. Six answered questions had produced six spend rows -- a
+     ~20-byte write -- but only three transcripts, a ~1.5KB write issued concurrently with
+     them. The missing one was a conversation a visitor then asked us to email themselves,
+     and the share link told them it had been deleted for age when it was thirty seconds old.
+
+     The visitor is not made to wait: every text chunk and the closing {done} line have
+     already gone down the wire, so the answer is complete on screen. Only the socket stays
+     open, for about as long as a blob write takes. maybeRollover is in here too and is
+     claim-guarded, so it costs one fast round trip on every request but the first of the
+     day -- and that first one is what makes the 90-day deletion promise actually happen,
+     which is not something to leave to whether an instance lived long enough. */
   const scrubbedQ = scrubMessage(question);
   const convoId = String(body.cid || '').match(/^[0-9]{10,}-[0-9a-f]{8}$/)
     ? body.cid
     : newConversationId();
-  await Promise.allSettled([
+  const book = await Promise.allSettled([
     recordSpend(usd),
     writeTranscript({
       id: convoId,
@@ -438,4 +454,20 @@ export default async function handler(req, res) {
     }),
     maybeRollover(),
   ]);
+
+  /* allSettled swallows rejections by design, which is right -- none of these may break a
+     visitor's answer. But swallowing them SILENTLY is what let a lost transcript look to
+     the visitor like a deleted one, so say which failed. */
+  ['spend', 'transcript', 'rollover'].forEach((what, i) => {
+    if (book[i].status === 'rejected') {
+      console.error(`[chat] ${what} write failed:`, book[i].reason?.message || book[i].reason);
+    }
+  });
+  /* ⚠ A transcript that resolves to null failed too: writeTranscript catches its own errors
+     and returns null, so a rejection is not the only way to lose one. */
+  if (book[1].status === 'fulfilled' && book[1].value === null) {
+    console.error('[chat] transcript not stored for', convoId, '- share links will not find it');
+  }
+
+  res.end();
 }
