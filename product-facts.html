@@ -164,6 +164,50 @@
         <li>Offers an optional AI assistant that explains your own plan figures and proposes changes you approve or reject.</li>
       </ul>
 
+      <h2 id="how-the-phases-work">How the phases work</h2>
+      <p>The plan is built from <strong>five configurable phases</strong> and simulated month by month, rather than as a lifetime average. Default boundaries follow the US milestone ladder — <strong>59&frac12;, 62, 65, 67 and 73</strong> — and every one of them is editable.</p>
+      <ul>
+        <li><strong>An automatic Pre 59&frac12; phase</strong> appears when you retire before 59&frac12;, because withdrawing from a traditional 401k or IRA before that age carries an early-withdrawal penalty that the rest of the plan does not.</li>
+        <li><strong>A phase splits in two when a benefit starts partway through it.</strong> If Social Security begins mid-phase, that phase becomes Phase 2 and Phase 2b (for example), and each half carries its own independently editable withdrawal amounts. The same happens in the Pre 59&frac12; phase when SSDI is active.</li>
+        <li><strong>Each phase holds its own figures</strong> — withdrawals per account (traditional 401k or IRA, Roth, taxable equity, cash, Australian superannuation), part-time income, one-off expenses, and Roth conversion settings.</li>
+        <li><strong>Thresholds are inflation-adjusted per phase</strong>, so the app shows a figure alongside the estimated calendar year it applies to, rather than projecting today's statutory number forward silently.</li>
+      </ul>
+
+      <h2 id="the-plan-health-checks">The plan health checks</h2>
+      <p>The planner runs a set of automated checks over the finished projection and reports each as a pass, a warning or a failure. <strong>Fourteen checks exist.</strong> How many apply to any given plan depends on that plan: five are US-specific and are marked <em>not applicable</em> for non-US taxpayers, and others only become active once the feature they test is configured. The score shown is passes divided by <em>applicable</em> checks, and individual warnings can be acknowledged so a deliberate trade-off stops being flagged.</p>
+      <div class="wex-compare">
+        <table>
+          <thead><tr><th scope="col">Check</th><th scope="col">What it looks at</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Income Adequacy</th><td data-label="">Whether any phase has negative net income, or falls below the monthly income floor you set.</td></tr>
+            <tr><th scope="row">Income Goal</th><td data-label="">Whether every phase delivers the target net monthly income you set, in today's money.</td></tr>
+            <tr><th scope="row">Income Floor Foundation</th><td data-label="">How much of your average income comes from guaranteed sources — Social Security, pension, annuity — rather than portfolio withdrawals. A low share means high sequence-of-returns risk.</td></tr>
+            <tr><th scope="row">Portfolio Survives to End</th><td data-label="">Whether any account runs dry before the end of the plan.</td></tr>
+            <tr><th scope="row">Legacy Goal</th><td data-label="">Whether the projected ending balance meets the amount you want to leave behind.</td></tr>
+            <tr><th scope="row">One-Time Expenses Funded</th><td data-label="">Whether the lump sums you have planned are affordable in the phases they fall in.</td></tr>
+            <tr><th scope="row">Stress Test Resilient</th><td data-label="">Whether the plan survives the combined high-inflation and low-return stress scenarios.</td></tr>
+            <tr><th scope="row">Survivor Income Resilience</th><td data-label="">Whether the surviving spouse's income still covers their reduced spending need after the first death. Requires a married-filing-jointly plan with both Social Security amounts entered and survivor modelling switched on.</td></tr>
+            <tr><th scope="row">Tax Bracket Efficiency <span class="muted">(US)</span></th><td data-label="">Where each phase's income lands within the federal tax brackets.</td></tr>
+            <tr><th scope="row">ACA Subsidy Protected <span class="muted">(US)</span></th><td data-label="">Whether pre-Medicare phases keep premium-subsidy eligibility.</td></tr>
+            <tr><th scope="row">CSR / Subsidy Headroom <span class="muted">(US)</span></th><td data-label="">How much room is left before the next cost-sharing step or the subsidy cliff.</td></tr>
+            <tr><th scope="row">IRMAA Not Triggered <span class="muted">(US)</span></th><td data-label="">Whether income stays below the Medicare surcharge thresholds, using the two-year lookback the rules actually apply.</td></tr>
+            <tr><th scope="row">RMD Compliance <span class="muted">(US)</span></th><td data-label="">Whether planned withdrawals meet the required minimum distribution from 73 onwards.</td></tr>
+            <tr><th scope="row">Roth Conversion Seasoning <span class="muted">(US)</span></th><td data-label="">Whether converted money has had time to season before a pre-59&frac12; Roth withdrawal draws on it.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="testing-and-comparison-tools">Testing and comparison tools</h2>
+      <p>Beyond the projection itself, the planner re-runs your own figures under different assumptions so a plan can be questioned rather than just read.</p>
+      <ul>
+        <li><strong>Monte Carlo simulation</strong> and a <strong>historical backtest</strong> against real market returns, reporting how many historical retirements of the same length the plan would have survived.</li>
+        <li><strong>A combined inflation and returns stress test</strong> across multiple paired scenarios, run to the end age of the plan.</li>
+        <li><strong>A what-if explorer</strong> covering the Social Security claim-age trade-off, the size of a Roth conversion, inflation eroding purchasing power, the survivor scenario when one spouse dies, and a search for the maximum sustainable spending the plan supports.</li>
+        <li><strong>A cliff view</strong> showing where the plan sits against the ACA subsidy cliff and the IRMAA surcharge ladder.</li>
+        <li><strong>Drawdown strategy comparison</strong>, a <strong>Social Security claiming comparison</strong>, and a <strong>multi-year Roth conversion optimizer</strong>.</li>
+        <li><strong>A year-by-year schedule</strong> with CSV export, and a <strong>calculation trace</strong> that shows the working behind each phase's figures rather than only the result.</li>
+      </ul>
+
       <h2 id="what-it-does-not-do">What it does not do</h2>
       <p>These limits are deliberate, and stating them is more useful than overstating the scope.</p>
       <ul>
@@ -174,6 +218,13 @@
         <li><strong>It does not model variable annuities.</strong> The annuity tool covers income annuities and excludes variable products.</li>
         <li><strong>It does not work with any arbitrary AI provider.</strong> It supports a defined list, and its content security policy restricts arbitrary custom endpoints.</li>
         <li><strong>It is not a guarantee.</strong> Every figure is a projection resting on assumptions that may not hold.</li>
+      </ul>
+
+      <h3 id="two-simplifications-worth-knowing">Two simplifications worth knowing about</h3>
+      <p>Both are documented inside the software as well, because knowing which direction an estimate leans is more useful than a number presented as exact.</p>
+      <ul>
+        <li><strong>Tax is worked out per phase, not per calendar year.</strong> The planner takes a phase's income, calculates one year of tax on it, and applies that to every year in the phase. Where income holds steady through a phase the two are identical — and it usually does, because you set one withdrawal amount per phase. Where income moves around inside a phase, the phase figure comes out <em>too low, never too high</em>, because brackets step up. In practice: no difference at all if income stays inside one bracket; roughly 5&ndash;6% of the tax if income drifts up through a bracket over a long phase; up to about 20% in the lumpiest cases, such as a Roth conversion ladder or an account emptying partway through. Treat the tax figures as a fair estimate that leans slightly optimistic, and lean on them least where a phase contains a conversion ladder, a large one-off, or an account running dry.</li>
+        <li><strong>Capital gains are taxed at ordinary rates.</strong> When the plan sells from a taxable brokerage account only the gain is taxed, split out using the pre-plan taxable gain percentage you set, with the remaining cost basis reduced as you go. That realised gain is then added to taxable income at ordinary rates. Most long-term gains in reality qualify for the lower 0/15/20% rates, so this is a <em>cautious</em> simplification: the planner will generally show more capital-gains tax than you would actually pay, never less. The gap is widest where income is low enough that the real long-term rate would be 0% &mdash; common in early retirement, living off a brokerage account before Social Security starts. What is <em>not</em> simplified is the part that usually matters more: gains count in full toward MAGI, so they drive ACA subsidy eligibility, the Silver cost-sharing band, the subsidy cliff and the two-year IRMAA lookback exactly as they would in reality, and the 3.8% Net Investment Income Tax applies above its thresholds.</li>
       </ul>
 
       <h2 id="supported-currencies-and-residencies">Supported currencies and residencies</h2>

@@ -225,6 +225,115 @@ ok('the input cap is enforced in one place', ctx.MAX_QUESTION_CHARS === 1000);
   ok('an unanswerable question is a content gap', ctx.isContentGap('give me a recipe for lasagne', ctx.retrieve('give me a recipe for lasagne', 8)));
 }
 
+/* ⚠ THE PUBLISHED PLAN-HEALTH CHECKS MUST MATCH THE ENGINE THAT RUNS THEM.
+
+   This is a guard against a drift that had already happened twice. The assistant's system
+   prompt carried a hard rule -- say "up to twelve" plan-health checks, not a larger number --
+   written when there were twelve. The engine grew to fourteen, and both that rule and the
+   demo's help text went on saying twelve, so the assistant quietly UNDERSTATED the product
+   to every visitor who asked. Nothing errors when a number goes stale; it just gets repeated.
+
+   product-facts.html is the published list the assistant is grounded in, so it is the thing
+   that has to stay true. Compared by NAME, not by count: a count matching while the names
+   have diverged is the failure this is meant to catch.
+
+   ⚠ Skips rather than fails when src/ is absent. That file belongs to the DESKTOP repo, and
+   this suite ships in the Website one -- a Website-only checkout is a legitimate state, and
+   failing there would block a push for a file that was never meant to be present. */
+console.log('  published facts match the engine');
+{
+  const appPath = new URL('../../src/03-app.js', import.meta.url);
+  let app = null;
+  try { app = readFileSync(appPath, 'utf8'); } catch { app = null; }
+  if (!app) {
+    ok('engine source not in this checkout — health-check parity skipped', true);
+  } else {
+    const fn = app.slice(app.indexOf('function calcPlanConfidence'));
+    const body = fn.slice(0, fn.indexOf('\n}'));
+    const engine = [...new Set([...body.matchAll(/title:\s*'([^']+)'/g)].map((m) => m[1]))].sort();
+
+    const facts = readFileSync(new URL('../product-facts.html', import.meta.url), 'utf8');
+    const from = facts.indexOf('id="the-plan-health-checks"');
+    const to = facts.indexOf('<h2', from + 1);
+    const section = from > 0 ? facts.slice(from, to > 0 ? to : undefined) : '';
+    /* ⚠ Drop the whole <span> first, not just its tags. The US-only checks carry a
+       "(US)" qualifier in a span beside the name; stripping tags alone leaves that text
+       glued to the name and every US check reads as a mismatch. The qualifier is a label,
+       not part of the check's name. */
+    const published = [...new Set([...section.matchAll(/<th scope="row">([\s\S]*?)<\/th>/g)]
+      .map((m) => m[1].replace(/<span[\s\S]*?<\/span>/g, '')
+        .replace(/<[^>]*>/g, '').replace(/&frac12;/g, '½').trim()))].sort();
+
+    ok('the product facts page has a health-check section', section.length > 0);
+    ok('it lists every check the engine defines', engine.every((t) => published.includes(t)),
+      engine.filter((t) => !published.includes(t)).join(', '));
+    ok('and invents none the engine does not', published.every((t) => engine.includes(t)),
+      published.filter((t) => !engine.includes(t)).join(', '));
+    ok('the page states the count the engine actually has',
+      new RegExp(`\\b${['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
+        'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+        'seventeen', 'eighteen', 'nineteen', 'twenty'][engine.length] || String(engine.length)}\\b`, 'i')
+        .test(section), `engine has ${engine.length}`);
+
+    /* The prompt must not carry a number of its own any more — that is what went stale. */
+    const persona = readFileSync(new URL('../lib/chat-context.mjs', import.meta.url), 'utf8');
+    ok('the prompt no longer hard-codes a health-check count',
+      !/Say "up to (twelve|thirteen|fourteen|\d+)" automated plan-health checks/.test(persona));
+
+    /* ⚠ AND NOWHERE ELSE ON THE SITE MAY CLAIM A DIFFERENT NUMBER.
+       Fixing the reference page alone would have achieved nothing: the assistant is grounded
+       in the whole site, and the stale "twelve" was ALSO on the home page, the features page
+       and two blog posts. The home page outranked the reference page for "what are the plan
+       health checks", so the assistant would have read the wrong number and repeated it with
+       total confidence. A count is only correct if every page agrees.
+
+       ⚠ demo/ is excluded and must stay excluded: it is a GENERATED artifact of an older
+       planner build (see tools/demo-build/), so its number was true when it was produced and
+       hand-editing it is explicitly forbidden. It is not in the assistant's corpus either. */
+    const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
+      'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+      'seventeen', 'eighteen', 'nineteen', 'twenty'];
+    /* ⚠ The US-only SUB-count is read from source too, not merely tolerated. The first run
+       of this check flagged "Four US-specific checks" in a blog post as a false positive —
+       it was not one. The engine marks FIVE checks US-only, and that sentence had been
+       wrong for as long as the "twelve" had. Deriving both numbers means a legitimate
+       sub-count passes and a stale one still fails. */
+    const usOnly = (body.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/)
+      || app.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/) || [, ''])[1]
+      .split(',').filter((s) => s.trim()).length;
+    ok('the engine marks some checks US-only', usOnly > 0, `found ${usOnly}`);
+
+    const right = new Set([
+      String(engine.length), WORDS[engine.length],
+      String(usOnly), WORDS[usOnly],
+    ].filter(Boolean));
+    const site = new URL('../', import.meta.url);
+    const pages = [];
+    const walk = (dir, rel = '') => {
+      for (const e of readdirSync(new URL(dir), { withFileTypes: true })) {
+        if (e.isDirectory()) {
+          if (['demo', 'node_modules', 'assets', 'blog-src', 'partials', 'api', 'lib', 'tools',
+            'Source Files', '.git'].includes(e.name)) continue;
+          walk(new URL(e.name + '/', dir), rel + e.name + '/');
+        } else if (e.name.endsWith('.html')) pages.push([rel + e.name, new URL(e.name, dir)]);
+      }
+    };
+    walk(site);
+    const stale = [];
+    for (const [name, url] of pages) {
+      const text = readFileSync(url, 'utf8').replace(/<[^>]*>/g, ' ');
+      for (const m of text.matchAll(/\b([a-z]+|\d{1,2})\b[^.]{0,25}?\bchecks\b/gi)) {
+        const n = m[1].toLowerCase();
+        if ((WORDS.includes(n) || /^\d{1,2}$/.test(n)) && !right.has(n)) {
+          stale.push(`${name}: "${m[0].trim().slice(0, 60)}"`);
+        }
+      }
+    }
+    ok('no published page states a different number of checks', stale.length === 0,
+      stale.slice(0, 6).join('  |  '));
+  }
+}
+
 /* -------------------------------------------------------------------------- 5. logging */
 console.log('  logging');
 ok('an address is scrubbed', log.scrubMessage('mail me at a@b.com').scrubbed === true);

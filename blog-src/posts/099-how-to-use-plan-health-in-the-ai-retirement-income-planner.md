@@ -25,7 +25,7 @@
 
 **Search intent:** The reader wants step-by-step help using Plan Health inside the planner, including what the checks mean, how to respond to flagged items, and how Plan Health relates to the Plan Confidence score.
 
-**Product fit:** Very high. The AI Retirement Income Planner includes a Plan Health badge and side panel, twelve tiered Plan Health checks, a separate 0 to 100 Plan Confidence score, a Confidence dashboard with a completeness verdict, category sub-scores, Monte Carlo and historical lenses, drawdown strategy ratings, user acknowledgments for accepted flags, Ask AI buttons, scenarios, What-if tools, stress tests, reports, and educational help.
+**Product fit:** Very high. The AI Retirement Income Planner includes a Plan Health badge and side panel, fourteen tiered Plan Health checks, a separate 0 to 100 Plan Confidence score, a Confidence dashboard with a completeness verdict, category sub-scores, Monte Carlo and historical lenses, drawdown strategy ratings, user acknowledgments for accepted flags, Ask AI buttons, scenarios, What-if tools, stress tests, reports, and educational help.
 
 **Educational disclaimer:** This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. Planner outputs depend on user inputs and assumptions. Verify major decisions with official sources and qualified professionals before acting.
 
@@ -64,11 +64,11 @@ Use it like this:
 
 - Plan Health is a live checklist that updates as planner inputs change.
 - The badge shows passed checks over applicable checks, plus a plain-English label.
-- Up to 12 checks can appear depending on the plan setup and goals.
+- Up to 14 checks can appear depending on the plan setup and goals.
 - Checks are tiered: Essential, Recommended, Optimization, and Optional.
 - Essential checks decide viability. Optimization checks are efficiency, not failure.
 - Checks that do not fit your plan are marked not applicable and grayed out.
-- Four US-specific checks switch off for non-USD plans and non-US taxpayers.
+- Five US-specific checks switch off for non-USD plans and non-US taxpayers.
 - Plan Health and Plan Confidence are related, but they are not the same thing.
 - The 0 to 100 score comes from the checklist. Monte Carlo and history confirm it rather than change it.
 - Every failing or warning check has a one-click "Ask AI about this" button.
@@ -90,7 +90,7 @@ The Overview tab also carries a slim confidence teaser showing your score out of
 
 ## What Plan Health Is Checking
 
-The planner has twelve checks. Which ones apply depends on your plan.
+The planner has fourteen checks. Which ones apply depends on your plan.
 
 They are grouped into four importance tiers, and the tier matters more than the color:
 
@@ -364,7 +364,7 @@ The planner's own report includes an annual review checklist along the same line
 
 ### What is Plan Health in the AI Retirement Income Planner?
 
-Plan Health is the planner's built-in checklist for reviewing retirement plan risks and constraints. It has twelve checks covering income, taxes, healthcare thresholds, portfolio survival, RMDs, income floor, stress resilience, survivor income, and your own goals. Only the checks that fit your plan apply.
+Plan Health is the planner's built-in checklist for reviewing retirement plan risks and constraints. It has fourteen checks covering income, taxes, healthcare thresholds, portfolio survival, RMDs, income floor, stress resilience, survivor income, and your own goals. Only the checks that fit your plan apply.
 
 ### Is Plan Health the same as the Plan Confidence score?
 
@@ -376,7 +376,7 @@ No. The checks are tiered by importance. Essential checks decide viability, Reco
 
 ### Why does my Plan Health count differ from someone else's?
 
-Plan Health adapts to the plan. Four US-specific checks switch off for non-USD or non-US-taxpayer plans. Survivor and goal checks only appear when you configure them. Checks that do not apply are marked not applicable and are excluded from the count.
+Plan Health adapts to the plan. Five US-specific checks switch off for non-USD or non-US-taxpayer plans. Survivor and goal checks only appear when you configure them. Checks that do not apply are marked not applicable and are excluded from the count.
 
 ### What should I do first if Plan Health flags a problem?
 

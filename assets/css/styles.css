@@ -2300,7 +2300,22 @@ html.dark .wn-chat-from-user{ background:rgba(42,181,164,.14); }
   background:var(--paper); color:var(--ink);
   font-family:var(--font-sans); font-size:.95rem; line-height:1.4;
   max-height:96px;
+  /* ⚠ A TEXTAREA GETS THE PLATFORM SCROLLBAR, ARROW BUTTONS AND ALL.
+     This is a chat composer, so it looks like a one-line text field -- but it is a
+     <textarea> that grows to max-height, and the moment the text passes that the OS draws
+     its own scrollbar inside the box. On Windows that is the classic one: an up arrow, a
+     thumb, and a down arrow, stacked down the right-hand edge of what reads as a text
+     input. Nothing is broken, it just looks like a spinner nobody asked for.
+     `thin` handles Firefox and modern Chromium; the ::-webkit- rules handle the rest, and
+     ::-webkit-scrollbar-button is the one that actually removes the arrows -- width alone
+     leaves them, drawn smaller. */
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
 }
+.wn-chat-input::-webkit-scrollbar{ width:6px; }
+.wn-chat-input::-webkit-scrollbar-track{ background:transparent; }
+.wn-chat-input::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
+.wn-chat-input::-webkit-scrollbar-button{ display:none; height:0; width:0; }
 .wn-chat-input:focus{ outline:none; border-color:var(--teal); box-shadow:var(--ring); }
 .wn-chat-send{
   flex:0 0 auto; width:38px; height:38px; border-radius:50%;

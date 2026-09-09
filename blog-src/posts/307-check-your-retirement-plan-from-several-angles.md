@@ -89,7 +89,7 @@ A health score is a useful tool, but it should not become the goal. The aim is n
 
 ## How the Planner Does This
 
-The AI Retirement Income Planner builds this whole review into its **Confidence tab**, which runs up to **12 automated checks** and rolls them into a **0 to 100 Plan Health score** plus a plain-English **completeness verdict**. The checks are grouped into four categories, Solvency, Income stability, Tax and healthcare, and Survivor and legacy, and each carries a **tier** that reflects how much it matters:
+The AI Retirement Income Planner builds this whole review into its **Confidence tab**, which runs up to **14 automated checks** and rolls them into a **0 to 100 Plan Health score** plus a plain-English **completeness verdict**. The checks are grouped into four categories, Solvency, Income stability, Tax and healthcare, and Survivor and legacy, and each carries a **tier** that reflects how much it matters:
 
 - **Essential** (plan viability): Income Adequacy, Portfolio Survives to End.
 - **Recommended** (resilience): Stress Test Resilient, Income Floor Foundation, Survivor Income Resilience, RMD Compliance.
@@ -139,7 +139,7 @@ This series summarizes it, but the complete step-by-step framework is in the fre
 
 **Demo CTA:** Open the live demo and look at the Confidence tab: read the Plan Health score and completeness verdict, then scan the tiered checks to see which areas are green, amber, or red for the sample plan.
 
-**Product CTA:** The AI Retirement Income Planner reviews your plan from up to 12 angles at once, groups the checks by category and tier, rolls them into a 0 to 100 Plan Health score and a completeness verdict, lets you ask AI about any flagged check, and confirms resilience with a Monte Carlo simulation and stress test. One-time purchase, no subscription, runs privately in your browser.
+**Product CTA:** The AI Retirement Income Planner reviews your plan from up to 14 angles at once, groups the checks by category and tier, rolls them into a 0 to 100 Plan Health score and a completeness verdict, lets you ask AI about any flagged check, and confirms resilience with a Monte Carlo simulation and stress test. One-time purchase, no subscription, runs privately in your browser.
 
 ## Facebook Post Snippets
 
