@@ -409,6 +409,25 @@ console.log('  demo parity');
     ['id', 'day', 'model', 'totals', 'flags', 'turns'].every((k) => k in t));
   ok('and a demo turn does too',
     ['q', 'a', 'gap', 'usd', 'usage'].every((k) => k in t.turns[0]));
+
+  /* ⚠ The console's own ui.confirm, never the browser's. After a few dialogs the browser
+     offers "prevent this page from creating more dialogs", and accepting that makes every
+     later window.confirm() return false INSTANTLY -- so the click that switches the
+     assistant off would do nothing, silently. The AI agent tab shipped using the native
+     three and was the last place in the console still doing so; this keeps it that way.
+
+     ⚠ Scoped to the whole file rather than the tab, because the hazard is not specific to
+     this one, and honest about its reach: this suite gates WEBSITE pushes, and admin.html
+     lives in the desktop repo, so a regression is caught on the next Website push rather
+     than at the moment it is written. Later is not never. */
+  const consoleHtml = readFileSync(new URL('../../tools/admin/admin.html', import.meta.url), 'utf8');
+  // Negative lookbehind excludes ui.alert( and the like; \w excludes alreadyConfirmed(.
+  const native = consoleHtml.split(/\r?\n/)
+    .map((line, i) => [i + 1, line])
+    .filter(([, line]) => /(?<![.\w$-])(alert|confirm|prompt)\s*\(/.test(line)
+      || /window\.(alert|confirm|prompt)\s*\(/.test(line));
+  ok('the owner console uses its own dialogs, not the browser\'s',
+    native.length === 0, native.map(([n, l]) => `admin.html:${n} ${l.trim().slice(0, 60)}`).join(' | '));
 }
 
 /* ------------------------------------------- 13. model output renders as text, not markup */

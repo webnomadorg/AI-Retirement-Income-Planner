@@ -166,9 +166,10 @@ ${turns}
 
      The share link is offered the moment the first answer appears -- which is the same
      moment the transcript was written, and a blob takes appreciable time to become
-     readable (measured here at close to a minute, far longer than this project's notes
-     assume). Requiring the read to succeed therefore dropped most genuine requests on the
-     floor while telling the visitor it was on its way.
+     readable -- measured on this store at 0.5-1.4 seconds, which is small but is exactly
+     the window a visitor clicking straight after their first answer lands in. Requiring the
+     read to succeed therefore dropped genuine requests on the floor while telling the
+     visitor it was on its way.
 
      Nothing is lost by sending anyway: the link is signed and expiring, the GET handler
      already renders a plain "no longer here" page if the conversation really is missing,
