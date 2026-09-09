@@ -223,6 +223,36 @@ ok('the input cap is enforced in one place', ctx.MAX_QUESTION_CHARS === 1000);
   ok('results are one per page', new Set(hits.map((h) => h.record.u)).size === hits.length);
   ok('a real question is not a content gap', ctx.isContentGap('is there a subscription', ctx.retrieve('is there a subscription', 8)) === false);
   ok('an unanswerable question is a content gap', ctx.isContentGap('give me a recipe for lasagne', ctx.retrieve('give me a recipe for lasagne', 8)));
+
+  /* ⚠ THE PROMPT'S BUTTON LIST AND THE WIDGET'S MAP MUST BE THE SAME SET.
+
+     A token the widget does not know is dropped SILENTLY -- extract() deliberately does not
+     render stray "[[…]]" punctuation -- so a prompt that offers a button the widget lacks
+     produces a reply with the link simply missing, and nothing anywhere says so. The 2026-09-09
+     accuracy pass caught the other direction of the same gap: the prompt told the model to
+     cite the product facts page, that page had no token at all, and the model dutifully wrote
+     "the product facts page lists them" and then attached a button to /technical.html.
+
+     Asserted both ways. A token in the prompt that the widget cannot render is a dead link;
+     one in the widget that the prompt never mentions is dead weight the model will not use. */
+  const widgetSrc = readFileSync(new URL('../assets/js/chat.js', import.meta.url), 'utf8');
+  const actionsBlock = widgetSrc.slice(widgetSrc.indexOf('var ACTIONS'), widgetSrc.indexOf('var STARTERS'));
+  const widgetTokens = new Set([...actionsBlock.matchAll(/^\s*"([a-z0-9:_-]+)"\s*:/gim)].map((m) => m[1]));
+  const promptTokens = new Set([...ctx.staticBlock().matchAll(/\[\[([a-z0-9:_-]+)\]\]/gi)].map((m) => m[1].toLowerCase()));
+  ok('the widget defines some buttons', widgetTokens.size > 0);
+  ok('every button the prompt offers, the widget can render',
+    [...promptTokens].every((t) => widgetTokens.has(t)),
+    [...promptTokens].filter((t) => !widgetTokens.has(t)).join(', '));
+  /* ⚠ The reverse is NOT a plain equality, and asserting it as one was wrong on the first
+     run. "contact" is in the map but not in the prompt because the WIDGET raises it itself —
+     in the switched-off state, at the message limit, and on an error — where there is no
+     model reply to carry a token. So a map entry is legitimate if the prompt offers it OR
+     the widget passes it to addActions(). Anything in neither is genuinely orphaned. */
+  const selfRaised = new Set([...widgetSrc.matchAll(/addActions\([^,]+,\s*\[([^\]]*)\]/g)]
+    .flatMap((m) => [...m[1].matchAll(/"([a-z0-9:_-]+)"/gi)].map((x) => x[1].toLowerCase())));
+  const orphaned = [...widgetTokens].filter((t) => !promptTokens.has(t) && !selfRaised.has(t));
+  ok('no button in the widget is unreachable from both the prompt and the widget',
+    orphaned.length === 0, orphaned.join(', '));
 }
 
 /* ⚠ THE PUBLISHED PLAN-HEALTH CHECKS MUST MATCH THE ENGINE THAT RUNS THEM.

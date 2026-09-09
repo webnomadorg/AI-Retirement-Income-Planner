@@ -45,6 +45,12 @@
     "page:faq":        { href: "/faq.html",        label: "FAQ" },
     "page:how-it-works": { href: "/how-it-works.html", label: "How it works" },
     "page:technical":  { href: "/technical.html",  label: "Technical detail" },
+    /* ⚠ Added after the accuracy pass caught the assistant citing "the product facts page"
+       in prose and then linking to /technical.html, because this entry did not exist and
+       unknown tokens are dropped SILENTLY (see extract()). The prompt now names this page
+       as the source for the plan-health list, so it has to be reachable. The prompt's token
+       list and this map are asserted equal in tools/test-chat-guards.mjs. */
+    "page:product-facts": { href: "/product-facts.html", label: "Product facts" },
     "page:privacy":    { href: "/privacy.html",    label: "Privacy" },
     "page:blog":       { href: "/blog.html",       label: "Blog" },
     "page:contact":    { href: "/contact.html",    label: "Contact us" }
