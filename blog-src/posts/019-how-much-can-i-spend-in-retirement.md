@@ -57,7 +57,7 @@ It is not simple because spending is connected to almost everything else in the 
 
 Two households can both have $1 million saved and still have very different spending limits.
 
-One household may have two Social Security benefits, a pension, no mortgage, and modest travel plans. Another may have no pension, a mortgage, high healthcare costs, and plans to retire at 60. The same portfolio balance does not produce the same answer.
+One household may have two Social Security benefits, a pension, no mortgage, and modest travel plans. Another may have no pension, [a mortgage still running](/blog/should-i-retire-with-debt.html), high healthcare costs, and plans to retire at 60. The same portfolio balance does not produce the same answer.
 
 That is why a retirement spending plan should be built from cash flow, taxes, and risk testing, not from one shortcut. It is also why [you may not need a million dollars to retire](/blog/do-you-need-a-million-dollars-to-retire.html), or why a million may not be enough, depending on which of those households yours resembles.
 

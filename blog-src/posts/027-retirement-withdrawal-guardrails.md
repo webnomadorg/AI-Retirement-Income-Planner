@@ -129,7 +129,7 @@ Start by separating:
 - Should-pay spending
 - Nice-to-have spending
 
-Must-pay spending includes basic living costs, healthcare, taxes, insurance, and debt payments.
+Must-pay spending includes basic living costs, healthcare, taxes, insurance, and [debt payments](/blog/should-i-retire-with-debt.html), which are the least flexible item on the list because the amount is set by someone else.
 
 Should-pay spending includes maintenance, vehicle replacement, dental care, home repairs, and family support that is hard to avoid.
 

@@ -190,7 +190,7 @@ Healthcare costs are a major reason an old plan can go stale. Update them separa
 
 ## 8. Review Cash Reserves And Debt
 
-Cash reserves and debt can change the retirement plan quickly.
+Cash reserves and debt can change the retirement plan quickly, and [whether the plan still works while those payments continue](/blog/should-i-retire-with-debt.html) is worth re-testing each year rather than treating last year's answer as settled.
 
 Review:
 

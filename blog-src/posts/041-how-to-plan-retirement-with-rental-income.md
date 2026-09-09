@@ -194,7 +194,7 @@ Do not assume rent checks are spendable until repair reserves are funded.
 
 ## Mortgage Debt On Rental Property
 
-A rental with debt can still help retirement, but the mortgage changes risk.
+A rental with debt can still help retirement, but the mortgage changes risk in the same way [any debt carried into retirement](/blog/should-i-retire-with-debt.html) does: the payment stays fixed while the income behind it does not.
 
 Questions to model:
 
