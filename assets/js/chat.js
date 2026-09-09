@@ -316,13 +316,35 @@
     if (!vv) return;
     function fit() {
       if (!box || box.hidden) return;
-      if (window.innerWidth > 600) { box.style.height = ""; return; }
+      if (window.innerWidth > 600) {
+        box.style.height = "";
+        box.style.minHeight = "";
+        box.style.transform = "";
+        return;
+      }
+      /* ⚠ Clear min-height as well as setting height. The desktop rule sets 520px and
+         min-height WINS over height, so this line used to be ignored outright whenever the
+         keyboard left less than 520px -- which is every iPhone. The stylesheet now zeroes it
+         for phones too; this is here so the panel is still correct if that rule is ever lost
+         behind a cached stylesheet. */
+      box.style.minHeight = "0px";
       box.style.height = vv.height + "px";
+      /* ⚠ position:fixed anchors to the LAYOUT viewport, which on iOS does not shrink for the
+         keyboard and can be scrolled out from under the visual one. offsetTop is that gap;
+         without it the sheet is the right height in the wrong place. A transform rather than
+         `top`, so the keyboard animation does not reflow the panel on every frame. */
+      box.style.transform = "translateY(" + (vv.offsetTop || 0) + "px)";
       stick();
     }
     vv.addEventListener("resize", fit);
     vv.addEventListener("scroll", fit);
-    els.input.addEventListener("focus", function () { setTimeout(fit, 50); });
+    /* ⚠ Several samples, not one. iOS animates the keyboard in over roughly a quarter of a
+       second and does not reliably fire a final resize, so a single 50ms measurement catches
+       the viewport mid-slide and sizes the panel to a height that is already stale. */
+    function refit() { [50, 200, 400, 700].forEach(function (ms) { setTimeout(fit, ms); }); }
+    els.input.addEventListener("focus", refit);
+    // The share form's address field sits at the very bottom too, and had the same problem.
+    if (els.email) els.email.addEventListener("focus", refit);
     box._fit = fit;
   }
 
@@ -350,7 +372,11 @@
   function close() {
     if (!box || box.hidden) return;
     box.hidden = true;
+    /* Every inline style fit() may have set, not just the height — a transform left behind
+       would offset the panel by a stale keyboard gap the next time it opened. */
     box.style.height = "";
+    box.style.minHeight = "";
+    box.style.transform = "";
     document.documentElement.classList.remove("wn-chat-open");
     if (fab) fab.setAttribute("aria-expanded", "false");
     /* ⚠ Fall back to the launcher rather than trusting lastFocus blindly. A click does

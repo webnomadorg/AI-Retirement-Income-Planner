@@ -253,6 +253,41 @@ ok('the input cap is enforced in one place', ctx.MAX_QUESTION_CHARS === 1000);
   const orphaned = [...widgetTokens].filter((t) => !promptTokens.has(t) && !selfRaised.has(t));
   ok('no button in the widget is unreachable from both the prompt and the widget',
     orphaned.length === 0, orphaned.join(', '));
+
+  /* ⚠ THE PHONE SHEET MUST RESET EVERY SIZE CONSTRAINT THE DESKTOP PANEL SETS.
+
+     On a phone the panel is sized by JS from visualViewport.height so the composer clears the
+     keyboard. Any constraint left over from the desktop rule silently overrides that, and
+     min-height is the dangerous one because min-height BEATS height — so the assignment does
+     not fail, it is simply ignored. Measured on the live site at iPhone width: JS asked for
+     400px, the panel stayed 520px, and the input's bottom edge sat at 485px, behind the
+     keyboard. You could type and not see what you typed. max-height was already reset here;
+     min-height had been missed. Assert the whole family rather than the one that bit. */
+  /* ⚠ Comments stripped FIRST, and forgetting to cost me the negative test. The comment
+     above the fix explains it by quoting "min-height:520px", so a rule-matching regex found
+     that prose, and the guard reported green with the actual declaration deleted. Same
+     mistake as the claimIpSlot check earlier in this file: a guard that reads a file must
+     read the CODE, or the explanation of the bug becomes the thing that hides it. */
+  const css = readFileSync(new URL('../assets/css/styles.css', import.meta.url), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ');
+  /* ⚠ Find the RULES, not a media query. Seeking the phone block from the first
+     `@media (max-width:600px)` was wrong twice over: there are six such blocks in this
+     stylesheet and the first is a thousand lines above the chat widget, so the search landed
+     back on the DESKTOP rule -- phone and base were the same string, and the comparison
+     passed by tautology with the declaration deleted. Take the two occurrences of the
+     selector itself, and check the second really is inside a narrow media query. */
+  const at = [...css.matchAll(/\.wn-chat-panel\{/g)].map((m) => m.index);
+  const blockFrom = (i) => (i == null ? '' : css.slice(i, css.indexOf('}', i)));
+  const base = blockFrom(at[0]);
+  const phone = blockFrom(at[1]);
+  ok('both the desktop and phone panel rules were found', at.length >= 2 && base !== phone);
+  ok('the second rule really is the phone one',
+    /@media\s*\(max-width:\s*600px\)[^{]*\{[^@]*$/.test(css.slice(0, at[1] ?? 0)));
+  for (const prop of ['height', 'min-height', 'max-height']) {
+    const inBase = new RegExp(`(^|[;{\\s])${prop}\\s*:`).test(base);
+    const inPhone = new RegExp(`(^|[;{\\s])${prop}\\s*:`).test(phone);
+    if (inBase) ok(`the phone sheet resets ${prop}`, inPhone, `set on desktop, absent on phone`);
+  }
 }
 
 /* ⚠ THE PUBLISHED PLAN-HEALTH CHECKS MUST MATCH THE ENGINE THAT RUNS THEM.

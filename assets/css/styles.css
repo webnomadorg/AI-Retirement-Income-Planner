@@ -2362,6 +2362,15 @@ html.dark .wn-chat-from-user{ background:rgba(42,181,164,.14); }
        both with the real visualViewport height while the keyboard is open. */
     height:100vh; height:100dvh;
     max-height:none;
+    /* ⚠ min-height MUST be cleared here, and its absence was a real bug on iPhone.
+       The desktop rule above sets min-height:520px, and **min-height beats height** —
+       including the inline height armViewport() sets from visualViewport.height. With the
+       keyboard open an iPhone 13 leaves roughly 400px of visual viewport, so the sheet
+       stayed 520px tall: measured on the live site, the composer's bottom edge sat at 485px,
+       eighty-five pixels below the visible area and squarely behind the keyboard. You could
+       type, but not see what you were typing. max-height:none was already here for the same
+       family of reason; min-height was simply missed. */
+    min-height:0;
   }
   .wn-chat-msg{ max-width:92%; }
 }
