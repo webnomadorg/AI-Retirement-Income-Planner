@@ -22,14 +22,13 @@
 import { screenSignup, signingSecret, canonicaliseEmail, emailHash } from '../lib/signup-guard.mjs';
 import { requestMeta } from '../lib/signup-quarantine.mjs';
 import { readConfig } from '../lib/chat-config.mjs';
-import { ipHash, claimIpSlot } from '../lib/chat-quota.mjs';
+import { ipHash, claimShareSlot } from '../lib/chat-quota.mjs';
 import { dayOfConversation } from '../lib/chat-log.mjs';
 import {
   signShareToken, verifyShareToken, claimShare, readTranscript, shareEmail, LINK_TTL_DAYS,
 } from '../lib/chat-share.mjs';
 
 const SITE = 'https://airetirementincomeplanner.com';
-const SHARE_PER_IP_PER_DAY = 3;
 
 function esc(s) {
   return String(s == null ? '' : s)
@@ -152,15 +151,17 @@ ${turns}
   if (!canon) return same();
 
   /* A per-IP daily cap on top of the once-per-conversation claim, so the endpoint cannot be
-     used to mail one address repeatedly by starting new conversations. Three rather than
-     one: a household shares two transcripts, or somebody mistypes their address and tries
-     again, and a silent refusal there looks exactly like the mail never arriving. */
+     used to mail one address repeatedly by starting new conversations. See IP_DAILY_SHARES.
+
+     ⚠ THIS LINE IS WHY THE WHOLE ENDPOINT WAS DEAD FOR A DAY. It used to call claimIpSlot(),
+     which was deleted from lib/chat-quota.mjs when the per-message slot scheme was replaced
+     by claimConversation() -- and nothing updated the import here. A missing named export is
+     a LINK error in ESM, so the module never executed: every request returned
+     FUNCTION_INVOCATION_FAILED, and the widget's "the conversation is on its way" was
+     printed before the fetch, so it looked perfect from the browser. The guard suite read
+     this file as text but never imported it; it does now. */
   const meta = requestMeta(req);
-  let allowed = false;
-  for (let slot = 1; slot <= SHARE_PER_IP_PER_DAY; slot += 1) {
-    if (await claimIpSlot('share-' + ipHash(meta.ip), slot)) { allowed = true; break; }
-  }
-  if (!allowed) return same();
+  if (!(await claimShareSlot(ipHash(meta.ip), id))) return same();
 
   /* ⚠ DO NOT GATE ON THE TRANSCRIPT BEING READABLE YET.
 

@@ -13,7 +13,7 @@
  * half-configured deployment must be silent, never accidentally live.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 process.env.SIGNUP_TOKEN_SECRET ||= 'selftest-secret-at-least-16-chars';
 delete process.env.BLOB_READ_WRITE_TOKEN;
@@ -57,6 +57,37 @@ const req = (over = {}) => ({
 });
 
 console.log('\nchat-selftest\n');
+
+/* ------------------------------------------------- 0. every serverless function LINKS
+   ⚠ THIS SECTION EXISTS BECAUSE ITS ABSENCE COST A DAY OF A LIVE FEATURE.
+
+   api/chat-share.mjs imported claimIpSlot from lib/chat-quota.mjs. That export had been
+   deleted when the per-message slot scheme was replaced, and nothing updated the import. In
+   ESM a missing NAMED export is a link error, not a runtime one: the module never executes,
+   so every single request returned FUNCTION_INVOCATION_FAILED. `node --check` passes -- the
+   syntax is perfect -- and this suite read the file as TEXT for its other assertions, which
+   is exactly the kind of check that feels like coverage and is not.
+
+   Nothing catches this but actually importing the module. So: discovery by DIRECTORY, never
+   a hand-kept list, because the endpoint that gets forgotten is the one that breaks. Every
+   .mjs under api/ must import cleanly with no credentials in the environment -- which also
+   asserts that none of them does real work at import time. */
+console.log('  every endpoint links');
+{
+  const apiDir = new URL('../api/', import.meta.url);
+  const files = readdirSync(apiDir).filter((f) => f.endsWith('.mjs')).sort();
+  ok('there are endpoints to check at all', files.length > 0);
+  for (const f of files) {
+    let err = null;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await import(new URL(f, apiDir).href);
+    } catch (e) {
+      err = e;
+    }
+    ok(`api/${f} loads`, !err, err ? String(err.message).split('\n')[0] : '');
+  }
+}
 
 /* ---------------------------------------------------------------- 1. fail-safe defaults */
 console.log('  defaults');
@@ -227,6 +258,39 @@ console.log('  sharing');
   ok('the mail carries the disclaimer', /not financial/.test(mail.text));
   ok('share records expire sooner than transcripts', log.SHARE_RETAIN_DAYS < log.RETAIN_DAYS);
   ok('share retention matches the link expiry', log.SHARE_RETAIN_DAYS === share.LINK_TTL_DAYS);
+
+  /* The endpoint still has a per-address daily cap, and it is the one that exists. */
+  const shareApi = readFileSync(new URL('../api/chat-share.mjs', import.meta.url), 'utf8');
+  ok('the share endpoint caps requests per address', /claimShareSlot\(/.test(shareApi));
+  ok('and claims by conversation, not by a slot number',
+    /claimShareSlot\(ipHash\([^)]*\), id\)/.test(shareApi));
+  /* ⚠ Comments stripped first. The file explains the claimIpSlot outage in prose, on
+     purpose, and an assertion that cannot tell a warning from a call would force that
+     explanation to be deleted to stay green — which would throw away the reason the rule
+     exists in order to keep the rule. Section 0 is what actually makes a stale import
+     unshippable; this only stops the name creeping back into code. */
+  const shareCode = shareApi.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  ok('the deleted slot helper is called nowhere', !/claimIpSlot/.test(shareCode));
+  ok('one address may share fewer conversations than it may start',
+    q.IP_DAILY_SHARES < q.IP_DAILY_CONVERSATIONS);
+
+  /* ⚠ The two claim namespaces share a folder. A conversation listing uses the prefix
+     "<day>/<hash>-" and a share listing "<day>/share-<hash>-", so they only stay separate
+     because an ipHash is hex and can never begin "share-". That is a property of the hash
+     alphabet, not of the paths, so it is checked rather than reasoned about. */
+  ok('an ip hash cannot masquerade as a share claim',
+    /^[0-9a-f]+$/.test(q.ipHash('203.0.113.7')) && !q.ipHash('203.0.113.7').startsWith('share-'));
+
+  /* ⚠ The widget must not announce a send it has not had confirmed. It used to print "on
+     its way" BEFORE the fetch and swallow every failure, which is why a completely dead
+     endpoint looked perfect from the browser for a day. */
+  const w = readFileSync(new URL('../assets/js/chat.js', import.meta.url), 'utf8');
+  const shareFn = w.slice(w.indexOf('function shareIt()'));
+  const onItsWay = shareFn.indexOf('on its way');
+  const fetchAt = shareFn.indexOf('fetch(');
+  ok('the widget claims a send only after the request', onItsWay > fetchAt);
+  ok('and it tells the visitor when nothing was sent', /Nothing was sent/.test(shareFn));
+  ok('and it checks the response status', /r\.ok/.test(shareFn));
 }
 
 /* ------------------------------------------------------- 7. the owner's own answers */

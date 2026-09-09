@@ -630,12 +630,25 @@
 
   /* Answers the same way whatever happened, because the server does. Telling the visitor
      "already sent" or "we don't know that address" would hand a prober a way to test both. */
+  /* ⚠ WAIT FOR THE SERVER BEFORE CLAIMING ANYTHING WAS SENT.
+
+     This used to print "the conversation is on its way" and THEN fire the request, swallowing
+     every failure -- so when api/chat-share.mjs could not even load, the visitor was told it
+     had worked and nothing anywhere said otherwise. It went unnoticed until someone waited
+     for an email that was never coming.
+
+     The endpoint deliberately answers { ok: true } for every BUSINESS outcome -- sent,
+     already sent, screened address, unknown conversation -- so the wording below still cannot
+     promise delivery, and must not: saying which of those happened is exactly the probe the
+     uniform answer exists to prevent. But a transport or server failure is a different thing.
+     There the request was never processed at all, and "on its way" is simply false. */
   function shareIt() {
     var addr = (els.email.value || "").trim();
     if (!addr || !cid) return;
-    els.shareForm.innerHTML = '<p class="wn-chat-hint" style="margin:0">' +
-      "If that address is valid, the conversation is on its way. The link works for 30 days " +
-      "and does not subscribe you to anything.</p>";
+    els.shareForm.innerHTML = '<p class="wn-chat-hint" style="margin:0">Sending…</p>';
+    var note = function (text) {
+      els.shareForm.innerHTML = '<p class="wn-chat-hint" style="margin:0">' + esc(text) + "</p>";
+    };
     fetch("/api/chat-share", {
       method: "POST",
       credentials: "same-origin",
@@ -648,7 +661,14 @@
         token: cfg.token,
         _honey: els.shareHoney.value
       })
-    })["catch"](function () { /* the message above is already the whole answer */ });
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      note("If that address is valid, the conversation is on its way. The link works for "
+        + "30 days and does not subscribe you to anything.");
+    })["catch"](function () {
+      note("Sorry — that did not go through. Nothing was sent. You can copy the conversation "
+        + "from this window, or use the contact page and we will send it on.");
+    });
   }
 
   /* ---- the other three doors -------------------------------------------------- */
