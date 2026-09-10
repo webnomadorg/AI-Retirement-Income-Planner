@@ -849,7 +849,14 @@ html.dark .vid-card{ background:var(--surface); border-color:var(--line); }
 .demo-shot .frame:hover > img{ transform:none; }   /* see above */
 .demo-shot figcaption{ margin-top:.9rem; text-align:center; color:var(--ink-faint); font-size:.92rem; }
 
-.demo-shot .hot{ position:absolute; left:var(--x); top:var(--y); z-index:2; }
+/* ⚠ The marker number is a CSS counter, not text in the DOM, and that is deliberate.
+   heading_ids.py slugs a <details> from its <summary> text, so a literal "1" made the id
+   "#1the-ai-sidebar" - legal HTML, but NOT a valid CSS identifier, so any future
+   querySelector('#'+id) would throw. Leaving the digit out of the DOM keeps the slug clean
+   and the accessible name comes from the summary's aria-label either way. */
+.demo-shot .demo-canvas{ counter-reset:hotspot; }
+.demo-shot .hot{ position:absolute; left:var(--x); top:var(--y); z-index:2; counter-increment:hotspot; }
+.demo-shot .hot > summary::before{ content:counter(hotspot); }
 .demo-shot .hot > summary{
   list-style:none; cursor:pointer; display:grid; place-items:center;
   width:34px; height:34px; border-radius:50%;
@@ -895,7 +902,7 @@ html.dark .vid-card{ background:var(--surface); border-color:var(--line); }
   }
   .demo-shot .hot > summary:hover{ background:var(--sage); transform:none; }
   .demo-shot .hot[open] > summary{ background:var(--sage); color:var(--ink); }
-  .demo-shot .hot-n{
+  .demo-shot .hot > summary::before{
     display:grid; place-items:center; flex:0 0 auto; width:26px; height:26px;
     border-radius:50%; background:var(--teal); color:#fff; font-size:.82rem;
   }
