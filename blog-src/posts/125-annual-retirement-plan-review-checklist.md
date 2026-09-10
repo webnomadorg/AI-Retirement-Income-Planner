@@ -88,7 +88,7 @@ Separate:
 - Travel.
 - One-time purchases.
 
-Then compare actual spending with last year's plan. If the difference was temporary, note it. If the difference is ongoing, update the forward projection.
+Then compare actual spending with last year's plan. If the difference was temporary, note it. If the difference is ongoing, update the forward projection, since [a new recurring spending level is one of the usual reasons balances come in lower than expected](/blog/retirement-balances-lower-than-expected.html) while a single heavy year is not.
 
 ## 3. Review Reliable Income
 

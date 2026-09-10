@@ -116,7 +116,7 @@ Then ask:
 - Did cash reserves shrink?
 - Did one account do too much of the work?
 
-A withdrawal number is easy to misread. A $70,000 withdrawal may be fine if it includes a one-time roof replacement and taxes. It may be a warning sign if it is the new normal and balances are falling quickly.
+A withdrawal number is easy to misread. A $70,000 withdrawal may be fine if it includes a one-time roof replacement and taxes. It may be a warning sign if it is the new normal and balances are falling quickly, which is the point to stop and [work out what actually caused the fall](/blog/retirement-balances-lower-than-expected.html) before changing anything.
 
 ## Step 3: Check After-Tax Cash Flow
 

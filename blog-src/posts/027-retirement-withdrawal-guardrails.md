@@ -182,7 +182,7 @@ Possible actions include:
 
 The action should match the trigger.
 
-If a market decline is the issue, reducing discretionary spending and using cash may help. If taxes are the issue, changing withdrawal sources may help. If healthcare costs are the issue, the plan may need a healthcare-specific adjustment.
+If a market decline is the issue, reducing discretionary spending and using cash may help, though [separating a market fall from a spending increase](/blog/retirement-balances-lower-than-expected.html) is worth doing first, because the two call for different responses. If taxes are the issue, changing withdrawal sources may help. If healthcare costs are the issue, the plan may need a healthcare-specific adjustment.
 
 ## Step 4: Choose The Review Schedule
 

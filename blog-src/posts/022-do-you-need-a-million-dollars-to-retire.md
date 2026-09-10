@@ -165,7 +165,7 @@ One thing to be clear about: the planner works forwards. It tells you what a giv
 
 ## If the Number Comes Up Short
 
-A shortfall is information, not a verdict, and there are more levers than "save more."
+A shortfall is information, not a verdict, and there are more levers than "save more." The levers are much the same [if the shortfall only shows up after you have retired](/blog/retirement-balances-lower-than-expected.html), though the order you reach for them changes.
 
 - **Work longer, even partly.** Part-time income in the bridge years is disproportionately valuable, because it covers the most expensive gap and lets balances keep growing.
 - **Delay Social Security.** Each year past full retirement age adds roughly 8% to the benefit, for life, inflation-adjusted. That is a larger guaranteed income and a smaller job for the portfolio.
