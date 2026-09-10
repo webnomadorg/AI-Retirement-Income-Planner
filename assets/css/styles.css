@@ -1900,7 +1900,16 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 }
 .cta-band:not(.band-ink){ margin:3rem 0 0; padding:1.8rem 1.6rem; text-align:center; background:var(--surface);
   border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-sm); }
+/* ⚠ Scoped as .cta-band .cta-band-title (0-2-0) ON PURPOSE, to beat `.cta-band h2`
+   (0-1-1) higher up the file, which caps every CTA heading at 18ch. That cap is right
+   for the dark band-ink CTAs, whose titles are short, but this one reads "Test this with
+   your own numbers" - 399px of Fraunces at 1.45rem against a 315px cap, so it always
+   broke onto two lines in a band 1101px wide. A bare `.cta-band-title{max-width:none}`
+   would have lost the specificity fight silently and looked like it had done nothing.
+   No cap at all rather than a bigger number, so it stays one line in every theme
+   whatever the display face measures, and still wraps naturally on a phone. */
 .cta-band-title{ font-size:1.45rem; margin-bottom:.5rem; }
+.cta-band .cta-band-title{ max-width:none; }
 .cta-band .hero-cta{ justify-content:center; margin:1rem 0 .8rem; }
 
 /* ---- 20. Scenario cards ("Which one is you?") ---------------------------
