@@ -27,6 +27,11 @@
 
 {{HEADER}}
 
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
 <main id="main">
   <article class="section post-page">
     <div class="container">

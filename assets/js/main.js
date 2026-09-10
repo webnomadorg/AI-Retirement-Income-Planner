@@ -221,6 +221,59 @@
   onFabScroll();
   window.addEventListener("scroll", onFabScroll, { passive: true });
 
+  /* ---- Blog TOC: mark the section you are currently reading ----
+     Blog-post pages only; no-ops everywhere else, which is why it lives in the shared
+     file. Recomputes from getBoundingClientRect on every frame-throttled scroll rather
+     than accumulating state from IntersectionObserver entries.
+
+     An IntersectionObserver version was written first and replaced. It inferred position
+     by accumulating "have I passed this heading" as entries crossed a narrow rootMargin
+     band, which makes the highlight a function of which events happened to fire rather
+     than of where the page actually is. Reading the rects directly needs no band to tune
+     and cannot drift; fourteen of them behind a rAF gate costs nothing.
+
+     ⚠ If you test this from the console, scroll with behavior:'instant'. `html` sets
+     scroll-behavior:smooth, so window.scrollTo animates and a short wait measures the
+     page mid-flight — which looks exactly like a stuck highlight and is not one. */
+  var toc = document.querySelector(".post-toc");
+  if (toc) {
+    var tocLinks = {};
+    Array.prototype.forEach.call(toc.querySelectorAll('a[href^="#"]'), function (a) {
+      tocLinks[decodeURIComponent(a.getAttribute("href").slice(1))] = a;
+    });
+    var tocHeads = Object.keys(tocLinks)
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+
+    if (tocHeads.length) {
+      var tocTicking = false;
+      var syncToc = function () {
+        tocTicking = false;
+        // The current section is the last heading whose top has passed under the header.
+        var offset = (parseInt(getComputedStyle(document.documentElement)
+              .getPropertyValue("--header-h"), 10) || 72) + 40;
+        var best = tocHeads[0];
+        for (var i = 0; i < tocHeads.length; i++) {
+          if (tocHeads[i].getBoundingClientRect().top <= offset) best = tocHeads[i];
+          else break;
+        }
+        for (var id in tocLinks) {
+          if (Object.prototype.hasOwnProperty.call(tocLinks, id)) {
+            tocLinks[id].classList.toggle("is-here", id === best.id);
+          }
+        }
+      };
+      var onTocScroll = function () {
+        if (tocTicking) return;
+        tocTicking = true;
+        window.requestAnimationFrame(syncToc);
+      };
+      syncToc();
+      window.addEventListener("scroll", onTocScroll, { passive: true });
+      window.addEventListener("resize", onTocScroll, { passive: true });
+    }
+  }
+
   /* ---- Footer year ---- */
   var yr = document.getElementById("year");
   if (yr) yr.textContent = new Date().getFullYear();

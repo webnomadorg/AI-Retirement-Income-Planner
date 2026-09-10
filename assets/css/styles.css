@@ -100,13 +100,24 @@ body{
 img,svg,video{ max-width:100%; height:auto; display:block; }
 a{ color:var(--teal-deep); text-underline-offset:3px; }
 a:hover{ color:var(--teal); }
-h1,h2,h3,h4{ font-family:var(--font-display); color:var(--ink); line-height:1.12; font-weight:600; letter-spacing:-.01em; margin:0 0 .5em; }
+h1,h2,h3,h4{ font-family:var(--font-display); color:var(--ink); line-height:1.12; font-weight:600; letter-spacing:-.01em; margin:0 0 .5em;
+  /* Headings are short and set in a display serif at fluid sizes, which is exactly where a
+     one-word last line looks like a mistake. Ignored where unsupported. */
+  text-wrap:balance; }
 h1{ font-size:var(--fs-h1); } h2{ font-size:var(--fs-h2); } h3{ font-size:var(--fs-h3); }
-p{ margin:0 0 1rem; }
+p{ margin:0 0 1rem; text-wrap:pretty; }
 strong{ color:var(--ink); font-weight:650; }
 ul,ol{ margin:0 0 1rem; padding-left:1.2em; }
 small{ font-size:.85em; }
 hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
+
+/* Cross-document view transitions. This one at-rule turns every page-to-page navigation on
+   the site into a cross-fade instead of a white flash. It is pure progressive enhancement:
+   browsers without support ignore the at-rule, so there is nothing to feature-detect, no JS,
+   and no fallback to write. Suppressed under prefers-reduced-motion in section 20 - a
+   full-page cross-fade is precisely the kind of motion that query exists to stop. */
+@view-transition{ navigation:auto; }
+::view-transition-group(root){ animation-duration:.28s; }
 :focus-visible{ outline:none; box-shadow:var(--ring); border-radius:6px; }
 
 /* skip link */
@@ -815,9 +826,156 @@ html.reveal-on .reveal.is-visible{ opacity:1; transform:none; }
 .vid-card-foot{ color:var(--teal-deep); font-weight:600; font-size:.88rem; margin-top:.2rem; }
 html.dark .vid-card{ background:var(--surface); border-color:var(--line); }
 
+/* ============================================================================
+   DEMO SHOT - framed screenshot with hotspot markers (demo.html)
+   ----------------------------------------------------------------------------
+   Each marker is a native <details>. That buys keyboard operation, an accessible
+   name and open/closed state for nothing, and means the whole thing still works
+   with JavaScript off - which matters here, because this is the page that has to
+   convince a sceptical reader the product is real.
+
+   ⚠ .frame carries `overflow:hidden` and a `:hover > img` zoom. Both fight
+   absolutely-positioned pins: the zoom slides the screenshot out from under them,
+   and the clip would cut off an open caption. Both are neutralised below rather
+   than changed at .frame, which is shared with every other screenshot on the site.
+   ============================================================================ */
+.demo-shot{ margin:2.5rem 0 0; }
+/* ⚠ The pins' percentage coordinates are relative to THIS box, not to .frame - .frame is
+   taller by the height of the chrome bar, so anchoring to it put every marker about 30px
+   above the thing it was pointing at. The image is what the percentages were measured
+   against, so the image is what they must be positioned against. */
+.demo-shot .demo-canvas{ position:relative; }
+.demo-shot .demo-canvas img{ display:block; width:100%; }
+.demo-shot .frame:hover > img{ transform:none; }   /* see above */
+.demo-shot figcaption{ margin-top:.9rem; text-align:center; color:var(--ink-faint); font-size:.92rem; }
+
+.demo-shot .hot{ position:absolute; left:var(--x); top:var(--y); z-index:2; }
+.demo-shot .hot > summary{
+  list-style:none; cursor:pointer; display:grid; place-items:center;
+  width:34px; height:34px; border-radius:50%;
+  background:var(--teal); color:#fff; font-family:var(--font-sans);
+  font-weight:700; font-size:.95rem; border:2.5px solid var(--surface);
+  box-shadow:0 4px 14px -4px rgba(20,48,75,.5);
+  transition:transform var(--transition), background var(--transition);
+  transform:translate(-50%,-50%);
+}
+.demo-shot .hot > summary::-webkit-details-marker{ display:none; }
+.demo-shot .hot > summary:hover{ background:var(--teal-deep); transform:translate(-50%,-50%) scale(1.12); }
+.demo-shot .hot[open] > summary{ background:var(--ink); }
+
+/* The pin's own label. Visually hidden at desktop sizes - the pin shows only its
+   number - but kept in the flow for assistive tech rather than display:none'd,
+   which would take it out of the accessibility tree too. */
+.demo-shot .hot-t{ position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
+
+.demo-shot .hot-body{
+  position:absolute; left:14px; top:14px; width:min(16rem,58vw);
+  background:var(--surface); color:var(--ink-soft);
+  border:1px solid var(--line); border-left:3px solid var(--teal);
+  border-radius:var(--radius-sm); padding:.75rem .9rem;
+  font-size:.88rem; line-height:1.55; box-shadow:var(--shadow);
+}
+/* Pins near the right edge open leftwards, or .frame's overflow:hidden clips them. */
+.demo-shot .hot-flip .hot-body{ left:auto; right:14px; }
+
+/* Under 760px the screenshot is too small for a pin to point at anything, so the
+   markers stop being pins and become what <details> already is: a stacked list of
+   accordions under the picture. Same DOM, no duplicated copy for the search index
+   to find twice. ⚠ position:static must also clear left/top, which the shorthand
+   inset does not do on its own here. */
+@media (max-width:760px){
+  .demo-shot .hot{ position:static; margin-top:.5rem; }
+  .demo-shot .hot > summary{
+    width:auto; height:auto; border-radius:var(--radius-sm); transform:none;
+    display:flex; align-items:center; gap:.6rem; justify-content:flex-start;
+    padding:.7rem .85rem; min-height:44px; text-align:left;
+    background:var(--surface-soft); color:var(--ink); border:1px solid var(--line);
+    box-shadow:none; font-weight:650; font-size:.95rem;
+  }
+  .demo-shot .hot > summary:hover{ background:var(--sage); transform:none; }
+  .demo-shot .hot[open] > summary{ background:var(--sage); color:var(--ink); }
+  .demo-shot .hot-n{
+    display:grid; place-items:center; flex:0 0 auto; width:26px; height:26px;
+    border-radius:50%; background:var(--teal); color:#fff; font-size:.82rem;
+  }
+  .demo-shot .hot-t{ position:static; width:auto; height:auto; overflow:visible;
+    clip:auto; clip-path:none; white-space:normal; }
+  .demo-shot .hot-body{ position:static; width:auto; margin-top:.4rem; }
+  .demo-shot .hot-flip .hot-body{ right:auto; }
+}
+
+/* ============================================================================
+   PROJECTION CHART - the homepage balance curve (index.html)
+   ----------------------------------------------------------------------------
+   Hand-authored inline SVG, no charting library. Follows the .df-* data-flow
+   diagrams' convention of splitting fill and stroke onto separate classes: a CSS
+   `fill` declaration beats an SVG presentation attribute, so a combined class
+   would fill the line path into a solid blob.
+
+   COLOURS ARE TOKENS ONLY. A literal hex here would owe ten overrides, one per
+   theme x mode, and would silently fail AA in whichever one nobody checked.
+
+   The draw-on is written the same way as .reveal: the FINISHED state is the base
+   rule and the undrawn state exists only under html.reveal-on, which main.js adds
+   solely when JS runs and reduced motion is off. So with no JS the chart is simply
+   a finished chart, and there is no way for it to get stuck invisible.
+   ============================================================================ */
+.proj{ margin:0; }
+.proj-svg{ width:100%; height:auto; overflow:visible; }
+
+.proj-grid line{ stroke:var(--line); stroke-width:1; stroke-dasharray:2 5; }
+.proj-ylbl text{ fill:var(--ink-faint); font-size:11px; text-anchor:end; font-family:var(--font-sans); }
+.proj-xlbl text{ fill:var(--ink-faint); font-size:12px; text-anchor:middle; font-family:var(--font-sans); }
+.proj-axis{ fill:var(--ink-faint); font-size:11px; text-anchor:middle; font-family:var(--font-sans); letter-spacing:.12em; text-transform:uppercase; }
+
+.proj-area{ fill:var(--teal); opacity:.12; stroke:none; }
+.proj-line{ fill:none; stroke:var(--ink); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+.proj-dot circle{ fill:var(--surface); stroke:var(--ink); stroke-width:2; }
+
+.proj-low{ fill:var(--gold); stroke:var(--surface); stroke-width:2.5; }
+.proj-lowline{ stroke:var(--gold); stroke-width:1.5; stroke-dasharray:3 4; }
+.proj-lowlbl{ fill:var(--ink); font-size:12.5px; font-weight:650; font-family:var(--font-sans); }
+.proj-lowval{ fill:var(--ink-faint); font-size:12px; font-family:var(--font-sans); }
+
+.proj-cap{ margin-top:1.4rem; margin-inline:auto; max-width:70ch; text-align:center;
+  color:var(--ink-soft); font-size:.95rem; line-height:1.6; }
+
+/* Draw-on. stroke-dasharray is the full path length (~635 units, measured off the
+   committed path); keep them in step if the data is ever recaptured. Finite by
+   construction - a transition, not an animation, so there is no iteration count to
+   get wrong and nothing for the screenshot tooling to hang on. */
+html.reveal-on .proj-line{ stroke-dasharray:640; stroke-dashoffset:640;
+  transition:stroke-dashoffset 1.5s cubic-bezier(.35,.1,.25,1); }
+html.reveal-on .proj.is-visible .proj-line{ stroke-dashoffset:0; }
+html.reveal-on .proj-area,
+html.reveal-on .proj-dot circle,
+html.reveal-on .proj-low,
+html.reveal-on .proj-lowline,
+html.reveal-on .proj-lowlbl,
+html.reveal-on .proj-lowval{ opacity:0; transition:opacity .5s ease .9s; }
+html.reveal-on .proj.is-visible .proj-area{ opacity:.12; }
+html.reveal-on .proj.is-visible .proj-dot circle,
+html.reveal-on .proj.is-visible .proj-low,
+html.reveal-on .proj.is-visible .proj-lowline,
+html.reveal-on .proj.is-visible .proj-lowlbl,
+html.reveal-on .proj.is-visible .proj-lowval{ opacity:1; }
+
+/* Phone: the callout text collides with the curve once the viewBox is only ~340px
+   wide on screen, so drop it and let the caption carry the number. The <desc> still
+   states it for assistive tech either way. */
+@media (max-width:620px){
+  .proj-lowlbl,.proj-lowval{ display:none; }
+  .proj-ylbl text{ font-size:13px; }
+  .proj-xlbl text{ font-size:14px; }
+}
+
 @media (prefers-reduced-motion:reduce){
   *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
   html.reveal-on .reveal{ opacity:1 !important; transform:none !important; }
+  /* The @view-transition at-rule cannot be revoked from here, so zero the animations it
+     drives instead. Navigation still works; it cuts rather than fades. */
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){ animation:none !important; }
 }
 
 /* ============================================================================
@@ -1587,6 +1745,43 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .draft-badge{ color:var(--warn); background:rgba(183,121,31,.14); }
 .post-meta{ font-size:.85rem; color:var(--ink-faint); }
 
+/* ---- Blog: reading progress ------------------------------------------------
+   A scroll-driven CSS animation: no scroll listener, no rAF loop, no JS. The bar's
+   scaleX is tied to how far the document has been scrolled.
+
+   ⚠ GUARDED BY @supports FOR A REASON. Without animation-timeline support the very
+   same animation runs on the ordinary document timeline, finishes immediately, and
+   leaves a permanent full-width teal bar pinned under the header on all 66 posts.
+   Hidden rather than degraded, because a progress bar that does not track progress
+   is worse than no progress bar.
+
+   ⚠ Also hidden under prefers-reduced-motion. The global reduce block forces
+   animation-duration to .001ms !important, which is meaningless on a scroll timeline
+   and implementation-dependent — so opt out explicitly rather than find out.
+   ---------------------------------------------------------------------------- */
+.read-progress{ display:none; }
+@supports (animation-timeline: scroll()){
+  .read-progress{
+    display:block; position:fixed; left:0; top:var(--header-h); z-index:99;
+    width:100%; height:3px; background:var(--teal);
+    transform-origin:0 50%; transform:scaleX(0);
+    animation:read-progress linear both;
+    animation-timeline:scroll(root block);
+  }
+  @keyframes read-progress{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+}
+@media (prefers-reduced-motion:reduce){ .read-progress{ display:none; } }
+
+/* ---- Blog: table of contents, current section ------------------------------
+   The TOC is a collapsed <details>; this only matters once a reader opens it, but
+   on a 3,000-word post that is exactly when they need to know where they are.
+   main.js adds .is-here; with JS off nothing here applies and the list is a plain
+   list of links, which is what it was before. */
+.post-toc a.is-here{ color:var(--teal-deep); font-weight:650; }
+.post-toc li{ border-left:2px solid transparent; padding-left:.55rem; margin-left:-.55rem;
+  transition:border-color var(--transition); }
+.post-toc li:has(a.is-here){ border-left-color:var(--teal); }
+
 /* ---- Blog: article page ---------------------------------------------------- */
 /* Full container width, matching the rest of the site's pages */
 .post-page .post-article{ max-width:none; }
@@ -1876,7 +2071,7 @@ html.dark .draft-badge{ color:#E2B25E; background:rgba(226,178,94,.14); }
 /* Wordmark only. Not a link back to the site: on a landing page the logo is reassurance
    that you are somewhere real, not an invitation to go browsing. */
 .lp-brand{ display:flex; align-items:center; gap:.6rem; color:var(--ink); }
-.lp-brand .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:1.15rem; }
+.lp-brand .brand-name{ font-family:var(--font-display); font-weight:600; font-size:1.15rem; }
 
 .lp-main{ padding-block:clamp(2.4rem,6vw,4.4rem); }
 .lp-grid{ display:grid; gap:clamp(1.8rem,4vw,3rem); align-items:start;

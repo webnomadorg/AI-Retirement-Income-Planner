@@ -199,7 +199,7 @@
 
       <div class="grid cols-2" style="margin-top:2rem;">
         <div class="card">
-          <svg viewBox="0 0 340 92" width="100%" height="auto" role="img" aria-label="Diagram: your figures are uploaded from your computer to the provider's server.">
+          <svg viewBox="0 0 340 92" width="100%" role="img" aria-label="Diagram: your figures are uploaded from your computer to the provider's server.">
             <rect x="8" y="11" width="120" height="70" rx="8" fill="#FFFFFF" stroke="#14304B" stroke-width="2"/>
             <path d="M8 29 H128" stroke="#14304B" stroke-width="2"/>
             <circle cx="20" cy="20" r="3" fill="#14304B"/>
@@ -215,7 +215,7 @@
         </div>
 
         <div class="card">
-          <svg viewBox="0 0 340 92" width="100%" height="auto" role="img" aria-label="Diagram: your figures stay inside your own computer and no server is ever contacted.">
+          <svg viewBox="0 0 340 92" width="100%" role="img" aria-label="Diagram: your figures stay inside your own computer and no server is ever contacted.">
             <rect x="8" y="11" width="120" height="70" rx="8" fill="#FFFFFF" stroke="#1B7165" stroke-width="2"/>
             <path d="M8 29 H128" stroke="#1B7165" stroke-width="2"/>
             <circle cx="20" cy="20" r="3" fill="#1B7165"/>
@@ -328,6 +328,78 @@
         <div class="stat reveal"><div class="num"><span class="num-pre">up to </span><span data-count="12">0</span></div><div class="lbl">plan‑health checks</div></div>
         <div class="stat reveal"><div class="num">$0</div><div class="lbl">subscription, ever</div></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTION CHART =====
+       The one thing this site sells is a projection, and until now it showed none. This curve is
+       REAL OUTPUT: the figures come from running assets/js/engine.js — the same calc engine the
+       product ships — over one representative household, not from a designer picking a pleasing
+       shape. If the engine's numbers ever change, recapture rather than nudging the path.
+       ⚠ search_build.py skips <svg>, so nothing written inside the chart is indexed or reaches
+       the AI assistant. The figures that matter are repeated in the caption below it, in real HTML. -->
+  <section class="section">
+    <div class="container">
+      <div class="center reveal" style="max-width:58ch;margin-inline:auto;margin-bottom:2.2rem;">
+        <span class="eyebrow" style="justify-content:center;">What a plan actually looks like</span>
+        <h2 id="the-dip-is-the-bridge-years">The dip is the bridge years</h2>
+        <p class="lead">Most people expect retirement savings to fall in a straight line. They rarely do. Here is one real projection: savings drop while the household is funding itself, then steady once Social Security arrives.</p>
+      </div>
+
+      <figure class="proj reveal">
+        <svg class="proj-svg" viewBox="0 0 720 240" role="img"
+             aria-labelledby="projTitle projDesc" preserveAspectRatio="xMidYMid meet">
+          <title id="projTitle">Projected retirement savings from age 62 to 92</title>
+          <desc id="projDesc">Savings start at 1.16 million dollars at age 62, fall to a low of 952,000 dollars at age 67 while the household bridges the years before Social Security, then recover to 1.27 million dollars by age 92.</desc>
+
+          <!-- gridlines + value axis. Baseline is a true zero: the curve is shallow because the
+               plan genuinely holds, and truncating the axis to dramatise it would be a lie. -->
+          <g class="proj-grid">
+            <line x1="60" y1="200" x2="700" y2="200"/>
+            <line x1="60" y1="135.7" x2="700" y2="135.7"/>
+            <line x1="60" y1="71.4" x2="700" y2="71.4"/>
+          </g>
+          <g class="proj-ylbl">
+            <text x="52" y="204">$0</text>
+            <text x="52" y="140">$500k</text>
+            <text x="52" y="75">$1m</text>
+          </g>
+
+          <!-- area, then line. Straight segments between phase ends, because phase ends are the
+               values the engine actually returns; a smoothed spline would imply month-level
+               detail that is not being plotted. -->
+          <path class="proj-area" d="M60,50.9 L123,66.4 L165,77.6 L291,71.1 L438,63 L690,36.7 L690,200 L60,200 Z"/>
+          <path class="proj-line" d="M60,50.9 L123,66.4 L165,77.6 L291,71.1 L438,63 L690,36.7"/>
+
+          <g class="proj-dot">
+            <circle cx="60" cy="50.9" r="4"/>
+            <circle cx="123" cy="66.4" r="4"/>
+            <circle cx="291" cy="71.1" r="4"/>
+            <circle cx="438" cy="63" r="4"/>
+            <circle cx="690" cy="36.7" r="4"/>
+          </g>
+
+          <!-- the low point, where Social Security starts and the curve turns -->
+          <circle class="proj-low" cx="165" cy="77.6" r="6"/>
+          <line class="proj-lowline" x1="165" y1="86" x2="165" y2="200"/>
+          <text class="proj-lowlbl" x="171" y="106">Social Security starts</text>
+          <text class="proj-lowval" x="171" y="122">$952k, the low point</text>
+
+          <g class="proj-xlbl">
+            <text x="60" y="220">62</text>
+            <text x="123" y="220">65</text>
+            <text x="165" y="220">67</text>
+            <text x="291" y="220">73</text>
+            <text x="438" y="220">80</text>
+            <text x="690" y="220">92</text>
+          </g>
+          <text class="proj-axis" x="375" y="236">age</text>
+        </svg>
+
+        <figcaption class="proj-cap">
+          A married household retiring at 62 with $1.16m across a 401k, a taxable account, cash and a Roth. Savings fall to <strong>$952,000 by 67</strong> while the household funds itself before Social Security, then hold and recover to <strong>$1.27m by 92</strong>. Every figure here is output from the planner's own calculation engine, run on that household, not an illustration.
+        </figcaption>
+      </figure>
     </div>
   </section>
 

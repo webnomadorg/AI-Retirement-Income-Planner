@@ -145,6 +145,50 @@
       <h2 id="what-you-ll-be-looking-at" style="text-align:center;">What you’ll be looking at</h2>
       <p style="max-width:760px;margin-inline:auto;text-align:center;">The demo is loaded with a simple, relatable sample plan: a <strong>single filer retiring at 62</strong> with $530,000 saved across a 401k, cash and a brokerage account, claiming $2,200/mo Social Security at 62, plus a <strong>$10,000 inheritance</strong> arriving in Phase 2. Every number, chart and health check you’ll see is the planner’s genuine output for that plan.</p>
 
+
+      <!-- The page that asks people to look at the product used to show none of it: its only two
+           <img> tags were the header and footer logo. This is a real screenshot with the points of
+           interest marked. Each marker is a native <details>, so it needs no JavaScript, is keyboard
+           operable for free, and collapses into a plain accordion list under 760px where pins would
+           be unreadable. ⚠ Every caption below describes something the demo GENUINELY does -
+           demo-append.js locks all inputs, so nothing here may invite the reader to type. -->
+      <figure class="demo-shot reveal">
+        <div class="frame">
+          <div class="frame-bar"><i></i><i></i><i></i></div>
+          <div class="demo-canvas">
+          <img src="assets/img/screens/Dashboard - AI Assistant Sidebar Proposals.jpeg"
+               alt="The planner's Overview tab: an AI Assistant sidebar on the left listing five suggested withdrawal changes with Apply Selected and Dismiss buttons, and on the right a row of currency buttons, thirteen tabs, a summary bar showing average net income and a Plan Health score, and four retirement phase cards each breaking down withdrawals, gross income, tax, and net income in both nominal and real terms."
+               width="1500" height="949" loading="lazy">
+
+          <details id="1the-ai-sidebar" class="hot" style="--x:10%;--y:33%">
+            <summary aria-label="The AI sidebar"><span class="hot-n">1</span><span class="hot-t">The AI sidebar</span></summary>
+            <div class="hot-body">A scripted conversation, with one proposal you can genuinely apply and undo. The whole dashboard recalculates when you do.</div>
+          </details>
+
+          <details id="2currencies-and-residence" class="hot" style="--x:24%;--y:11.6%">
+            <summary aria-label="Currencies and residence"><span class="hot-n">2</span><span class="hot-t">Currencies and residence</span></summary>
+            <div class="hot-body">Switch the same plan between US, UK, Canadian, Australian and expat residence and watch the tax and healthcare treatment change with it.</div>
+          </details>
+
+          <details id="3thirteen-tabs" class="hot" style="--x:50%;--y:16.3%">
+            <summary aria-label="Thirteen tabs"><span class="hot-n">3</span><span class="hot-t">Thirteen tabs</span></summary>
+            <div class="hot-body">Stress test, Scenarios, SS Optimizer, Drawdown, What-if and Tax &amp; ACA are all here and all readable.</div>
+          </details>
+
+          <details id="4plan-health-and-sign-off" class="hot hot-flip" style="--x:87%;--y:22.4%">
+            <summary aria-label="Plan Health and sign-off"><span class="hot-n">4</span><span class="hot-t">Plan Health and sign-off</span></summary>
+            <div class="hot-body">The plan-health checks are scored live. Click the Draft chip to mark the plan under review or sign it off.</div>
+          </details>
+
+          <details id="5phase-cards" class="hot" style="--x:50%;--y:50%">
+            <summary aria-label="Phase cards"><span class="hot-n">5</span><span class="hot-t">Phase cards</span></summary>
+            <div class="hot-body">Each phase shows the withdrawals, the gross income they produce, every tax that comes off it, and the net in both nominal and today's money.</div>
+          </details>
+          </div>
+        </div>
+        <figcaption>The Overview tab of the demo, with the AI sidebar open. Select a marker to see what each part does.</figcaption>
+      </figure>
+
       <div class="feature-row" style="margin-top:2.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;">
         <div class="callout">
           <h3 id="what-works-the-real-thing" style="margin-top:0;">✅ What works — the real thing</h3>
