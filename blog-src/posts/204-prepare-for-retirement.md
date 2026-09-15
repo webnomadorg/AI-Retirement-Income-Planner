@@ -50,7 +50,7 @@ The years before Social Security can look very different from the years after be
 
 Your retirement is better understood [as a timeline of connected phases](/blog/retirement-income-timeline-phases.html). The AI Retirement Income Planner uses a five-phase, month-by-month planning engine to model income, spending, taxes, healthcare, and withdrawals as those circumstances change. Instead of treating retirement as one average year repeated for three decades, it shows how each phase feeds the next.
 
-That distinction matters because early decisions affect income much later. A withdrawal today changes tomorrow's balance. A Social Security decision can affect household income for life. A Roth conversion alters future required distributions. A large expense during a market decline can have consequences that never show up in a simple annual average.
+That distinction matters because early decisions affect income much later. A withdrawal today changes tomorrow's balance. A Social Security decision can affect household income for life. A Roth conversion alters future required distributions. [A large expense during a market decline](/blog/large-one-time-expense-in-retirement.html) can have consequences that never show up in a simple annual average.
 
 ## Build the Retirement Paycheck You Will Depend On
 

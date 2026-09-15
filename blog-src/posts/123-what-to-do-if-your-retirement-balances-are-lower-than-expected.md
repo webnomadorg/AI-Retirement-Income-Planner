@@ -93,7 +93,7 @@ Calculate:
 
 Then compare that number with current balances. If the plan is drawing heavily from one account, the overall portfolio may look better or worse than the single account suggests.
 
-Also separate temporary and ongoing spending. A roof replacement, medical bill, or family emergency may explain one bad year. A new recurring lifestyle level changes the whole plan.
+Also separate temporary and ongoing spending. A roof replacement, medical bill, or family emergency may explain one bad year, and [a single large expense is worth modelling as its own event](/blog/large-one-time-expense-in-retirement.html) rather than folded into an average. A new recurring lifestyle level changes the whole plan.
 
 ## Step 4: Check Income Timing
 

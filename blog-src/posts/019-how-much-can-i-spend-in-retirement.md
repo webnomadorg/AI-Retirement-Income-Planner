@@ -159,7 +159,7 @@ Add known irregular costs:
 - College help for grandchildren
 - Long-term care planning costs
 
-The planner's Lump sums area is useful for this because it lets you place one-time expenses in the year they are expected.
+The planner's Lump sums area is useful for this because it lets you place a one-time expense in the phase it falls in and name the account that pays for it, which is the choice that [decides what a large one-off actually costs the plan](/blog/large-one-time-expense-in-retirement.html).
 
 ### Step 4: Add Healthcare
 

@@ -205,7 +205,7 @@ A million dollars is **more likely to be enough** when:
 - Housing costs are stable and the mortgage is gone or nearly gone.
 - Savings are spread across account types, so withdrawals can be managed for tax.
 - The household could cut back in a bad market year without real hardship.
-- Large one-time costs, such as a roof or a car, are already in the plan rather than waiting to surprise it.
+- [Large one-time costs, such as a roof or a car](/blog/large-one-time-expense-in-retirement.html), are already in the plan rather than waiting to surprise it.
 - The survivor is provided for, because one benefit stops and the tax brackets narrow.
 
 It is **less likely to be enough** when:
