@@ -16,7 +16,7 @@
 
 **Image 3 alt:** A planner phase card showing Medicare Part B and Part D estimates with a red IRMAA warning that MAGI from two years prior of 128,162 dollars exceeds the 122,680 dollar threshold, adding 99 dollars a month to healthcare.
 
-**Image 4 alt:** The planner Stress test tab showing a grid of average net monthly income across bear, base and bull returns crossed with four inflation rates, alongside a historical backtest reporting success across 71 overlapping retirement start years.
+**Image 4 alt:** The planner's Stress test tab: a grid of average net monthly income and total portfolio at age 90 across bear, base and bull returns and four inflation rates, with every bear-return cell depleted and the base and bull cells healthy, above the historical backtest showing 93% success in 66 of 71 retirements since 1928, with 1928 as the toughest start year and 1979 as the best.
 
 **Primary keyword:** Roth conversions before RMDs
 
@@ -214,7 +214,7 @@ Look for:
 
 ### Stress Test
 
-Run the plan through market, inflation, longevity, and healthcare stress cases.
+Run the plan through the Stress test tab's twelve combinations of inflation and investment returns. Longevity and healthcare need their own tests: a later plan end age, or a higher healthcare inflation rate in Edit values.
 
 A conversion that looks good in the average case may look different when markets are weak or healthcare costs rise.
 
@@ -368,4 +368,4 @@ Roth conversions before RMDs can help some retirees manage future taxable income
 
 ## Educational Disclaimer
 
-This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Roth conversions can affect income tax, Medicare IRMAA premiums, ACA premium tax credits, cash flow, and survivor income, and the rules, thresholds and contribution limits change over time. Screenshots show a sample plan and are illustrative only. Verify current rules with official sources such as IRS.gov, Medicare.gov and HealthCare.gov, and confirm any conversion with a qualified tax professional before acting.
+This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Roth conversions can affect income tax, Medicare IRMAA premiums, ACA premium tax credits, cash flow, and survivor income, and the rules, thresholds and contribution limits change over time. Screenshots show a sample plan with invented figures and are illustrative only. Verify current rules with official sources such as IRS.gov, Medicare.gov and HealthCare.gov, and confirm any conversion with a qualified tax professional before acting.

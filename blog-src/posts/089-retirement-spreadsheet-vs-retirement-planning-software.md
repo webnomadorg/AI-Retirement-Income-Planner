@@ -12,7 +12,7 @@
 **Content type:** comparison
 **Published:** 2026-07-09
 **Image 1 alt:** Illustration of the connected parts of a retirement plan — taxes, growth, cash flow, healthcare, Social Security, spending, and scenarios — around a couple's planning dashboard, with tangled spreadsheets below.
-**Image 2 alt:** AI Retirement Income Planner Stress test tab showing a 12-scenario inflation-and-returns grid and a historical backtest, alongside Plan Health checks in the Confidence panel.
+**Image 2 alt:** The planner's Stress test tab with the Plan Confidence Score panel open: the lower rows of the inflation-and-returns grid, with the bear-return cells depleted, and the historical backtest showing 93% success in 66 of 71 retirements, beside Plan Health checks including a failed ACA Subsidy Protected check.
 
 **Search intent:** The reader wants a fair comparison of spreadsheets and retirement planning software, including when a spreadsheet is enough and when a purpose-built planner is worth using.
 
@@ -435,7 +435,7 @@ Choose a private browser-based planner if:
 
 ## Educational Disclaimer
 
-This article is educational only. It is not financial, tax, investment, legal, insurance, healthcare, Social Security, estate, or retirement advice. Spreadsheets and software are estimation tools. Results depend on inputs, formulas, assumptions, and current rules. Verify assumptions with official sources and qualified professionals before making retirement decisions.
+This article is educational only. It is not financial, tax, investment, legal, insurance, healthcare, Social Security, estate, or retirement advice. Spreadsheets and software are estimation tools. Results depend on inputs, formulas, assumptions, and current rules. Verify assumptions with official sources and qualified professionals before making retirement decisions. Screenshots show a sample plan with invented figures and are illustrative only.
 
 ## FAQ
 

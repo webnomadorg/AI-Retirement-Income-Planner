@@ -22,7 +22,7 @@
 
 **Image 4 alt:** A planner phase card showing 9,800 dollars a month of gross income reducing to 8,484 dollars nominal and 4,874 dollars in today's money after tax and health insurance.
 
-**Image 5 alt:** A historical backtest replaying a retirement plan against every overlapping 48 year period of US market returns since 1928, showing the toughest start year was 1931.
+**Image 5 alt:** A historical backtest replaying a retirement plan against every overlapping 48-year period of US market returns since 1928, showing 98% success in 50 of 51 retirements, with 1929 as the toughest start year and the only one that ran out of money.
 
 **Image 6 alt:** A planner phase card including 20,000 dollars a year of part-time work, showing the plan still qualifies for a marketplace subsidy with 1,800 dollars of headroom below the ceiling.
 
@@ -132,7 +132,7 @@ That is sequence-of-returns risk, and stretching the horizon from thirty years t
 
 There are two honest ways to look at it, and they answer different questions:
 
-- **Monte Carlo** generates thousands of random futures and counts how many left you solvent. Good for "how much room do I have?"
+- **Monte Carlo** generates hundreds of random futures and counts how many left you solvent. Good for "how much room do I have?"
 - **Historical backtesting** replays your plan through the sequences that actually happened — 1929, 1966, 2000 — with real crashes and real recoveries. Good for "what would this have done to someone who retired at the worst possible moment?"
 
 Neither is a prediction. Both beat an average.
