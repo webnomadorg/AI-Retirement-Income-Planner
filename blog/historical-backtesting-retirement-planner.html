@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Use Historical Backtesting in the Planner</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Learn how to use historical backtesting in the AI Retirement Income Planner and compare past market periods with Monte Carlo, Stress Test, Plan Health, and Plan Confidence.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/historical-backtesting-retirement-planner.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Use Historical Backtesting in the Planner">
+<meta property="og:description" content="Learn how to use historical backtesting in the AI Retirement Income Planner and compare past market periods with Monte Carlo, Stress Test, Plan Health, and Plan Confidence.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/historical-backtesting-retirement-planner-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/historical-backtesting-retirement-planner.html">
+<meta property="article:published_time" content="2026-09-15">
+<meta property="article:modified_time" content="2026-09-15">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Use Historical Backtesting in the Planner", "description": "Learn how to use historical backtesting in the AI Retirement Income Planner and compare past market periods with Monte Carlo, Stress Test, Plan Health, and Plan Confidence.", "datePublished": "2026-09-15", "dateModified": "2026-09-15", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/historical-backtesting-retirement-planner.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/historical-backtesting-retirement-planner-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To", "item": "https://airetirementincomeplanner.com/blog.html#cat=planner-howto"}, {"@type": "ListItem", "position": 4, "name": "How to Use Historical Backtesting in the Planner", "item": "https://airetirementincomeplanner.com/blog/historical-backtesting-retirement-planner.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is historical backtesting the same as a market forecast?", "acceptedAnswer": {"@type": "Answer", "text": "No. Historical backtesting uses past conditions to test a plan. It does not predict the next market cycle."}}, {"@type": "Question", "name": "Does the planner's historical backtest include inflation?", "acceptedAnswer": {"@type": "Answer", "text": "Not historical inflation. It replays actual market returns, keeps your withdrawals at the amounts in your plan, and uses your own inflation assumption for its \"real\" figures. Use the Stress test grid or Monte Carlo to test inflation risk."}}, {"@type": "Question", "name": "Should I use historical backtesting or Monte Carlo?", "acceptedAnswer": {"@type": "Answer", "text": "Use both. The planner shows both results side by side on the Confidence tab. Historical backtesting shows how the plan responds to past sequences. Monte Carlo shows a wider range of simulated outcomes."}}, {"@type": "Question", "name": "What if the backtest result looks bad?", "acceptedAnswer": {"@type": "Answer", "text": "Save the current plan to a slot and test one change at a time. Start with the inputs the backtest reads: withdrawals in the early phases, which accounts they come from, the timing of large one-time expenses, and retirement age."}}, {"@type": "Question", "name": "What if the backtest result looks strong?", "acceptedAnswer": {"@type": "Answer", "text": "Review the plan anyway. Check Plan Health, Plan Confidence, Monte Carlo, Stress Test, survivor assumptions, taxes, healthcare, RMDs, and updated balances."}}, {"@type": "Question", "name": "Can historical backtesting replace professional planning help?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is an educational planning tool. Use official sources and qualified professionals for tax, investment, legal, healthcare, Medicare, Social Security, insurance, and estate questions."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>How to Use Historical Backtesting in the Planner</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published September 15, 2026 · 16 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#what-historical-backtesting-does">What Historical Backtesting Does</a></li>
+      <li><a href="#what-the-planners-historical-backtest-models-and-what-it-leaves-out">What The Planner's Historical Backtest Models, And What It Leaves Out</a></li>
+      <li><a href="#when-to-use-historical-backtesting">When To Use Historical Backtesting</a></li>
+      <li><a href="#before-you-run-the-backtest">Before You Run The Backtest</a></li>
+      <li><a href="#how-to-use-historical-backtesting-in-the-planner">How To Use Historical Backtesting In The Planner</a></li>
+      <li><a href="#how-to-read-the-result">How To Read The Result</a></li>
+      <li><a href="#historical-backtesting-vs-monte-carlo">Historical Backtesting Vs Monte Carlo</a></li>
+      <li><a href="#how-historical-backtesting-fits-with-plan-health">How Historical Backtesting Fits With Plan Health</a></li>
+      <li><a href="#how-historical-backtesting-fits-with-plan-confidence">How Historical Backtesting Fits With Plan Confidence</a></li>
+      <li><a href="#what-to-try-if-the-backtest-looks-weak">What To Try If The Backtest Looks Weak</a></li>
+      <li><a href="#a-historical-backtest-workflow-start-to-finish">A Historical Backtest Workflow, Start To Finish</a></li>
+      <li><a href="#common-backtesting-mistakes">Common Backtesting Mistakes</a></li>
+      <li><a href="#why-backtesting-matters-for-retirement-income-planning">Why Backtesting Matters For Retirement Income Planning</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>Historical backtesting lets you test a retirement income plan against past market environments. Instead of asking, "What if returns average 6 percent?", it asks, "What would this plan have looked like if I had retired into a real stretch of market history, bad years and all, in the order they came?"</p>
+<p>In the AI Retirement Income Planner, the historical backtest sits at the bottom of the Stress test tab, and its success rate also appears as one of three lenses on the Confidence tab. Use it once your base plan is up to date. Read the success rate and the toughest start years, then compare the result with Monte Carlo, the Stress test grid, the Plan Health checks, and a saved copy of the plan.</p>
+<aside class="cta-box cta-soft">
+  <p>Want to see how your retirement income plan would have handled rough historical periods? The AI Retirement Income Planner includes historical backtesting beside Monte Carlo, the Stress test grid, Plan Health checks, and the Plan Confidence score.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>The historical backtest replays your plan against actual US market returns since 1928.</li>
+<li>It is most useful for spotting sequence-of-returns risk.</li>
+<li>It replays past returns, not past inflation. Your withdrawals stay at the amounts in your plan.</li>
+<li>It works from your balances, withdrawals, and lump sums. It does not model taxes, healthcare costs, or Social Security timing.</li>
+<li>It should not be treated as a forecast.</li>
+<li>A plan that struggles in a backtest is giving you a planning question to investigate.</li>
+<li>Compare the backtest with Monte Carlo and the Stress test before changing real withdrawals.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/historical-backtesting-retirement-planner-1.webp" alt="Flat illustration of a man seated on a dark rocky ledge above a lake and mountains, looking toward six jagged navy lines that fan out from a single point, three climbing toward the upper right and three drifting lower, each ending in an arrowhead." width="1400" height="1050" loading="lazy">
+</figure>
+
+<h2 id="what-historical-backtesting-does">What Historical Backtesting Does</h2>
+<p>A retirement plan has to survive time, spending, inflation, taxes, withdrawals, and market returns. The order of those events matters.</p>
+<p>Historical backtesting takes a plan and runs it through past market conditions. The point is not to find a perfect match for the future. The point is to see how the plan behaves when good and bad years arrive in the order they really did.</p>
+<p>That makes it especially useful for retirees and near-retirees because withdrawals change the math. A bad market early in retirement can do more harm than the same bad market later, because the retiree is drawing money while the balance is down.</p>
+<p>Historical backtesting helps you ask:</p>
+<ul>
+<li>What happens if weak returns arrive early?</li>
+<li>Which retirement start years ran out of money, and at what age?</li>
+<li>How far apart are the toughest and the best start years?</li>
+<li>Does the plan only work if returns arrive at their long-run average?</li>
+<li>Does a plan that looks comfortable in the straight-line projection still hold up when the bad years come first?</li>
+</ul>
+<p>The backtest is a pressure test using history as the lens.</p>
+<h2 id="what-the-planners-historical-backtest-models-and-what-it-leaves-out">What The Planner's Historical Backtest Models, And What It Leaves Out</h2>
+<p>Knowing what goes into the backtest is what makes the result readable.</p>
+<p>It uses:</p>
+<ul>
+<li>Actual annual US returns from 1928 through 2025, from the Damodaran dataset at NYU Stern: the S&amp;P 500 with dividends, 3-month Treasury bills, and 10-year Treasury bonds.</li>
+<li>Every overlapping window the length of your plan. A 28-year plan fits 71 start years, and a longer plan fits fewer.</li>
+<li>Your starting balances in the 401k, cash, brokerage, and Roth accounts.</li>
+<li>Each phase's withdrawals from each account.</li>
+<li>Your lump sums, applied at the start of the phase they belong to.</li>
+</ul>
+<p>Each account follows the part of history that matches it. The brokerage (equity) account is treated as stocks, cash as T-bills, and the 401k and Roth as a blend of stocks and bonds. That blend is 60/40 unless you change <strong>Backtest growth-bucket stock %</strong> under Edit values, in the Advanced section, and the setting affects only the backtest. Your own return assumptions are set aside here, because history replaces them.</p>
+<p>It leaves out:</p>
+<ul>
+<li><strong>Historical inflation.</strong> Withdrawals stay at the fixed amounts in your plan, and the "real" figures are deflated at your own inflation assumption. A start year in the 1970s replays that decade's market returns, but not its price rises. Inflation risk is covered by the Stress test grid and by Monte Carlo instead.</li>
+<li><strong>Taxes and healthcare costs.</strong> The backtest moves balances. The tax and healthcare math lives in the main projection.</li>
+<li><strong>Income from outside your accounts, and money moved between them for tax reasons.</strong> Social Security, pensions, part-time work, and Roth conversions are not part of it.</li>
+</ul>
+<p>That last point matters more than it looks. Changing your Social Security claiming age or a Roth conversion amount does not move the backtest by itself. It moves only when the withdrawals the plan takes change too.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/historical-backtesting-retirement-planner-2.webp" alt="The planner's Stress test tab: a grid of average net monthly income and total portfolio at age 90 across bear, base and bull returns and four inflation rates, above the historical backtest showing 100% success in 71 of 71 retirements since 1928, 1929 as the toughest start year, 1975 as the best, and a bar chart of ending balance by start year." width="1400" height="664" loading="lazy">
+</figure>
+
+<h2 id="when-to-use-historical-backtesting">When To Use Historical Backtesting</h2>
+<p>Use historical backtesting when the plan is already filled in with realistic inputs.</p>
+<p>It is most useful when you are:</p>
+<ul>
+<li>Within 10 years of retirement.</li>
+<li>Already retired.</li>
+<li>Comparing two spending levels.</li>
+<li>Deciding which accounts to draw from in each phase.</li>
+<li>Testing an earlier or later retirement age.</li>
+<li>Checking a plan after a balance drop.</li>
+<li>Modeling a large one-time expense.</li>
+<li>Comparing a base plan with a lower-risk version.</li>
+<li>Trying to understand whether a plan is too dependent on average returns.</li>
+</ul>
+<p>It is less useful when the plan is incomplete. If ages, balances, withdrawals, or lump sums are still placeholders, the backtest can look precise while resting on weak inputs.</p>
+<h2 id="before-you-run-the-backtest">Before You Run The Backtest</h2>
+<p>Update the plan first.</p>
+<p>The backtest reads these inputs directly:</p>
+<ul>
+<li>Current age, retirement start age, and phase ages.</li>
+<li>Current 401k, cash, brokerage, and Roth balances.</li>
+<li>Each phase's withdrawals, and which accounts they come from.</li>
+<li>One-time expenses, and windfalls such as an inheritance or downsizing proceeds, entered as lump sums in the phase they land in.</li>
+</ul>
+<p>The rest of the plan still needs to be right, because it decides what those withdrawals have to be. Check:</p>
+<ul>
+<li>Social Security claiming ages and benefit amounts, for both spouses if you are planning as a couple.</li>
+<li>Pension or annuity income.</li>
+<li>Part-time work income.</li>
+<li>Inflation and healthcare inflation assumptions.</li>
+<li>Tax filing status and state tax settings.</li>
+<li>Medicare, ACA, and IRMAA settings.</li>
+<li>RMD settings and any Roth conversions.</li>
+<li>The survivor scenario, if you use it.</li>
+</ul>
+<p>Those feed the projection, the Plan Health checks, and the Confidence score rather than the backtest. If Social Security starts in phase 3, the withdrawals you set for phase 3 should reflect it, because the backtest takes those withdrawals as given.</p>
+<p>Historical backtesting is not a shortcut around data quality. It makes the plan's assumptions easier to inspect.</p>
+<h2 id="how-to-use-historical-backtesting-in-the-planner">How To Use Historical Backtesting In The Planner</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>Open your plan and update balances, withdrawals, and lump sums.</li>
+<li>Review the base projection on the Overview tab.</li>
+<li>Open the Stress test tab and scroll past the inflation and returns grid to the Historical backtest card.</li>
+<li>Read its four figures: historical success, toughest start year, median ending balance, and best start year.</li>
+<li>Scan the bar chart of ending balance by start year. Red bars ran out of money. Hover over a bar to see the age it ran out, or the balance it ended with.</li>
+<li>Open the Confidence tab, where the historical success rate sits beside the Monte Carlo result and the checklist. Press <strong>Re-run simulations</strong> after any change, because those two dials do not refresh on their own.</li>
+<li>Save the current plan to one of the three saved-plan slots before you change anything.</li>
+<li>Test one change at a time, then return to the backtest.</li>
+</ol>
+<p>The key is to move from result to question.</p>
+<p>If the backtest looks weak, look for the cause among the things it can see. Are the early phases withdrawing heavily? Does a large one-time expense land early? Is most of the money coming out of the brokerage account, which carries the full swings of the stock market? Is a large share sitting in cash, which only earns T-bill returns? Would retiring a little later change the picture?</p>
+<p>Healthcare costs, RMD taxes, and a survivor-income gap are real pressures too, but the backtest cannot see them. They show up in the projection, the Tax &amp; ACA tab, and the Plan Health checks.</p>
+<p>The value is in finding the pressure point.</p>
+<h2 id="how-to-read-the-result">How To Read The Result</h2>
+<p>Look for patterns instead of one number.</p>
+<p>Start with these questions:</p>
+<ul>
+<li>Does the plan run out of money in some start years?</li>
+<li>If it does, at what age does the money run out?</li>
+<li>Are the failures clustered around a few periods, or scattered?</li>
+<li>How far is the toughest start year's ending balance from the median?</li>
+<li>Does the plan depend on strong early returns?</li>
+<li>Does a small reduction in early withdrawals change the result materially?</li>
+</ul>
+<p>The success figure is shaded green at 90% and above, amber from 70%, and red below that. Treat the color as a prompt to look closer, not as a grade.</p>
+<p>The backtest should help you identify the start years and withdrawals that deserve attention.</p>
+<h2 id="historical-backtesting-vs-monte-carlo">Historical Backtesting Vs Monte Carlo</h2>
+<p>The two answer different questions, and the planner runs both because neither is sufficient alone.</p>
+<p>Historical backtesting asks how the plan would have behaved through market sequences that actually happened, which makes it easy to picture: the toughest start years are recognizable periods, not abstractions. Monte Carlo asks how often the plan survives across many randomized paths built from your own return assumptions, which gives a broader range but no story attached to any of it.</p>
+<p>They also treat inflation differently. Monte Carlo lets inflation vary from run to run and scales withdrawals with it, unless you set its inflation volatility to zero. The backtest holds inflation at your assumption.</p>
+<p>Neither proves a plan will work. Together they show whether it is fragile, flexible, or broadly resilient. If you want the full comparison, including where each one misleads, <a href="/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">Monte Carlo vs historical backtesting</a> covers it properly.</p>
+<h2 id="how-historical-backtesting-fits-with-plan-health">How Historical Backtesting Fits With Plan Health</h2>
+<p>Plan Health checks and historical backtesting should be read together, but they do not measure the same thing.</p>
+<p>The Plan Health checks grade the straight-line projection. Two of them look at the backtest's risk from a different angle: <strong>Portfolio Survives to End</strong>, and <strong>Stress Test Resilient</strong>, which asks whether the accounts you draw from last to your plan's end age with returns 3 points lower and inflation at 5% for the whole plan. Others cover ground the backtest cannot see at all, including tax bracket efficiency, ACA subsidies, IRMAA, RMDs, survivor income, and whether one-time expenses are funded. If you have not used them before, <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">how to use Plan Health</a> walks through each check.</p>
+<p>For example:</p>
+<ul>
+<li>If the backtest fails in several start years while Portfolio Survives to End passes, the plan is relying on average returns arriving on schedule.</li>
+<li>If the backtest looks strong but a tax or IRMAA check is amber, the pressure is in the tax bill, which the backtest never shows.</li>
+<li>If Survivor Income Resilience is flagging, look at the survivor scenario on the What-if? tab. The backtest has no survivor view.</li>
+</ul>
+<p>Plan Health checks do not replace the backtest, and the backtest does not replace them. Read together, they turn one result into a list of planning questions.</p>
+<h2 id="how-historical-backtesting-fits-with-plan-confidence">How Historical Backtesting Fits With Plan Confidence</h2>
+<p>The Plan Confidence score is built from the Plan Health checks. Monte Carlo and the historical backtest sit beside it on the Confidence tab as two confirming lenses, and the tab says plainly that they do not change the headline number.</p>
+<p>So a weak backtest will not pull the score down. A plan can score well on its checks and still fail a meaningful share of historical start years. When those two readings disagree, the disagreement is the most useful thing on the page. A strong backtest supports a strong score, but it does not replace reading the checks behind it.</p>
+<p>Use Plan Confidence as a dashboard signal and the historical backtest as a diagnostic view.</p>
+<p>In plain English:</p>
+<ul>
+<li>Plan Confidence gives you a broad read of the checks.</li>
+<li>Historical backtesting shows how past return sequences stress your withdrawals.</li>
+<li>Monte Carlo shows a range of simulated paths, with inflation allowed to vary.</li>
+<li>The Stress test grid shows twelve flat, whole-plan combinations of inflation and returns.</li>
+<li>Saved plans let you keep the original while you test a change.</li>
+</ul>
+<p>The best planning work happens when those views are read together.</p>
+<h2 id="what-to-try-if-the-backtest-looks-weak">What To Try If The Backtest Looks Weak</h2>
+<p>Do not jump straight to a permanent lifestyle change.</p>
+<p>Save the current plan to a slot first. There are three, and <strong>Compare</strong> sets your working plan against one of them, so keep the original there as a fixed reference while you <a href="/blog/save-load-compare-retirement-scenarios.html">compare a changed version against it</a>. Then test one change at a time.</p>
+<p>Changes the backtest responds to:</p>
+<ul>
+<li>Lower the withdrawals in the early phases.</li>
+<li>Move a large one-time expense to a later phase, or split it into two smaller Money out events in different phases.</li>
+<li>Change which accounts each phase draws from. Cash follows T-bill returns, the brokerage account follows stocks, and the 401k and Roth follow the blended mix.</li>
+<li>Add a windfall, such as an inheritance or downsizing proceeds, as a Money in lump sum in the phase it arrives.</li>
+<li>Adjust the retirement start age.</li>
+<li>Change the backtest's stock share, to see how sensitive the result is to the mix. This setting changes nothing else in the plan.</li>
+</ul>
+<p>Changes that need a matching withdrawal change before the backtest will show them:</p>
+<ul>
+<li>A later Social Security claiming age.</li>
+<li>Part-time income for a phase.</li>
+</ul>
+<p>The What-if? tab can also do the search for you. <strong>Maximum sustainable spending</strong>, set to test against <strong>Survives market history</strong>, scales every phase's withdrawals up or down together and finds the highest level that still survives your chosen share of historical start years, 90% unless you change it. It is a direct answer to <a href="/blog/how-much-can-i-spend-in-retirement.html">how much you can spend in retirement</a> under this lens.</p>
+<p>After each change, reopen the Stress test tab to read the backtest again, press Re-run simulations on the Confidence tab, and check whether any Plan Health check moved.</p>
+<p>The goal is to learn which lever has the most useful effect.</p>
+<h2 id="a-historical-backtest-workflow-start-to-finish">A Historical Backtest Workflow, Start To Finish</h2>
+<p>Imagine a couple planning to retire at 64 and 62.</p>
+<p>Their base projection looks fine. Their balances last to the end of the plan. Income charts look stable. Social Security and pensions cover part of the spending need, and Portfolio Survives to End passes.</p>
+<p>Then they open the historical backtest.</p>
+<p>Several start years run out of money, all of them windows where weak returns came first, because the first phase takes large withdrawals from the 401k before Social Security begins. The couple saves the plan to a slot and tests three changes, one at a time:</p>
+<ul>
+<li>Trim the first phase's withdrawals by a modest amount.</li>
+<li>Move a planned car replacement from the first phase to the second.</li>
+<li>Run Maximum sustainable spending against market history to see the withdrawal level that clears 90%.</li>
+</ul>
+<p>The backtest improves, but the most useful result is not a single percentage. The useful result is learning that the first phase's withdrawals were carrying more of the risk than expected.</p>
+<p>They also wonder whether a smaller Roth conversion would help. It would not show up here, because the backtest does not model conversions. That question belongs with the Roth conversion tool on the What-if? tab and the tax checks, which is exactly why the backtest is one lens among several.</p>
+<p>That is where historical backtesting earns its place. It helps turn a vague worry into a specific planning question.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/historical-backtesting-retirement-planner-3.webp" alt="The planner's Confidence tab showing a plan confidence score of 94 out of 100 with 8 checks passing and 1 warning, three confirming dials for the checklist (8 of 9), Monte Carlo (100%) and historical backtest (100%), and resilience bars for solvency, income stability, and tax and healthcare." width="1400" height="577" loading="lazy">
+</figure>
+
+<h2 id="common-backtesting-mistakes">Common Backtesting Mistakes</h2>
+<p>Avoid these mistakes:</p>
+<ul>
+<li>Running the backtest before updating balances and withdrawals.</li>
+<li>Treating past periods as a forecast.</li>
+<li>Looking only at the headline success rate.</li>
+<li>Ignoring the age at which a failing start year runs out.</li>
+<li>Changing several assumptions at once.</li>
+<li>Expecting the backtest to show taxes, healthcare costs, or RMDs.</li>
+<li>Assuming the backtest replays historical inflation.</li>
+<li>Changing a claiming age or a Roth conversion and expecting the backtest to move.</li>
+<li>Treating Monte Carlo and historical backtesting as the same tool.</li>
+<li>Assuming a high result means the plan needs no review.</li>
+<li>Assuming a weak result means retirement is impossible.</li>
+</ul>
+<p>Historical backtesting is not a verdict. It is a structured way to ask better questions.</p>
+<h2 id="why-backtesting-matters-for-retirement-income-planning">Why Backtesting Matters For Retirement Income Planning</h2>
+<p>Retirement income planning is different from accumulation planning.</p>
+<p>Before retirement, market downturns are painful but contributions may continue. In retirement, withdrawals may continue during downturns. That creates sequence risk.</p>
+<p>Historical backtesting helps you see that sequence risk in a practical way. It connects the abstract idea of market timing to your own balances, withdrawals, and one-time costs.</p>
+<p>That is why the feature belongs inside a broader planner instead of standing alone. The backtest answers the market-sequence question. The projection, the Tax &amp; ACA tab, and the Plan Health checks answer the questions it leaves out, such as Social Security timing, RMDs, Medicare costs, Roth conversions, and spouse income.</p>
+<p>The planner's value is that those items can be reviewed together, which is the wider habit described in <a href="/blog/check-your-retirement-plan-from-several-angles.html">checking your plan from several angles</a>.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo, go to the Stress test tab, and scroll past the inflation and returns grid to the historical backtest. It replays the sample plan's withdrawals against every overlapping stretch of real US market returns since 1928, and names the toughest and best years to have retired.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="is-historical-backtesting-the-same-as-a-market-forecast">Is historical backtesting the same as a market forecast?</h3>
+<p>No. Historical backtesting uses past conditions to test a plan. It does not predict the next market cycle.</p>
+<h3 id="does-the-planners-historical-backtest-include-inflation">Does the planner's historical backtest include inflation?</h3>
+<p>Not historical inflation. It replays actual market returns, keeps your withdrawals at the amounts in your plan, and uses your own inflation assumption for its "real" figures. Use the Stress test grid or Monte Carlo to test inflation risk.</p>
+<h3 id="should-i-use-historical-backtesting-or-monte-carlo">Should I use historical backtesting or Monte Carlo?</h3>
+<p>Use both. The planner shows both results side by side on the Confidence tab. Historical backtesting shows how the plan responds to past sequences. Monte Carlo shows a wider range of simulated outcomes.</p>
+<h3 id="what-if-the-backtest-result-looks-bad">What if the backtest result looks bad?</h3>
+<p>Save the current plan to a slot and test one change at a time. Start with the inputs the backtest reads: withdrawals in the early phases, which accounts they come from, the timing of large one-time expenses, and retirement age.</p>
+<h3 id="what-if-the-backtest-result-looks-strong">What if the backtest result looks strong?</h3>
+<p>Review the plan anyway. Check Plan Health, Plan Confidence, Monte Carlo, Stress Test, survivor assumptions, taxes, healthcare, RMDs, and updated balances.</p>
+<h3 id="can-historical-backtesting-replace-professional-planning-help">Can historical backtesting replace professional planning help?</h3>
+<p>No. It is an educational planning tool. Use official sources and qualified professionals for tax, investment, legal, healthcare, Medicare, Social Security, insurance, and estate questions.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+<li>WebNomad AI Retirement Income Planner feature page: https://webnomad.webflow.io/pages/ai-ready-retirement-income-planner</li>
+<li>Investor.gov retirement planning resources: https://www.investor.gov/introduction-investing/investing-basics/glossary/retirement-planning</li>
+<li>U.S. Bureau of Labor Statistics Consumer Price Index: https://www.bls.gov/cpi/</li>
+<li>IRS required minimum distributions: https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds</li>
+<li>Medicare costs: https://www.medicare.gov/basics/costs/medicare-costs</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. Historical backtesting is based on past conditions and assumptions. Future market returns, inflation, taxes, healthcare costs, life events, and policy rules can differ. Confirm tax, Medicare, Social Security, RMD, withdrawal, investment, insurance, healthcare, inflation, and estate details with official sources and qualified professionals.
+ Screenshots show a sample plan with invented figures and are illustrative only.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free checklist</p>
+  <h2>What you need before you start planning</h2>
+  <p class="post-capture-pitch">One page listing every figure a retirement projection needs, and where to find it.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="checklist">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-historical-backtesting-retirement-planne">Leave this blank</label>
+      <input type="text" id="pc-honey-historical-backtesting-retirement-planne" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-historical-backtesting-retirement-planne">Email address</label>
+    <input type="email" id="pc-email-historical-backtesting-retirement-planne" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the checklist</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Try the planner when you want a private, browser-based way to model income, taxes, healthcare, Social Security, withdrawals, and risk in one place.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/where-to-enter-retirement-income.html">Where to Enter Social Security, SSDI and Pension Income</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/how-to-set-up-a-retirement-income-plan.html">How to Set Up a Retirement Income Plan, Step by Step</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/save-load-compare-retirement-scenarios.html">How to Save, Load and Compare Retirement Scenarios</a> <span class="post-meta">· Planner How-To</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
