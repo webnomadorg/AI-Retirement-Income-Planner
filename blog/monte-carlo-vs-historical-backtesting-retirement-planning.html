@@ -147,7 +147,7 @@
         </nav>
         <header class="post-header">
           <h1>Monte Carlo vs Historical Backtesting for Retirement Planning</h1>
-          <p class="post-meta"><span class="cat-badge">Withdrawals & Risk</span> · Published July 9, 2026 · 15 min read</p>
+          <p class="post-meta"><span class="cat-badge">Withdrawals & Risk</span> · Published July 9, 2026 · 17 min read</p>
         </header>
         <details class="post-toc">
   <summary>On this page</summary>
@@ -183,7 +183,7 @@
 <p>Historical backtesting asks:</p>
 <p>How would this plan have behaved through real past market periods?</p>
 <p>Neither method is enough by itself.</p>
-<p>Monte Carlo can show a wide range of possible outcomes, but it depends heavily on assumptions. Historical backtesting can show recognizable periods like high inflation, recessions, and market crashes, but the future will not replay the past exactly.</p>
+<p>Monte Carlo can show a wide range of possible outcomes, but it depends heavily on assumptions. Historical backtesting can show recognizable periods like recessions, market crashes, and long flat stretches, but the future will not replay the past exactly.</p>
 <p>The better approach is to use both, then add direct stress tests for specific risks such as poor early returns, higher inflation, higher healthcare costs, delayed Social Security, and survivor outcomes.</p>
 <figure class="shot post-img">
 <img src="/assets/img/blog/monte-carlo-vs-historical-backtesting-retirement-planning-1.webp" alt="Illustration of a couple comparing Monte Carlo simulation paths and historical market charts for a retirement plan." width="1400" height="788" loading="lazy">
@@ -251,6 +251,7 @@
 </ul>
 <p>Historical backtesting is useful because it gives the plan a real-world trial.</p>
 <p>Past data includes market relationships that are hard to invent manually. It includes messy periods, recoveries, inflation shocks, rate changes, and long stretches when one asset class did better than another.</p>
+<p>One detail changes what a backtest can tell you: whether it replays past inflation as well as past returns. A backtest that does raises withdrawals as prices rose, so a 1970s start looks hard. One that replays returns only, as the AI Retirement Income Planner's does, keeps withdrawals at the amounts in your plan, so it stresses the order of market returns but not inflation. Check which kind you are reading before drawing conclusions about a high-inflation decade.</p>
 <p>The weakness is that history is limited.</p>
 <p>Only one version of the past happened. The future can include return patterns, inflation paths, tax rules, healthcare costs, and policy changes that have no exact historical match.</p>
 <p>Historical backtesting is a practical tool, not a time machine.</p>
@@ -301,7 +302,7 @@
 <tr>
 <td data-label="Question">Good for inflation shocks</td>
 <td data-label="Monte Carlo Simulation">Yes, if inflation is modeled well</td>
-<td data-label="Historical Backtesting">Yes, if past high-inflation periods are included</td>
+<td data-label="Historical Backtesting">Only if it replays past inflation, not just past returns</td>
 </tr>
 <tr>
 <td data-label="Question">Risk of false comfort</td>
@@ -335,7 +336,7 @@
 <li>Whether the result depends on optimistic returns.</li>
 <li>Whether a cash reserve is being depleted.</li>
 </ul>
-<p>For example, a plan may show a strong Monte Carlo score but still fail under a specific historical period with high inflation and poor early returns. Another plan may look weak under conservative Monte Carlo assumptions but survive many historical periods because spending is flexible.</p>
+<p>For example, a plan may show a strong Monte Carlo score but still fail under a specific historical period of poor early returns. Another plan may look weak under conservative Monte Carlo assumptions but survive many historical periods because spending is flexible.</p>
 <p>The score is a dashboard light.</p>
 <p>The plan is the full engine.</p>
 <h2 id="sequence-risk-is-the-test-case">Sequence Risk Is The Test Case</h2>
@@ -379,19 +380,18 @@
 <p>The historical view may show:</p>
 <ul>
 <li>Which past starting periods were hardest.</li>
-<li>Whether the plan held up through high inflation.</li>
 <li>Whether early bear markets caused trouble.</li>
 <li>Whether cash helped during weak markets.</li>
-<li>Whether delayed Social Security increased bridge-year stress.</li>
+<li>Whether the larger bridge-year withdrawals, taken while Social Security is delayed, leave the plan exposed when the bad years come first.</li>
 </ul>
 <p>This is useful too. It gives the couple specific episodes to study.</p>
 <h3 id="stress-test-view">Stress-Test View</h3>
-<p>The stress test may show:</p>
+<p>The Stress test grid and the other what-if tools may show:</p>
 <ul>
-<li>Poor early returns plus higher healthcare costs create a cash shortage.</li>
-<li>A smaller Roth conversion in the first three years improves the bridge.</li>
-<li>Claiming one Social Security benefit earlier helps cash flow but reduces later income.</li>
-<li>Reducing discretionary spending for two years improves Plan Health.</li>
+<li>The plan holds at the planned returns but thins out when inflation runs at 5% or 8% alongside weaker returns.</li>
+<li>Changing the Roth conversion in the bridge phase changes that phase's tax and healthcare costs.</li>
+<li>Claiming one Social Security benefit earlier gives a smaller monthly benefit but a head start on the cumulative total.</li>
+<li>Lowering the first phase's withdrawals improves a Plan Health check.</li>
 </ul>
 <p>Now the couple has a plan, not merely a score.</p>
 <h2 id="where-monte-carlo-can-mislead">Where Monte Carlo Can Mislead</h2>
@@ -444,8 +444,8 @@
 <li>Large lump-sum expense.</li>
 <li>Expat healthcare or currency shift.</li>
 </ul>
-<p>The AI Retirement Income Planner includes stress testing using 12 scenario combinations. That matters because retirement risk rarely arrives one variable at a time.</p>
-<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Stress test tab with multiple scenario combinations and ending-balance or Plan Health results. Purpose: show stress tests as a third lens alongside Monte Carlo and historical backtesting. Suggested alt text: "Planner stress test tab comparing retirement risk scenarios." -->
+<p>The AI Retirement Income Planner's Stress test tab combines two of those, running the whole plan through 12 combinations of inflation (2%, your own rate, 5%, and 8%) and investment returns (3 points lower, as planned, and 3 points higher). That matters because retirement risk rarely arrives one variable at a time. Most of the others have their own tools: healthcare inflation in Edit values, Social Security timing in the SS Optimizer and What-if? tabs, the survivor scenario in What-if?, large expenses on the Lump sums tab, and poor early returns in the historical backtest.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Stress test tab with its 12-cell grid of inflation against investment returns, showing monthly income and the ending portfolio in each cell. Purpose: show stress tests as a third lens alongside Monte Carlo and historical backtesting. Suggested alt text: "Planner Stress test tab showing twelve combinations of inflation and investment returns." -->
 
 <h2 id="how-taxes-affect-both-methods">How Taxes Affect Both Methods</h2>
 <p>Retirement risk analysis should not stop at investment returns.</p>
@@ -466,6 +466,7 @@
 </ul>
 <p>IRS says RMDs are minimum amounts that must be withdrawn each year from certain retirement accounts once the rules apply. The IRS FAQ says account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts when they reach age 73.</p>
 <p>If a model ignores RMDs, taxes, and Social Security taxation, the risk score may not represent spendable income.</p>
+<p>In the AI Retirement Income Planner, Monte Carlo and the historical backtest test your balances against the withdrawals you set. The tax on those withdrawals is worked out in the main projection and graded by the Plan Health checks, so read the two together.</p>
 <p>This is why a retirement risk test should be connected to the income plan and the portfolio balance.</p>
 <h2 id="how-social-security-timing-affects-risk-tests">How Social Security Timing Affects Risk Tests</h2>
 <p>Social Security timing changes portfolio withdrawals.</p>
@@ -477,7 +478,7 @@
 <li>Couples may test one spouse claiming earlier and the higher earner delaying.</li>
 <li>Survivor planning may favor a different claiming strategy than a single-life break-even view.</li>
 </ul>
-<p>Monte Carlo and historical backtesting should be run under more than one Social Security scenario.</p>
+<p>Monte Carlo and historical backtesting should be run under more than one Social Security scenario. In the planner, both replay the withdrawals you set, so change each phase's withdrawals to match the claiming age you are testing. A new claiming age on its own does not move either result.</p>
 <p>Otherwise, the user may be testing a benefit decision they have not fully chosen.</p>
 <h2 id="how-healthcare-costs-affect-risk-tests">How Healthcare Costs Affect Risk Tests</h2>
 <p>Healthcare can change retirement risk because it can force withdrawals when markets are weak.</p>
@@ -529,24 +530,21 @@
 <li>Whether the plan depends on favorable returns.</li>
 </ul>
 <h3 id="4-run-historical-backtesting">4. Run Historical Backtesting</h3>
-<p>Use historical backtesting to see:</p>
+<p>The <a href="/blog/historical-backtesting-retirement-planner.html">historical backtest</a> sits at the bottom of the Stress test tab, and its success rate also appears on the Confidence tab. Use it to see:</p>
 <ul>
 <li>Which past periods challenge the plan.</li>
 <li>Whether early bear markets cause trouble.</li>
-<li>Whether inflation periods expose risk.</li>
-<li>Whether withdrawals become too high after market declines.</li>
+<li>Whether your planned withdrawals are too high to survive a decline early on.</li>
 <li>Whether cash reserves help.</li>
 </ul>
+<p>It replays market returns against your planned withdrawals, not past inflation, so test inflation in the next step.</p>
 <h3 id="5-run-stress-tests">5. Run Stress Tests</h3>
-<p>Use stress tests for direct questions:</p>
+<p>The Stress test tab answers two direct questions at once:</p>
 <ul>
-<li>What if the market falls early?</li>
-<li>What if inflation is higher?</li>
-<li>What if healthcare costs rise faster?</li>
-<li>What if Social Security is delayed?</li>
-<li>What if one spouse dies first?</li>
-<li>What if taxes are higher?</li>
+<li>What if returns are 3 points lower, or higher, across the whole plan?</li>
+<li>What if inflation runs at 2%, 5%, or 8%?</li>
 </ul>
+<p>Other direct questions have their own tools. A faster rise in healthcare costs is the healthcare inflation rate in Edit values. A later Social Security claim is in the SS Optimizer and What-if? tabs. One spouse dying first is the What-if? tab's survivor scenario. A market fall early in retirement is the historical backtest in step 4.</p>
 <h3 id="6-compare-drawdown-strategies">6. Compare Drawdown Strategies</h3>
 <p>Use the Drawdown tab to compare withdrawal styles:</p>
 <ul>
@@ -559,15 +557,14 @@
 </ul>
 <p>Then use the phase withdrawal settings and What-if tools to test ideas such as a cash-first bridge, preserving Roth for later phases, or Roth conversions during lower-income years. (<a href="/blog/which-retirement-account-withdraw-from-first.html">Which account to withdraw from first</a> walks through those tradeoffs.)</p>
 <h3 id="7-save-scenarios">7. Save Scenarios</h3>
-<p>The planner keeps up to three saved plans in the browser for side-by-side comparison, and JSON export files cover anything beyond that.</p>
-<p>Save versions such as:</p>
+<p>The planner keeps up to three saved plans in the browser, and Compare sets your working plan against one of them. JSON export files cover anything beyond that.</p>
+<p>Keep the base plan in one slot as a fixed reference, and save one or two changed versions at a time, such as:</p>
 <ul>
-<li>Base plan.</li>
 <li>Monte Carlo weak-case adjustment.</li>
 <li>Historical stress case.</li>
 <li>Higher healthcare inflation.</li>
 <li>Earlier Social Security claim.</li>
-<li>Lower spending for first three retirement years.</li>
+<li>Lower withdrawals in the first phase.</li>
 <li>Survivor scenario.</li>
 </ul>
 <h3 id="8-print-or-save-a-report">8. Print Or Save A Report</h3>
@@ -578,7 +575,7 @@
 <li>The changes that improved the plan.</li>
 <li>The items to review next year.</li>
 </ul>
-<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Scenarios or Confidence area with base plan, Monte Carlo, historical backtest, and Plan Health or Confidence results visible. Purpose: show a complete risk review workflow rather than one isolated score. Suggested alt text: "Planner comparing Monte Carlo, historical backtesting, scenarios, and Plan Health." -->
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Confidence tab with the plan confidence score and its checklist, Monte Carlo, and historical lenses. Purpose: show a complete risk review rather than one isolated score. Suggested alt text: "Planner Confidence tab showing the plan score with its checklist, Monte Carlo, and historical lenses." -->
 
 <h2 id="practical-rule-of-thumb">Practical Rule Of Thumb</h2>
 <p>Use Monte Carlo for breadth.</p>
@@ -588,8 +585,8 @@
 <p>For example:</p>
 <ul>
 <li>Monte Carlo says the plan is sensitive to returns.</li>
-<li>Historical backtesting says high-inflation periods are difficult.</li>
-<li>Stress tests say poor early returns plus high healthcare costs are the weak spot.</li>
+<li>Historical backtesting says a 1929-style start is the hard case.</li>
+<li>The Stress test grid says high inflation with weaker returns is the weak spot.</li>
 <li>Scenario comparison shows that one year of extra work, lower early spending, or a cash bridge improves the result.</li>
 </ul>
 <p>That is a planning workflow.</p>
