@@ -12,7 +12,7 @@
 **Content type:** comparison
 **Published:** 2026-07-09
 **Image 1 alt:** Illustration of a couple comparing Monte Carlo simulation paths and historical market charts for a retirement plan.
-**Image 2 alt:** AI Retirement Income Planner Confidence dashboard showing a plan confidence score with checklist, Monte Carlo, and historical backtest lenses.
+**Image 2 alt:** The planner's Confidence tab showing a plan confidence score of 94 out of 100 with 8 checks passing and 1 warning, three confirming dials for the checklist (8 of 9), Monte Carlo (100%) and historical backtest (100%), resilience bars for solvency, income stability, and tax and healthcare, and a plan strength radar chart.
 
 **Search intent:** The reader wants to compare Monte Carlo simulation and historical backtesting, understand what each method shows, and learn how to use both when testing a retirement income plan.
 
@@ -550,7 +550,7 @@ Social Security timing changes early withdrawals, later income, survivor income,
 
 ## Educational Disclaimer
 
-This article is educational only. It is not financial, tax, investment, legal, insurance, healthcare, Social Security, estate, or retirement advice. Monte Carlo results, historical backtests, stress tests, and confidence scores depend on assumptions and cannot predict future outcomes. Verify assumptions with official sources and qualified professionals before making retirement decisions.
+This article is educational only. It is not financial, tax, investment, legal, insurance, healthcare, Social Security, estate, or retirement advice. Monte Carlo results, historical backtests, stress tests, and confidence scores depend on assumptions and cannot predict future outcomes. Verify assumptions with official sources and qualified professionals before making retirement decisions. Screenshots show a sample plan with invented figures and are illustrative only.
 
 ## FAQ
 
