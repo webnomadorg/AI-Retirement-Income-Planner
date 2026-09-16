@@ -366,7 +366,7 @@ Use this workflow:
 5. Create a second scenario where retirement is delayed and debt is reduced.
 6. Create a third scenario with a lump-sum payoff.
 7. Compare taxes, cash reserves, ending balances, confidence, and survivor results.
-8. Stress test the plan against weaker returns and higher inflation, then read the historical backtest for the runs where the weak years land first.
+8. Stress test the plan against weaker returns and higher inflation, then [read the historical backtest](/blog/historical-backtesting-retirement-planner.html) for the runs where the weak years land first.
 9. Review whether debt payments force withdrawals during bad market years.
 10. Decide whether the retirement date, payoff plan, or spending plan needs to change.
 

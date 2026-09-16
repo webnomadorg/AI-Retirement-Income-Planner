@@ -261,7 +261,7 @@ The Confidence tab adds four things the side panel does not:
 
 - **A completeness verdict** (Needs work, Viable, or Complete) that is deliberately independent of the number. It reads the tiers instead. A failing Essential check means Needs work regardless of the score. When only Optimization and Optional items remain open, the verdict is Complete, because the remaining items are fine-tuning.
 - **Category sub-scores** across Solvency, Income stability, Tax & healthcare, and Survivor & legacy, so you can see where the weakness sits.
-- **Three confirming lenses**: the checklist, Monte Carlo, and a backtest against real market history. They run automatically the first time you open the tab, and on demand after that.
+- **Three confirming lenses**: the checklist, Monte Carlo, and [a backtest against real market history](/blog/historical-backtesting-retirement-planner.html). They run automatically the first time you open the tab, and on demand after that.
 - **An "Ask AI how to raise my score" button.**
 
 The lenses are worth understanding properly. Monte Carlo and the historical backtest do not change the headline score. They confirm it, or they disagree with it. That is the point: a checklist can catch threshold and planning issues, Monte Carlo shows sensitivity to random market and inflation paths, and backtesting shows how the plan would have behaved through past market sequences. The difference between those last two is worth understanding before you read the numbers, and it is covered in [Monte Carlo vs historical backtesting for retirement planning](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html).

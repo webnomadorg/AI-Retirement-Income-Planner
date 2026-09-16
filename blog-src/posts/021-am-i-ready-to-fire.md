@@ -133,13 +133,13 @@ That is sequence-of-returns risk, and stretching the horizon from thirty years t
 There are two honest ways to look at it, and they answer different questions:
 
 - **Monte Carlo** generates thousands of random futures and counts how many left you solvent. Good for "how much room do I have?"
-- **Historical backtesting** replays your plan through the sequences that actually happened — 1929, 1966, 2000 — with real inflation and real recoveries. Good for "what would this have done to someone who retired at the worst possible moment?"
+- **Historical backtesting** replays your plan through the sequences that actually happened — 1929, 1966, 2000 — with real crashes and real recoveries. Good for "what would this have done to someone who retired at the worst possible moment?"
 
 Neither is a prediction. Both beat an average.
 
 [IMAGE historical backtest across every overlapping 48 year period since 1928 5]
 
-A word on reading a result like that. A high historical success rate is a statement about **those assumptions against that history**, not a promise. Change the spending, the inflation figure or the health cover estimate and it moves. The useful part is not the percentage — it is the toughest start year, and what your plan looked like in it. The comparison between the two methods is in [Monte Carlo versus historical backtesting](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html).
+A word on reading a result like that. A high historical success rate is a statement about **those assumptions against that history**, not a promise. Change the spending, the retirement age or a large one-time cost and it moves. The useful part is not the percentage — it is the toughest start year, and what your plan looked like in it. The comparison between the two methods is in [Monte Carlo versus historical backtesting](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html).
 
 ## Blind Spot 5 — Social Security, Twenty Years Late
 
@@ -194,7 +194,7 @@ The order matters, because each step changes what the next one shows.
 4. **Set the plan horizon out to 95 or 100.** A fifty-year retirement is the whole point.
 5. **Look at net, not gross.** Then look at real, not nominal.
 6. **Watch the marketplace headroom in the pre-65 phases** and see what a larger 401(k) withdrawal does to it.
-7. **Run the historical backtest**, and look at the toughest start year rather than the headline percentage.
+7. **[Run the historical backtest](/blog/historical-backtesting-retirement-planner.html)**, and look at the toughest start year rather than the headline percentage.
 8. **Save it as your baseline. Then change exactly one thing** and compare. Spend $500 a month less. Work part-time for three years. Claim at 70 instead of 67.
 
 That last step is the one that actually answers the question, and it is covered in [saving, loading and comparing scenarios](/blog/save-load-compare-retirement-scenarios.html). One plan gives you a verdict you cannot act on. Two plans give you a difference, and a difference tells you which decisions genuinely move your outcome and which you have been losing sleep over for nothing.

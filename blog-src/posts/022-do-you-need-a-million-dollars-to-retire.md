@@ -230,7 +230,7 @@ Notice that only one item on either list is about the size of the portfolio. The
 5. Read the maximum sustainable net monthly income, with the confidence gate you are comfortable with.
 6. Compare it to step 1, adjust one variable, and run it again.
 
-If your plan is close to the line, run it against market history and randomized returns as well as the plain solvency test. A plan that works on average and fails in a third of historical retirements is worth knowing about before you rely on it.
+If your plan is close to the line, run it [against market history](/blog/historical-backtesting-retirement-planner.html) and randomized returns as well as the plain solvency test. A plan that works on average and fails in a third of historical retirements is worth knowing about before you rely on it.
 
 For the reverse view of this question, once you know your balances and want to know what they support month to month, see [how much can I spend in retirement](/blog/how-much-can-i-spend-in-retirement.html). If you are looking at a specific age, [can I retire at 60](/blog/can-i-retire-at-60.html) and [health insurance before Medicare](/blog/health-insurance-before-medicare-retirement.html) both deal with the bridge years in detail.
 
