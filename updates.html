@@ -70,6 +70,13 @@
     padding:.3rem .7rem; white-space:nowrap; }
   .upd-body h4{ margin:0 0 .3rem; font-size:1.05rem; line-height:1.3; }
   .upd-body p{ margin:0; color:var(--ink-soft); font-size:.95rem; line-height:1.6; }
+  /* margin:0 above dates from single-paragraph entries. Most entries now run to several paragraphs,
+     which it pressed into one block, so space consecutive paragraphs. The gap stays well under the
+     1.4rem between entries so each entry still reads as one unit. */
+  .upd-body p + p{ margin-top:.65rem; }
+  /* Month groups had no spacing of their own (one month carried an inline margin-top), so a month
+     heading sat flush against the last entry of the month above. */
+  .upd-month + .upd-month{ margin-top:2.4rem; }
   .upd-date{ color:var(--ink-faint); font-size:.85rem; font-weight:500; white-space:nowrap; }
   @media (max-width:560px){
     .upd-item{ grid-template-columns:1fr; gap:.45rem; }
@@ -783,7 +790,7 @@
       </div>
 
       <!-- reveal sits on the entries, not the wrapper — see the note on the block above. -->
-      <div class="upd-month" style="margin-top:2.4rem;">
+      <div class="upd-month">
         <h3 id="june-2026" class="upd-month-h">June 2026</h3>
         <ul class="upd-list">
           <li class="upd-item reveal">
