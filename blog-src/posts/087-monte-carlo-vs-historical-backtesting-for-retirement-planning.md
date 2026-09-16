@@ -12,7 +12,7 @@
 **Content type:** comparison
 **Published:** 2026-07-09
 **Image 1 alt:** Illustration of a couple comparing Monte Carlo simulation paths and historical market charts for a retirement plan.
-**Image 2 alt:** The planner's Confidence tab showing a plan confidence score of 94 out of 100 with 8 checks passing and 1 warning, three confirming dials for the checklist (8 of 9), Monte Carlo (100%) and historical backtest (100%), resilience bars for solvency, income stability, and tax and healthcare, and a plan strength radar chart.
+**Image 2 alt:** The planner's Historical backtest card: 96% historical success, 78 of 81 retirements since 1928, with 1936 as the toughest start year (it ran out before the plan end), a median ending balance of $231,917 at age 80, and 1982 as the best start year. Below is a bar chart of ending balance by start year with the failed years in red, and a note that three start years ran out of money and that the backtest replays market returns only.
 
 **Search intent:** The reader wants to compare Monte Carlo simulation and historical backtesting, understand what each method shows, and learn how to use both when testing a retirement income plan.
 

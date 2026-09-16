@@ -10,7 +10,7 @@
 
 **Image 1 alt:** Flat illustration of a man seated on a dark rocky ledge above a lake and mountains, looking toward six jagged navy lines that fan out from a single point, three climbing toward the upper right and three drifting lower, each ending in an arrowhead.
 
-**Image 2 alt:** The planner's Stress test tab: a grid of average net monthly income and total portfolio at age 90 across bear, base and bull returns and four inflation rates, above the historical backtest showing 100% success in 71 of 71 retirements since 1928, 1929 as the toughest start year, 1975 as the best, and a bar chart of ending balance by start year.
+**Image 2 alt:** The planner's Historical backtest card: 96% historical success, 78 of 81 retirements since 1928, with 1936 as the toughest start year (it ran out before the plan end), a median ending balance of $231,917 at age 80, and 1982 as the best start year. Below is a bar chart of ending balance by start year with the failed years in red, and a note that three start years ran out of money and that the backtest replays market returns only.
 
 **Image 3 alt:** The planner's Confidence tab showing a plan confidence score of 94 out of 100 with 8 checks passing and 1 warning, three confirming dials for the checklist (8 of 9), Monte Carlo (100%) and historical backtest (100%), and resilience bars for solvency, income stability, and tax and healthcare.
 
