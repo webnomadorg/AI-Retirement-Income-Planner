@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 396, released: '2026-09-16', headline: 'Your figures do not change with this update. The historical backtest on the Stress test tab now names the toughest start years for your own plan, and says clearly what it measures: it replays real market returns against the withdrawals in your plan, but not past inflation, so for inflation risk look at the high-inflation rows of the grid or at Monte Carlo. The user guide now says the same. If you have never picked an AI model, the assistant now starts on Claude Sonnet 5, and a model you chose yourself stays as it is. The popups that explain real versus nominal income now link straight through to the glossary.' }; /* __LATEST__ */
+const LATEST = { build: 398, released: '2026-09-17', headline: 'Your figures do not change with this update. If your plan is shown in a currency other than dollars and you change an exchange rate, editing a figure afterwards now leaves every other amount exactly as it was. Before this update that next edit could scale the balances, benefits and withdrawals in your plan by the size of the rate change, so if you have used custom exchange rates that way, please check your figures against your own records. For UK residents, the AI assistant now treats US Social Security the way the planner calculates it: taxed in the UK, not the US.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
