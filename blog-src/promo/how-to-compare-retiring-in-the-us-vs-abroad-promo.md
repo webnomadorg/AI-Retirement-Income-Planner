@@ -26,4 +26,4 @@ The best abroad plan is not the cheapest spreadsheet. It is the plan that still 
 ## Newsletter Summary
 
 
-This article explains how to compare retiring in the United States versus abroad by modeling a US baseline, abroad base case, taxes, healthcare, currency risk, Social Security abroad, housing, family travel, and return-to-US scenarios. It shows how the AI Retirement Income Planner can compare saved scenarios with Stress Test, Plan Health checks, and Plan Confidence.
+This article explains how to compare retiring in the United States versus abroad by modeling a US baseline, abroad base case, taxes, healthcare, currency risk, Social Security abroad, housing, family travel, and return-to-US scenarios. It shows how to build those versions in the AI Retirement Income Planner and read each one's Stress test, Plan Health checks, and Plan Confidence.

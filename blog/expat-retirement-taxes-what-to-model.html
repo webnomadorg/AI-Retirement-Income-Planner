@@ -147,7 +147,7 @@
         </nav>
         <header class="post-header">
           <h1>Expat Retirement Taxes: What to Model Before Moving</h1>
-          <p class="post-meta"><span class="cat-badge">Expat & International</span> · Published September 2, 2026 · 10 min read</p>
+          <p class="post-meta"><span class="cat-badge">Expat & International</span> · Published September 2, 2026 · 11 min read</p>
         </header>
         <details class="post-toc">
   <summary>On this page</summary>
@@ -239,7 +239,7 @@
 <li>Can foreign tax credits reduce US tax?</li>
 <li>Are some taxes not creditable?</li>
 </ul>
-<p>The planner can help you test a higher-tax case and a lower-tax case. A tax professional can then check which one is closer to the actual rules. For the wider side-by-side that sits around this tax work, see <a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">how to compare retiring in the US vs abroad</a>.</p>
+<p>The planner can help you test a higher-tax case and a lower-tax case. For UK, Canadian and Australian residence it applies that country's income tax, with editable tax parameters; for other destinations it has no local tax field, so carry your estimate of local tax as extra withdrawals. A tax professional can then check which case is closer to the actual rules. For the wider side-by-side that sits around this tax work, see <a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">how to compare retiring in the US vs abroad</a>.</p>
 <figure class="shot post-img">
 <img src="/assets/img/blog/expat-retirement-taxes-what-to-model-2.webp" alt="A planner phase card in foreign-residence mode with both Medicare Part B and Part D rows greyed out and marked not applicable at zero dollars, above a 12 percent tax bracket badge." width="422" height="126" loading="lazy">
 </figure>
@@ -266,7 +266,7 @@
 <li>Tax reporting: what must be converted into US dollars for filing and reporting.</li>
 </ul>
 <p>They are related, but they are not the same planning question.</p>
-<p>In the planner, use custom exchange-rate assumptions and currency tools to compare:</p>
+<p>In the planner, build these as separate versions of the plan and compare them:</p>
 <ul>
 <li>Current-rate case.</li>
 <li>Weaker-dollar case.</li>
@@ -274,6 +274,7 @@
 <li>Higher local inflation case.</li>
 <li>Return-to-US case.</li>
 </ul>
+<p>Build the weaker- and stronger-dollar cases by changing the dollar amounts of local spending and overseas healthcare, not only the exchange rate. The planner keeps every figure in US dollars and uses the rate to translate them, so a rate change on its own alters how the plan reads in local currency, not its taxes, balances or Plan Health. Custom rates are also not saved with a plan, so record the rate each version assumes in Plan notes.</p>
 <p>Do not let one exchange-rate assumption carry the whole decision. Note too that leaving the US does not end state tax questions on its own, which <a href="/blog/state-taxes-in-retirement.html">state taxes in retirement</a> covers, and that the income measure behind ACA and IRMAA thresholds is explained in <a href="/blog/what-is-magi.html">what MAGI is</a>.</p>
 <figure class="shot post-img">
 <img src="/assets/img/blog/expat-retirement-taxes-what-to-model-3.webp" alt="The planner currency selector showing US dollar, pound, Canadian dollar, Australian dollar, Philippine peso, Thai baht and euro, with the pound active and an editable exchange-rate panel below listing custom rates for each currency." width="947" height="327" loading="lazy">
@@ -304,30 +305,30 @@
 </ul>
 <p>Then review whether those costs create higher taxable withdrawals, larger brokerage sales, or new foreign-account reporting tasks.</p>
 <h2 id="build-four-tax-scenarios-before-moving">Build Four Tax Scenarios Before Moving</h2>
-<p>At minimum, create four saved scenarios:</p>
+<p>At minimum, build four scenarios. The planner holds three in saved-plan slots, so export the fourth as a JSON file:</p>
 <h3 id="1-us-baseline">1. US Baseline</h3>
 <p>Keep the household in the United States. Model current federal tax, state tax, Medicare, Social Security, IRA withdrawals, Roth withdrawals, RMDs, and healthcare costs.</p>
 <h3 id="2-foreign-residence-base-case">2. Foreign-Residence Base Case</h3>
-<p>Use the expected new country, planning currency, foreign-residence healthcare assumptions, Social Security abroad, retirement-account withdrawals, and user-entered local tax assumptions.</p>
+<p>Use the expected new country, planning currency, foreign-residence healthcare assumptions, Social Security abroad, retirement-account withdrawals, and your own estimate of local tax (outside the UK, Canadian and Australian residence settings, entered as extra withdrawals).</p>
 <h3 id="3-higher-tax-case">3. Higher-Tax Case</h3>
-<p>Increase local tax assumptions, reduce available foreign tax credits, add state-tax exposure if relevant, and test a weaker exchange rate.</p>
+<p>Increase local tax assumptions, reduce available foreign tax credits, add state-tax exposure if relevant, and let a weaker dollar raise the dollar cost of local spending. The planner applies state tax only to a US-resident plan, so in a foreign-residence version any continuing state tax is another amount to add as extra withdrawals.</p>
 <h3 id="4-return-to-us-case">4. Return-To-US Case</h3>
-<p>Move the household back to the United States later in retirement. Add US healthcare assumptions, housing transition costs, travel costs, and any state tax assumptions that apply.</p>
+<p>Move the household back to the United States later in retirement. Add US healthcare assumptions, housing transition costs, travel costs, and any state tax assumptions that apply. A plan keeps one residence from start to finish, so build this case as a US plan and read it from the age of the return.</p>
 <p>If the move only works in the optimistic version, the plan needs more work.</p>
 <h2 id="how-to-model-this-in-the-ai-retirement-income-planner">How To Model This In The AI Retirement Income Planner</h2>
 <p>Use this workflow:</p>
 <ol>
 <li>Create the current US plan first.</li>
 <li>Save it as the baseline.</li>
-<li>Duplicate it for the foreign-residence scenario.</li>
-<li>Select the planning currency that matches the spending view.</li>
+<li>Turn the current plan into the foreign-residence scenario, keeping the baseline in its slot.</li>
+<li>Select the currency for the destination. PHP, THB and EUR switch on foreign-residence mode; GBP, CAD and AUD offer a residence setting.</li>
 <li>Set US-taxpayer assumptions where relevant.</li>
 <li>Enter Social Security, pensions, IRA withdrawals, taxable-account income, Roth withdrawals, and lump sums separately.</li>
-<li>Add foreign-residence healthcare assumptions.</li>
-<li>Add custom exchange-rate assumptions.</li>
-<li>Use notes or checklist fields for FBAR, Form 8938, treaty, state residency, and professional-review items.</li>
-<li>Save higher-tax and return-to-US copies.</li>
-<li>Run Stress Test and review Plan Health checks.</li>
+<li>Enter the overseas healthcare cost.</li>
+<li>Choose the exchange rate you plan with, and record it in Plan notes.</li>
+<li>Use Plan notes for FBAR, Form 8938, treaty, state residency, and professional-review items.</li>
+<li>Save a higher-tax version, and build the return-to-US version as a separate US plan.</li>
+<li>Read the Stress test and Plan Health checks for each version.</li>
 <li>Compare Plan Confidence across scenarios.</li>
 </ol>
 <p>Keep the scope clear. The planner is for modeling retirement income, taxes, healthcare, cash flow, and risk. It is not a substitute for country-specific filing guidance.</p>

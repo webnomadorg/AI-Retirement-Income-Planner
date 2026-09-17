@@ -406,7 +406,7 @@ It includes:
 
 It is also a private browser-based file with no account requirement and no bank connection. For how that compares with the alternatives, privacy included, see [retirement planning software without a subscription](/blog/best-retirement-planning-software-without-subscription.html).
 
-Optional AI features and exchange-rate tools can use network access when the user chooses to use them.
+Optional AI features use network access when the user chooses to use them, and the planner looks up current exchange rates when it opens, without sending any plan data.
 
 ## Example: Why Taxes And Healthcare Change The Result
 

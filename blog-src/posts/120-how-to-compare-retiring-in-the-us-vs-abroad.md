@@ -42,7 +42,7 @@ The cheaper-looking plan is not always the stronger plan. The stronger plan is t
 - Currency risk can change the real cost of living abroad.
 - Social Security abroad should be checked with SSA rules and tools.
 - A return-to-US scenario should be included even if the move feels permanent.
-- The planner can compare saved scenarios with Stress Test, Plan Health, and Plan Confidence.
+- The planner's saved-plan Compare sets two versions side by side, and each version has its own Stress test, Plan Health checks, and Plan Confidence.
 
 [IMAGE 120-how-to-compare-retiring-in-the-us-vs-abroad 1]
 
@@ -94,7 +94,7 @@ This baseline is the control case. The abroad plan should beat or improve on thi
 
 ## Step 2: Build The Abroad Scenario
 
-Next, duplicate the US baseline and change only the assumptions that would differ abroad.
+Next, save the US baseline to a saved-plan slot, then change only the assumptions that would differ abroad.
 
 Change:
 
@@ -164,11 +164,13 @@ If retirement income is in dollars and spending is in another currency, exchange
 
 Build at least three abroad versions:
 
-- Base exchange rate.
-- Weaker-dollar case.
-- Stronger-dollar case.
+- Base case, with local costs converted at today's rate.
+- Weaker-dollar case, where the same local costs take 10% to 15% more dollars.
+- Stronger-dollar case, where they take fewer.
 
 Then add a fourth version that combines weaker dollar plus higher healthcare costs. That combined scenario is often more useful than a currency-only test.
+
+Build those versions by changing the dollar amounts, not just the exchange rate. The planner keeps every figure in US dollars and uses the rate to translate them, so a version that differs only by exchange rate reads differently in local currency but is the same plan underneath, with the same taxes, balances and Plan Health. [How to use the currency converter](/blog/retirement-planner-currency-converter.html) walks through setting up that test.
 
 The question is not whether one exchange rate is right. The question is whether the plan remains workable across a reasonable range of currency outcomes, which is the same idea behind [Monte Carlo and historical backtesting](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html): test the plan against many outcomes, not one.
 
@@ -238,20 +240,20 @@ If the abroad plan works only when the move is permanent, the risk may be unders
 
 Use this workflow:
 
-1. Build and save the US baseline.
-2. Duplicate it as the abroad base case.
-3. Select the planning currency for the abroad scenario.
+1. Build the US baseline and save it to a saved-plan slot.
+2. Turn the current plan into the abroad base case.
+3. Select the currency for the abroad scenario, and the residence setting where one is offered.
 4. Update housing, healthcare, taxes, and travel.
-5. Add custom exchange-rate assumptions.
-6. Add foreign-residence healthcare assumptions.
+5. Choose the exchange rate you plan with (the live rate, or your own under Override rates), and record it in Plan notes, because custom rates are not saved with the plan.
+6. Enter the overseas healthcare cost.
 7. Add a foreign-account reporting checklist item in notes.
-8. Save weaker-dollar, higher-healthcare, and return-to-US versions.
-9. Run Stress Test for each version.
+8. Save weaker-dollar and higher-healthcare versions, with the extra cost entered in dollars, and build the return-to-US version as its own plan in USD.
+9. Read the Stress test for each version.
 10. Compare Plan Health checks.
 11. Compare Plan Confidence.
 12. Keep a short list of professional-review questions for tax, visa, healthcare, insurance, and estate planning.
 
-The planner keeps up to three saved plans for side-by-side comparison, so use those slots for the versions you compare most and export any extra variants as JSON backups you can reload later. On the tax side, it models US federal tax and an optional flat state tax, with dedicated resident modes for the United Kingdom, Canada, and Australia (including UK Foreign Tax Credit handling); for other destinations it treats the plan as a US taxpayer or as a foreign resident with US healthcare excluded, so estimate local tax yourself and confirm it with a professional.
+The planner keeps up to three saved plans and compares your current plan with one of them at a time (net income and tax by phase, total tax, and ending balances), so use those slots for the versions you compare most and export any extra variants as JSON backups you can reload later. On the tax side, it models US federal tax and an optional flat state tax, with dedicated resident modes for the United Kingdom, Canada, and Australia (including UK Foreign Tax Credit handling); for other destinations it treats the plan as a US taxpayer or as a foreign resident with US healthcare excluded, so estimate local tax yourself and confirm it with a professional.
 
 The planner is useful because it compares whole retirement plans, not isolated expenses.
 
@@ -287,7 +289,7 @@ Abroad stress case:
 - One spouse dies.
 - Survivor returns to the United States at 79.
 
-The abroad base case may look better. The abroad stress case tells whether that better-looking plan is durable.
+The abroad base case may look better. The abroad stress case tells whether that better-looking plan is durable. In the planner, one plan keeps one residence from start to finish, so the return at 79 is a separate US plan read from that age onward, and the loss of a spouse comes from the survivor scenario in the What-if tab.
 
 ## What Happened When We Ran The Numbers
 
@@ -321,7 +323,7 @@ The biggest risk is using a single optimistic abroad budget. A better comparison
 
 ### Can the planner compare retiring in the US versus abroad?
 
-Yes. The planner can compare saved scenarios across currencies, healthcare assumptions, tax assumptions, exchange-rate assumptions, Stress Test, Plan Health checks, and Plan Confidence.
+Yes. Save the US baseline and compare it with the abroad plan, including a plan in a different currency and residence. Build currency and healthcare stress versions with the extra costs entered in dollars, and read the Stress test, Plan Health checks, and Plan Confidence on each one.
 
 ## Source Links
 
@@ -364,7 +366,7 @@ The best abroad plan is not the cheapest spreadsheet. It is the plan that still 
 
 ## Newsletter Summary
 
-This article explains how to compare retiring in the United States versus abroad by modeling a US baseline, abroad base case, taxes, healthcare, currency risk, Social Security abroad, housing, family travel, and return-to-US scenarios. It shows how the AI Retirement Income Planner can compare saved scenarios with Stress Test, Plan Health checks, and Plan Confidence.
+This article explains how to compare retiring in the United States versus abroad by modeling a US baseline, abroad base case, taxes, healthcare, currency risk, Social Security abroad, housing, family travel, and return-to-US scenarios. It shows how to build those versions in the AI Retirement Income Planner and read each one's Stress test, Plan Health checks, and Plan Confidence.
 
 ## Educational Disclaimer
 This article is for general education only. It is not financial, tax, investment, legal, immigration, visa, privacy, cybersecurity, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. Confirm tax, healthcare, currency, immigration, insurance, account-reporting, Social Security, Medicare, housing, and estate details with official sources and qualified professionals.

@@ -54,7 +54,7 @@ Subscription tools can still be excellent for some users. ProjectionLab, MaxiFi,
 - A spreadsheet can avoid subscriptions, but it can be harder to maintain and audit.
 - Cloud subscription tools may offer strong features, but users should compare cost, account requirements, data handling, and renewal terms.
 - The AI Retirement Income Planner is a one-time purchase, single-file browser planner with no account requirement and no bank connection.
-- Optional AI features and exchange-rate features can use network access when the user chooses to use them.
+- Optional AI features use network access when the user chooses to use them, and the planner looks up current exchange rates when it opens, without sending any plan data.
 - Buyer-intent readers should verify current prices and terms directly with each vendor before purchasing.
 
 ## Free Retirement Planning Software: What Is Actually Free
@@ -330,7 +330,7 @@ A local planner is not free of downsides, and a comparison that pretends otherwi
 
 **Manual entry discloses less, but it is manual.** No bank connection means no third party holding read access to your accounts. It also means you type your balances and update them yourself.
 
-**Optional AI changes the data flow, and you should treat it as a decision.** In this planner the AI is optional and off until you add a key, but when you do use it, the plan summary goes to whichever provider you chose. So do model discovery, tax-rate lookup, the help-content audit, exchange-rate fetching and the linked videos. Any of those can be left alone; none of them is required to build a plan.
+**Optional AI changes the data flow, and you should treat it as a decision.** In this planner the AI is optional and off until you add a key, but when you do use it, the plan summary goes to whichever provider you chose. So do model discovery, tax-rate lookup, the help-content audit and the linked videos. Any of those can be left alone; none of them is required to build a plan. Exchange rates work differently: the planner looks them up automatically when it opens, and that request carries no plan data.
 
 **A local file still needs device security.** Software that keeps your data on your machine has moved the risk rather than removed it. Disk encryption and a screen lock now matter more, not less.
 
@@ -363,7 +363,7 @@ For the AI Retirement Income Planner, the audited local file supports these care
 - No bank connection is required.
 - Plan data is stored in browser localStorage.
 - JSON export/import is available.
-- Optional AI/API features and exchange-rate fetching can make network calls when the user chooses to use them.
+- Optional AI/API features make network calls when the user chooses to use them, and exchange rates are fetched automatically when the planner opens, without any plan data.
 
 That last qualifier matters.
 

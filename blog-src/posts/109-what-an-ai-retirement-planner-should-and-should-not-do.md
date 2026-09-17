@@ -284,7 +284,7 @@ Important privacy and network wording:
 - It does not require a planner account.
 - It does not aggregate bank, brokerage, payroll, or account data.
 - Plan data is stored in browser localStorage.
-- Optional AI/API features and exchange-rate fetching can make network calls when the user chooses.
+- Optional AI/API features make network calls when the user chooses; current exchange rates are fetched automatically when the planner opens, without any plan data.
 - Ollama can be used as a local AI option.
 
 That structure supports the safer pattern: calculate first, explain second, approve changes yourself.

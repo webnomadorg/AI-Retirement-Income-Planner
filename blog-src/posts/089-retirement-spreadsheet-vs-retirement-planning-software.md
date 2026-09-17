@@ -266,7 +266,7 @@ The AI Retirement Income Planner has a different model:
 - JSON export/import is available for backup and transfer.
 - Report preview can be printed or saved as PDF through the browser.
 
-Optional AI/API features, exchange-rate fetching, model discovery, tax-rate lookup, help-content audit, and linked videos can require network access when the user chooses to use them.
+Optional AI/API features, model discovery, tax-rate lookup, help-content audit, and linked videos can require network access when the user chooses to use them. Exchange rates are looked up automatically when the planner opens, and that request carries no plan data.
 
 That qualification matters.
 
