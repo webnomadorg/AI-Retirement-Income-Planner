@@ -246,7 +246,7 @@ Planning around a single optimistic projection. A plan built on smooth average r
 
 ### Can I prepare for retirement if I plan to live abroad?
 
-Yes, though it adds steps. You would model the currency you will spend in, the healthcare you will actually use, and your ongoing US tax obligations if you remain a US taxpayer. The planner supports several currencies and residency modes, including UK, Canadian, and Australian tax handling. For other destinations you can model as a US taxpayer or as a foreign resident with US healthcare excluded, and estimate local tax separately with a professional.
+Yes, though it adds steps. You would [model the currency you will spend in](/blog/retirement-planner-currency-converter.html), the healthcare you will actually use, and your ongoing US tax obligations if you remain a US taxpayer. The planner supports several currencies and residency modes, including UK, Canadian, and Australian tax handling. For other destinations you can model as a US taxpayer or as a foreign resident with US healthcare excluded, and estimate local tax separately with a professional.
 
 ## Source Links
 

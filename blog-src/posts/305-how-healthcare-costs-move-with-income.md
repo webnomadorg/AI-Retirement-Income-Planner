@@ -113,7 +113,7 @@ Healthcare shapes real lifestyle, so it belongs in net income rather than as a f
 
 ## Living Abroad
 
-For retirees living outside the United States, healthcare planning can look completely different. Some countries have lower direct costs or national systems; some require private cover for a visa; some retirees keep US Medicare as a fallback while using local or international insurance. The planning questions shift to which country, whether the local system is accessible, whether private cover is needed, whether Medicare is retained, and how currency moves affect costs paid locally while income arrives in dollars or pounds. Healthcare may be cheaper abroad, but it still belongs in the plan, coordinated with residency, tax, and currency assumptions.
+For retirees living outside the United States, healthcare planning can look completely different. Some countries have lower direct costs or national systems; some require private cover for a visa; some retirees keep US Medicare as a fallback while using local or international insurance. The planning questions shift to which country, whether the local system is accessible, whether private cover is needed, whether Medicare is retained, and [how currency moves affect costs paid locally](/blog/retirement-planner-currency-converter.html) while income arrives in dollars or pounds. Healthcare may be cheaper abroad, but it still belongs in the plan, coordinated with residency, tax, and currency assumptions.
 
 ## How the Planner Shows Healthcare
 

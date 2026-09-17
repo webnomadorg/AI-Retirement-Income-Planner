@@ -126,7 +126,7 @@ Most people find this genuinely satisfying rather than tedious. Adjusting a cash
 
 For most US users the defaults are all you need. But the planner supports seven currencies (US dollars, British pounds, euros, Canadian and Australian dollars, Philippine pesos, and Thai baht) with residency-aware tax handling for US, UK, Canadian, Australian, and expat scenarios.
 
-All values are stored and edited in US dollars, and you can then display the plan in another currency using live exchange rates fetched when the file loads, or rates you pin manually. Selecting a non-US currency also changes the tax treatment: a UK-resident mode applies UK income tax with foreign tax credit handling, while a foreign-residence mode for someone living in the Philippines or Thailand excludes US healthcare costs. This is useful enough that it has its own guide on [comparing retiring at home versus abroad](/blog/how-to-compare-retiring-in-the-us-vs-abroad.html).
+All values are stored and calculated in US dollars, and you can then [display the plan in another currency](/blog/retirement-planner-currency-converter.html) using live exchange rates fetched when the file loads, or rates you set yourself for the session. Selecting a non-US currency can also change the tax treatment: UK residence applies UK income tax with foreign tax credit handling, while the foreign-residence mode for someone living in the Philippines, Thailand or the euro area excludes US healthcare costs. This is useful enough that it has its own guide on [comparing retiring at home versus abroad](/blog/how-to-compare-retiring-in-the-us-vs-abroad.html).
 
 ## Replan From Today, Any Time
 
