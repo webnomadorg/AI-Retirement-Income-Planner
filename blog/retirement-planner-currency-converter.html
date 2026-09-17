@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Use the Currency Converter</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="How to use the AI Retirement Income Planner's currency converter, live and custom exchange rates, and seven currencies with residence settings, plus how to test a weaker dollar the right way.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/retirement-planner-currency-converter.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Use the Currency Converter">
+<meta property="og:description" content="How to use the AI Retirement Income Planner's currency converter, live and custom exchange rates, and seven currencies with residence settings, plus how to test a weaker dollar the right way.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/retirement-planner-currency-converter-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/retirement-planner-currency-converter.html">
+<meta property="article:published_time" content="2026-09-17">
+<meta property="article:modified_time" content="2026-09-17">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Use the Currency Converter", "description": "How to use the AI Retirement Income Planner's currency converter, live and custom exchange rates, and seven currencies with residence settings, plus how to test a weaker dollar the right way.", "datePublished": "2026-09-17", "dateModified": "2026-09-17", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/retirement-planner-currency-converter.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/retirement-planner-currency-converter-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To", "item": "https://airetirementincomeplanner.com/blog.html#cat=planner-howto"}, {"@type": "ListItem", "position": 4, "name": "How to Use the Currency Converter", "item": "https://airetirementincomeplanner.com/blog/retirement-planner-currency-converter.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where is the currency converter?", "acceptedAnswer": {"@type": "Answer", "text": "Click the calculator icon at the end of the currency bar, or open Help and choose the Converter tab."}}, {"@type": "Question", "name": "Which currencies does the planner support?", "acceptedAnswer": {"@type": "Answer", "text": "Seven: USD, GBP, CAD, AUD, PHP, THB and EUR."}}, {"@type": "Question", "name": "Does changing the exchange rate change my plan's results?", "acceptedAnswer": {"@type": "Answer", "text": "It changes how the plan reads in local currency. The plan is calculated in US dollars, so Plan Health, Plan Confidence, the Stress test, Monte Carlo and the historical backtest stay the same. To test a weaker dollar, raise the dollar amounts your local costs will need."}}, {"@type": "Question", "name": "Does the planner support country-specific tax modeling for every currency?", "acceptedAnswer": {"@type": "Answer", "text": "No. The UK, Canadian and Australian residence settings apply those countries' income tax. PHP, THB and EUR are foreign-residence modes with no local tax model. Verify local rules separately."}}, {"@type": "Question", "name": "Are custom exchange rates saved with my plan?", "acceptedAnswer": {"@type": "Answer", "text": "No. They last until you close the planner and are not included in saved plans or JSON exports. Record the rate, date and source in Plan notes."}}, {"@type": "Question", "name": "Does the planner go online for exchange rates?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. When the planner opens it requests current US dollar rates from a public rates service. The request contains nothing about you or your plan. Without a connection, it uses built-in rates and lets you type your own."}}, {"@type": "Question", "name": "Is the currency converter enough for expat planning?", "acceptedAnswer": {"@type": "Answer", "text": "No. Currency is one part. Also model taxes, healthcare, Social Security, pensions, withdrawals, housing, travel, survivor income, and a return home."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>How to Use the Currency Converter</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published September 17, 2026 · 14 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#what-the-currency-converter-does">What The Currency Converter Does</a></li>
+      <li><a href="#the-seven-currency-buttons-and-what-each-one-changes">The Seven Currency Buttons And What Each One Changes</a></li>
+      <li><a href="#display-currency-the-plan-is-kept-in-us-dollars">Display Currency: The Plan Is Kept In US Dollars</a></li>
+      <li><a href="#live-rates-and-custom-exchange-rates">Live Rates And Custom Exchange Rates</a></li>
+      <li><a href="#what-an-exchange-rate-change-does-and-does-not-change">What An Exchange-Rate Change Does, And Does Not, Change</a></li>
+      <li><a href="#how-to-use-the-converter-inside-a-currency-plan">How To Use The Converter Inside A Currency Plan</a></li>
+      <li><a href="#build-exchange-rate-scenarios-within-the-planners-limits">Build Exchange-Rate Scenarios Within The Planner's Limits</a></li>
+      <li><a href="#currency-and-taxes">Currency And Taxes</a></li>
+      <li><a href="#currency-and-healthcare-abroad">Currency And Healthcare Abroad</a></li>
+      <li><a href="#a-currency-converter-workflow-start-to-finish">A Currency Converter Workflow, Start To Finish</a></li>
+      <li><a href="#common-currency-conversion-mistakes">Common Currency Conversion Mistakes</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>Open the currency converter from the calculator icon at the end of the currency bar, or from <strong>Help → Converter</strong>. Type an amount, choose the two currencies, and read the result. It uses whichever exchange rates the planner is using at that moment, live or your own, and it never changes your plan.</p>
+<p>The bigger currency question is whether income paid in dollars still covers a life priced in pounds, pesos or euros. That one is answered in the plan itself, and it helps to know one thing first: the planner keeps every amount in US dollars and translates it for display. Moving an exchange rate changes how the plan reads in local currency. It does not change the plan's dollars. To test a weaker dollar properly, raise the dollar amounts your local costs will need and compare that version with your base plan.</p>
+<aside class="cta-box cta-soft">
+  <p>The converter answers one question at a time. The plan answers the bigger one: whether dollar income still covers a life priced in another currency. Translate your local costs, enter them in the plan, then build a version with those costs raised in dollars and compare the two.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>The planner has seven currency buttons: USD, GBP, CAD, AUD, PHP, THB and EUR.</li>
+<li>A currency button sets where you live as well as a currency. It decides which tax rules apply and whether US healthcare costs are in the plan.</li>
+<li>PHP, THB and EUR put the plan in foreign-residence mode: no local tax is applied, the US healthcare lines drop out, and an overseas healthcare cost field appears.</li>
+<li>The converter is a calculator. It reads the planner's rates and changes nothing in your plan.</li>
+<li>Every amount is stored in US dollars. Changing a rate changes the local-currency view, not Plan Health, the Plan Confidence score or the simulations.</li>
+<li>Live rates are fetched automatically when the planner opens. Custom rates last for the session and are not saved with the plan, so write them in your plan notes.</li>
+<li>A US tax return is prepared in dollars under its own translation rules, so check IRS guidance for filing.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-currency-converter-1.webp" alt="Flat illustration of seven colored circles, each holding a simple icon (a briefcase, a piggy bank, a house, a shield, a heart, two people and an umbrella), with thin curved lines running from every circle and converging on the navy silhouette of a person in profile who has a small glowing compass star on the chest." width="1400" height="1050" loading="lazy">
+</figure>
+
+<h2 id="what-the-currency-converter-does">What The Currency Converter Does</h2>
+<p>The converter is a quick translation tool. It has:</p>
+<ul>
+<li>An <strong>Amount</strong> box, a <strong>From</strong> currency and a <strong>To</strong> currency, with a ⇄ button to swap them.</li>
+<li>The result, and the rate in both directions.</li>
+<li>A <strong>Using</strong> line that says which rates are in effect: live rates, your custom rates, or the built-in defaults.</li>
+<li>A table showing the same amount in all seven currencies.</li>
+</ul>
+<p>It opens on your plan's active currency. Nothing you type into it reaches the plan. Use it to check a number before you enter it somewhere else.</p>
+<p>That is useful when you have a figure in one currency and need a feel for it in another:</p>
+<ul>
+<li>A rent quote in local currency.</li>
+<li>A healthcare premium quoted abroad.</li>
+<li>A UK State Pension statement in pounds.</li>
+<li>CPP or OAS figures in Canadian dollars.</li>
+<li>Superannuation or Age Pension estimates in Australian dollars.</li>
+<li>Money sent to family in another currency.</li>
+<li>Home sale proceeds in one currency and a replacement home priced in another.</li>
+</ul>
+<p>The useful question for each one is:</p>
+<p>What currency does this cost or income actually occur in?</p>
+<h2 id="the-seven-currency-buttons-and-what-each-one-changes">The Seven Currency Buttons And What Each One Changes</h2>
+<p>The currency bar sits at the top of the planner. Choosing a currency does more than relabel the figures. It sets the plan's country context.</p>
+<ul>
+<li><strong>USD</strong> runs US rules: federal tax, optional state tax, ACA before Medicare, Medicare and IRMAA after it, RMDs and Social Security.</li>
+<li><strong>GBP, CAD and AUD</strong> add a residence toggle. <strong>UK Res.</strong> applies UK income tax, with a Foreign Tax Credit against the US bill. <strong>CAN Res.</strong> applies Canadian federal tax with a simplified provincial rate. <strong>AUS Res.</strong> applies Australian tax and the Medicare levy. In each of those residence modes the US healthcare lines drop out. With <strong>USA Res.</strong> selected, the plan stays on US rules. CAD plans also get CPP and OAS fields, and AUD plans get Super and the Age Pension.</li>
+<li><strong>PHP, THB and EUR</strong> switch on foreign-residence mode. No local tax model is applied (the euro alone covers countries with very different tax systems). ACA, Medicare and IRMAA are excluded, and an <strong>Overseas healthcare cost /mo</strong> field appears. US federal tax still runs unless you switch it off under <strong>US tax obligation</strong> in Edit values.</li>
+</ul>
+<p>So picking PHP, THB or EUR does not give you Philippine, Thai or European tax. It gives you a US-dollar plan for someone living outside the United States, shown in local currency when you want it. If you are still deciding whether to move at all, <a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">comparing retiring in the US vs abroad</a> sets out what else belongs in that decision.</p>
+<h2 id="display-currency-the-plan-is-kept-in-us-dollars">Display Currency: The Plan Is Kept In US Dollars</h2>
+<p>When a currency other than USD is active, two buttons appear beside the <strong>Retirement phases</strong> heading, for example <strong>USD</strong> and <strong>GBP</strong>. They change what is displayed and nothing else. Every calculation runs in dollars, and while the display is in local currency each phase card shows the rate it used, such as "1 USD = 0.7384 GBP".</p>
+<p>Two things follow from that.</p>
+<p>First, an amount you type into Edit values while the display is in local currency is converted to dollars at that moment's rate and stored in dollars. A UK State Pension entered as £900 a month is held as its dollar value. If the pound later moves, the plan does not re-price it. You would enter it again.</p>
+<p>Second, editing figures directly on the phase cards works only while the display is set to USD. Use Edit values to enter local-currency amounts.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-currency-converter-3.webp" alt="A planner phase card displayed in pounds for a UK-resident plan: Phase 1, ages 62 to 65, with 401k, cash, equity and Roth withdrawals, UK income tax, US federal tax cancelled by the Foreign Tax Credit, the ACA lines struck through as not applicable, net income of £3,052 a month nominal and £2,920 in today's money, ending balances, and the line 1 USD = 0.7384 GBP." width="472" height="852" loading="lazy">
+</figure>
+
+<h2 id="live-rates-and-custom-exchange-rates">Live Rates And Custom Exchange Rates</h2>
+<p>When the planner opens, it asks a public exchange-rate service for current US dollar rates. The request carries nothing about you or your plan. The status near the top of the page shows "Live rates ✓" when it works. If there is no connection, the planner uses its built-in rates and opens the rate panel so you can type your own.</p>
+<p>To set your own rates, click <strong>Override rates</strong> on the currency bar. The <strong>Exchange rates (1 USD = ?)</strong> panel lists one box per currency, each showing how many units of that currency one dollar buys. Changes apply straight away. <strong>Done</strong> closes the panel and keeps your rates in effect (the button becomes <strong>Edit custom rates</strong> so you can reopen it). <strong>Use live rates</strong> throws your rates away and fetches current ones again. The converter's Using line always tells you which set is active.</p>
+<p>Three habits make custom rates reliable:</p>
+<ul>
+<li><strong>Write the rate down.</strong> Custom rates are not saved with the plan. They are not in auto-save, a saved-plan slot or a JSON export, and the next time you open the planner it fetches live rates again. Record the rate, the date and the source in <strong>Plan notes</strong> (in the Saved plans panel). Notes travel with the plan and can be added as a page in Report preview.</li>
+<li><strong>Change rates with the display set to US dollars.</strong> Then switch back to the local currency to read the result. That keeps the figures in the Edit values boxes in step with the new rate before you edit anything else.</li>
+<li><strong>Build transfer costs into the rate.</strong> There is no fee field. If your bank or transfer service costs about 1.5%, use a rate about 1.5% less favorable than the one you see quoted.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-planner-currency-converter-2.webp" alt="The planner's currency bar with seven buttons for USD, GBP, CAD, AUD, PHP, THB and EUR, GBP selected, and a calculator icon at the end, above the Exchange rates (1 USD = ?) panel showing six editable rate boxes with a Use live rates button and a Done button." width="947" height="327" loading="lazy">
+</figure>
+
+<h2 id="what-an-exchange-rate-change-does-and-does-not-change">What An Exchange-Rate Change Does, And Does Not, Change</h2>
+<p>A rate change re-prices the local-currency view: the phase cards, balances and charts, and the report if you print it in that currency.</p>
+<p>It does not change the plan's dollar withdrawals, the tax calculated in dollars, the balances in dollars, the Plan Health checks, the Plan Confidence score, the Stress test, Monte Carlo or the historical backtest. All of those run on dollars.</p>
+<p>That is right for the part of your life that is in dollars, such as Social Security and a 401k. It misses the part that is not. If your rent is £1,500 a month and the pound strengthens by 10%, you need about 10% more dollars to pay it. The planner does not infer that from the rate.</p>
+<p>So there are two different currency tests, and they use different tools:</p>
+<ol>
+<li><strong>Does dollar income still cover local costs at a less favorable rate?</strong> Set a custom rate, switch the display to the local currency, and read each phase card's net monthly income against your local budget. Nothing in the plan changes.</li>
+<li><strong>Can the portfolio afford the extra dollars for the whole retirement?</strong> Raise the dollar withdrawals that fund local spending, and the overseas healthcare cost, by the size of the currency move. That is a real change to the plan, so Plan Health, Plan Confidence, the Stress test, Monte Carlo and the historical backtest all respond.</li>
+</ol>
+<h2 id="how-to-use-the-converter-inside-a-currency-plan">How To Use The Converter Inside A Currency Plan</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>List each income source and each cost, with the currency it is actually paid in.</li>
+<li>Pick a planning rate: today's live rate or your own. Record the rate, date and source in Plan notes.</li>
+<li>Use the converter for one-off translations, such as a quote or a pension statement.</li>
+<li>Enter each amount in the field it belongs in; <a href="/blog/where-to-enter-retirement-income.html">where each type of retirement income goes</a> covers the income fields one by one. To type local amounts directly, switch the display to that currency first. They are stored as dollars at the current rate.</li>
+<li>Save the result as your base plan in a saved-plan slot.</li>
+<li>Build a weaker-dollar version by raising the dollar withdrawals that pay local costs, and the overseas healthcare cost, then save it in a second slot.</li>
+<li>Compare your current plan with one saved slot at a time: tax, ending balances, net income by phase, Plan Health and Plan Confidence.</li>
+</ol>
+<p>The converted number has to end up in a planning field. A figure left in the converter does nothing for the plan.</p>
+<h2 id="build-exchange-rate-scenarios-within-the-planners-limits">Build Exchange-Rate Scenarios Within The Planner's Limits</h2>
+<p>A single exchange rate can make a plan look cleaner than it really is. Before you build versions, know three limits.</p>
+<ul>
+<li><strong>There are three saved-plan slots</strong>, and Compare sets your current plan against one slot at a time. Keep the base plan in a slot as the fixed reference, change one thing, and export to JSON if you need more than three versions. The full mechanics are in <a href="/blog/save-load-compare-retirement-scenarios.html">how to save, load and compare retirement scenarios</a>.</li>
+<li><strong>A version that differs only by exchange rate is not a different plan.</strong> The rate is not saved, and the dollars are identical. Express the currency move in dollars instead.</li>
+<li><strong>A plan has one residence from start to finish.</strong> It cannot switch you back to US rules at 80. A return home is a separate plan with USD selected, compared with the abroad plan.</li>
+</ul>
+<p>Versions worth building:</p>
+<ul>
+<li>Home-country baseline, in USD.</li>
+<li>Abroad base case, with local costs entered at today's rate.</li>
+<li>Abroad with the dollar amounts for local costs raised 10% to 15%.</li>
+<li>Abroad with a weaker dollar and a higher overseas healthcare cost.</li>
+<li>A return-home plan in USD, with US healthcare back in.</li>
+</ul>
+<p>Then compare:</p>
+<ul>
+<li>Net monthly income by phase.</li>
+<li>Tax.</li>
+<li>Withdrawals.</li>
+<li>Ending balances.</li>
+<li>Plan Health.</li>
+<li>Plan Confidence.</li>
+</ul>
+<p>Monte Carlo and the historical backtest will move between these versions too, because the withdrawals differ. They would not move for a rate change alone.</p>
+<p>The question is not which exchange rate is perfect. The question is whether the plan can handle movement.</p>
+<h2 id="currency-and-taxes">Currency And Taxes</h2>
+<p>Currency conversion for planning and currency conversion for tax reporting are related but not identical.</p>
+<p>The IRS says U.S. taxpayers must report amounts on U.S. tax returns in U.S. dollars. It also explains that if income or expenses are in foreign currency, the taxpayer must translate the foreign currency into U.S. dollars, and that how this is done depends on the taxpayer's functional currency. The IRS also publishes yearly average exchange rates.</p>
+<p>The planner's live and custom rates are planning figures, not filing rates. If you use the UK residence setting, note that the UK personal allowance and tax bands in Edit values are held in dollars as well, with the pound equivalent at today's rate shown beside each label. A large move in the pound is worth a look there too.</p>
+<p>For tax filing, verify the rule and rate source with official IRS guidance or a qualified tax professional. The wider tax picture of a move, from foreign tax credits to state residency, is covered in <a href="/blog/expat-retirement-taxes-what-to-model.html">expat retirement taxes</a>.</p>
+<h2 id="currency-and-healthcare-abroad">Currency And Healthcare Abroad</h2>
+<p>Healthcare can be one of the biggest currency-sensitive items for people living abroad.</p>
+<p>Whenever US healthcare is excluded (PHP, THB or EUR, UK, Canadian or Australian residence, or a plan set as not subject to US tax), the <strong>Overseas healthcare cost /mo</strong> field appears in the healthcare costs card of Edit values. It is stored in dollars and grows each phase at your healthcare inflation rate. A weaker dollar does not raise it, so raise it yourself in the stress version. The way healthcare costs shift with where you live and what you earn is covered in <a href="/blog/how-healthcare-costs-move-with-income.html">how healthcare costs move with income</a>.</p>
+<p>Fold these into that one monthly figure, or into your spending:</p>
+<ul>
+<li>Local premium.</li>
+<li>Local out-of-pocket costs.</li>
+<li>International policy cost.</li>
+<li>Travel for care.</li>
+</ul>
+<p>Keep an emergency reserve in the cash balance, and put the cost of US healthcare after a move home into the return-home plan.</p>
+<p>Healthcare and currency should be tested together.</p>
+<h2 id="a-currency-converter-workflow-start-to-finish">A Currency Converter Workflow, Start To Finish</h2>
+<p>Imagine a retiree with:</p>
+<ul>
+<li>Social Security paid in USD.</li>
+<li>Brokerage assets in USD.</li>
+<li>Rent and groceries paid in euros.</li>
+<li>Healthcare paid locally.</li>
+<li>An annual trip home paid in USD.</li>
+</ul>
+<p>The retiree builds:</p>
+<ol>
+<li>An EUR plan in foreign-residence mode, with local spending entered in euros at today's live rate, noted in Plan notes. This is the base, saved in slot 1.</li>
+<li>A conservative version, with the withdrawals that pay euro costs and the overseas healthcare cost raised 12% in dollars. Saved in slot 2 and compared with slot 1.</li>
+<li>A healthcare stress version, with the overseas healthcare cost raised further. Saved in slot 3.</li>
+<li>A return-home plan in USD, with US healthcare back in, exported to JSON because the three slots are full.</li>
+</ol>
+<p>Then the retiree reads each version against the base:</p>
+<ul>
+<li>Net monthly income by phase, displayed in euros.</li>
+<li>Withdrawals.</li>
+<li>Healthcare costs.</li>
+<li>Ending balances.</li>
+<li>Plan Health.</li>
+<li>Plan Confidence.</li>
+</ul>
+<p>The converter translates the numbers. The versions built in dollars show whether the plan holds.</p>
+<h2 id="common-currency-conversion-mistakes">Common Currency Conversion Mistakes</h2>
+<p>Avoid these mistakes:</p>
+<ul>
+<li>Using one exchange rate for the whole retirement plan.</li>
+<li>Expecting a rate change to move Plan Health or the simulations, instead of changing the dollar amounts.</li>
+<li>Forgetting transfer fees.</li>
+<li>Mixing up conversion direction. The planner's rates read 1 USD = ? local currency.</li>
+<li>Entering local spending while the display is set to the wrong currency.</li>
+<li>Treating PHP, THB or EUR as local tax engines.</li>
+<li>Forgetting healthcare is paid in local currency.</li>
+<li>Assuming a custom rate was saved with the plan.</li>
+<li>Forgetting return-home costs.</li>
+<li>Ignoring survivor income.</li>
+<li>Assuming planning conversion rules match tax-reporting rules.</li>
+</ul>
+<p>Currency planning is about repeatable assumptions, not perfect forecasts.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo, choose GBP on the currency bar, then use the USD and GBP buttons beside Retirement phases. Every figure on the phase cards switches to pounds at once, because the plan is held in dollars and only translated for display. Then click UK Res. and watch the tax lines change instead: that one is a change of residence, not of display. The calculator icon at the end of the currency bar opens the converter too. Its amount is fixed at 1,000 in the demo, but From and To both work.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="where-is-the-currency-converter">Where is the currency converter?</h3>
+<p>Click the calculator icon at the end of the currency bar, or open Help and choose the Converter tab.</p>
+<h3 id="which-currencies-does-the-planner-support">Which currencies does the planner support?</h3>
+<p>Seven: USD, GBP, CAD, AUD, PHP, THB and EUR.</p>
+<h3 id="does-changing-the-exchange-rate-change-my-plans-results">Does changing the exchange rate change my plan's results?</h3>
+<p>It changes how the plan reads in local currency. The plan is calculated in US dollars, so Plan Health, Plan Confidence, the Stress test, Monte Carlo and the historical backtest stay the same. To test a weaker dollar, raise the dollar amounts your local costs will need.</p>
+<h3 id="does-the-planner-support-country-specific-tax-modeling-for-every-currency">Does the planner support country-specific tax modeling for every currency?</h3>
+<p>No. The UK, Canadian and Australian residence settings apply those countries' income tax. PHP, THB and EUR are foreign-residence modes with no local tax model. Verify local rules separately.</p>
+<h3 id="are-custom-exchange-rates-saved-with-my-plan">Are custom exchange rates saved with my plan?</h3>
+<p>No. They last until you close the planner and are not included in saved plans or JSON exports. Record the rate, date and source in Plan notes.</p>
+<h3 id="does-the-planner-go-online-for-exchange-rates">Does the planner go online for exchange rates?</h3>
+<p>Yes. When the planner opens it requests current US dollar rates from a public rates service. The request contains nothing about you or your plan. Without a connection, it uses built-in rates and lets you type your own.</p>
+<h3 id="is-the-currency-converter-enough-for-expat-planning">Is the currency converter enough for expat planning?</h3>
+<p>No. Currency is one part. Also model taxes, healthcare, Social Security, pensions, withdrawals, housing, travel, survivor income, and a return home.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+<li>WebNomad AI Retirement Income Planner feature page: https://webnomad.webflow.io/pages/ai-ready-retirement-income-planner</li>
+<li>IRS foreign currency and currency exchange rates: https://www.irs.gov/individuals/international-taxpayers/foreign-currency-and-currency-exchange-rates</li>
+<li>IRS yearly average currency exchange rates: https://www.irs.gov/individuals/international-taxpayers/yearly-average-currency-exchange-rates</li>
+<li>Investor.gov retirement planning resources: https://www.investor.gov/introduction-investing/investing-basics/glossary/retirement-planning</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, immigration, currency, exchange-rate, Social Security, Medicare, estate, AI safety, software, or retirement advice. Exchange rates, tax rules, healthcare costs, bank fees, transfer rules, and residency assumptions can change. Confirm currency, tax, healthcare, immigration, banking, Social Security, Medicare, insurance, estate, and software details with official sources and qualified professionals. Screenshots show a sample plan with invented figures and are illustrative only.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free checklist</p>
+  <h2>What you need before you start planning</h2>
+  <p class="post-capture-pitch">One page listing every figure a retirement projection needs, and where to find it.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="checklist">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-retirement-planner-currency-converter">Leave this blank</label>
+      <input type="text" id="pc-honey-retirement-planner-currency-converter" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-retirement-planner-currency-converter">Email address</label>
+    <input type="email" id="pc-email-retirement-planner-currency-converter" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the checklist</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Use the AI Retirement Income Planner when you want seven currencies with residence settings for the US, UK, Canada and Australia, a foreign-residence mode for PHP, THB and EUR, live and custom exchange rates, a built-in currency converter, an overseas healthcare cost field, three saved-plan slots with compare, Plan Health, Plan Confidence, Stress test, Monte Carlo, and historical backtesting.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/historical-backtesting-retirement-planner.html">How to Use Historical Backtesting in the Planner</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/where-to-enter-retirement-income.html">Where to Enter Social Security, SSDI and Pension Income</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/how-to-set-up-a-retirement-income-plan.html">How to Set Up a Retirement Income Plan, Step by Step</a> <span class="post-meta">· Planner How-To</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
