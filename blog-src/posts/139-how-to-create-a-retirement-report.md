@@ -44,6 +44,15 @@ The most useful retirement report explains what assumptions were used, what resu
 
 [IMAGE 139-how-to-create-a-retirement-report 1]
 
+<div class="download-card">
+  <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></svg>
+  <div class="download-card-body">
+    <p class="download-card-title">See a finished report before you make one</p>
+    <p class="download-card-desc">Fourteen pages the planner produced from a real plan, for a single filer retiring at 62 with a horizon of age 90. It runs from the cover metrics through every phase, the charts and Monte Carlo, to the twelve stress scenarios and the assumptions page. All three optional toggles are off in it, so this is what the report prints by default.</p>
+    <a class="btn btn-primary btn-sm" href="/assets/downloads/Example_Report_v7.pdf" target="_blank" rel="noopener">Open the example report (PDF)</a>
+  </div>
+</div>
+
 ## What The Report Feature Does
 
 The Report button sits in the toolbar at the top of the planner, beside Export, Import and Saved plans. It turns the plan into a readable planning snapshot you can scroll through on screen before anything is printed.
