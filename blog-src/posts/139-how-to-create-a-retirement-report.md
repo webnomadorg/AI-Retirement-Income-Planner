@@ -48,7 +48,7 @@ The most useful retirement report explains what assumptions were used, what resu
   <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></svg>
   <div class="download-card-body">
     <p class="download-card-title">See a finished report before you make one</p>
-    <p class="download-card-desc">A fourteen-page PDF the planner produced from a real plan, for a single filer retiring at 62 with a horizon of age 90. It runs from the cover metrics through every phase, the charts and Monte Carlo, to the twelve stress scenarios and the assumptions page. All three optional toggles are off in it, so this is what the report prints by default.</p>
+    <p class="download-card-desc">A fourteen-page PDF the planner produced from a real plan, for a single filer retiring at 62 with a horizon of age 90. It runs from the cover metrics through every phase, the charts and Monte Carlo, to the twelve stress scenarios and the assumptions page. All three optional toggles are off in it, so this is what the report prints by default. Further down there is a second example with one of them switched on, for comparison.</p>
     <a class="btn btn-primary btn-sm" href="/assets/downloads/Example_Report_v7.pdf" target="_blank" rel="noopener">Open the example report</a>
   </div>
 </div>
@@ -186,7 +186,16 @@ Use this workflow:
 14. Save the PDF with a clear date in the file name.
 15. Export the JSON separately if you want the editable plan data.
 
-Include calculations is the step most people skip. It prints the working behind each phase, roughly a page apiece, and that is what turns a report into something another person can check rather than take on trust.
+Include calculations is the step most people skip. It prints the working behind each phase, and that is what turns a report into something another person can check rather than take on trust. Be ready for the length: the toolbar hint says it adds about a page per phase, but in the worked example below it runs to sixteen pages for five phases, so closer to three pages each.
+
+<div class="download-card">
+  <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/><path d="M9 9h2"/></svg>
+  <div class="download-card-body">
+    <p class="download-card-title">See what Include calculations adds</p>
+    <p class="download-card-desc">A second worked example, run on a different plan, with the box ticked. The first thirteen pages are the ordinary report; then five sections show the working behind each phase, bracket by bracket, including how the tax thresholds were inflated and how Medicare was estimated. That is the whole difference between the two files: one toggle.</p>
+    <a class="btn btn-primary btn-sm" href="/downloads/worked-example-retiring-at-62.pdf" target="_blank" rel="noopener">Open the worked example</a>
+  </div>
+</div>
 
 The report should be easy to understand months later.
 
