@@ -273,7 +273,7 @@ Maybe. Roth money can help avoid current taxable income if withdrawals are quali
 
 ### Can the planner compare funding sources for a large expense?
 
-Yes, though not in the way people usually expect. On the Lump sums tab you set which account pays the expense, and the whole projection re-runs from that one choice, so comparing sources means changing that setting and reading the difference in tax, balances and the plan's later years. Saved plans hold up to three snapshots and Compare places one of them next to your current plan, so scenarios are weighed in pairs and JSON export carries anything beyond three. Financing is the exception: there is no loan or interest input, so spreading a cost is modelled as two smaller events in different phases rather than as borrowing.
+Yes, though not in the way people usually expect. On the Lump sums tab you set which account pays the expense, and the whole projection re-runs from that one choice, so comparing sources means changing that setting and reading the difference in tax, balances and the plan's later years. Saved plans hold up to three snapshots and Compare places one of them next to your current plan, so scenarios are weighed in pairs and JSON export carries anything beyond three. Financing is the exception: there is no loan or interest input, so spreading a cost is modeled as two smaller events in different phases rather than as borrowing.
 
 ## Source Links
 

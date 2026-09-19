@@ -102,8 +102,8 @@ They are different from owning a planning file.
 | ProjectionLab | Visual web-based financial planning | Yes for Premium and Pro tiers | Yes | Not required for manual planning | Strong modeling, Monte Carlo, historical backtesting, tax tools, reports, scenarios | Annual subscription for paid tiers |
 | MaxiFi | Economics-based lifetime planning | Yes | Yes | Not positioned as bank aggregation | Lifetime spending, Social Security, tax, Monte Carlo, Roth conversion features | Annual subscription tiers |
 | Boldin | Guided account-based planning | Upgrade tier | Yes | Not required to start | Free start, Chance of Success Score, Monte Carlo, guided workflow | Paid upgrade and account-based web app |
-| Pralana Gold (Excel) | Detailed DIY modelling in a spreadsheet | No, one-time purchase with optional paid renewals | No | No | Deep tax and Roth conversion modelling, highly detailed inputs | Runs in Excel, so it inherits spreadsheet fragility and a steep learning curve |
-| Pralana Online | The same modelling as a web app | Yes, annual | Yes | No | Same depth without the spreadsheet | Annual subscription, and your plan lives on their service |
+| Pralana Gold (Excel) | Detailed DIY modeling in a spreadsheet | No, one-time purchase with optional paid renewals | No | No | Deep tax and Roth conversion modeling, highly detailed inputs | Runs in Excel, so it inherits spreadsheet fragility and a steep learning curve |
+| Pralana Online | The same modeling as a web app | Yes, annual | Yes | No | Same depth without the spreadsheet | Annual subscription, and your plan lives on their service |
 
 Prices and tiers change, and the bank-connection column reflects what each tool requires to build a plan rather than what it optionally supports. Check each official pricing page before buying.
 

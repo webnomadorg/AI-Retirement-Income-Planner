@@ -2,7 +2,7 @@
 
 **SEO title:** How To Plan Retirement With Rental Income  
 **Meta description:** Learn how rental income can fit into retirement planning, including cash flow, vacancies, repairs, taxes, depreciation, Social Security, Medicare IRMAA, and survivor planning.  
-**Image 2 alt:** A retired couple at a laptop, framed between a derelict grey house under cloud on the left and a well-kept rental in sunshine on the right, with an arrow curving from a downcast face to a smiling one. Headline: Turn Rental Income Into a Better Retirement. Plan today. Enjoy tomorrow.
+**Image 2 alt:** A retired couple at a laptop, framed between a derelict gray house under cloud on the left and a well-kept rental in sunshine on the right, with an arrow curving from a downcast face to a smiling one. Headline: Turn Rental Income Into a Better Retirement. Plan today. Enjoy tomorrow.
 
 **Published:** 2026-09-07
 
@@ -117,7 +117,7 @@ The tax calculation can be very different from the cash-flow calculation. Deprec
 
 This is why rental income should be reviewed with a tax professional before retirement decisions depend on it.
 
-[IMAGE PLACEHOLDER - App screenshot: Show the Edit values tab "Rental, div. & passive income" card with a net annual figure entered and the Taxable toggle on, with the card's info popover open beside it. Purpose: the popover states the rule in the product's own words - "depreciation aren't modelled here. Enter your net rental income (after expected expenses)." NOTE: the planner does NOT model gross rent, depreciation or property-level tax, so there is no screen showing those. Enter net rental income only, and do not claim otherwise in the prose. Suggested alt text: "Rental and passive income card in the AI Retirement Income Planner with its guidance on entering net rental income."]
+[IMAGE PLACEHOLDER - App screenshot: Show the Edit values tab "Rental, div. & passive income" card with a net annual figure entered and the Taxable toggle on, with the card's info popover open beside it. Purpose: the popover states the rule in the product's own words - "depreciation aren't modeled here. Enter your net rental income (after expected expenses)." NOTE: the planner does NOT model gross rent, depreciation or property-level tax, so there is no screen showing those. Enter net rental income only, and do not claim otherwise in the prose. Suggested alt text: "Rental and passive income card in the AI Retirement Income Planner with its guidance on entering net rental income."]
 
 ## The Rental Cash Flow Number To Use In A Retirement Plan
 

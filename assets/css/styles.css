@@ -331,7 +331,11 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 }
 
 /* ---- 5. Buttons ---------------------------------------------------------- */
-.btn{ display:inline-flex; align-items:center; gap:.55rem; font-family:var(--font-sans);
+/* justify-content + text-align matter only when the label WRAPS, which it does in a narrow
+   container such as .download-card on a phone. Without them the second line sits ragged-left
+   inside a centred pill and reads as a rendering fault. No effect on a single-line button. */
+.btn{ display:inline-flex; align-items:center; justify-content:center; text-align:center;
+  gap:.55rem; font-family:var(--font-sans);
   font-weight:600; font-size:1rem; line-height:1; text-decoration:none; cursor:pointer;
   padding:.85rem 1.4rem; border-radius:999px; border:1.5px solid transparent;
   transition:transform var(--transition),background var(--transition),box-shadow var(--transition),border-color var(--transition); }

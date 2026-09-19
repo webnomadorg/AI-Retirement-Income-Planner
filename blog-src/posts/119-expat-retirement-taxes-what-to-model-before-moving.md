@@ -10,7 +10,7 @@
 
 **Image 1 alt:** Editorial illustration of two tax forms, one navy and one teal, linked by curved arrows looping between them over a faint globe outline, with three uneven bars beneath, showing the same income reported in two countries.
 
-**Image 2 alt:** A planner phase card in foreign-residence mode with both Medicare Part B and Part D rows greyed out and marked not applicable at zero dollars, above a 12 percent tax bracket badge.
+**Image 2 alt:** A planner phase card in foreign-residence mode with both Medicare Part B and Part D rows grayed out and marked not applicable at zero dollars, above a 12 percent tax bracket badge.
 
 **Image 3 alt:** The planner currency selector showing US dollar, pound, Canadian dollar, Australian dollar, Philippine peso, Thai baht and euro, with the pound active and an editable exchange-rate panel below listing custom rates for each currency.
 

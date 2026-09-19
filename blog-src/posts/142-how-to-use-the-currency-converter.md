@@ -12,7 +12,7 @@
 
 **Image 2 alt:** The planner's currency bar with seven buttons for USD, GBP, CAD, AUD, PHP, THB and EUR, GBP selected, and a calculator icon at the end, above the Exchange rates (1 USD = ?) panel showing six editable rate boxes with a Use live rates button and a Done button.
 
-**Image 3 alt:** A planner phase card displayed in pounds for a UK-resident plan: Phase 1, ages 62 to 65, with 401k, cash, equity and Roth withdrawals, UK income tax, US federal tax cancelled by the Foreign Tax Credit, the ACA lines struck through as not applicable, net income of £3,052 a month nominal and £2,920 in today's money, ending balances, and the line 1 USD = 0.7384 GBP.
+**Image 3 alt:** A planner phase card displayed in pounds for a UK-resident plan: Phase 1, ages 62 to 65, with 401k, cash, equity and Roth withdrawals, UK income tax, US federal tax canceled by the Foreign Tax Credit, the ACA lines struck through as not applicable, net income of £3,052 a month nominal and £2,920 in today's money, ending balances, and the line 1 USD = 0.7384 GBP.
 
 **Primary keyword:** retirement planner currency converter  
 **Secondary keywords:** retirement currency converter, exchange rates retirement planning, multi-currency retirement planner, custom exchange rates retirement, expat retirement currency planning  

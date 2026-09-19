@@ -4,7 +4,7 @@
 **Meta description:** If retirement balances are lower than expected, recheck spending, withdrawals, taxes, healthcare, RMDs, income timing, and fallback scenarios before making large changes.  
 **Suggested URL slug:** retirement-balances-lower-than-expected
 
-**Image 1 alt:** A grey-haired man in a blue sweater sits at a home desk with a notebook and pen, studying a monitor showing the AI Retirement Income Planner on its Confidence tab: a plan confidence score of 89 out of 100, seven checks passing and two warnings, three confirming lenses reading Checklist 7 of 9, Monte Carlo 100% and Historical 100%, resilience bars for solvency, income stability and tax and healthcare, and the plan health checks listed beneath. Six round icons beside the screen stand for groceries, banking, tax, healthcare, markets and insurance, most carrying a red downward arrow. A row of five ticked cards runs along the bottom for cash, travel, housing, work and savings.
+**Image 1 alt:** A gray-haired man in a blue sweater sits at a home desk with a notebook and pen, studying a monitor showing the AI Retirement Income Planner on its Confidence tab: a plan confidence score of 89 out of 100, seven checks passing and two warnings, three confirming lenses reading Checklist 7 of 9, Monte Carlo 100% and Historical 100%, resilience bars for solvency, income stability and tax and healthcare, and the plan health checks listed beneath. Six round icons beside the screen stand for groceries, banking, tax, healthcare, markets and insurance, most carrying a red downward arrow. A row of five ticked cards runs along the bottom for cash, travel, housing, work and savings.
 
 **Published:** 2026-09-11
 
@@ -93,7 +93,7 @@ Calculate:
 
 Then compare that number with current balances. If the plan is drawing heavily from one account, the overall portfolio may look better or worse than the single account suggests.
 
-Also separate temporary and ongoing spending. A roof replacement, medical bill, or family emergency may explain one bad year, and [a single large expense is worth modelling as its own event](/blog/large-one-time-expense-in-retirement.html) rather than folded into an average. A new recurring lifestyle level changes the whole plan.
+Also separate temporary and ongoing spending. A roof replacement, medical bill, or family emergency may explain one bad year, and [a single large expense is worth modeling as its own event](/blog/large-one-time-expense-in-retirement.html) rather than folded into an average. A new recurring lifestyle level changes the whole plan.
 
 ## Step 4: Check Income Timing
 
@@ -171,7 +171,7 @@ Change which accounts fund spending, while checking taxes, RMDs, Roth reserves, 
 
 ### Scenario 5: Housing Change
 
-Test downsizing, relocating, paying off a mortgage, renting, or using home equity. There is no housing or mortgage field in the planner, so a housing change is modelled on the Lump sums tab: the sale proceeds or the payoff goes in as a one-off cash event in the phase it happens, alongside the change it makes to ongoing spending. This scenario deserves care because housing changes are hard to reverse.
+Test downsizing, relocating, paying off a mortgage, renting, or using home equity. There is no housing or mortgage field in the planner, so a housing change is modeled on the Lump sums tab: the sale proceeds or the payoff goes in as a one-off cash event in the phase it happens, alongside the change it makes to ongoing spending. This scenario deserves care because housing changes are hard to reverse.
 
 ### Scenario 6: Stress Case
 

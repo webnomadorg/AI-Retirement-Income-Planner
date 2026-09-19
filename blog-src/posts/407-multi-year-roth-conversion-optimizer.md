@@ -112,7 +112,7 @@ A decision tree answers "should I convert?" with a series of yes/no branches —
 
 ### Can I use it as a Roth conversion strategy planner for the whole window?
 
-That is what it is for. It maps the conversion window from now until RMDs begin rather than optimising a single year, which matters because a conversion that looks ideal in isolation can spend bracket space a later year needed more. Six strategies from conservative to aggressive are compared side by side, and the result is a year-by-year calendar rather than a single figure.
+That is what it is for. It maps the conversion window from now until RMDs begin rather than optimizing a single year, which matters because a conversion that looks ideal in isolation can spend bracket space a later year needed more. Six strategies from conservative to aggressive are compared side by side, and the result is a year-by-year calendar rather than a single figure.
 
 ### Is there a free Roth conversion calculator?
 
