@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Create a Retirement Report</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Learn how to create a retirement report in the AI Retirement Income Planner using report preview, notes, scenarios, Plan Health, Plan Confidence, charts, and browser print or save as PDF.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/how-to-create-a-retirement-report.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Create a Retirement Report">
+<meta property="og:description" content="Learn how to create a retirement report in the AI Retirement Income Planner using report preview, notes, scenarios, Plan Health, Plan Confidence, charts, and browser print or save as PDF.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/how-to-create-a-retirement-report-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/how-to-create-a-retirement-report.html">
+<meta property="article:published_time" content="2026-09-19">
+<meta property="article:modified_time" content="2026-09-19">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Create a Retirement Report", "description": "Learn how to create a retirement report in the AI Retirement Income Planner using report preview, notes, scenarios, Plan Health, Plan Confidence, charts, and browser print or save as PDF.", "datePublished": "2026-09-19", "dateModified": "2026-09-19", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/how-to-create-a-retirement-report.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/how-to-create-a-retirement-report-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Planner How-To", "item": "https://airetirementincomeplanner.com/blog.html#cat=planner-howto"}, {"@type": "ListItem", "position": 4, "name": "How to Create a Retirement Report", "item": "https://airetirementincomeplanner.com/blog/how-to-create-a-retirement-report.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can the planner create a printable retirement report?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Report preview renders the whole plan as a formatted document, and its Print / Save as PDF button hands that document to the browser's own print dialog, where saving to PDF is one of the destinations."}}, {"@type": "Question", "name": "Is the PDF the same as a backup?", "acceptedAnswer": {"@type": "Answer", "text": "No. A PDF is a readable copy. Use manual JSON export/import when you want an editable backup or transfer file."}}, {"@type": "Question", "name": "Can AI commentary be included in the report?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, when AI is configured. Review the commentary carefully and verify important tax, healthcare, Social Security, Medicare, insurance, legal, and investment details."}}, {"@type": "Question", "name": "Should I create a report for every scenario?", "acceptedAnswer": {"@type": "Answer", "text": "No. Create reports for the base plan and the most important alternate scenarios. Too many reports can make review harder."}}, {"@type": "Question", "name": "Can I give the report to a professional?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, if you are comfortable sharing the information. A report can help organize a meeting, but professionals will still need to verify assumptions and rules."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=planner-howto">Planner How-To</a>
+        </nav>
+        <header class="post-header">
+          <h1>How to Create a Retirement Report</h1>
+          <p class="post-meta"><span class="cat-badge">Planner How-To</span> · Published September 19, 2026 · 13 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#what-the-report-feature-does">What The Report Feature Does</a></li>
+      <li><a href="#when-to-create-a-report">When To Create A Report</a></li>
+      <li><a href="#before-you-open-report-preview">Before You Open Report Preview</a></li>
+      <li><a href="#what-to-include-in-notes">What To Include In Notes</a></li>
+      <li><a href="#how-to-create-the-report">How To Create The Report</a></li>
+      <li><a href="#how-to-name-a-report">How To Name A Report</a></li>
+      <li><a href="#what-a-useful-report-should-answer">What A Useful Report Should Answer</a></li>
+      <li><a href="#what-to-do-with-optional-ai-commentary">What To Do With Optional AI Commentary</a></li>
+      <li><a href="#report-preview-vs-json-backup">Report Preview Vs JSON Backup</a></li>
+      <li><a href="#a-retirement-report-workflow-start-to-finish">A Retirement Report Workflow, Start To Finish</a></li>
+      <li><a href="#common-retirement-report-mistakes">Common Retirement Report Mistakes</a></li>
+      <li><a href="#what-to-do-after-your-first-retirement-report">What To Do After Your First Retirement Report</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>To create a retirement report in the planner, update the plan first, review the major tabs, write your plan notes, then open Report from the toolbar at the top of the planner. Tick the report options you want, read the preview through, and use its Print / Save as PDF button. The report should be treated as a planning snapshot, not as a permanent answer.</p>
+<p>The most useful retirement report explains what assumptions were used, what results appeared, what risks were flagged, and what questions need follow-up.</p>
+<aside class="cta-box cta-soft">
+  <p>A retirement report is most useful when it documents assumptions, results, risks, and next questions. The AI Retirement Income Planner gives you report preview, notes, scenarios, Plan Health, Plan Confidence, and browser print or save as PDF.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>Update the plan before creating the report.</li>
+<li>Review Plan Health and Plan Confidence before printing.</li>
+<li>Write notes about assumptions, quotes, source dates, and open questions.</li>
+<li>Three toggles decide what else goes in: your notes, AI commentary, and the full calculations.</li>
+<li>Notes do not print unless Include notes is ticked, so check the toolbar first.</li>
+<li>Read the preview in full, then use its Print / Save as PDF button.</li>
+<li>Create one report for the base plan and one for the alternative that matters.</li>
+<li>Use manual JSON export/import separately for plan backup and transfer.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/how-to-create-a-retirement-report-1.webp" alt="Flat vector illustration of three document sheets stacked at a slight angle on an ivory background. The top sheet is printed with abstract navy and teal blocks and grey text lines laid out as report sections, with a broad teal bookmark ribbon in the top corner; the two sheets beneath it are pale blue and navy." width="1400" height="1050" loading="lazy">
+</figure>
+
+<h2 id="what-the-report-feature-does">What The Report Feature Does</h2>
+<p>The Report button sits in the toolbar at the top of the planner, beside Export, Import and Saved plans. It turns the plan into a readable planning snapshot you can scroll through on screen before anything is printed.</p>
+<p>You do not assemble the report. It is built from the plan itself, and it opens on a cover page carrying the plan's title, the date it was generated, and the settings the whole projection rests on: currency, filing status, residence, retirement start age and plan horizon. Beneath those sit the headline metrics, including total starting wealth, average net income, projected ending wealth, lifetime federal tax and the Plan Confidence score.</p>
+<p>After the cover it runs through:</p>
+<ul>
+<li>The phase-by-phase plan, one block per phase, with the amounts drawn from each account, gross income, tax, and net income in both nominal terms and today's money.</li>
+<li>Balance and legacy considerations, the balance trajectory, and how the account mix shifts between the start of the plan and the end.</li>
+<li>Plan resilience, which prints the Monte Carlo result and the stress-test grid.</li>
+<li>Plan strengths, top risks, any risks you have acknowledged, your goals if you have set them, and a list of recommended next actions.</li>
+<li>Key assumptions and tax parameters, the section that makes the numbers checkable months later.</li>
+<li>An educational disclaimer.</li>
+</ul>
+<p>Three toggles in the report toolbar decide what else goes in: your notes, AI commentary, and the full calculations behind each phase. All three are off until you tick them, and they are covered further down.</p>
+<p>The report is for reading, sharing, reviewing, and documenting assumptions. The JSON export is for backing up or transferring plan data.</p>
+<p>Use both when appropriate.</p>
+<h2 id="when-to-create-a-report">When To Create A Report</h2>
+<p>Create a report when you want a clear record of the plan.</p>
+<p>Good times include:</p>
+<ul>
+<li>After building the first complete retirement plan.</li>
+<li>Before discussing the plan with a spouse.</li>
+<li>Before meeting with a tax professional, financial planner, insurance professional, or estate attorney.</li>
+<li>After comparing scenarios.</li>
+<li>After running Plan Health checks.</li>
+<li>After updating balances each year.</li>
+<li>After using Replan, which re-anchors the plan to your current age and balances.</li>
+<li>After modeling a major change such as Social Security timing, Roth conversions, annuity income, downsizing, or a large expense.</li>
+<li>Before making a decision that needs further review.</li>
+</ul>
+<p>Do not create the report too early. A polished report built on unfinished inputs is misleading in a way a rough one is not, and if the plan itself is still half-built, <a href="/blog/how-to-set-up-a-retirement-income-plan.html">setting the plan up properly</a> comes first.</p>
+<h2 id="before-you-open-report-preview">Before You Open Report Preview</h2>
+<p>Review the plan first.</p>
+<p>Check:</p>
+<ul>
+<li>Current ages.</li>
+<li>Spouse age, if applicable.</li>
+<li>Retirement start age.</li>
+<li>Current balances.</li>
+<li>Cash reserves.</li>
+<li>Taxable, tax-deferred, Roth, and other accounts.</li>
+<li>Social Security assumptions.</li>
+<li>Pension and annuity income.</li>
+<li>Work or part-time income.</li>
+<li>Spending.</li>
+<li>Healthcare costs.</li>
+<li>ACA, Medicare, and IRMAA assumptions.</li>
+<li>RMD settings.</li>
+<li>Roth conversion assumptions.</li>
+<li>Lump sums and one-time expenses.</li>
+<li>Survivor assumptions.</li>
+<li>Inflation assumptions.</li>
+<li>State tax settings, if applicable.</li>
+<li>Residency and currency settings, if applicable.</li>
+</ul>
+<p>Then review the main outputs:</p>
+<ul>
+<li>Income chart.</li>
+<li>Balance chart.</li>
+<li>Tax results.</li>
+<li>Healthcare results.</li>
+<li>Plan Health checks.</li>
+<li>Plan Confidence.</li>
+<li>Stress test.</li>
+<li>Monte Carlo.</li>
+<li>Historical backtesting.</li>
+<li>Scenario comparison.</li>
+</ul>
+<p>The report should come after the review, not before it. Plan Health is the quickest of those passes to read, and it is worth knowing <a href="/blog/how-to-use-plan-health-ai-retirement-income-planner.html">what each Plan Health check is actually testing</a> before you print a page that lists them all.</p>
+<h2 id="what-to-include-in-notes">What To Include In Notes</h2>
+<p>Notes are where the report becomes more useful, and they are the one part of it you write yourself.</p>
+<p>They live in Saved plans, in a box headed Plan notes below the slots. Basic Markdown works there, so bold text, bullets and short headings all survive into the printed report. Notes are part of the plan rather than part of the browser, which means they are saved automatically, carried into a saved slot, and written into an exported JSON file.</p>
+<p>One thing to watch: notes do not print unless you ask for them. Include notes sits unticked in the report toolbar by default, and it stays greyed out entirely until the plan has notes in it.</p>
+<p>Add short notes about:</p>
+<ul>
+<li>Date of the review.</li>
+<li>Purpose of the report.</li>
+<li>Scenario name.</li>
+<li>Assumptions that are placeholders.</li>
+<li>Assumptions that came from official sources.</li>
+<li>Assumptions that came from account statements.</li>
+<li>Social Security estimate date.</li>
+<li>Pension quote date.</li>
+<li>Annuity quote date, if applicable.</li>
+<li>Healthcare quote source.</li>
+<li>Tax assumptions to verify.</li>
+<li>Professional questions.</li>
+<li>Known missing items.</li>
+<li>Next review date.</li>
+</ul>
+<p>Good notes are plain and practical.</p>
+<p>Example:</p>
+<blockquote>
+<p>Base plan updated July 2026 using June 30 account balances. Social Security estimates still need to be checked against SSA records. Healthcare costs are placeholders until open enrollment quotes are available.</p>
+</blockquote>
+<p>If the report marks the end of a review rather than the middle of one, set the plan status chip at the same time. Marking a plan as signed off records the date and starts a twelve-month reminder, which is a more reliable next review date than one written into a note and forgotten.</p>
+<h2 id="how-to-create-the-report">How To Create The Report</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>Open the saved plan.</li>
+<li>Update balances and assumptions.</li>
+<li>Save the current version to a slot if you are about to test changes.</li>
+<li>Review Plan Health checks.</li>
+<li>Review Plan Confidence.</li>
+<li>Review charts and key results.</li>
+<li>Write your plan notes in Saved plans.</li>
+<li>Edit the title line under the planner's heading, because that line is what prints as the report's headline.</li>
+<li>Open Report from the toolbar at the top of the planner.</li>
+<li>Tick Include notes, and tick Include calculations if your reader needs to see the working.</li>
+<li>Tick Include AI commentary if you want the plain-English layer and have a key set up.</li>
+<li>Read the whole preview before printing.</li>
+<li>Use the Print / Save as PDF button in the preview toolbar.</li>
+<li>Save the PDF with a clear date in the file name.</li>
+<li>Export the JSON separately if you want the editable plan data.</li>
+</ol>
+<p>Include calculations is the step most people skip. It prints the working behind each phase, roughly a page apiece, and that is what turns a report into something another person can check rather than take on trust.</p>
+<p>The report should be easy to understand months later.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/how-to-create-a-retirement-report-2.webp" alt="The planner's report preview. A toolbar across the top offers Include AI commentary, Include notes and Include calculations, alongside a Print / Save as PDF button. The first page of the report shows the plan's title, the date it was generated, and rows for currency, filing status, residence, retirement start age and plan horizon, above headline metrics for total starting wealth, average net income, projected ending wealth, lifetime federal tax and a confidence score." width="1400" height="939" loading="lazy">
+</figure>
+
+<h2 id="how-to-name-a-report">How To Name A Report</h2>
+<p>Use a simple file naming system.</p>
+<p>Examples:</p>
+<ul>
+<li><code>Retirement-Plan-Base-2026-07.pdf</code></li>
+<li><code>Retirement-Plan-Delay-Social-Security-2026-07.pdf</code></li>
+<li><code>Retirement-Plan-Roth-Conversion-Test-2026-07.pdf</code></li>
+<li><code>Retirement-Plan-Annual-Review-2026.pdf</code></li>
+<li><code>Retirement-Plan-Survivor-Scenario-2026-07.pdf</code></li>
+</ul>
+<p>The date matters because assumptions change.</p>
+<p>Two of those names are yours to set and one is not. The PDF takes whatever the browser's save dialog offers, so it is worth typing a real name there rather than accepting the default. The JSON export names itself, from the plan's title line and the day you exported it, and adds a signed-off prefix once the plan has been signed off. The report also prints the date it was generated on its cover page, so even a badly named PDF can be dated from the inside.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/how-to-create-a-retirement-report-3.webp" alt="The phase-by-phase section of the report, showing two phase cards. Each gives the phase's age range and length in months, the monthly amount drawn from the 401k, cash and equity accounts, gross income, tax, net income in nominal terms and in today's money, and a line of ending balances for each account." width="987" height="957" loading="lazy">
+</figure>
+
+<h2 id="what-a-useful-report-should-answer">What A Useful Report Should Answer</h2>
+<p>A useful retirement report should answer:</p>
+<ul>
+<li>What plan is this?</li>
+<li>What assumptions were used?</li>
+<li>What income sources are included?</li>
+<li>What spending level is modeled?</li>
+<li>What accounts fund withdrawals?</li>
+<li>When does Social Security begin?</li>
+<li>Are pensions or annuities included?</li>
+<li>What taxes are modeled?</li>
+<li>What healthcare assumptions are modeled?</li>
+<li>What happens to balances over time?</li>
+<li>What risks did Plan Health flag?</li>
+<li>What does Plan Confidence show?</li>
+<li>What happened under the stress test and Monte Carlo?</li>
+<li>What alternate scenarios were compared?</li>
+<li>What questions still need review?</li>
+</ul>
+<p>If the report does not answer those questions, add notes before saving it.</p>
+<p>Most of that list is already printed for you. Two things are not, and both need a note.</p>
+<p>The historical backtest does not print. The resilience page carries Monte Carlo and the stress-test grid only, so if replaying the plan through real market history is what changed your mind, write down what you saw. The two lenses answer different questions, and <a href="/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html">how Monte Carlo and historical backtesting differ</a> is worth being clear about before you summarise either one.</p>
+<p>A comparison between two saved plans does not print either. The report is always the plan currently loaded, so a side-by-side lives on screen, not on paper. If the comparison is the point, say in your notes what the other version did and why you did not choose it.</p>
+<h2 id="what-to-do-with-optional-ai-commentary">What To Do With Optional AI Commentary</h2>
+<p>Optional AI commentary can appear in the report when AI is configured. The toggle is greyed out until a key is saved in the AI Chat tab. Once it is, ticking it writes a plain-English summary onto the cover page and a short narrative under each strength and each flagged risk.</p>
+<p>The figures are not the model's. The request hands it the numbers the planner has already calculated and tells it to use only those, so the commentary is an explanation layer over the deterministic report rather than a second opinion on it.</p>
+<p>It is also editable. Click any commentary paragraph in the preview and rewrite it in place; the edits survive switching the commentary off and back on. If a sentence reads as overconfident or a caveat is missing, fix it there rather than printing it and explaining it afterwards.</p>
+<p>Review AI commentary for:</p>
+<ul>
+<li>Wrong assumptions.</li>
+<li>Overconfident language.</li>
+<li>Missing caveats.</li>
+<li>Confusion between scenarios.</li>
+<li>Tax, Social Security, Medicare, or legal statements that need verification.</li>
+<li>Suggestions that should be tested before action.</li>
+</ul>
+<p>AI commentary should help explain the report. It should not replace the numbers, the planner result, or professional review.</p>
+<h2 id="report-preview-vs-json-backup">Report Preview Vs JSON Backup</h2>
+<p>Report preview and JSON export serve different jobs.</p>
+<p>Use report preview when you want:</p>
+<ul>
+<li>A readable plan summary.</li>
+<li>A PDF for review.</li>
+<li>A printout for a meeting.</li>
+<li>A record of assumptions.</li>
+<li>A spouse-friendly overview.</li>
+</ul>
+<p>Use JSON export when you want:</p>
+<ul>
+<li>An editable backup.</li>
+<li>Transfer to another browser or device.</li>
+<li>A way to preserve the underlying plan data.</li>
+<li>A copy before testing major changes.</li>
+</ul>
+<p>One limit is worth knowing. The export carries the plan currently loaded, notes included, but not the saved-plan slots. Those live in this browser only, there are three of them, and they do not travel in an exported file. If a scenario matters enough to keep, export it as its own JSON file rather than trusting a slot to still be there. <a href="/blog/save-load-compare-retirement-scenarios.html">Saving, loading and comparing scenarios</a> goes through how the slots behave.</p>
+<p>The PDF is for reading. The JSON file is for restoring the plan.</p>
+<h2 id="a-retirement-report-workflow-start-to-finish">A Retirement Report Workflow, Start To Finish</h2>
+<p>Imagine a couple doing an annual retirement review.</p>
+<p>They update:</p>
+<ul>
+<li>Account balances.</li>
+<li>Social Security estimates.</li>
+<li>Pension income.</li>
+<li>Spending.</li>
+<li>Healthcare assumptions.</li>
+<li>Roth conversion plan.</li>
+<li>RMD start age.</li>
+<li>Survivor assumptions.</li>
+</ul>
+<p>Then they test the alternatives one at a time: a lower-spending version, a delayed Social Security version, and a Roth conversion version. There are three saved-plan slots, and a comparison runs one slot against the plan currently loaded, so this is a sequence of pairwise reads rather than a four-way table.</p>
+<p>They review Plan Health and Plan Confidence for each version.</p>
+<p>Then they create one report for the base plan and one for the alternative that changed their thinking. Their notes explain which assumptions still need tax review and which healthcare assumptions are placeholders.</p>
+<p>Now the report is more than a printout. It is a decision record, and it is the part of an <a href="/blog/annual-retirement-plan-review-checklist.html">annual plan review</a> that survives the year.</p>
+<h2 id="common-retirement-report-mistakes">Common Retirement Report Mistakes</h2>
+<p>Avoid these mistakes:</p>
+<ul>
+<li>Creating a report before updating inputs.</li>
+<li>Leaving the title line at its default, so every PDF is headed the same way.</li>
+<li>Writing notes and leaving Include notes unticked, so none of them print.</li>
+<li>Leaving placeholder assumptions unexplained.</li>
+<li>Printing without reading the preview.</li>
+<li>Treating a PDF as an editable backup.</li>
+<li>Forgetting to export JSON separately.</li>
+<li>Including AI commentary without review.</li>
+<li>Comparing reports from different dates without checking assumptions.</li>
+<li>Sharing a report before removing details you do not want shared.</li>
+<li>Treating the report as a substitute for professional review.</li>
+</ul>
+<p>A retirement report is only as good as the plan behind it.</p>
+<h2 id="what-to-do-after-your-first-retirement-report">What To Do After Your First Retirement Report</h2>
+<p>After creating the report, consider creating a second report for one alternate scenario.</p>
+<p>Useful comparisons include:</p>
+<ul>
+<li>Base plan versus later Social Security.</li>
+<li>Base plan versus smaller annual spending.</li>
+<li>Base plan versus Roth conversion scenario.</li>
+<li>Base plan versus annuity income scenario.</li>
+<li>Base plan versus downsizing scenario.</li>
+<li>Base plan versus survivor scenario.</li>
+<li>Current plan versus a Replan from your current age and balances.</li>
+</ul>
+<p>Keep the number of reports manageable. A few clear reports are better than a pile of unlabeled PDFs.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo and click Report in the toolbar to see what a finished plan looks like on paper: the cover page of headline metrics, the phase-by-phase detail, the resilience page, and the key assumptions that make the numbers checkable later. Nothing to fill in, just scroll.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="can-the-planner-create-a-printable-retirement-report">Can the planner create a printable retirement report?</h3>
+<p>Yes. Report preview renders the whole plan as a formatted document, and its Print / Save as PDF button hands that document to the browser's own print dialog, where saving to PDF is one of the destinations.</p>
+<h3 id="is-the-pdf-the-same-as-a-backup">Is the PDF the same as a backup?</h3>
+<p>No. A PDF is a readable copy. Use manual JSON export/import when you want an editable backup or transfer file.</p>
+<h3 id="can-ai-commentary-be-included-in-the-report">Can AI commentary be included in the report?</h3>
+<p>Yes, when AI is configured. Review the commentary carefully and verify important tax, healthcare, Social Security, Medicare, insurance, legal, and investment details.</p>
+<h3 id="should-i-create-a-report-for-every-scenario">Should I create a report for every scenario?</h3>
+<p>No. Create reports for the base plan and the most important alternate scenarios. Too many reports can make review harder.</p>
+<h3 id="can-i-give-the-report-to-a-professional">Can I give the report to a professional?</h3>
+<p>Yes, if you are comfortable sharing the information. A report can help organize a meeting, but professionals will still need to verify assumptions and rules.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+<li>WebNomad AI Retirement Income Planner feature page: https://webnomad.webflow.io/pages/ai-ready-retirement-income-planner</li>
+<li>Investor.gov retirement planning resources: https://www.investor.gov/introduction-investing/investing-basics/glossary/retirement-planning</li>
+<li>IRS required minimum distributions: https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds</li>
+<li>IRS: are my Social Security benefits taxable: https://www.irs.gov/help/ita/are-my-social-security-or-railroad-retirement-tier-i-benefits-taxable</li>
+<li>Medicare costs: https://www.medicare.gov/basics/costs/medicare-costs</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. A retirement report is a planning snapshot based on assumptions and user-entered data. Confirm tax, Medicare, Social Security, RMD, withdrawal, investment, insurance, healthcare, inflation, estate, and software details with official sources and qualified professionals.
+ Screenshots show a sample plan with invented figures and are illustrative only.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free checklist</p>
+  <h2>What you need before you start planning</h2>
+  <p class="post-capture-pitch">One page listing every figure a retirement projection needs, and where to find it.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="checklist">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-how-to-create-a-retirement-report">Leave this blank</label>
+      <input type="text" id="pc-honey-how-to-create-a-retirement-report" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-how-to-create-a-retirement-report">Email address</label>
+    <input type="email" id="pc-email-how-to-create-a-retirement-report" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the checklist</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Use the planner when you want a private, browser-based way to create a retirement planning snapshot from income, taxes, healthcare, Social Security, withdrawals, balances, risks, and scenarios.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/retirement-planner-currency-converter.html">How to Use the Currency Converter</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/historical-backtesting-retirement-planner.html">How to Use Historical Backtesting in the Planner</a> <span class="post-meta">· Planner How-To</span></li>
+      <li><a href="/blog/where-to-enter-retirement-income.html">Where to Enter Social Security, SSDI and Pension Income</a> <span class="post-meta">· Planner How-To</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
