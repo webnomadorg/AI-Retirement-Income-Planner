@@ -247,7 +247,7 @@ It should still be handled with care, because the result depends on inputs, assu
 
 ## Explaining Reports
 
-The planner's Report preview can be printed or saved as PDF through the browser.
+The planner's [Report preview can be printed or saved as PDF](/blog/how-to-create-a-retirement-report.html) through the browser.
 
 An AI co-pilot can help turn report output into:
 

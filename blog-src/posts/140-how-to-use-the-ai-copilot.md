@@ -227,7 +227,7 @@ Approve only changes you understand.
 
 ## How To Use AI Commentary In Reports
 
-The Report preview has an optional "Include AI commentary" toggle that appears once an API key is set up. When you turn it on, the planner generates a plain-English commentary you can review and edit in place before printing or saving.
+The Report preview has an optional "Include AI commentary" toggle, grayed out until an API key is saved in the AI Chat tab. When you turn it on, the planner generates a plain-English commentary you can review and edit in place before [printing the report or saving it as a PDF](/blog/how-to-create-a-retirement-report.html).
 
 Use it to make a report easier to read.
 

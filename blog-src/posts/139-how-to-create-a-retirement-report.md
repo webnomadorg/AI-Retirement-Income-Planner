@@ -8,7 +8,7 @@
 
 **Category:** Planner How-To
 
-**Image 1 alt:** Flat vector illustration of three document sheets stacked at a slight angle on an ivory background. The top sheet is printed with abstract navy and teal blocks and grey text lines laid out as report sections, with a broad teal bookmark ribbon in the top corner; the two sheets beneath it are pale blue and navy.
+**Image 1 alt:** Flat vector illustration of three document sheets stacked at a slight angle on an ivory background. The top sheet is printed with abstract navy and teal blocks and gray text lines laid out as report sections, with a broad teal bookmark ribbon in the top corner; the two sheets beneath it are pale blue and navy.
 
 **Image 2 alt:** The planner's report preview. A toolbar across the top offers Include AI commentary, Include notes and Include calculations, alongside a Print / Save as PDF button. The first page of the report shows the plan's title, the date it was generated, and rows for currency, filing status, residence, retirement start age and plan horizon, above headline metrics for total starting wealth, average net income, projected ending wealth, lifetime federal tax and a confidence score.
 
@@ -130,7 +130,7 @@ Notes are where the report becomes more useful, and they are the one part of it 
 
 They live in Saved plans, in a box headed Plan notes below the slots. Basic Markdown works there, so bold text, bullets and short headings all survive into the printed report. Notes are part of the plan rather than part of the browser, which means they are saved automatically, carried into a saved slot, and written into an exported JSON file.
 
-One thing to watch: notes do not print unless you ask for them. Include notes sits unticked in the report toolbar by default, and it stays greyed out entirely until the plan has notes in it.
+One thing to watch: notes do not print unless you ask for them. Include notes sits unticked in the report toolbar by default, and it stays grayed out entirely until the plan has notes in it.
 
 Add short notes about:
 
@@ -225,13 +225,13 @@ If the report does not answer those questions, add notes before saving it.
 
 Most of that list is already printed for you. Two things are not, and both need a note.
 
-The historical backtest does not print. The resilience page carries Monte Carlo and the stress-test grid only, so if replaying the plan through real market history is what changed your mind, write down what you saw. The two lenses answer different questions, and [how Monte Carlo and historical backtesting differ](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html) is worth being clear about before you summarise either one.
+The historical backtest does not print. The resilience page carries Monte Carlo and the stress-test grid only, so if replaying the plan through real market history is what changed your mind, write down what you saw. The two lenses answer different questions, and [how Monte Carlo and historical backtesting differ](/blog/monte-carlo-vs-historical-backtesting-retirement-planning.html) is worth being clear about before you summarize either one.
 
 A comparison between two saved plans does not print either. The report is always the plan currently loaded, so a side-by-side lives on screen, not on paper. If the comparison is the point, say in your notes what the other version did and why you did not choose it.
 
 ## What To Do With Optional AI Commentary
 
-Optional AI commentary can appear in the report when AI is configured. The toggle is greyed out until a key is saved in the AI Chat tab. Once it is, ticking it writes a plain-English summary onto the cover page and a short narrative under each strength and each flagged risk.
+Optional AI commentary can appear in the report when AI is configured. The toggle is grayed out until a key is saved in the AI Chat tab. Once it is, ticking it writes a plain-English summary onto the cover page and a short narrative under each strength and each flagged risk.
 
 The figures are not the model's. The request hands it the numbers the planner has already calculated and tells it to use only those, so the commentary is an explanation layer over the deterministic report rather than a second opinion on it.
 

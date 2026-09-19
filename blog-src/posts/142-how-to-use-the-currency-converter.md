@@ -98,7 +98,7 @@ To set your own rates, click **Override rates** on the currency bar. The **Excha
 
 Three habits make custom rates reliable:
 
-- **Write the rate down.** Custom rates are not saved with the plan. They are not in auto-save, a saved-plan slot or a JSON export, and the next time you open the planner it fetches live rates again. Record the rate, the date and the source in **Plan notes** (in the Saved plans panel). Notes travel with the plan and can be added as a page in Report preview.
+- **Write the rate down.** Custom rates are not saved with the plan. They are not in auto-save, a saved-plan slot or a JSON export, and the next time you open the planner it fetches live rates again. Record the rate, the date and the source in **Plan notes** (in the Saved plans panel). Notes travel with the plan and can be [added as a page in Report preview](/blog/how-to-create-a-retirement-report.html), as long as you tick **Include notes** before printing.
 - **Change rates with the display set to US dollars.** Then switch back to the local currency to read the result. That keeps the figures in the Edit values boxes in step with the new rate before you edit anything else.
 - **Build transfer costs into the rate.** There is no fee field. If your bank or transfer service costs about 1.5%, use a rate about 1.5% less favorable than the one you see quoted.
 

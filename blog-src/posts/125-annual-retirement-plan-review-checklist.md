@@ -261,7 +261,7 @@ Use this workflow:
 9. Run Stress Test.
 10. Use What-if tools for inflation, Social Security, Roth conversion size, survivor scenario, and maximum sustainable spending.
 11. Review [Plan Health checks](/blog/how-to-use-plan-health-ai-retirement-income-planner.html) and Plan Confidence.
-12. Use report preview with notes for a professional review conversation.
+12. Use [report preview with notes](/blog/how-to-create-a-retirement-report.html) for a professional review conversation.
 13. Move the plan through Draft, Under review, or Signed off status as appropriate.
 14. Set the 12-month review reminder after sign-off.
 
