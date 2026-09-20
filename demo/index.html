@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v396.html on 2026-09-16. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v396.html on 2026-09-19. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -5577,7 +5577,7 @@ html[data-theme="contrast"] .irow select:focus{
     <label class="rpb-toggle"><input type="checkbox" id="report-notes-toggle" onchange="toggleReportNotes(this.checked)"/> &#x1F4DD; Include notes</label>
     <span class="rpb-hint" id="report-notes-hint" style="display:none;">Add notes in Saved plans to include them</span>
     <label class="rpb-toggle"><input type="checkbox" id="report-math-toggle" onchange="toggleReportMath(this.checked)"/> &#x1F52C; Include calculations</label>
-    <span class="rpb-hint" id="report-math-hint">Adds about one page per phase</span>
+    <span class="rpb-hint" id="report-math-hint">Adds about three pages per phase</span>
     <span class="rpb-hint" id="report-ai-hint" style="display:none;">Add an API key in the AI Chat tab to enable commentary</span>
   </div>
   <div class="rpb-right">
