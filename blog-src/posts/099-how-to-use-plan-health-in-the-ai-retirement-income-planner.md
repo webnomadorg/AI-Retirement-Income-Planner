@@ -15,6 +15,8 @@
 
 **Published:** 2026-07-16
 
+**Lead image:** 5
+
 **Image 1 alt:** AI Retirement Income Planner Plan Confidence Score panel showing an 8 of 8 Strong Plan score, a confidence summary with historical backtest results, and the first Plan Health checks for Income Adequacy, Tax Bracket Efficiency, and ACA Subsidy Protected.
 
 **Image 2 alt:** AI Retirement Income Planner Plan Health panel showing a passing Stress Test Resilient check above four grayed-out not-applicable checks: Survivor Income Resilience, CSR / Subsidy Headroom, Income Goal, and Legacy Goal.
@@ -22,6 +24,8 @@
 **Image 3 alt:** AI Retirement Income Planner Income Floor Foundation check with the Why this matters explanation expanded, showing the guaranteed income percentage, why it matters, the 50 percent US and 30 percent expat thresholds, and an Income Floor explainer video button.
 
 **Image 4 alt:** AI Retirement Income Planner Drawdown Strategy Ratings showing 5 of 6 strategies fully green, with the 4% Rule, Variable % (VPW), 3 Buckets, Floor & Upside, and Monte Carlo at 3 of 3 and Guardrails at 2 of 3.
+
+**Image 5 alt:** Flat vector illustration of a retirement plan checklist on an ivory background. A card with a navy header carries a teal and gold progress ring around a heart, and below it rows are marked with green check circles, gold warning circles and gray dashes, with a magnifying glass holding a teal check mark resting over the list. Behind the card two phase timelines of five colored icon circles sit either side of a teal arrow, the right one lit by a gold sunrise, and a leafy plant and a rising teal bar chart flank the scene.
 
 **Search intent:** The reader wants step-by-step help using Plan Health inside the planner, including what the checks mean, how to respond to flagged items, and how Plan Health relates to the Plan Confidence score.
 
@@ -32,6 +36,8 @@
 ## Quick Answer
 
 Plan Health is the planner's built-in checklist for finding weak spots in a retirement income plan.
+
+[IMAGE 099-how-to-use-plan-health-in-the-ai-retirement-income-planner 5]
 
 It helps you answer questions like:
 
