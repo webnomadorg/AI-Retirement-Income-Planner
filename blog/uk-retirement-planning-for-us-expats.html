@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UK Retirement Planning for US Expats</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="A practical UK retirement planning checklist for US expats, covering taxes, Social Security, Medicare, healthcare, 401k withdrawals, currency risk, and planner scenarios.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/uk-retirement-planning-for-us-expats.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="UK Retirement Planning for US Expats">
+<meta property="og:description" content="A practical UK retirement planning checklist for US expats, covering taxes, Social Security, Medicare, healthcare, 401k withdrawals, currency risk, and planner scenarios.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/uk-retirement-planning-for-us-expats-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/uk-retirement-planning-for-us-expats.html">
+<meta property="article:published_time" content="2026-09-21">
+<meta property="article:modified_time" content="2026-09-21">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "UK Retirement Planning for US Expats", "description": "A practical UK retirement planning checklist for US expats, covering taxes, Social Security, Medicare, healthcare, 401k withdrawals, currency risk, and planner scenarios.", "datePublished": "2026-09-21", "dateModified": "2026-09-21", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/uk-retirement-planning-for-us-expats.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/uk-retirement-planning-for-us-expats-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Expat & International", "item": "https://airetirementincomeplanner.com/blog.html#cat=expat"}, {"@type": "ListItem", "position": 4, "name": "UK Retirement Planning for US Expats", "item": "https://airetirementincomeplanner.com/blog/uk-retirement-planning-for-us-expats.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a US citizen retire in the UK?", "acceptedAnswer": {"@type": "Answer", "text": "Possibly, but immigration status, tax residency, healthcare access, income, housing, and reporting obligations need review. The financial plan should be modeled before the move."}}, {"@type": "Question", "name": "Do US expats in the UK still file US taxes?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says US citizens and resident aliens abroad are generally subject to US tax on worldwide income and must report taxable income under US tax rules."}}, {"@type": "Question", "name": "Will the UK tax US retirement income?", "acceptedAnswer": {"@type": "Answer", "text": "GOV.UK says UK residents normally pay UK tax on foreign income, including income from pensions held overseas, unless relief applies. Exact treatment should be verified with UK and US tax professionals."}}, {"@type": "Question", "name": "Can I receive US Social Security in the UK?", "acceptedAnswer": {"@type": "Answer", "text": "SSA provides payment-abroad guidance and a screening tool. Eligibility can depend on citizenship, country, and benefit type, so check directly with SSA."}}, {"@type": "Question", "name": "Does Medicare cover healthcare in the UK?", "acceptedAnswer": {"@type": "Answer", "text": "Medicare.gov says Medicare usually does not cover healthcare outside the US, with limited exceptions. A UK plan should include a separate healthcare assumption."}}, {"@type": "Question", "name": "Should I plan in USD or GBP?", "acceptedAnswer": {"@type": "Answer", "text": "Build your UK budget in pounds. In the planner, switch the display to pounds with the USD and GBP buttons beside Retirement phases; the amount boxes in Edit values then take pounds and convert them to dollars at the current rate. The plan itself is calculated in dollars, so test a weaker dollar by raising the dollar amounts your UK costs need."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=expat">Expat & International</a>
+        </nav>
+        <header class="post-header">
+          <h1>UK Retirement Planning for US Expats</h1>
+          <p class="post-meta"><span class="cat-badge">Expat & International</span> · Published September 21, 2026 · 14 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#key-takeaways">Key Takeaways</a></li>
+      <li><a href="#why-uk-retirement-planning-is-different-for-us-expats">Why UK Retirement Planning Is Different For US Expats</a></li>
+      <li><a href="#1-start-with-residency-and-tax-status">1. Start With Residency And Tax Status</a></li>
+      <li><a href="#2-build-a-gbp-spending-budget">2. Build A GBP Spending Budget</a></li>
+      <li><a href="#3-separate-income-sources">3. Separate Income Sources</a></li>
+      <li><a href="#4-check-social-security-abroad">4. Check Social Security Abroad</a></li>
+      <li><a href="#4a-where-the-planner-actually-models-uk-tax">4a. Where the Planner Actually Models UK Tax</a></li>
+      <li><a href="#5-treat-medicare-as-a-us-coverage-issue">5. Treat Medicare As A US-Coverage Issue</a></li>
+      <li><a href="#6-include-uk-healthcare-and-immigration-costs">6. Include UK Healthcare And Immigration Costs</a></li>
+      <li><a href="#7-model-us-retirement-account-withdrawals">7. Model US Retirement Account Withdrawals</a></li>
+      <li><a href="#8-add-foreign-account-reporting-to-the-checklist">8. Add Foreign Account Reporting To The Checklist</a></li>
+      <li><a href="#9-test-the-plan-against-a-weaker-dollar">9. Test The Plan Against A Weaker Dollar</a></li>
+      <li><a href="#10-build-a-return-to-us-scenario">10. Build A Return-To-US Scenario</a></li>
+      <li><a href="#how-to-model-uk-retirement-in-the-ai-retirement-income-planner">How To Model UK Retirement In The AI Retirement Income Planner</a></li>
+      <li><a href="#what-to-verify-outside-the-planner">What To Verify Outside The Planner</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#source-links">Source Links</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>US expats planning retirement in the UK should model five things together: income, tax residency, healthcare, currency, and account withdrawals. A plan that works in dollars may feel different in pounds. A plan that works under US healthcare assumptions may change when Medicare is limited outside the US. A plan that looks simple before RMDs may become more tax-sensitive later.</p>
+<p>The cleanest approach is to build a UK base case, then compare tax, healthcare, weaker-dollar, Social Security, 401k, and return-to-US scenarios.</p>
+<aside class="cta-box cta-soft">
+  <p>Planning a UK retirement as a US expat? The AI Retirement Income Planner models your USD assets, Social Security, healthcare, and UK and US tax in one plan, and shows every figure in pounds. Build more than one version while you are there: a base case, a weaker dollar entered as higher dollar costs, higher healthcare costs, and a separate US plan for a return.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>US citizens and resident aliens abroad generally remain subject to US tax on worldwide income.</li>
+<li>GOV.UK says UK residents normally pay UK tax on foreign income unless relief applies.</li>
+<li>Social Security payments outside the US can be affected by citizenship, country, and SSA rules.</li>
+<li>Medicare usually does not cover healthcare outside the US, with limited exceptions.</li>
+<li>UK healthcare access can depend on immigration status, ordinary residence, or healthcare surcharge rules.</li>
+<li>A GBP budget funded by USD assets should be tested against a weaker dollar, entered as higher dollar costs.</li>
+<li>Cross-border tax and treaty details should be verified outside the planner.</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/uk-retirement-planning-for-us-expats-1.webp" alt="Illustration of an older couple on a sofa, seen from behind, looking at a large wall board. Five icon rows on the left (government, healthcare, a couple, savings and a bank) flow through a dollar-and-pound exchange symbol to a house and six spending bars, above a row of four ticked checklist icons. A river and city skyline sit on the left; a London terrace, Big Ben and the London Eye on the right." width="1400" height="1050" loading="lazy">
+</figure>
+
+<h2 id="why-uk-retirement-planning-is-different-for-us-expats">Why UK Retirement Planning Is Different For US Expats</h2>
+<p>Retiring in the UK as a US-connected person creates two planning realities.</p>
+<p>The first is lifestyle reality:</p>
+<ul>
+<li>Where will you live?</li>
+<li>What will housing cost?</li>
+<li>Will spending be in GBP?</li>
+<li>How much travel will you do?</li>
+<li>What healthcare access will you have?</li>
+<li>Will you return to the US later?</li>
+</ul>
+<p>The second is tax and account reality:</p>
+<ul>
+<li>Are you still a US taxpayer?</li>
+<li>Are you UK tax resident?</li>
+<li>Which accounts are in USD?</li>
+<li>Which income is taxable in the US, UK, or both?</li>
+<li>Will foreign tax credit treatment apply?</li>
+<li>Will RMDs push income higher later?</li>
+<li>Do you have foreign account reporting obligations?</li>
+</ul>
+<p>You need a model that can handle both realities at once.</p>
+<h2 id="1-start-with-residency-and-tax-status">1. Start With Residency And Tax Status</h2>
+<p>Before modeling the numbers, define the scenario.</p>
+<p>Common planning cases:</p>
+<ul>
+<li>US citizen retiring to the UK.</li>
+<li>Green-card holder retiring to the UK.</li>
+<li>Dual US/UK citizen returning to the UK.</li>
+<li>US spouse and UK spouse moving together.</li>
+<li>UK resident with US retirement accounts.</li>
+<li>Temporary UK stay followed by return to the US.</li>
+</ul>
+<p>The IRS says US citizens and resident aliens abroad are generally subject to US tax on worldwide income and must report taxable income under US tax rules. GOV.UK says UK residents normally pay UK tax on foreign income, including income from pensions held overseas, unless relief applies.</p>
+<p>Those two facts create the core modeling problem: the same income may need to be reviewed in two tax systems.</p>
+<h2 id="2-build-a-gbp-spending-budget">2. Build A GBP Spending Budget</h2>
+<p>If you will live in the UK, build the spending plan in pounds.</p>
+<p>Include:</p>
+<ul>
+<li>Housing.</li>
+<li>Utilities.</li>
+<li>Council tax.</li>
+<li>Groceries.</li>
+<li>Transport.</li>
+<li>Travel to the US.</li>
+<li>Healthcare or private insurance.</li>
+<li>Visa or immigration-related costs.</li>
+<li>Family support.</li>
+<li>Long-term care assumptions.</li>
+<li>Currency transfer costs.</li>
+</ul>
+<p>Then decide which income sources fund that spending.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/uk-retirement-planning-for-us-expats-2.webp" alt="A planner phase card shown in pounds for a UK-resident plan: Phase 1, ages 62 to 65, with 401k, cash and equity withdrawals and £0 from Roth, UK income tax of £271 a month, US federal tax of £38 cancelled by a £38 Foreign Tax Credit, the ACA lines struck through as not applicable, net monthly income and ending balances, and the line 1 USD = 0.7384 GBP." width="472" height="852" loading="lazy">
+</figure>
+
+<h2 id="3-separate-income-sources">3. Separate Income Sources</h2>
+<p>Do not combine everything into one income number.</p>
+<p>Model each source separately:</p>
+<ul>
+<li>US Social Security.</li>
+<li>Spouse Social Security.</li>
+<li>Traditional 401k or IRA withdrawals.</li>
+<li>Roth withdrawals.</li>
+<li>Taxable brokerage income.</li>
+<li>Cash reserve.</li>
+<li>US pension income.</li>
+<li>UK State Pension, if eligible.</li>
+<li>UK workplace or private pension income.</li>
+<li>Rental or passive income.</li>
+<li>Part-time income.</li>
+<li>Lump sums.</li>
+<li>Fixed annuity income.</li>
+</ul>
+<p>Each stream can have a different start date, tax treatment, currency, inflation behavior, and survivor impact.</p>
+<h2 id="4-check-social-security-abroad">4. Check Social Security Abroad</h2>
+<p>SSA says Social Security retirement, survivors, or disability payments may be affected when someone leaves the United States. SSA also provides a Payments Abroad Screening Tool to help people check whether payments can continue outside the US.</p>
+<p>For US citizens living in the UK, Social Security often remains a major retirement income source, but the details still need verification.</p>
+<p>Model:</p>
+<ul>
+<li>Claiming age.</li>
+<li>Spouse claiming age.</li>
+<li>Survivor scenario.</li>
+<li>Direct deposit and currency conversion.</li>
+<li>Taxable Social Security treatment.</li>
+<li>Whether the payment supports fixed UK costs.</li>
+</ul>
+<p>Use the planner's <strong>SS Optimizer</strong> tab and spouse Social Security inputs to <a href="/blog/when-to-take-social-security-62-67-70.html">compare timing choices</a>, then verify payment-abroad details with SSA.</p>
+<h3 id="the-part-that-surprises-people-which-country-taxes-it">The part that surprises people: which country taxes it</h3>
+<p>This is where UK retirement stops resembling every other expat destination, and it is worth getting right because the amounts are not small.</p>
+<p>Under the US-UK tax treaty, social security is taxable <strong>only in the country of residence</strong>. For a US citizen living in the UK, that means your US Social Security is taxed by the UK and <strong>not</strong> by the US. It is one of the saved exceptions to the treaty's saving clause, which is the provision that otherwise lets the US tax its citizens wherever they live.</p>
+<p>Most people assume the opposite. A US benefit, paid by a US agency, in dollars, feels like US income. Treating it that way understates UK tax and overstates US tax, and because Social Security is often the largest single line in a retirement plan, the error compounds every year of the projection.</p>
+<p>The planner models it the treaty way: US Social Security sits inside the UK tax base and outside the US one, with the foreign tax credit then reducing US tax on everything that remains taxable in both places. You can see the whole chain on a phase card, from UK income tax through the credit to a US figure that is frequently zero.</p>
+<p>If your plan currently shows US tax on your Social Security while you are UK resident, that is the assumption to check first.</p>
+<h2 id="4a-where-the-planner-actually-models-uk-tax">4a. Where the Planner Actually Models UK Tax</h2>
+<p>Worth being precise about scope, because it differs from the other expat destinations.</p>
+<p>For a GBP plan with UK residence active, the planner applies <strong>real UK income tax</strong>: the personal allowance, the basic, higher and additional rate bands, and the foreign tax credit against US tax. It taxes US Social Security, 401k and IRA withdrawals, UK State Pension, equity gains and part-time income in the UK base.</p>
+<p>That is a genuine dual-country calculation, not a placeholder. It is also the reason the UK gets its own article rather than being folded into a general "retiring abroad" guide. Canada and Australia have tax models of their own, but they apply that country's tax alone, with no US layer and no credit. The Philippines, Thailand and the euro area are supported as <strong>foreign-residence scenarios</strong> that exclude US healthcare, without local tax regimes behind them.</p>
+<h2 id="5-treat-medicare-as-a-us-coverage-issue">5. Treat Medicare As A US-Coverage Issue</h2>
+<p>Medicare.gov says Medicare usually does not cover healthcare outside the US, with limited exceptions.</p>
+<p>That matters for UK retirement. A US retiree may be used to modeling Medicare premiums, Part D, Medigap, or IRMAA. Living in the UK may require a different healthcare assumption.</p>
+<p>Model:</p>
+<ul>
+<li>UK healthcare access.</li>
+<li>Immigration health surcharge, if applicable.</li>
+<li>Private medical insurance.</li>
+<li>Travel insurance.</li>
+<li>US Medicare premiums kept for return access.</li>
+<li>Medical travel to the US.</li>
+<li>Higher-cost scenario.</li>
+<li>Return-to-US scenario.</li>
+</ul>
+<p>The planner includes Medicare and IRMAA features for US healthcare scenarios and an overseas healthcare cost field when US healthcare is excluded. Use the right mode for the scenario you are testing. The tax half of this decision is covered in <a href="/blog/expat-retirement-taxes-what-to-model.html">expat retirement taxes</a>, and the pound-versus-dollar mechanics in <a href="/blog/retirement-planner-currency-converter.html">the currency converter</a>.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/uk-retirement-planning-for-us-expats-3.webp" alt="An excerpt of a planner phase card from a plan with US healthcare excluded: the Medicare Part B and Part D estimates are struck through as not applicable at $0, beneath a federal income tax line of $183 a month and a 12% bracket bar." width="422" height="126" loading="lazy">
+</figure>
+
+<h2 id="6-include-uk-healthcare-and-immigration-costs">6. Include UK Healthcare And Immigration Costs</h2>
+<p>GOV.UK has healthcare immigration application guidance for people who must pay the immigration health surcharge as part of a visa or immigration application. UK healthcare access can depend on immigration status and ordinary residence, so it should be checked before retirement.</p>
+<p>In the planner, UK residence excludes US healthcare and shows an <strong>Overseas healthcare cost</strong> field for this. If you expect low ongoing medical costs because of NHS access, still build a higher-cost version with private insurance.</p>
+<p>Questions to answer:</p>
+<ul>
+<li>Are you eligible for NHS care?</li>
+<li>Do you owe immigration health surcharge?</li>
+<li>Will private insurance be used?</li>
+<li>Are prescriptions, dental, optical, or private care expected?</li>
+<li>Will you keep US coverage for visits?</li>
+<li>What happens if you return to the US later?</li>
+</ul>
+<h2 id="7-model-us-retirement-account-withdrawals">7. Model US Retirement Account Withdrawals</h2>
+<p>US expats in the UK may hold:</p>
+<ul>
+<li>401k accounts.</li>
+<li>Traditional IRAs.</li>
+<li>Roth IRAs.</li>
+<li>Taxable brokerage accounts.</li>
+<li>US bank accounts.</li>
+</ul>
+<p>Model traditional 401k and IRA balances as tax-deferred accounts. Model Roth separately. Model taxable brokerage separately. This helps the planner show withdrawal timing, tax pressure, RMD estimates, and balance changes.</p>
+<p>IRS early distribution rules and RMD rules still need review. Early distributions can create additional US tax unless an exception applies, and RMDs generally begin at age 73 for traditional IRAs and many retirement plans under current IRS rules.</p>
+<h2 id="8-add-foreign-account-reporting-to-the-checklist">8. Add Foreign Account Reporting To The Checklist</h2>
+<p>Foreign bank and investment accounts may create reporting obligations for US taxpayers. The IRS FBAR page says a US person must file an FBAR if they have a financial interest in or authority over foreign financial accounts and the aggregate value exceeds the reporting threshold at any time during the calendar year.</p>
+<p>A retirement planner does not file FBAR, FATCA, or tax forms. Still, your model should remind you which accounts may exist after the move:</p>
+<ul>
+<li>UK current account.</li>
+<li>UK savings account.</li>
+<li>UK brokerage.</li>
+<li>Joint UK accounts.</li>
+<li>Pension accounts.</li>
+<li>Business accounts.</li>
+<li>Accounts where you have signing authority.</li>
+</ul>
+<p>Use <strong>Plan notes</strong> (under Saved plans) to keep a checklist of items for a tax professional.</p>
+<h2 id="9-test-the-plan-against-a-weaker-dollar">9. Test The Plan Against A Weaker Dollar</h2>
+<p>Currency can change the feel of a plan when assets are mostly in USD and spending is in GBP.</p>
+<p>The planner keeps every amount in US dollars and uses the exchange rate to show them in pounds. Changing the rate therefore changes how the plan reads in pounds, not what it can afford: taxes, balances, Plan Health and Plan Confidence stay exactly the same. Custom rates are also not saved with a plan. So test currency risk in two ways.</p>
+<p>First, read the plan at a less favorable rate. Set your own rate under <strong>Override rates</strong>, show the plan in pounds with the USD and GBP buttons beside Retirement phases, and check whether each phase's net monthly income still covers your UK budget. Note the rate in Plan notes.</p>
+<p>Second, test whether the portfolio can pay for it. Build a version where the dollar withdrawals that fund your UK costs, and the overseas healthcare cost, are 10% to 15% higher, and save it beside your base plan.</p>
+<p>Other versions worth building:</p>
+<ul>
+<li>A one-time currency or relocation shock, entered as a <strong>Lump sums</strong> expense in the phase it falls in.</li>
+<li>Higher UK inflation, using the inflation setting.</li>
+<li>Higher travel costs.</li>
+</ul>
+<p>Compare:</p>
+<ul>
+<li>Net monthly income by phase.</li>
+<li>The lowest balance, on the <strong>Balance</strong> tab's year-by-year view.</li>
+<li>Ending balances, account by account.</li>
+<li>Plan Health.</li>
+<li>Plan Confidence.</li>
+<li>The <strong>Stress test</strong> grid, which varies returns and inflation.</li>
+</ul>
+<p>If the pound moves a long way, check the UK tax parameters in Edit values as well: the personal allowance and bands are held in dollars, with the pound equivalent at today's rate shown beside each.</p>
+<p>Do not try to forecast exchange rates. Test dependence on exchange rates.</p>
+<h2 id="10-build-a-return-to-us-scenario">10. Build A Return-To-US Scenario</h2>
+<p>A UK retirement plan should include a return option, even if the base plan assumes staying.</p>
+<p>Return scenarios can change:</p>
+<ul>
+<li>Healthcare costs.</li>
+<li>Medicare use.</li>
+<li>State tax.</li>
+<li>Housing.</li>
+<li>Travel.</li>
+<li>Currency.</li>
+<li>Family support.</li>
+<li>Long-term care.</li>
+<li>Survivor plans.</li>
+</ul>
+<p>Build at least three plans:</p>
+<ul>
+<li>UK base case.</li>
+<li>UK high-cost case.</li>
+<li>A return-to-US plan.</li>
+</ul>
+<p>A plan keeps one residence from start to finish, so the planner cannot switch you back to US rules at a chosen age. Build the return case as a separate US plan and read it from the age you would move back, the same way you would <a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">compare retiring in the US with retiring abroad</a>. The planner holds three saved plans and compares your current plan with one of them at a time, so export any extra versions to JSON.</p>
+<h2 id="how-to-model-uk-retirement-in-the-ai-retirement-income-planner">How To Model UK Retirement In The AI Retirement Income Planner</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>Select <strong>GBP</strong> and turn on <strong>UK Res.</strong> if you will be UK tax resident.</li>
+<li>Enter US Social Security. For a couple, choose <strong>Married filing jointly</strong> under <strong>US tax obligation</strong> to open the spouse Social Security fields.</li>
+<li>Enter tax-deferred US retirement balances.</li>
+<li>Enter Roth, taxable brokerage, and cash separately.</li>
+<li>Enter pensions with start ages and COLA assumptions.</li>
+<li>Check the UK tax parameters (personal allowance and bands) in Edit values.</li>
+<li>Leave <strong>US taxpayer</strong> selected under <strong>US tax obligation</strong> unless you are not a US person under IRS rules. Citizens and green-card holders generally remain US taxpayers while living abroad.</li>
+<li>Read the Foreign Tax Credit lines on each phase card.</li>
+<li>Enter the <strong>Overseas healthcare cost</strong>, since UK residence excludes US healthcare.</li>
+<li>Check the <strong>RMD start age</strong> in Edit values. It defaults to 73; under SECURE 2.0 it is 75 for anyone born in 1960 or later.</li>
+<li>Choose the exchange rate you plan with and record it in Plan notes, because custom rates are not saved with the plan.</li>
+<li>Save a UK base plan.</li>
+<li>Save a higher-healthcare plan.</li>
+<li>Save a weaker-dollar plan, with the extra cost entered in dollars.</li>
+<li>Build the return-to-US plan as a separate US plan, and export it to JSON if the three saved-plan slots are full.</li>
+<li>Read Plan Health, Plan Confidence and the Stress test for each version, and use <a href="/blog/save-load-compare-retirement-scenarios.html">saved-plan <strong>Compare</strong></a> to set two side by side.</li>
+<li>Use optional AI Chat or Plan with AI to explain the scenario differences.</li>
+</ol>
+<h2 id="what-to-verify-outside-the-planner">What To Verify Outside The Planner</h2>
+<p>Keep a professional-review checklist:</p>
+<ul>
+<li>UK tax residence.</li>
+<li>US tax filing status.</li>
+<li>UK treatment of US pensions and retirement account withdrawals.</li>
+<li>US treatment of UK pension income.</li>
+<li>Foreign tax credit treatment.</li>
+<li>Treaty positions.</li>
+<li>FBAR and FATCA reporting.</li>
+<li>Social Security payment-abroad rules.</li>
+<li>Medicare enrollment and coverage choices.</li>
+<li>NHS eligibility.</li>
+<li>Immigration health surcharge.</li>
+<li>Estate and inheritance tax exposure.</li>
+<li>Currency-transfer logistics.</li>
+</ul>
+<p>The planner helps you see the cash-flow impact. It does not replace legal, tax, immigration, or benefits review.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo, switch the currency to pounds and turn on UK residence. The phase cards then show UK income tax, the US tax before the foreign tax credit, the credit itself, and a US figure that is frequently zero.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="can-a-us-citizen-retire-in-the-uk">Can a US citizen retire in the UK?</h3>
+<p>Possibly, but immigration status, tax residency, healthcare access, income, housing, and reporting obligations need review. The financial plan should be modeled before the move.</p>
+<h3 id="do-us-expats-in-the-uk-still-file-us-taxes">Do US expats in the UK still file US taxes?</h3>
+<p>The IRS says US citizens and resident aliens abroad are generally subject to US tax on worldwide income and must report taxable income under US tax rules.</p>
+<h3 id="will-the-uk-tax-us-retirement-income">Will the UK tax US retirement income?</h3>
+<p>GOV.UK says UK residents normally pay UK tax on foreign income, including income from pensions held overseas, unless relief applies. Exact treatment should be verified with UK and US tax professionals.</p>
+<h3 id="can-i-receive-us-social-security-in-the-uk">Can I receive US Social Security in the UK?</h3>
+<p>SSA provides payment-abroad guidance and a screening tool. Eligibility can depend on citizenship, country, and benefit type, so check directly with SSA.</p>
+<h3 id="does-medicare-cover-healthcare-in-the-uk">Does Medicare cover healthcare in the UK?</h3>
+<p>Medicare.gov says Medicare usually does not cover healthcare outside the US, with limited exceptions. A UK plan should include a separate healthcare assumption.</p>
+<h3 id="should-i-plan-in-usd-or-gbp">Should I plan in USD or GBP?</h3>
+<p>Build your UK budget in pounds. In the planner, switch the display to pounds with the USD and GBP buttons beside Retirement phases; the amount boxes in Edit values then take pounds and convert them to dollars at the current rate. The plan itself is calculated in dollars, so test a weaker dollar by raising the dollar amounts your UK costs need.</p>
+<h2 id="source-links">Source Links</h2>
+<ul>
+<li>IRS, U.S. citizens and resident aliens abroad: https://www.irs.gov/individuals/international-taxpayers/us-citizens-and-resident-aliens-abroad</li>
+<li>IRS, Report of Foreign Bank and Financial Accounts (FBAR): https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar</li>
+<li>IRS, Foreign Tax Credit: https://www.irs.gov/individuals/international-taxpayers/foreign-tax-credit</li>
+<li>GOV.UK, Tax on foreign income: https://www.gov.uk/tax-foreign-income</li>
+<li>GOV.UK, Pay for UK healthcare as part of your immigration application: https://www.gov.uk/healthcare-immigration-application</li>
+<li>SSA, Social Security Payments Outside the United States: https://www.ssa.gov/international/payments.html</li>
+<li>Medicare.gov, Travel outside the U.S.: https://www.medicare.gov/coverage/travel-outside-the-u.s.</li>
+<li>AI Retirement Income Planner: https://airetirementincomeplanner.com/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, immigration, privacy, cybersecurity, healthcare, insurance, Social Security, Medicare, estate, AI safety, software, or retirement advice. UK retirement planning for US expats should be reviewed with qualified US/UK tax, legal, immigration, benefits, and financial professionals.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free guide</p>
+  <h2>What retiring abroad does to your income</h2>
+  <p class="post-capture-pitch">The same retirement modeled in the US, UK, Canada and Australia — with the method, so you can check it.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="abroad">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-uk-retirement-planning-for-us-expats">Leave this blank</label>
+      <input type="text" id="pc-honey-uk-retirement-planning-for-us-expats" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-uk-retirement-planning-for-us-expats">Email address</label>
+    <input type="email" id="pc-email-uk-retirement-planning-for-us-expats" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the guide</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>A UK retirement plan for US expats should be modeled before it is trusted. The AI Retirement Income Planner helps make the moving parts visible: income, withdrawals, taxes, healthcare, currency, risk, and scenarios.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/expat-retirement-taxes-what-to-model.html">Expat Retirement Taxes: What to Model Before Moving</a> <span class="post-meta">· Expat & International</span></li>
+      <li><a href="/blog/how-to-compare-retiring-in-the-us-vs-abroad.html">How to Compare Retiring in the US vs Abroad</a> <span class="post-meta">· Expat & International</span></li>
+      <li><a href="/blog/how-to-create-a-retirement-report.html">How to Create a Retirement Report</a> <span class="post-meta">· Planner How-To</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
