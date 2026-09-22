@@ -1114,6 +1114,8 @@ function australianFedTax(income,free,b1,b2,b3,r,_tg){
  * Foreign Tax Credit are not recomputed for the spike year — they are phase-average constructs here.
  * calcPhase raises a threshold-crossing warning instead. State tax is flat in this model, so its
  * incremental cost is exactly rate × the state-taxable slice, passed in as `stateExtra`.
+ * "This phase's ordinary income" means the base of the tax being charged: the US `gross`, or for a UK
+ * resident the UK base passed as `ukBase` (the two differ, most of all by Social Security).
  * Pure & DOM-free.
  */
 function _lumpIncrementalTax(o){
@@ -1131,7 +1133,9 @@ function _lumpIncrementalTax(o){
     if(!o.subjectUS)return 0;
     return fedTax(Math.max(0,g-o.ded),o.brk10,o.brk12,o.brk22,null);
   };
-  return Math.max(0,taxAt(o.gross+extra)-taxAt(o.gross))+Math.max(0,o.stateExtra||0)*((o.stateRate||0)/100);
+  // v400: a UK resident's draw stacks on the UK base, not the US one (see ukBase_ann in calcPhase).
+  const base=(o.isUkRes&&o.ukBase!=null)?o.ukBase:o.gross;
+  return Math.max(0,taxAt(base+extra)-taxAt(base))+Math.max(0,o.stateExtra||0)*((o.stateRate||0)/100);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1489,9 +1493,6 @@ function calcPhase(p){
   const taxableEquity_ann=sim.avgTaxableEquity*12;
   const convIncome_ann=sim.convActualAnn; // capped at the 401k that was actually there to convert
   const totalSS_ann=uss_ann+spSS_ann;
-  const _gSs=(isCanadian||isAustralian||!subjectUS||!totalSS_ann)?null:_trGroup(T,'ssprov','How much of your Social Security is taxable','tg-ssprov','ssProvisional');
-  const taxExemptInt_ann=p.taxExemptInt||0;   // v14: untaxed, but counts toward MAGI and SS provisional income
-  const sp=isCanadian||isAustralian||!subjectUS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
   // ── US-UK treaty, Article 17(3) ─────────────────────────────────────────────────────────────
   // "Payments made by a Contracting State under the provisions of the social security or similar
   //  legislation of that State to a resident of the other Contracting State shall be taxable only
@@ -1506,9 +1507,20 @@ function calcPhase(p){
   // allowance) costs more than it saves, and the Foreign Tax Credit was already wiping out most of
   // the US bill so there was nothing left for it to absorb.
   //
-  // Declared here rather than beside `foreign`/`isUkRes` further down because `gross` is computed
-  // above those, and const declarations cannot be used before they are declared.
-  const ukTaxesSS=!!(p.ukResident&&!p.foreignResident&&subjectUS);
+  // Declared here rather than beside `foreign`/`isUkRes` further down because `sp` and `gross` are
+  // computed above those, and const declarations cannot be used before they are declared.
+  //
+  // v400: it no longer requires `subjectUS`. 17(3) covers ANY UK resident, not only US citizens (for
+  // them it matters because it survives the saving clause). Requiring subjectUS left a UK resident
+  // set to "Non-US" with Social Security in NEITHER base: no US tax at all, and none in the UK either.
+  const ukTaxesSS=!!(p.ukResident&&!p.foreignResident);
+  // `sp` is the US provisional-income share of SS. When the UK taxes SS it never enters the US base,
+  // so the share is 0 and its worksheet is not traced: the phase card, Under the hood, the PDF and the
+  // AI context all read `sp`, and before v400 they told a UK resident "85% of SS taxable" for income
+  // the engine was (correctly) leaving out of the US figure.
+  const _gSs=(isCanadian||isAustralian||!subjectUS||ukTaxesSS||!totalSS_ann)?null:_trGroup(T,'ssprov','How much of your Social Security is taxable','tg-ssprov','ssProvisional');
+  const taxExemptInt_ann=p.taxExemptInt||0;   // v14: untaxed, but counts toward MAGI and SS provisional income
+  const sp=isCanadian||isAustralian||!subjectUS||ukTaxesSS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
   // Ordinary income varies by country:
   const rentalIncome_ann=rentalTaxable?rentalAnn:0;
   // Canada: CPP + OAS are taxable; SS/UKP also included as ordinary income (treaty nuance not modelled — taxed at full CA rate)
@@ -1520,6 +1532,13 @@ function calcPhase(p){
       // ukTaxesSS ⇒ Article 17(3) puts Social Security beyond US reach entirely, so it leaves the
       // US base rather than entering it at the 85% provisional share.
       : w_ann+(ukTaxesSS?0:(uss_ann+spSS_ann)*sp)+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann;
+  // The UK-taxable base, in ONE place: UK income tax and the lump-sum UK tax below both read it.
+  // Social Security goes in FULL, because the 85% provisional-income rule is a US construct.
+  // v400: the lump-sum call used to be handed the US `gross`, which has held no Social Security for a
+  // UK resident since v365 (and does hold conversions, rental and US pensions, which this base does
+  // not), so a one-off 401k draw was priced from far too low a starting point. On the treaty fixture a
+  // $60k draw in phase 4 was charged $16,617 of UK tax instead of $23,898.
+  const ukBase_ann=w_ann+ukp_ann+taxableEquity_ann+partTime_ann+(ukTaxesSS?(uss_ann+spSS_ann):0);
   {// TRACE: what gross taxable income is actually made of. `gross` survives in the result bag but
    // its composition never did, so the UI could only ever show the total.
     const g=_trGroup(T,'income','What counts as taxable income',null,'taxableIncome');
@@ -1528,6 +1547,10 @@ function calcPhase(p){
     if(isCanadian||isAustralian){
       _trRow(g,'Social Security',uss_ann,'usd/yr',{kind:'in',skipZero:true});
       _trRow(g,'Spouse Social Security',spSS_ann,'usd/yr',{kind:'in',skipZero:true});
+    }else if(ukTaxesSS){
+      // Not a zero-value "taxable SS" row: say WHY it is absent, or the reader assumes it was forgotten.
+      if(uss_ann+spSS_ann>0)_trRow(g,'Social Security',0,'flagv',{kind:'flag',
+        note:'Not US-taxable: as a UK resident your US Social Security is taxed in the UK instead (US-UK treaty, Article 17(3)).'});
     }else{
       _trRow(g,'Taxable Social Security',(uss_ann+spSS_ann)*sp,'usd/yr',{kind:'in',skipZero:true,
         base:uss_ann+spSS_ann,baseAs:'of',formula:'total SS × taxable share (see the Social Security group)'});
@@ -1668,7 +1691,7 @@ function calcPhase(p){
     if(isUkRes&&!foreign){
       // Social Security in FULL: the 85% provisional-income rule is a US construct with no UK
       // equivalent, so a UK resident is taxed on the whole payment like any other pension income.
-      const ukTaxableIncome=w_ann+ukp_ann+taxableEquity_ann+partTime_ann+(ukTaxesSS?(uss_ann+spSS_ann):0);
+      const ukTaxableIncome=ukBase_ann;
       const adjUkPA=Math.round((p.ukPersonalAllowance||15911)*inflMult);
       const adjUkBasicCeil=Math.round((p.ukBasicCeil||63542)*inflMult);
       const adjUkHigherCeil=Math.round((p.ukHigherCeil||158352)*inflMult);
@@ -1784,7 +1807,7 @@ function calcPhase(p){
       }
     }
     lumpTax=_lumpIncrementalTax({
-      gross,extraOrdinary:_lumpOrd,extraGain:_lumpGain,stateExtra,stateRate:p.stateTaxRate||0,
+      gross,ukBase:ukBase_ann,extraOrdinary:_lumpOrd,extraGain:_lumpGain,stateExtra,stateRate:p.stateTaxRate||0,
       isCanadian,isAustralian,isUkRes,subjectUS,ded,
       brk10:adjBrk10Eff,brk12:adjBrk12Eff,brk22:adjBrk22Eff,
       ukPA:Math.round((p.ukPersonalAllowance||15911)*inflMult),ukBasicCeil:Math.round((p.ukBasicCeil||63542)*inflMult),
