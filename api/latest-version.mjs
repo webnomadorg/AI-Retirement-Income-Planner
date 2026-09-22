@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 398, released: '2026-09-17', headline: 'Your figures do not change with this update. If your plan is shown in a currency other than dollars and you change an exchange rate, editing a figure afterwards now leaves every other amount exactly as it was. Before this update that next edit could scale the balances, benefits and withdrawals in your plan by the size of the rate change, so if you have used custom exchange rates that way, please check your figures against your own records. For UK residents, the AI assistant now treats US Social Security the way the planner calculates it: taxed in the UK, not the US.' }; /* __LATEST__ */
+const LATEST = { build: 400, released: '2026-09-22', headline: 'Some figures change with this update if your plan uses UK residence; plans on any other residence are unaffected. Phase cards now say that US Social Security is taxed in the UK only, which is how the planner already calculates it. If you live in the UK and are not a US taxpayer, your Social Security is now included in your UK tax. One-off withdrawals by UK residents are now taxed on top of income that includes Social Security, so a large planned withdrawal may deliver less than before.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
