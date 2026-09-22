@@ -49,7 +49,7 @@ The reason is not tidiness. Which box you choose decides three things: how the i
 | UK State Pension | UK State Pension | Grows by the Triple Lock, and under the treaty it is taxed differently |
 | Part-time or consulting work | Part-time work, on the phase | Ordinary earned income, only in the years you expect it |
 | Rental, annuity or dividend income | Rental / passive income | Can be taxable or a return of your own capital |
-| An inheritance or a house sale | Lump sums | A one-off event in a single year, not an income stream |
+| An inheritance or a house sale | Lump sums | A one-off event, not an income stream; it lands at the start of the phase you choose |
 
 [IMAGE where-to-enter-retirement-income 2]
 
@@ -99,7 +99,7 @@ If you have worked in the UK you may be entitled to a UK State Pension alongside
 
 **Rental, annuity and dividend income** has its own field because it can be taxable or partly a return of your own capital, and that distinction changes both your tax and the income figure the ACA and Medicare look at. For a rental, what belongs in the box is [the net figure after vacancy, repairs and management](/blog/retirement-with-rental-income.html), since the planner does not model those costs separately.
 
-**An inheritance, a house sale or a large one-off expense** is not an income stream at all — it is a single event in a single year, and it belongs in lump sums. Spreading a windfall across a phase as though it were monthly income would understate what it does to your tax in the year it lands.
+**An inheritance, a house sale or a large one-off expense** is not an income stream at all. It is a single event, and it belongs in lump sums, where each event attaches to a phase and lands at the start of it, because the planner projects in multi-year phases rather than calendar years. A windfall goes into the account you choose and only becomes income when you draw on it, so entering it as monthly income would invent tax it never creates. An expense paid from a 401k or brokerage account is taxed as a one-off on top of a year of that phase's normal income (all of a 401k draw, only the gain on holdings sold), which spreading it across the phase as higher withdrawals would understate.
 
 ## Why the Box Matters More Than It Looks
 

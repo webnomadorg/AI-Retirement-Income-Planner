@@ -297,7 +297,7 @@ Everything above is a method. We also ran it, and published the result: one $1.2
 
 **The ranking does not hold still.** The country that comes out ahead the year you retire is often not the one ahead at 80. In the base case the United States climbs from third to second and Australia slips from second to third — neither of them doing anything differently. Medicare replacing marketplace insurance at 65, Social Security starting at 67 and RMDs beginning at 73 are enough to reorder the table on their own. A comparison run only for your first year of retirement can point you at the wrong country.
 
-**After Social Security starts, the difference stops being tax.** Because of the credit mechanism described in Step 3, the US and UK tax bills converge exactly. From that point the entire remaining gap is healthcare — which means the question you are really answering is not "which country taxes me less" but "who is paying my Medicare premiums".
+**After Social Security starts, the difference stops being tax.** Because of the credit mechanism described in Step 3, [the US and UK tax bills converge exactly](/blog/uk-retirement-planning-for-us-expats.html). From that point the entire remaining gap is healthcare — which means the question you are really answering is not "which country taxes me less" but "who is paying my Medicare premiums".
 
 **The answer depends on how much you have.** Across portfolio sizes the early leader changed three times: Australia at the smaller end, the UK in the middle, the United States at $2.5M. The last phase, though, was won by the same country at every size we tested. So a friend's conclusion does not transfer to your balance sheet, even with identical assumptions.
 
