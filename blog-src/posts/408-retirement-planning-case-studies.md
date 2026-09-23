@@ -56,7 +56,7 @@ This is the same challenge faced by anyone asking whether they [can retire at 55
 
 ## Case Study 2: The US Expat in Southeast Asia
 
-Now consider a US citizen who sells up and moves to the Philippines or Thailand. Say they are 58, have proceeds from a house sale in cash and a brokerage account, no 401(k), and plan to claim Social Security later.
+Now consider a US citizen who sells up and [moves to the Philippines](/blog/philippines-retirement-planning-for-us-retirees.html) or Thailand. Say they are 58, have proceeds from a house sale in cash and a brokerage account, no 401(k), and plan to claim Social Security later.
 
 [IMAGE case studies 2]
 
