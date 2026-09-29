@@ -39,7 +39,7 @@ The reason is not tidiness. Which box you choose decides three things: how the i
 | What you receive | Where it goes | Why |
 | --- | --- | --- |
 | Social Security retirement | Social Security | Taxed under Social Security rules |
-| Social Security spousal | Spouse Social Security | Starts when *your spouse* reaches their claim age |
+| Social Security spousal | Nothing extra: enter each spouse's *own* benefit (Social Security and Spouse Social Security) | The planner adds the spousal top-up itself, once you have both claimed |
 | Social Security survivor (from a late spouse) | Social Security | You keep the larger benefit; it is still Social Security |
 | **SSDI** (Social Security Disability) | **Social Security** | Same annual increase, same tax rules, converts at full retirement age |
 | Employer or private long-term disability | Pension / disability stream | Different tax treatment; usually stops at 65 |

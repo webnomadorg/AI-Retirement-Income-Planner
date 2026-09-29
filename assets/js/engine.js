@@ -11,6 +11,9 @@
   // calcSurvivorPhases (sliced below) reads the desktop's live-state globals directly. The survivorPhases
   // wrapper sets them from its arguments before each call, so the bundle stays effectively stateless.
   let S, p5EndAge, lumps;
+  // Desktop sweep R18-1: the desktop's annuity record (a plan file's annuityPlanState) — calcSurvivorPhases stops a
+  // single-life annuity at the first death. Set by survivorPhases from its 4th argument, cleared after.
+  let _annuityPlanState = null;
   // Only used for human-readable COLA note strings baked into phase results. Must match the
   // desktop fmtC output for USD (symbol + rounded + thousands separators) so frozen demo data
   // and mobile phase notes read like the real app: "COLA: $2,200 → $2,407/mo".
@@ -84,8 +87,8 @@ function _trFindRow(g,id){
 // Display order for the groups. calcPhase emits them in whatever order the arithmetic happens to
 // run (SS taxability has to be resolved before gross income can be totalled, for instance), so the
 // trace is sorted into reading order once at the end rather than contorting the engine to match.
-const TRACE_ORDER=['infl','income','ssprov','ded','fedbrk','uktax','ftc','cadtax','austax','medlevy',
-  'niit','statetax','magi','lump','aca','medicare','rmd','wd','net'];
+const TRACE_ORDER=['span','infl','streams','income','gain','ssprov','ded','fedbrk','uktax','ftc','cadtax','austax','medlevy',
+  'niit','statetax','magi','lump','aca','medicare','rmd','wd','growth','net'];
 function _trFinish(T){
   const ix=id=>{const i=TRACE_ORDER.indexOf(id);return i<0?TRACE_ORDER.length:i;};
   T.groups.sort((a,b)=>ix(a.id)-ix(b.id));
@@ -157,7 +160,10 @@ const D_USD={
   // PLANNING a future retirement here reaches State Pension age at 67 or later. The phase
   // boundaries and the help copy assume 67 too. Editable per plan for anyone already at 66.
   ssBaseAge:62,ukpBaseAge:67,
-  uss:1000,ukp:1000,medicare:202.9,medicareD:40.79,
+  // Sweep R12-1 (v434, owner): a new plan has NO UK State Pension. It defaulted to $1,000/mo from 67, paid in any
+  // residence — pre-filled on desktop, and invisible on mobile outside the UK residence, so a US plan counted
+  // $389k–$515k of pension it did not have. Saved plans keep their own value; the self-test pins the old 1000.
+  uss:1000,ukp:0,medicare:202.9,medicareD:40.79,
   // ── v8: expat/overseas healthcare cost /mo (USD). Used only when US healthcare is excluded
   //         (foreign PHP/THB, UK, Canada, Australia residence). Inflated per phase by healthcareInflation. ──
   expatHealthcare:0,
@@ -172,7 +178,9 @@ const D_USD={
   //         A positive % overrides only the Medicare/ACA premium growth, not the rest of the plan.
   healthcareInflation:null,
   // ── v3: rental / passive income & RMD ──
-  rentalTaxable:true, rmdStartAge:73,
+  // Sweep R18-5 (v452): null = automatic, from the birth year under SECURE 2.0 (73 if born 1951–1959, 75 if 1960 or
+  // later — _rmdStartAgeOf). It was 73 for everyone. rmdAgeV marks a plan already migrated (a saved 73 becomes automatic).
+  rentalTaxable:true, rmdStartAge:null, rmdAgeV:1,
   // ── v9: US private/employer/disability pension (inflation-adjustable income stream).
   //         usPension = monthly USD at base age (0 = stream off). Activates at usPensionBaseAge
   //         like CPP/OAS (no phase split). usPensionColaRate null/blank ⇒ track general inflation;
@@ -206,8 +214,12 @@ const D_USD={
   //   strength of "this is p0" alone. ──
   earlyAccessMode:'locked',
   // ── v8: Survivor scenario — model income/tax when one spouse dies (MFJ plans only) ──
-  //         survivorWho 'spouse' = lower earner dies; household keeps the larger SS, filing → single.
-  survivorEnabled:false, survivorDeathAge:75, survivorWho:'spouse',
+  //         Household keeps the larger SS, filing → single.
+  //         survivorFirstDeath (sweep R11-4, v429): WHO dies first — 'me' (the default: your spouse survives, on
+  //         the spouse's own ages, with your pensions reduced as below) or 'spouse' (you survive on your own ages and
+  //         keep every pension). survivorWho is a dead legacy key: nothing ever set or
+  //         read it, and every saved plan holds its 'spouse' default, so it cannot carry the new choice.
+  survivorEnabled:false, survivorDeathAge:75, survivorWho:'spouse', survivorFirstDeath:'me',
   // ── v10: survivor spending need as % of the couple's spending. The survivor's income is
   //         benchmarked against (couple net × this %) rather than full couple net — a survivor
   //         typically needs ~70-75% (one less person's food/travel/insurance; housing barely drops).
@@ -217,6 +229,20 @@ const D_USD={
   //         100 = joint-and-survivor / preserves prior behaviour; 50 = typical J&S election;
   //         0 = single-life pension or disability that ends at death. Only used in the survivor projection. ──
   usPensionSurvivorPct:100, usPension2SurvivorPct:100,
+  // ── Sweep R18-2 (v452): WHOSE income, for the survivor projection. partTimeOwner 'me' | 'spouse' | 'shared' (continues
+  //         after the first death — the old behaviour, so the default); usPension2Owner 'me' | 'spouse' (a spouse's own
+  //         pension has no other box). The owner's death applies that stream's rule; the survivor keeps their own. ──
+  partTimeOwner:'shared', usPension2Owner:'me',
+  // ── Sweep R11-4b (v432, owner's choice): what continues to your spouse from YOUR government pensions when you
+  //         die first. UK State Pension: this % (default 0 — an inheritance depends on the record, so the user
+  //         enters it). CPP: the CPP survivor's pension (sweep R22-1, _survivorCppOpts). OAS: stops. Survivor
+  //         projection only.
+  //   Sweep R22-2 (v481): the Age Pension default is 32.7, not 0. A survivor moves from the couple rate to the SINGLE rate
+  //         (Services Australia, 20 Sep 2026: A$1,237.70 a fortnight single, A$933.00 each for a couple — ×1.327; the ratio
+  //         is set in law, so it barely moves). The survivor keeps their own Age Pension, and 32.7% of the late spouse's
+  //         added to it reaches the single rate when the two are equal. At 0 a couple each on the maximum left the survivor
+  //         A$660/mo short (pen22.mjs). No plan a customer holds carries the field yet (it arrived after v400). ──
+  ukpSurvivorPct:0, agePensionSurvivorPct:32.7,
   // ── v13: SSDI (Social Security Disability). When true, s.uss is an SSDI benefit already in payment:
   //         ssStartAge may drop below 62 (SSDI has no earliest-claim age and no actuarial reduction —
   //         it pays the FRA/PIA amount), and it carries the ordinary SS COLA and SS tax treatment,
@@ -236,9 +262,23 @@ const D_USD={
   //         month-level earnings model and this is benefits administration, not income projection.
   //         2026 figures; refreshable via Fetch current rates like every other annual number. ──
   ssdiBlind:false, sgaLimitMo:1690, sgaLimitBlindMo:2830,
+  // ── Sweep R19-2 (v458): the Social Security retirement EARNINGS TEST. Before full retirement age SSA withholds $1 of
+  //         benefits for every $2 earned above ssEarningsLimit, and $1 per $3 above ssEarningsLimitFra in the year FRA is
+  //         reached; the benefit is recalculated upward at FRA for the months withheld. 2026 figures (annual, USD);
+  //         refreshable, and inflated per phase like the tax thresholds. ──
+  ssEarningsLimit:24480, ssEarningsLimitFra:65160,
+  // ── Sweep R24-2 (v491): months of benefit the earnings test withheld BEFORE the plan's start — set by Replan from the plan's own
+  //         projection to today (yours, your spouse's), so SSA's recalculation at full retirement age still repays them. 0 for a plan
+  //         that has not been replanned; Reset to original plan clears them. ──
+  etWithheldYou:0, etWithheldSp:0,
   // ── v2: filing status + spouse SS ──
   filingStatus:'single', // 'single' | 'mfj'
   spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,
+  // ── Sweep R20-1 (v467): the Social Security SPOUSAL top-up, on for a married plan. Each of you is paid your own benefit
+  //         plus any excess of half the other's full-retirement amount (PIA) over your own — SSA's rule — cut for claiming
+  //         before FRA on the spousal schedule, never raised past it, and paid only once you have both claimed. Spouse SS is
+  //         the spouse's OWN benefit (0 with no record of their own). false = not paid (e.g. a spouse who does not qualify). ──
+  spousalAuto:true,
   // ── v6: spouse current age (used to gate spouse SS by spouse's actual age,
   //         not the primary's). If unset, falls back to primary's currentAge → same-age assumption preserved.
   spouseCurrentAge:0,
@@ -252,6 +292,9 @@ const D_USD={
   // Single filer brackets
   stdDed:16100,seniorDed:2050,
   brk10:12400,brk12:50400,brk22:105700,
+  // Sweep R2-5 (v405): the 24/32/35% ceilings — 37% applies above brk35. The engine used to stop at
+  // 24%, taxing everything above the 22% ceiling at 24% however large (IRS Rev. Proc. 2025-32).
+  brk24:201775,brk32:256225,brk35:640600,
   irmaa:109000,
   // ── v14: the FULL IRMAA ladder. IRMAA has six income brackets, not one, and the surcharge at the
   //         top is several hundred dollars a month per person — anyone running sizeable Roth
@@ -301,8 +344,13 @@ const D_USD={
   // ── v2: MFJ brackets (approx double single) ──
   mfjStdDed:32200,mfjSeniorDed:3300,
   mfjBrk10:24800,mfjBrk12:100800,mfjBrk22:211400,
+  mfjBrk24:403550,mfjBrk32:512450,mfjBrk35:768700,
   mfjIrmaa:218000,
   fpl400:62600,fpl250:39125,fpl100:15650,
+  // Sweep R9-3 (v423): the 2-person poverty line (HHS 2025, used for 2026 coverage). A married couple's
+  // household MAGI is measured against it — against the 1-person line above their subsidy cliff sat at
+  // $62,600 instead of $84,600. Chosen by filing status in _fplOf, like the other MFJ thresholds.
+  mfjFpl400:84600,mfjFpl250:52875,mfjFpl100:21150,
   // ── v16: the ACA applicable-percentage ladder. Between 100% and 400% FPL the benchmark Silver
   //         premium is capped at a share of MAGI that rises with your FPL band. These were literals
   //         inside acaPrem() until now, which meant "Fetch current rates" could not reach them even
@@ -324,7 +372,7 @@ const D_USD={
   //         anything refreshable and NOT in it was never checked, which is the failure this exists
   //         to surface — a silently omitted field used to be indistinguishable from a confirmed one. ──
   ratesLastRun:null,
-  // UK tax parameters (stored in USD, converted from GBP at current rate)
+  // UK tax parameters (stored in USD at the rate in taxFxAt below — R20-6; the app converts them at today's rate)
   // GBP source figures, with the rate they were converted at. Kept in step by refresh_defaults.py --
   // a value refreshed beside a comment asserting the old rate is worse than no comment at all.
   ukPersonalAllowance:17141, // £12,570 at ~1.364 USD/GBP
@@ -338,28 +386,73 @@ const D_USD={
   phaseAge1end:62, phaseAge2end:65, phaseAge3end:67, phaseAge4end:73,
   // ── v5: SS claiming age (62–70) — may create a display-only split phase ──
   ssStartAge:62,
+  // ── Sweep R20-7 (v467): the calendar year the plan's ages refer to. With no birth year entered, the birth year (FRA, RMD
+  //         age, the earnings test) is estimated as this year − the plan's age. It used TODAY's year, so a saved plan's
+  //         estimate moved on every 1 January (a plan starting at 67: RMD age 73 → 75 overnight). A new plan, a Reset and a
+  //         Replan take the current year; a plan saved without it gets the year it is first opened (the load merge). ──
+  planYear:new Date().getFullYear(),planYearOrig:null, // planYearOrig: the year before a Replan, for resetReplan
   // ── v8: birth year — drives Social Security Full Retirement Age. 0 ⇒ estimate from age (FRA 67).
   birthYear:0,
   // ── v4: Canada — CPP + OAS ──
   cpp:0, cppBaseAge:65, cppColaRate:2.6,
   oas:0, oasBaseAge:65, oasColaRate:2.6,
-  // ── v4: Canada tax parameters (federal, stored in CAD-equivalent USD) ──
-  cadPersonalAmount:16415, cadBrk1:58375, cadBrk2:116750, cadBrk3:180946, cadBrk4:258394,
+  // ── Sweep R22-1 (v481): the CPP survivor's pension (_survivorCppOpts) — the flat rate paid to a survivor under 65 on top of
+  //         37.5% of the late spouse's pension (C$238.17/mo in 2026), and the combined maximum of a survivor's and a
+  //         retirement pension (C$1,531.56/mo at 65 in 2026). Monthly, stored as USD EQUIVALENTS at taxFxAt like the
+  //         Canadian thresholds; refreshable; they rise at the CPP COLA from the plan's start. ──
+  cppSurvFlatMo:169.47, cppCombinedMaxMo:1089.77,
+  // ── v4: Canada tax parameters (federal) — stored as USD EQUIVALENTS, like the UK figures ──
+  //   ⚠ Sweep R2-1 (v405): these held the statutory C$ numbers (16415, 58375 …) while the engine
+  //   applied them to USD income, understating Canadian tax 11–14%. Converted at TAX_FX.CAD (the rate
+  //   of 2026-09-23); plans saved before then are converted once on load (_migrateTaxUnits).
+  cadPersonalAmount:11680, // C$16,415 at ~0.712 USD/CAD
+  cadBrk1:41536,  // C$58,375
+  cadBrk2:83072,  // C$116,750
+  cadBrk3:128751, // C$180,946
+  cadBrk4:183858, // C$258,394
   cadRate1:14, cadRate2:20.5, cadRate3:26, cadRate4:29, cadRate5:33,
   // Provincial tax: simplified flat rate added on taxable income (representative average ~12%)
   cadProvincialRate:10,
   // ── v4: Australia — Super + Age Pension ──
   superBal:0, rSuper:7,
   agePension:0, agePensionBaseAge:67, agePensionColaRate:2.6,
-  // ── v4: Australia tax parameters (federal, stored in AUD-equivalent USD) ──
+  // ── Sweep R19-1 (v458): the SPOUSE's own government pensions (a married plan). Monthly, USD; each base age is the
+  //         SPOUSE's age when it starts. Paid and grown like yours (UKP by the triple lock, the rest by their COLA), gated
+  //         the same way (UKP any residence, CPP/OAS a C$ plan, the Age Pension an Australian resident), and taxed as the
+  //         spouse's income. In the survivor projection they continue in full if you die first; if your spouse dies they
+  //         follow the same rules as yours (UKP / Age Pension at the survivor %, CPP 60%, OAS stops). ──
+  spouseUkp:0, spouseUkpBaseAge:67, spouseCpp:0, spouseCppBaseAge:65, spouseOas:0, spouseOasBaseAge:65,
+  spouseAgePension:0, spouseAgePensionBaseAge:67,
+  // ── v4: Australia tax parameters (federal) — stored as USD EQUIVALENTS (Sweep R2-1, v405: they held
+  //        the A$ numbers and so understated Australian tax 25–31%; converted at TAX_FX.AUD) ──
   //   Bracket ceilings AND the marginal rates that go with them, so both can be refreshed. The
   //   defaults are the post-Stage-3 figures (16 / 30 / 37 / 45 from 2024-25); the app shipped the
   //   superseded 19 / 32.5 pair for two years because those two numbers lived in code rather than
   //   in data, and nothing that lives in code can be corrected by "Fetch current rates".
-  ausTaxFreeThreshold:18200, ausBrk1:45000, ausBrk2:135000, ausBrk3:190000,
-  ausRate1:16, ausRate2:30, ausRate3:37, ausRate4:45,
-  // Medicare Levy: 2% on income above the single-person threshold (A$27,222 for 2024-25)
-  ausMedicareLevy:2, ausLevyThreshold:27222,
+  ausTaxFreeThreshold:12941, // A$18,200 at ~0.711 USD/AUD
+  ausBrk1:31997,  // A$45,000
+  ausBrk2:95990,  // A$135,000
+  ausBrk3:135097, // A$190,000
+  // Sweep R19-3 (v458): 15% from 1 July 2026 (it was 16%; 14% from 1 July 2027 — legislated 2025). Refreshable.
+  ausRate1:15, ausRate2:30, ausRate3:37, ausRate4:45,
+  // Medicare Levy: 2% of ALL taxable income once it passes the single-person low-income threshold
+  // (A$27,222 for 2024-25), shaded in at 10c per dollar above it — see _ausLevy.
+  ausMedicareLevy:2, ausLevyThreshold:19356, // A$27,222
+  // Sweep R2-1: marks a plan whose CAD/AUD tax figures are USD equivalents. A plan saved without it
+  // holds the old C$/A$ numbers and is converted once by _migrateTaxUnits. Never remove it from D_USD:
+  // the load merge copies it into every plan, and that is what stops a second conversion.
+  taxUnitsV:2,
+  // ── Sweep R20-6 (v467): the exchange rate (units of each currency per US$) each country's thresholds above were
+  //         converted to US$ at. With live or custom rates loaded the engine converts them at TODAY's rate instead
+  //         (× this ÷ today's — _taxFxFactor), so the £ / C$ / A$ figure stays the statutory one however the currency
+  //         moves; the UK allowance was about £12,952 at the live rate of 28 Sep 2026, not £12,570. Offline (the app's
+  //         fallback rates) and on mobile nothing changes (× 1). A refresh re-anchors a country at the rate it used. ──
+  // GBP 0.73331 puts all three stored UK figures on the statute (£12,570 / £50,270 / £125,140); 0.7333 read £12,569.
+  taxFxAt:{GBP:0.73331,CAD:1.4054,AUD:1.4064},
+  // ── Sweep R21-6 (v474): the rates the local-money pensions (UK State Pension, CPP, OAS, Age Pension — yours and your
+  //         spouse's) are held at (_penFxFactor). null until the plan first meets a rate, when it is stamped with the one in
+  //         use (_anchorPenFx on the desktop, mobile's boot), so an existing plan's pensions read what they did before. ──
+  penFxAt:null,
   // ── v16: when the tax/healthcare figures above were last refreshed, and by what. Shown beside the
   //         Fetch button so a plan carrying figures from two tax years ago says so, instead of
   //         looking exactly like one refreshed this morning. null = never refreshed (build defaults).
@@ -367,6 +460,9 @@ const D_USD={
   // ── v16: the State Pension age as configured BEFORE a replan overwrote it, so resetReplan can put
   //         it back. null = no replan has happened. See applyReplan/resetReplan. ──
   ukpBaseAgeOrig:null,
+  // Sweep R14-8 (v442): the pre-plan gain % as it was before the first Replan wrote the projected one (R13-2), so
+  // resetReplan can put it back. null = no replan has happened.
+  equityGainPctOrig:null,
   // ── v5: Monte Carlo simulation ──
   mcRuns:500, mcSigma:12, mcSigmaCash:4,
   // ── v8: Monte Carlo inflation volatility (annual σ on the inflation rate). 0 = inflation fixed at the plan rate ──
@@ -392,12 +488,14 @@ const D_USD={
   //    override the global and win, which meant the Edit tab had two controls for one figure and
   //    zeroing the visible one didn't turn the income off. _migrateSingleIncomeFigures() folds any
   //    legacy per-phase number back into the global on load; nothing writes these again. ──
+  // R15-5 (v446): p3–p5 carry partTime like every other phase. readInputs writes it (0), so a plan signed off before its
+  // first recalculation (straight after a load) compared "edited" once reloaded — the saved plan gained the field.
   p0:{w401k:0,wcash:100,uss:null,ukp:null,wEquity:0,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
   p1:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
   p2:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
-  p3:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
-  p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
-  p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p3:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p4:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
+  p5:{w401k:100,wcash:100,uss:null,ukp:null,wEquity:100,partTime:0,wRoth:0,rothConversion:0,rentalAnn:0,taxExemptInt:0,wSuper:0},
   // ── v5: SS-split secondary slots (only active when ssStartAge falls mid-phase) ──
   //   v13: p0b joins them. It can only ever appear for SSDI — a retirement benefit cannot start before
   //   62 and p0 ends at 59.5, so p0 never splits without ssdiMode. 401k stays 0: it is inaccessible
@@ -521,7 +619,14 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // in "Phase 1 to 65" are still one phase, now numbered normally.
   // Scoped to Phase 1 deliberately. A later claiming age (67, 70) lands inside a mid-plan phase where
   // the b-slot is genuinely useful and is NOT what was reported, so that path is untouched.
-  const a1=(ssAge>_p1Start&&ssAge<_a1raw)?ssAge:_a1raw;
+  // Sweep R28-1 (v505): no phase runs past the plan's end. The boundaries came through as typed, so Phase 4 ending at 85 on a plan
+  // ending at 80 — or the setup wizard's start+18 re-base, 93 on a plan ending at 90 — ran the projection years past the end while
+  // every total and label still said the end age ("Est. total (age 90)" was the balance at 93). A boundary at or past the end ends
+  // there, and a phase with no months left is dropped below, as a collapsed phase already is. `_nat*` keep the typed ends for the
+  // phase that stops early (endCappedAt, shown under the hood).
+  const _endCap=(typeof p5End==='number'&&isFinite(p5End))?p5End:Infinity;
+  const _nat1=(ssAge>_p1Start&&ssAge<_a1raw)?ssAge:_a1raw;
+  const a1=Math.min(_endCap,_nat1);
   // v15: was Math.max(aN+0.5, …). That half-year floor meant two boundaries could never coincide, so
   // dragging one past the next in Edit values did not collapse the phase between them — it
   // manufactured a SIX-MONTH one. Setting Phase 1 to end at 67 on stock boundaries produced
@@ -531,9 +636,10 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   // answer is one fewer card — the surviving phases keep their own numbers, so a gap in the
   // sequence is the visible evidence that a phase was collapsed, and every card still matches the
   // phase of the same name in Edit values.
-  const a2=Math.max(a1,           pa.phaseAge2end||65);
-  const a3=Math.max(a2,           pa.phaseAge3end||67);
-  const a4=Math.max(a3,           pa.phaseAge4end||73);
+  const _nat2=Math.max(_nat1,pa.phaseAge2end||65),_nat3=Math.max(_nat2,pa.phaseAge3end||67),_nat4=Math.max(_nat3,pa.phaseAge4end||73);
+  const a2=Math.min(_endCap,Math.max(a1,           pa.phaseAge2end||65));
+  const a3=Math.min(_endCap,Math.max(a2,           pa.phaseAge3end||67));
+  const a4=Math.min(_endCap,Math.max(a3,           pa.phaseAge4end||73));
   const curAge=currentAge&&currentAge>startAge?currentAge:startAge;
   const p5mo=Math.max(1,Math.round((p5End-a4)*12));
   // v5: SS claiming age (hoisted above the boundaries) — determines when hasSS turns on.
@@ -558,19 +664,21 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   const _spAgeDelta=(pa.spouseCurrentAge>0)?((currentAge||startAge)-pa.spouseCurrentAge):0;
   const _spMedRaw=pa.spouseMedicareStartAge;
   const _spNever=(_spMedRaw==='never');
-  // The spouse's DEFAULT is the ordinary Medicare boundary (a2), never the primary's early age.
+  // The spouse's DEFAULT is the spouse's own 65, never the primary's early age.
   // SSDI is personal: if you qualify at 57 your spouse does not, so inheriting medAge here would
   // have handed a healthy spouse eight free years of Medicare. Shifted by the age gap so a younger
   // spouse joins later, which is the whole reason this is an age rather than a boolean.
+  // Sweep R9-1 (v423): 65, not a2. This used the Phase 2 END boundary — the v302 "Medicare tied to phase slot"
+  // bug, fixed for the primary and left here — so Phase 2 ending at 67 kept a same-age spouse on ACA to 67.
   const spMedAge=(!_mfjHere||_spNever)?null
-    :((_spMedRaw!=null&&_spMedRaw!=='')?(+_spMedRaw+_spAgeDelta):(a2+_spAgeDelta));
+    :((_spMedRaw!=null&&_spMedRaw!=='')?(+_spMedRaw+_spAgeDelta):(65+_spAgeDelta));
   // Build raw phases without hasSS (derived below from ssAge)
   const rawPhases=[
     ...(earlyRetire?[{label:'Pre 59½',startAge,endAge:59.5,hasUKP:false,hasMedicare:false,phaseKey:'p0',color:PHASE0_COLOR}]:[]),
-    {label:'Phase 1',startAge:earlyRetire?59.5:startAge,endAge:a1,hasUKP:false,hasMedicare:false,phaseKey:'p1',color:PHASE_COLORS[0]},
-    {label:'Phase 2',startAge:a1,endAge:a2,hasUKP:false,hasMedicare:false,phaseKey:'p2',color:PHASE_COLORS[1]},
-    {label:'Phase 3',startAge:a2,endAge:a3,hasUKP:false,hasMedicare:true,phaseKey:'p3',color:PHASE_COLORS[2]},
-    {label:'Phase 4',startAge:a3,endAge:a4,hasUKP:true,hasMedicare:true,phaseKey:'p4',color:PHASE_COLORS[3]},
+    {label:'Phase 1',startAge:earlyRetire?59.5:startAge,endAge:a1,hasUKP:false,hasMedicare:false,phaseKey:'p1',color:PHASE_COLORS[0],_natEnd:_nat1},
+    {label:'Phase 2',startAge:a1,endAge:a2,hasUKP:false,hasMedicare:false,phaseKey:'p2',color:PHASE_COLORS[1],_natEnd:_nat2},
+    {label:'Phase 3',startAge:a2,endAge:a3,hasUKP:false,hasMedicare:true,phaseKey:'p3',color:PHASE_COLORS[2],_natEnd:_nat3},
+    {label:'Phase 4',startAge:a3,endAge:a4,hasUKP:true,hasMedicare:true,phaseKey:'p4',color:PHASE_COLORS[3],_natEnd:_nat4},
     {label:'Phase 5',startAge:a4,endAge:p5End,hasUKP:true,hasMedicare:true,phaseKey:'p5',color:PHASE_COLORS[4]}
   ];
   // Apply ssAge: derive hasSS per phase, splitting mid-phase if needed
@@ -623,7 +731,9 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     // medicareUnits is the whole point: 0..2 people enrolled, weighted by months. For a single filer
     // it equals medicareFrac exactly, so every existing single-filer number is untouched by
     // construction — that is the property the self-test asserts.
-    result.push({...p,startAge:effStart,months,hasMedicare:medFrac>0||spMedFrac>0,
+    // R28-1: the phase that stops at the plan's end rather than at its own boundary (its typed end, for the trace and the Edit tab).
+    const endCappedAt=(p._natEnd!=null&&p._natEnd>_endCap+1e-9&&Math.abs(p.endAge-_endCap)<1e-9)?p._natEnd:null;
+    result.push({...p,startAge:effStart,months,endCappedAt,hasMedicare:medFrac>0||spMedFrac>0,
       medicareFrac:medFrac,spouseMedicareFrac:spMedFrac,medicareUnits:medFrac+spMedFrac,
       medicareHeads:_mfjHere&&!_spNever?2:1});
   }
@@ -639,31 +749,49 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
   return result;
 }
 
-// v5: Manage b-slot lifecycle when ssStartAge changes
-// - Initialize the active b-slot from its parent (mirror withdrawals + global SS) on first appearance
+// ── Split phases (the SS claim age inside a phase makes a second half, pNb, with its own slot) ──────────
+// Sweep R8-3 (v419): a phase's lumps land at the start of its FIRST REMAINING segment. That is the first half
+// normally, and the second half once a replan has passed the first (claim 70 splits Phase 4 at 70; replan at 71
+// leaves only p4b) — every consumer used to skip a split second, so a Phase 4 lump was silently ignored there.
+function _phaseNum(pc){return parseInt(String(pc.phaseKey).replace('p','').replace('b',''),10);}
+function _takesLumps(cfg,i){const n=_phaseNum(cfg[i]);return cfg.findIndex(q=>_phaseNum(q)===n)===i;}
+// A slot the user (or a seed) has put something in. `_seeded` marks one seeded from its parent, after which
+// even an all-zero slot is the user's own choice ("no withdrawals once SS starts").
+function _slotTouched(o){return !!o&&Object.keys(o).some(k=>k!=='_seeded'&&o[k]!=null&&o[k]!==0&&o[k]!=='');}
+// Sweep R8-5 (v419): the withdrawal settings a phase segment runs on. A split half's slot is seeded from its
+// first half when the split appears (_seedSplitSlots). Anything that moved the claim age without seeding it —
+// the AI dry-run's copy of the plan, the mobile app, a test fixture — ran that half on the all-zero default
+// slot: no withdrawals at all (Phase 4b $3,258/mo against $5,736 once seeded). An unseeded, untouched slot
+// now reads as its parent, which is exactly what the seed would have written.
+function _phaseSlot(s,pc){
+  const slot=s[pc.phaseKey];
+  if(!pc.isSplitSecond||(slot&&(slot._seeded||_slotTouched(slot))))return slot;
+  // v13: uss/ukp stay null — the split half is paid the same single figures as its parent
+  return {...(s[pc.phaseKey.slice(0,-1)]||{}),uss:null,ukp:null};
+}
+// v5: Manage b-slot lifecycle when ssStartAge changes (shared since R8-5 so mobile and the AI dry-run seed the
+// same way desktop does):
+// - Initialize the active b-slot from its parent (mirror withdrawals + global SS) on first appearance, and
+//   mark it `_seeded` so the user can later set it to all zeros without it being re-seeded (sweep R8-8: a
+//   split half set to no withdrawals was copied back from its parent on the next recalculation)
 // - Clear non-active b-slots (revert to defaults when split goes away or moves to a different phase)
-function syncSplitState(){
-  const curAge=S.currentAge&&S.currentAge>S.startAge?S.currentAge:0;
-  const phs=buildPhaseConfig(S.startAge,p5EndAge,curAge,S);
+function _seedSplitSlots(st,p5End){
+  const curAge=st.currentAge&&st.currentAge>st.startAge?st.currentAge:0;
+  const phs=buildPhaseConfig(st.startAge,p5End,curAge,st);
   const splitSec=phs.find(p=>p.isSplitSecond);
   const activeBKey=splitSec?splitSec.phaseKey:null;
   ['p0b','p1b','p2b','p3b','p4b','p5b'].forEach(bk=>{
     if(bk===activeBKey){
-      // Active b-slot: initialize from parent if untouched (all zeros)
-      if(!S[bk])S[bk]={...D_USD[bk]};
-      const isFresh=Object.keys(S[bk]).every(k=>!S[bk][k]||S[bk][k]===0);
-      if(isFresh){
-        const parentKey=bk.replace('b','');
-        const parent=S[parentKey]||D_USD[parentKey];
-        // v13: uss/ukp stay null — the split half is paid the same single figures as its parent
-        S[bk]={...parent,uss:null,ukp:null};
+      if(!st[bk])st[bk]={...D_USD[bk]};
+      if(!st[bk]._seeded){
+        if(!_slotTouched(st[bk]))st[bk]={...(st[bk.replace('b','')]||D_USD[bk.replace('b','')]),uss:null,ukp:null};
+        st[bk]._seeded=true;
       }
-    } else {
-      // Not active: revert to defaults
-      if(S[bk])S[bk]={...D_USD[bk]};
-    }
+    } else if(st[bk])st[bk]={...D_USD[bk]};
   });
+  return st;
 }
+function syncSplitState(){_seedSplitSlots(S,p5EndAge);}
 
 // v13: SSDI toggle. Unlocks the sub-62 claiming age, relabels the field, and reveals the Medicare
 // start age (prefilled at entitlement + 2 years, the statutory waiting period) the first time it is
@@ -747,8 +875,10 @@ function medicareStartLabel(){
 // separating from service during or after the CALENDAR YEAR you turn 55, so someone who leaves in
 // March of that year qualifies while still 54. Eligibility is therefore asserted by the user, not
 // computed from the age — the app cannot know their birth month or their plan's rules.
+// Sweep R26-4 (v502): from 49 — a qualified public-safety employee leaving a governmental plan reaches the same exception in the
+// year they turn 50 (§72(t)(10)), which the help has always said; the option was hidden below 54. The note says who it is for.
 function earlyAccessEligible(mode){
-  if(mode==='rule55')return (S.startAge||0)>=54;
+  if(mode==='rule55')return (S.startAge||0)>=49;
   if(mode==='disability')return !!S.ssdiMode;
   return true;
 }
@@ -756,7 +886,7 @@ function earlyAccessEligible(mode){
 // decided once for the whole phase. That is why there is no split at 55: retire at 42 and no age
 // inside the phase changes anything; retire at 56 and the whole phase qualifies from the start.
 const EARLY_ACCESS_NOTES={
-  locked:'🔒 The 401k stays untouched until 59½. Fund these years from cash, equity, Roth contributions or part-time work.',
+  locked:'🔒 The 401k stays untouched until 59½. Fund these years from cash, equity, Roth contributions or part-time work. A one-time expense reaches it only if it names the 401k itself — and then pays the 10% penalty.',
   penalty:'⚠ Withdrawals here are taxed as ordinary income <strong>plus a 10% IRS penalty</strong>. The penalty is shown as its own cost on the phase card, and it is not reduced by the Foreign Tax Credit.',
   rule55:'✓ <strong>Rule of 55:</strong> no penalty — but only from the plan of the employer you <em>just left</em>, and only if you separated at 55+. It does not cover IRAs or former employers\' plans, and <strong>rolling the money to an IRA destroys it</strong>. Public-safety workers qualify at 50.',
   disability:'✓ <strong>Disability exception</strong> (§72(t)(2)(A)(iii)): withdrawals are taxed as income but carry no 10% penalty.'
@@ -794,7 +924,9 @@ function syncEarlyAccessUI(){
     // The genuinely-early retiree's signpost. Rule of 55 can never help someone who separated at
     // 42, so instead of a dead control they get the two routes that actually exist for them.
     if((S.startAge||0)<54){
-      html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(139,94,60,.25);">Retiring at '+(S.startAge||0)+', the Rule of 55 cannot apply — it needs you to leave work at 55 or later. The routes that do fit a gap this long are a <strong>72(t)/SEPP</strong> series (penalty-free, but locked in for the longer of 5 years or until 59½) and a <strong>Roth conversion ladder</strong> (each conversion seasons for 5 years first). Neither is modelled here yet; the planner prices the penalty route and leaves those to you and a tax professional.</div>';
+      html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(139,94,60,.25);">Retiring at '+(S.startAge||0)+(m==='rule55'
+        ?', this counts only if you are a qualified public-safety employee (police, firefighting, emergency medical services, corrections, air traffic control) leaving a governmental plan in or after the year you turn 50 — for anyone else the Rule of 55 needs a separation at 55 or later. '
+        :', the Rule of 55 cannot apply — it needs you to leave work at 55 or later (50 for a qualified public-safety employee'+((S.startAge||0)>=49?', which the option above covers':'')+'). ')+'The routes that do fit a gap this long are a <strong>72(t)/SEPP</strong> series (penalty-free, but locked in for the longer of 5 years or until 59½) and a <strong>Roth conversion ladder</strong> (each conversion seasons for 5 years first). Neither is modelled here yet; the planner prices the penalty route and leaves those to you and a tax professional.</div>';
     }
     note.innerHTML=html;
   }
@@ -814,21 +946,28 @@ function syncSsdiUI(){
   const ageEl=document.getElementById('e-ssStartAge');if(ageEl)ageEl.min=S.ssdiMode?40:62;
 }
 // v5: handle SS claiming age change — sync ssBaseAge, show user note, refresh everything
-function onSSStartAgeChange(el){
-  const newAge=Math.max(S.ssdiMode?40:62,Math.min(70,parseFloat(el.value)||62)); // v13: SSDI has no 62 floor
-  const prevAge=S.ssStartAge||62;
+// The state half of a claiming-age change, shared by the Edit box and applied AI proposals (sweep R3-5:
+// the AI path wrote ssStartAge alone and left ssBaseAge behind, so the benefit was COLA'd from the old
+// age until the next reload). Pure: works on S or on a dry-run copy.
+function _setSsStartAge(st,age){
+  const newAge=Math.max(st.ssdiMode?40:62,Math.min(70,parseFloat(age)||62)); // v13: SSDI has no 62 floor
+  const prevAge=st.ssStartAge||62;
   // v13: keep the SSDI Medicare suggestion (entitlement + 24 months) in step with the age above, but
   // ONLY while it still holds the value auto-derived from the previous age — never clobber a figure
   // the user typed themselves. Without this, ticking SSDI then correcting the start age leaves a
   // stale Medicare age behind (prefilled 64 from the default 62, still 64 after changing it to 55).
-  if(S.ssdiMode){
+  if(st.ssdiMode){
     const auto=a=>Math.min(65,Math.round((a+2)*2)/2);
-    if(S.medicareStartAge==null||S.medicareStartAge===auto(prevAge))S.medicareStartAge=auto(newAge);
+    if(st.medicareStartAge==null||st.medicareStartAge===auto(prevAge))st.medicareStartAge=auto(newAge);
   }
-  S.ssStartAge=newAge;
+  st.ssStartAge=newAge;
   // Sync ssBaseAge so the entered amount IS the benefit at the chosen claiming age
   // (replan overrides this separately when currentAge >= ssStartAge)
-  if(!(S.currentAge&&S.currentAge>=newAge)) S.ssBaseAge=newAge;
+  if(!(st.currentAge&&st.currentAge>=newAge)) st.ssBaseAge=newAge;
+  return {newAge,prevAge};
+}
+function onSSStartAgeChange(el){
+  const {newAge,prevAge}=_setSsStartAge(S,el.value);
   // Show inline note when user changes claiming age
   const hint=document.getElementById('ss-claim-hint');
   if(hint&&newAge!==prevAge&&S.uss>0){
@@ -844,6 +983,273 @@ function onSSStartAgeChange(el){
   syncSplitState();populateInputsFromUSD();updateEditLabels();liveCalc();
 }
 
+// ── Sweep R2-1 (v405): the FIXED rates the Canadian and Australian statutory figures were converted to
+// USD at (open.er-api.com, 2026-09-23 — C$ and A$ per US$). The engine reads the rate in use only through _taxFxFactor / _penFxFactor;
+// these exist for two jobs that must not move with the market: the Low Income Tax Offset, whose A$
+// figures are statute rather than fields (see _ausLito), and converting plans saved before v405 exactly
+// once (_migrateTaxUnits). ⚠ NEVER change them: a different rate would convert an old plan to different
+// numbers than the ones every other copy of it was converted to.
+const TAX_FX=Object.freeze({CAD:1.4054,AUD:1.4064});
+// Sweep R20-6 (v467): the rates the app is converting at — set through _setTaxFxLive by the desktop (live rates, the user's
+// own, and since R21-7 its offline fallbacks too) and by mobile (its fixed rates); null only while the self-test runs.
+// The engine uses it to hold the UK / Canadian / Australian thresholds at their statutory local figures: each is stored in
+// US$ at the rate in s.taxFxAt, and × taxFxAt ÷ today's rate puts it at today's. null ⇒ × 1, exactly as before.
+let _taxFxLive=null;
+function _setTaxFxLive(o){_taxFxLive=(o&&typeof o==='object')?{GBP:+o.GBP||0,CAD:+o.CAD||0,AUD:+o.AUD||0}:null;}
+function _taxFxFactor(s,cur){
+  const at=s&&s.taxFxAt?+s.taxFxAt[cur]:0,live=_taxFxLive?+_taxFxLive[cur]:0;
+  return (at>0&&live>0)?at/live:1;
+}
+// Sweep R21-6 (v474): a pension PAID in local money — the UK State Pension (£), CPP and OAS (C$), the Age Pension (A$), yours
+// and your spouse's — is held the way the thresholds are: s.penFxAt is the rate it was entered at (stamped the first time a
+// plan meets a rate, so an existing plan reads what it did the day it upgraded), and × penFxAt ÷ the rate in use keeps its
+// £ / C$ / A$ amount put when the dollar moves. It was a fixed US$ amount, so once R20-6 held the thresholds in local money a
+// 10% rate move changed the local tax of a plan with no US money in it by 18–32% (fx21.mjs), and a full UK State Pension
+// became taxable on its own. × 1 when either rate is missing (the self-test).
+const _PEN_CUR=Object.freeze({ukp:'GBP',spouseUkp:'GBP',cpp:'CAD',oas:'CAD',spouseCpp:'CAD',spouseOas:'CAD',agePension:'AUD',spouseAgePension:'AUD'});
+function _penFxFactor(s,cur){
+  const at=s&&s.penFxAt?+s.penFxAt[cur]:0,live=_taxFxLive?+_taxFxLive[cur]:0;
+  return (at>0&&live>0)?at/live:1;
+}
+function _penUSD(s,k){return (+(s&&s[k])||0)*_penFxFactor(s,_PEN_CUR[k]);}
+// Sweep R22-4 (v481): the GOALS of a plan that lives in £ / C$ / A$ — the monthly spending need, the income floor, the survivor
+// need and the legacy goal — are held in that money the way its pensions are: stored in US$ at the plan's penFxAt and read
+// × penFxAt ÷ the rate in use. They were fixed US$ amounts, though they are spent where the plan lives, so a 10% move in the
+// pound flipped the income goal's verdict both ways (goal22.mjs): a plan paid £1,550/mo failed a £1,500 goal, and a US
+// expat paid in dollars passed it £100/mo short. Only a UK, Canadian or Australian RESIDENT plan in that currency: a US$ plan,
+// an expat plan (€ / ₱ / ฿) and a £ / C$ / A$ plan living in the US keep US$ goals. Read every goal amount through _goalUSD.
+const _GOAL_KEYS=Object.freeze(['goalNetMo','goalFloorMo','goalSurvivorMo','goalLegacy']);
+function _goalCur(s){
+  const c=activeCurrency;
+  return ((c==='GBP'&&s&&s.ukResident)||(c==='CAD'&&s&&s.cadResident!==false)||(c==='AUD'&&s&&s.ausResident!==false))?c:null;
+}
+function _goalFx(s){const c=_goalCur(s);return c?_penFxFactor(s,c):1;}
+function _goalUSD(s,k){return (+(s&&s[k])||0)*_goalFx(s);}
+// A change of currency or residence can move the goals between US$ and local money: they keep what they are worth today.
+function _goalsSnap(){return _GOAL_KEYS.map(k=>_goalUSD(S,k));}
+function _goalsKeep(v){const f=_goalFx(S);_GOAL_KEYS.forEach((k,i)=>{if((+S[k]||0)>0&&f>0)S[k]=v[i]/f;});}
+// A plan saved before v467 has no taxFxAt: its CAD/AUD figures are at TAX_FX (defaults, or converted by the migration below);
+// its UK figures are at whatever rate the default of its day used — read off the allowance, which has been frozen at
+// £12,570 since April 2021 (to April 2028), when that gives a plausible rate; else the current default's.
+function _migrateTaxFxAt(target,raw){
+  if(!target||!raw||typeof raw!=='object'||(raw.taxFxAt&&typeof raw.taxFxAt==='object'))return;
+  const pa=+raw.ukPersonalAllowance;let g=pa>0?12570/pa:0;
+  if(Math.abs(g-D_USD.taxFxAt.GBP)<0.0001)g=D_USD.taxFxAt.GBP; // the current default, rounded — keep its exact anchor
+  target.taxFxAt=Object.assign({},D_USD.taxFxAt,(g>0.6&&g<0.95)?{GBP:Math.round(g*100000)/100000}:{});
+}
+// The fields that held native C$/A$ before v405.
+const TAX_UNITS_V2_FIELDS=Object.freeze({
+  CAD:['cadPersonalAmount','cadBrk1','cadBrk2','cadBrk3','cadBrk4'],
+  AUD:['ausTaxFreeThreshold','ausBrk1','ausBrk2','ausBrk3','ausLevyThreshold']});
+// Convert a pre-v405 plan's CAD/AUD tax figures from native currency to USD equivalents, once.
+//   target — the MERGED plan (D_USD ∪ saved), changed in place
+//   raw    — the plan exactly as it was saved, which is the only place the absence of taxUnitsV
+//            can be seen (the merge copies D_USD's taxUnitsV:2 into every plan)
+// Only fields the saved plan actually carried are converted: a field it lacked came from D_USD and is
+// already in USD. Returns true if anything was converted.
+function _migrateTaxUnits(target,raw){
+  _migrateRmdAge(target,raw); // R18-5 — here so every load path (and mobile's mergePlan, which calls this) runs it
+  _migrateTaxFxAt(target,raw); // R20-6 — the same
+  if(!target||!raw||typeof raw!=='object'||(raw.taxUnitsV||0)>=2)return false;
+  let n=0;
+  for(const cur in TAX_UNITS_V2_FIELDS)TAX_UNITS_V2_FIELDS[cur].forEach(k=>{
+    const v=raw[k];
+    if(typeof v==='number'&&isFinite(v)&&v>0){target[k]=Math.round(v/TAX_FX[cur]);n++;}
+  });
+  target.taxUnitsV=2;
+  return n>0;
+}
+// Sweep R18-5 (v452): the RMD start age under SECURE 2.0 — 72 for those born in 1950 or earlier, 73 for 1951–1959, 75
+// for 1960 or later. It was 73 for every plan, though every example (and most users) was born after 1959.
+function _rmdAgeForBirthYear(by){return by<=1950?72:by<=1959?73:75;}
+// The plan's birth year: the one entered, else estimated from the age the plan starts at (as the FRA estimate is) — in the
+// year the plan's ages refer to (R20-7: s.planYear), never today's year, so a saved plan's estimate cannot move on 1 January.
+function _planBirthYear(s){const y=(s&&s.planYear>1900)?s.planYear:new Date().getFullYear();
+  return (s&&s.birthYear>1900)?s.birthYear:Math.round(y-((s&&s.currentAge>0)?s.currentAge:((s&&s.startAge)||60)));}
+// rmdStartAge null = automatic (the default); a number the user set is used as it is.
+function _rmdStartAgeOf(s){const v=s&&s.rmdStartAge;return (typeof v==='number'&&isFinite(v)&&v>0)?v:_rmdAgeForBirthYear(_planBirthYear(s));}
+// Sweep R19-2 (v458): what simPhase needs to apply the Social Security earnings test in one phase — whose earnings
+// (the part-time income, by its owner; half each when shared), each person's FRA / delayed credit / claim age, the
+// limits, and the months of benefit already withheld in earlier phases (`carry`). null when there is nothing to do.
+// Your own benefit is exempt when it is SSDI (the SGA rule applies instead).
+function _etOpts(s,pk,mfj,carry){
+  const earn=(pk&&pk.partTime)||0;
+  const own=mfj?((s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared'):'me';
+  const earnYou=s.ssdiMode?0:(own==='me'?earn:own==='shared'?earn/2:0);
+  const earnSp=mfj?(own==='spouse'?earn:own==='shared'?earn/2:0):0;
+  if(!(earnYou>0||earnSp>0||(carry&&(carry.you>0||carry.sp>0))))return null;
+  const by=_planBirthYear(s);
+  const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
+  const spBy=Math.round(by+gap);
+  return {earnYou,earnSp,lim:_numOr(s.ssEarningsLimit,24480),limFra:_numOr(s.ssEarningsLimitFra,65160),
+    fraYou:ssFRA(by),drcYou:ssDrcPct(by),claimYou:s.ssStartAge||62,
+    fraSp:ssFRA(spBy),drcSp:ssDrcPct(spBy),claimSp:s.spouseSSBaseAge||62,
+    wYouIn:(carry&&carry.you)||0,wSpIn:(carry&&carry.sp)||0};
+}
+// Sweep R19-2 / R21-11 (v474): the SS earnings test as CUMULATIVE benefits by claim age, for the claim-age tools (the
+// desktop SS Optimizer and What-if slider, mobile's optimizer and slider). Pure: a plan and its end age. null when the
+// plan has no earnings above the limit before full retirement age (nothing changes then).
+function _ssEtCumModelFor(s,endAge,ssAtAge,ssAmt,ssBaseAge,spAtAge,spSSAmt,spSSBaseAge,fra,drc,spFra,spDrc,gap){
+  const mfj=s.filingStatus==='mfj',curAge=s.currentAge&&s.currentAge>s.startAge?s.currentAge:0;
+  const cfg=buildPhaseConfig(s.startAge,endAge,curAge,s);
+  const own=mfj?((s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared'):'me';
+  const shareYou=s.ssdiMode?0:(own==='me'?1:own==='shared'?0.5:0),shareSp=mfj?(own==='spouse'?1:own==='shared'?0.5:0):0;
+  const earnAt=a=>{const pc=cfg.find(c=>a>=c.startAge-1e-9&&a<c.endAge-1e-9);return pc?((_phaseSlot(s,pc).partTime)||0):0;}; // YOUR age line
+  const lim=_numOr(s.ssEarningsLimit,24480),limFra=_numOr(s.ssEarningsLimitFra,65160);
+  const wh=(age,f,earn)=>age<f-1-1e-9?Math.max(0,earn-lim)/24:age<f-1e-9?Math.max(0,earn-limFra)/36:0;
+  const any=a0=>{for(let a=62;a<Math.max(fra,spFra+gap);a+=1/12)if(earnAt(a)*Math.max(shareYou,shareSp)>lim)return true;return false;};
+  if(!(ssAmt>0)||!any())return null;
+  // Cumulative benefit from claim age `ca` to age `to`, both on the person's own age line; `toYour` maps it to your line.
+  // One monthly pass per claim age to age 110, cached: cum(ca,to) is then a lookup (the breakeven search asks many times).
+  const memo={};
+  const cum=(key,amt,ca,to,f,d,share,toYour,atAge,base)=>{
+    if(!(amt>0)||to<=ca)return 0;
+    const k=key+ca;let arr=memo[k];
+    if(!arr){arr=[0];const m=atAge(amt,base,ca);let W=0,paid=0;
+      for(let a=ca;a<110;a+=1/12){
+        if(a<f-1e-9){const w=Math.min(m,share>0?wh(a,f,earnAt(toYour(a))*share):0);W+=m>0?w/m:0;paid+=m-w;}
+        else paid+=m*(W>0&&ca<f?ssBenefitMult(Math.min(f,ca+W/12),f,d)/ssBenefitMult(ca,f,d):1);
+        arr.push(paid);}
+      memo[k]=arr;}
+    return arr[Math.max(0,Math.min(arr.length-1,Math.round((to-ca)*12)))];
+  };
+  return {you:(ca,to)=>cum('y',ssAmt,ca,to,fra,drc,shareYou,a=>a,ssAtAge,ssBaseAge),
+    sp:(ca,to)=>cum('s',spSSAmt,ca,to,spFra,spDrc,shareSp,a=>a+gap,spAtAge,spSSBaseAge),
+    lim,share:{you:shareYou,sp:shareSp}};
+}
+// Sweep R20-1 (v467): the Social Security SPOUSAL benefit (SSA). Each spouse is paid their own benefit plus any excess of half
+// the other's PIA (full-retirement amount) over their own PIA. The excess is cut 25/36 of 1% a month for the first 36 months
+// before the claimant's FRA and 5/12 of 1% a month beyond (35% at 62 when FRA is 67), is never raised past FRA (no delayed
+// credits), and is paid only once BOTH have claimed. Each PIA comes from the amount entered: the benefit at its claim age ÷
+// the claiming factor at that age (SSDI is the PIA itself). null when there is nothing to pay: not married, switched off
+// (s.spousalAuto false), the survivor run (the survivor benefit replaces it), or neither excess is positive. The earnings
+// test is not applied to the excess.
+function ssSpousalFactor(startAge,fra){const m=Math.max(0,(fra-startAge)*12);return Math.max(0,1-(Math.min(36,m)*25/36+Math.max(0,m-36)*5/12)/100);}
+function _spousalOpts(s,mfj){
+  if(!mfj||!s||s._survivorRun||s.spousalAuto===false)return null;
+  const uss=+s.uss||0,sps=+s.spouseSS||0;
+  if(!(uss>0||sps>0))return null;
+  const by=_planBirthYear(s);
+  const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
+  const spBy=Math.round(by+gap),fraYou=ssFRA(by),fraSp=ssFRA(spBy);
+  // Your claim: SSDI pays the PIA itself from its start; otherwise the claim age (62–70). After a replan uss is the
+  // COLA-grown payment at ssBaseAge, and ÷ the claiming factor is then the PIA in that same money (see _ssClaimBasis).
+  const claimYou=s.ssdiMode?(s.ssStartAge||fraYou):Math.max(62,Math.min(70,s.ssStartAge||62));
+  const piaYou=uss>0?(s.ssdiMode?uss:uss/ssBenefitMult(claimYou,fraYou,ssDrcPct(by))):0;
+  const claimSp=Math.max(62,Math.min(70,s.spouseSSBaseAge||62));
+  const piaSp=sps>0?sps/ssBenefitMult(claimSp,fraSp,ssDrcPct(spBy)):0;
+  if(!(0.5*piaYou>piaSp+0.005||0.5*piaSp>piaYou+0.005))return null;
+  // Each excess starts once both have claimed — on the payee's own age line (gap = your age − your spouse's).
+  const spStart=Math.max(claimSp,claimYou-gap),youStart=Math.max(62,claimYou,claimSp+gap);
+  return {piaYou,piaSp,baseYou:(s.ssBaseAge||claimYou),baseSp:claimSp,cola:_numOr(s.ssColaRate,2.6),
+    spStart,spFactor:ssSpousalFactor(spStart,fraSp),youStart,youFactor:ssSpousalFactor(youStart,fraYou),fraYou,fraSp};
+}
+// Sweep R21-1 (v474): the Social Security SURVIVOR benefit (SSA). The survivor run paid the larger of the survivor's own
+// benefit and the late spouse's, each on its planned timeline. SSA differs in three ways, all modelled here:
+//   • the widow's limit — a late spouse who claimed before FRA leaves at least 82.5% of their PIA (never more than the
+//     survivor's own age-reduced rate on the PIA);
+//   • a death BEFORE claiming leaves the PIA plus the delayed credits earned up to the death (none before FRA) — not the
+//     planned claim-age amount, and claimable from the death, not from the age they "would have" claimed;
+//   • a survivor benefit taken before the SURVIVOR's full retirement age (the retirement table two birth years later) is
+//     cut — to 71.5% at 60, pro rata to that age.
+// The survivor claims it at the later of the death and the earlier of their own planned claim age and their survivor FRA
+// (never before 60), and is paid the larger of it and their own benefit each month, as before. The amount is in the money of
+// the late spouse's entered amount (its base age) and grows at the SSA COLA from there, like the benefit it replaces.
+// surv21.mjs: the old rule was out by −$81,000 to +$100,800 over the survivor's life in the four set-ups it measures.
+function ssSurvivorFRA(by){return ssFRA((by||ssEffectiveBirthYear())-2);}
+function ssSurvivorFactor(age,sfra){if(age>=sfra-1e-9)return 1;return Math.max(0.715,1-0.285*(sfra-Math.max(60,age))/Math.max(1e-9,sfra-60));}
+function _survivorSSOpts(s,meDie,deathAge){
+  const by=_planBirthYear(s);
+  const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
+  const spBy=Math.round(by+gap),fraYou=ssFRA(by),fraSp=ssFRA(spBy);
+  const claimYou=s.ssdiMode?(s.ssStartAge||fraYou):Math.max(62,Math.min(70,s.ssStartAge||62));
+  const claimSp=Math.max(62,Math.min(70,s.spouseSSBaseAge||62));
+  // The late spouse (L), on their own age line; the survivor's age at the death on theirs.
+  const L=meDie?{amt:+s.uss||0,claim:claimYou,base:s.ssBaseAge||claimYou,fra:fraYou,drc:ssDrcPct(by),ssdi:!!s.ssdiMode,age:deathAge,cola:s.ssColaRate}
+               :{amt:+s.spouseSS||0,claim:claimSp,base:claimSp,fra:fraSp,drc:ssDrcPct(spBy),ssdi:false,age:deathAge-gap,cola:_numOr(s.ssColaRate,2.6)};
+  const slot=meDie?'you':'sp';
+  if(!(L.amt>0))return {slot,amt:0,base:0,from:Infinity,cola:0,rule:'none'};
+  const survAge=meDie?deathAge-gap:deathAge,sfra=ssSurvivorFRA(meDie?spBy:by),ownClaim=meDie?claimSp:claimYou;
+  const pia=L.ssdi?L.amt:L.amt/ssBenefitMult(L.claim,L.fra,L.drc);
+  const claimed=L.age>=L.claim-1e-9;
+  const start=Math.max(survAge,60,Math.min(ownClaim,sfra)),f=ssSurvivorFactor(start,sfra);
+  let rule,benL,amt;
+  if(L.ssdi){rule='ssdi';benL=pia;amt=pia*f;}
+  else if(claimed&&L.claim<L.fra-1e-9){rule='limit';benL=L.amt;amt=Math.min(pia*f,Math.max(L.amt,0.825*pia));}
+  else if(claimed){rule='claimed';benL=L.amt;amt=L.amt*f;}
+  else{rule=L.age>=L.fra-1e-9?'credits':'pia';benL=pia*ssBenefitMult(Math.min(70,Math.max(L.fra,L.age)),L.fra,L.drc);amt=benL*f;}
+  return {slot,amt,base:meDie?L.base:L.base+gap,from:meDie?start+gap:start,cola:L.cola,
+    rule,pia,benL,claimAge:L.claim,lateAge:L.age,lateFra:L.fra,survAge,start,factor:f,sfra};
+}
+// Sweep R22-1 (v481): the CPP SURVIVOR'S PENSION (canada.ca, 2026). The survivor run paid 60% of the late spouse's CPP at any
+// age, on the late spouse's own CPP timeline, on top of the survivor's own CPP. The CPP differs in three ways, all modelled here:
+//   • it is paid from the death — a spouse who dies at 66, before the CPP they planned for 70, still leaves one (the survivor
+//     was paid nothing for four years);
+//   • under 65 it is a flat rate plus 37.5% of the late spouse's pension, 60% from 65 — the pension as it would be at 65,
+//     without the late spouse's own early or late adjustment;
+//   • with a CPP retirement pension of their own, the survivor's two are held to the combined maximum (C$1,531.56 at 65 in
+//     2026) — the survivor's pension is cut, never their own. The CPP works the limit out from each pension's details; the
+//     plan applies the at-65 maximum at every age.
+// The flat rate and the maximum are refreshable (cppSurvFlatMo, cppCombinedMaxMo) and rise at the CPP COLA from the plan's
+// start. pen22.mjs: C$268–788/mo too much where both had CPP. Paid in any C$ plan, as CPP is (R12-3).
+function _cppAdjAt(age){const a=Math.max(60,Math.min(70,+age||65));return a<65?1-0.072*(65-a):1+0.084*(a-65);}
+function _survivorCppOpts(s,meDie,deathAge,planStart){
+  if(activeCurrency!=='CAD')return null;
+  const late=_penUSD(s,meDie?'cpp':'spouseCpp');
+  if(!(late>0))return null;
+  const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
+  const lateBA=meDie?(s.cppBaseAge||65):(s.spouseCppBaseAge||65),lateAge=meDie?deathAge:deathAge-gap;
+  const cola=_numOr(s.cppColaRate,2.6),fx=_taxFxFactor(s,'CAD'),adj=_cppAdjAt(lateBA);
+  // The late spouse's pension at 65 — indexed to the death when it was already being paid, as the pension itself is.
+  const at65=late/adj*(lateAge>lateBA?Math.pow(1+cola/100,lateAge-lateBA):1);
+  return {slot:meDie?'sp':'you',at65,from:deathAge,cola,shift:meDie?gap:0,inflBase:planStart,
+    flat:_numOr(s.cppSurvFlatMo,D_USD.cppSurvFlatMo)*fx,cap:_numOr(s.cppCombinedMaxMo,D_USD.cppCombinedMaxMo)*fx,
+    late,lateBA,lateAge,adj,survAge:meDie?deathAge-gap:deathAge};
+}
+// Sweep R23-1 (v486): the STEP-UP in basis at a death. US law (IRC §1014, §2040(b)): the late spouse's half of a jointly held
+// brokerage account takes its value at the death as its cost basis — both halves in a community-property state (§1014(b)(6)).
+// The UK does the same for the deceased's share (no CGT at death; it passes at its value then). Canada (a spousal rollover at
+// the ACB) and Australia (the deceased's cost base) carry the basis over. The survivor run carried the couple's basis unchanged
+// (R13-2), taxing gain the death erased — surv23.mjs: $5,400–$39,500 of the survivor's lifetime tax (half), $10,900–$98,200
+// (both halves). The state is the free-text box on the Edit tab, matched by name or postal code.
+const _CP_STATES=Object.freeze(['arizona','az','california','ca','idaho','id','louisiana','la','nevada','nv','new mexico','nm','texas','tx','washington','wa','wisconsin','wi']);
+function _isCommunityPropertyState(n){const k=String(n||'').toLowerCase().replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();return _CP_STATES.indexOf(k)>=0;}
+function _survivorStepUp(s,b){
+  const eq=(b&&b.bEquity)||0,basis=(b&&b.costBasis!=null)?b.costBasis:eq,gain=Math.max(0,eq-basis);
+  const out={basis,share:0,gain,rule:'none'};
+  if(!(gain>0.5))return out;
+  if((activeCurrency==='CAD'&&s.cadResident!==false)||(activeCurrency==='AUD'&&s.ausResident!==false)){out.rule='rollover';return out;}
+  const cp=s.subjectToUsTax!==false&&!s.ukResident&&!s.foreignResident&&_isCommunityPropertyState(s.stateName);
+  out.share=cp?1:0.5;out.rule=cp?'community':'half';out.basis=basis+gain*out.share;
+  return out;
+}
+// Sweep R20-6 (v467): Under the hood — a country's thresholds converted at today's exchange rate (see _taxFxFactor).
+function _trFxRow(g,p,cur,sym,what){
+  const at=p&&p.taxFxAt?+p.taxFxAt[cur]:0,live=p&&p.taxFxLive?+p.taxFxLive[cur]:0;
+  if(!(at>0&&live>0)||Math.abs(at/live-1)<1e-9)return;
+  _trRow(g,'The '+what+' at the exchange rate in use',at/live,'mult',{kind:'rate',formula:'the rate they were set at ÷ the rate the plan’s money uses',
+    note:'Held in US$ at '+sym+'1 = US$'+(1/at).toFixed(3)+' and converted at the rate the plan’s money uses, '+sym+'1 = US$'+(1/live).toFixed(3)+', so the '+sym+' figures stay the statutory ones.'});
+}
+// Sweep R20-1 (v471, check 6): the spousal top-up once both have claimed, in the money of the amounts entered (the
+// guaranteed-income floor adds it: Drawdown, Plan Health's Income Floor, mobile). 0 when it does not apply.
+function _spousalFloorMo(s){
+  const o=(s&&s.filingStatus==='mfj')?_spousalOpts(s,true):null;
+  return o?Math.max(0,0.5*o.piaYou-o.piaSp)*o.spFactor+Math.max(0,0.5*o.piaSp-o.piaYou)*o.youFactor:0;
+}
+// A plan saved before v452 holds 73 because that was the only default; it becomes automatic, once (the absence of rmdAgeV
+// on the RAW saved plan says so — the merge copies D_USD's rmdAgeV:1 into every plan). 72, 74 or 75 were chosen, and stay.
+function _migrateRmdAge(target,raw){
+  if(!target||!raw||typeof raw!=='object'||(raw.rmdAgeV||0)>=1)return;
+  if(raw.rmdStartAge==null||raw.rmdStartAge===73||raw.rmdStartAge==='73')target.rmdStartAge=null;
+  target.rmdAgeV=1;
+}
+// Monthly growth rate for an ANNUAL percentage return (sweep R3-1). Floors at −99.9%/yr so a typed
+// −100 cannot take a fractional power of zero.
+function _monthlyRate(annualPct){return Math.pow(1+Math.max(-99.9,+annualPct||0)/100,1/12)-1;}
+// A number the user SET, including 0; the default only when the value is missing or not a number.
+// ⚠ Use this, never `x||default`, for any rate/COLA/percentage where 0 is a real choice: `||` treats 0
+//   as missing, which silently grew a 0%-return Roth at 7% and a 0%-COLA CPP at 2.6% (sweep B3/B4).
+function _numOr(v,d){return (typeof v==='number'&&isFinite(v))?v:d;}
 function tripleLockUKP(base,yrs,rate){return yrs<=0?base:base*Math.pow(1+rate/100,yrs);}
 function colaUSS(base,yrs,rate){return yrs<=0||!rate?base:base*Math.pow(1+rate/100,yrs);}
 function realNetCalc(nom,yrs,infl){return yrs<=0?nom:nom/Math.pow(1+infl/100,yrs);}
@@ -867,7 +1273,7 @@ function ssPct(otherIncome_a,ukp_a,uss_a,mfj,_tg,taxExempt_a){
   else if(prov<=hi) taxable=Math.min(0.5*uss_a, 0.5*(prov-lo));
   else taxable=Math.min(0.85*uss_a, 0.85*(prov-hi)+Math.min(0.5*uss_a, 0.5*(hi-lo)));
   if(_tg){
-    _trRow(_tg,'Other ordinary income',otherIncome_a+ukp_a,'usd/yr',{kind:'in',formula:'401k + part-time + UK pension + conversions + taxable equity + pensions'});
+    _trRow(_tg,'Other ordinary income',otherIncome_a+ukp_a,'usd/yr',{kind:'in',formula:'401k + part-time + UK pension + conversions + taxable equity + taxable pensions + rental income'});
     _trRow(_tg,'+ tax-exempt interest',_te,'usd/yr',{skipZero:true,
       note:'Municipal-bond interest is not taxed, but it still counts here — so it can push more of your Social Security into tax without appearing on your tax bill itself.'});
     _trRow(_tg,'+ half your Social Security',uss_a*0.5,'usd/yr',{formula:'SS × 50%'});
@@ -886,59 +1292,79 @@ function ssPct(otherIncome_a,ukp_a,uss_a,mfj,_tg,taxExempt_a){
 // for 1960+. When the user hasn't entered a birth year, estimate it from their
 // current/retirement age — which yields FRA 67 for typical not-yet-retired users,
 // preserving the previous hardcoded behaviour.
-function ssEffectiveBirthYear(){
-  if(S.birthYear&&S.birthYear>1900)return S.birthYear;
-  const age=(S.currentAge&&S.currentAge>0)?S.currentAge:(S.startAge||60);
-  return Math.round(new Date().getFullYear()-age);
-}
+function ssEffectiveBirthYear(){return _planBirthYear(S);} // R18-5: one rule for the FRA and the RMD age
 function ssFRA(by){
   by=by||ssEffectiveBirthYear();
+  // Sweep R8-7 (v419): SSA's table below 1943 too — FRA 65 to 1937, then +2 months a year to 65 y 10 m (1942).
+  // Birth year accepts 1930, and every one of those years read FRA 66.
+  if(by<=1937)return 65;
+  if(by<=1942)return 65+(by-1937)*2/12;
   if(by<=1954)return 66;
   if(by>=1960)return 67;
   return 66+(by-1954)*2/12; // +2 months per birth year 1955–1959
+}
+// Delayed retirement credit, % a year past FRA (SSA): 8% from 1943, half a point less for each two years before.
+function ssDrcPct(by){
+  by=by||ssEffectiveBirthYear();
+  return by>=1943?8:Math.max(3,8-0.5*Math.ceil((1943-by)/2));
 }
 function ssFmtFRA(fra){
   const y=Math.floor(fra+1e-9),m=Math.round((fra-y)*12);
   return m>0?`${y} yr ${m} mo`:`${y}`;
 }
 // Benefit multiplier vs the primary insurance amount (FRA benefit) for any claim age.
-// 5/9% per month for the first 36 early months, 5/12%/mo beyond; 8%/yr delayed credit to 70.
-function ssBenefitMult(claimAge,fra){
-  fra=fra||67;
+// 5/9% per month for the first 36 early months, 5/12%/mo beyond; delayed credit to 70 at drc %/yr (ssDrcPct: 8 from 1943).
+function ssBenefitMult(claimAge,fra,drc){
+  fra=fra||67;drc=drc||8; // drc: delayed credit %/yr (ssDrcPct); 8 for everyone born 1943 or later
   claimAge=Math.max(62,Math.min(70,claimAge));
   if(claimAge>=fra){
     const md=Math.min((70-fra)*12,(claimAge-fra)*12);
-    return 1+md*(8/12/100);
+    return 1+md*(drc/12/100);
   }
   const m=(fra-claimAge)*12;
   const r=m<=36?m*(5/9/100):36*(5/9/100)+(m-36)*(5/12/100);
   return 1-r;
 }
 // Benefit at any claim age given the user's entered amount and the base age it reflects.
-function ssBenefitAtAge(amtAtBase,baseAge,claimAge,fra){
+function ssBenefitAtAge(amtAtBase,baseAge,claimAge,fra,drc){
   if(amtAtBase<=0)return 0;
   fra=fra||67;
-  const fraMonthly=amtAtBase/ssBenefitMult(baseAge,fra);
-  return fraMonthly*ssBenefitMult(claimAge,fra);
+  const fraMonthly=amtAtBase/ssBenefitMult(baseAge,fra,drc);
+  return fraMonthly*ssBenefitMult(claimAge,fra,drc);
 }
 
-function fedTax(ti,brk10,brk12,brk22,_tg){
-  if(_tg){
-    // Slices computed for DISPLAY only — the return path below is untouched.
-    const s10=Math.max(0,Math.min(ti,brk10)),s12=Math.max(0,Math.min(ti,brk12)-brk10),
-          s22=Math.max(0,Math.min(ti,brk22)-brk12),s24=Math.max(0,ti-brk22);
-    // Formulas name the "bracket ceiling" explicitly so a search for "bracket" finds this group.
-    _trRow(_tg,'10% on the first',s10*0.10,'usd/yr',{base:s10,skipZero:true,formula:'min(taxable income, 10% bracket ceiling) × 10%'});
-    _trRow(_tg,'12% on the next',s12*0.12,'usd/yr',{base:s12,skipZero:true,formula:'(min(taxable income, 12% bracket ceiling) − 10% bracket ceiling) × 12%'});
-    _trRow(_tg,'22% on the next',s22*0.22,'usd/yr',{base:s22,skipZero:true,formula:'(min(taxable income, 22% bracket ceiling) − 12% bracket ceiling) × 22%'});
-    _trRow(_tg,'24% on the remainder',s24*0.24,'usd/yr',{base:s24,skipZero:true,formula:'(taxable income − 22% bracket ceiling) × 24%'});
-    if(ti<=0)_trRow(_tg,'No federal tax in this phase',0,'flagv',{kind:'flag',note:'Your deductions cover all of your gross income, so no tax bracket is reached.'});
+// Sweep R2-5 (v405): all seven brackets. The ladder used to end at "24% on the remainder", so a $300k
+// taxable year was charged $64,598 instead of ~$73,770 — big Roth conversions, lump draws and RMD-heavy
+// plans were all flattered. brk24/brk32/brk35 are the 24/32/35% CEILINGS; 37% applies above brk35. They
+// trail `_tg` so existing callers keep their argument positions; a caller that omits them (or passes
+// 0) gets no bracket above 24%, which is the old behaviour rather than a crash.
+function fedTax(ti,brk10,brk12,brk22,_tg,brk24,brk32,brk35){
+  const top=v=>(v>0?v:Infinity);
+  const L=[[brk10,0.10],[brk12,0.12],[brk22,0.22],[top(brk24),0.24],[top(brk32),0.32],[top(brk35),0.35],[Infinity,0.37]];
+  let tax=0,lo=0;
+  for(let i=0;i<L.length;i++){
+    const hi=Math.max(lo,L[i][0]),rate=L[i][1];
+    const s=Math.max(0,Math.min(ti,hi)-lo);
+    // Slices traced for DISPLAY; the formulas name the "bracket ceiling" so a search for "bracket"
+    // finds this group. A band that is not reached emits nothing (skipZero).
+    if(_tg){
+      const pct=Math.round(rate*100)+'%',last=(hi===Infinity);
+      _trRow(_tg,pct+(i===0?' on the first':last?' on the remainder':' on the next'),s*rate,'usd/yr',{base:s,skipZero:true,
+        formula:i===0?'min(taxable income, 10% bracket ceiling) × 10%'
+          :last?'(taxable income − '+Math.round(L[i-1][1]*100)+'% bracket ceiling) × '+pct
+          :'(min(taxable income, '+pct+' bracket ceiling) − '+Math.round(L[i-1][1]*100)+'% bracket ceiling) × '+pct});
+    }
+    tax+=s*rate; lo=hi;
+    if(ti<=hi)break;
   }
-  if(ti<=0)return 0;
-  if(ti<=brk10)return ti*0.10;
-  if(ti<=brk12)return brk10*0.10+(ti-brk10)*0.12;
-  if(ti<=brk22)return brk10*0.10+(brk12-brk10)*0.12+(ti-brk12)*0.22;
-  return brk10*0.10+(brk12-brk10)*0.12+(brk22-brk12)*0.22+(ti-brk22)*0.24;
+  if(_tg&&ti<=0)_trRow(_tg,'No federal tax in this phase',0,'flagv',{kind:'flag',note:'Your deductions cover all of your gross income, so no tax bracket is reached.'});
+  return ti<=0?0:tax;
+}
+// Which federal bracket a taxable income lands in, for labels. `b` is a phase result (adjBrk*).
+function _fedBracketName(ti,b){
+  const L=[[b.adjBrk10,'10%'],[b.adjBrk12,'12%'],[b.adjBrk22,'22%'],[b.adjBrk24,'24%'],[b.adjBrk32,'32%'],[b.adjBrk35,'35%']];
+  for(let i=0;i<L.length;i++){if(!(L[i][0]>0))return L[i][1]+'+';if(ti<=L[i][0])return L[i][1];}
+  return '37%';
 }
 
 // v16: `caps` is the applicable-percentage ladder as DATA (see D_USD.acaCap*). It is optional so
@@ -994,6 +1420,15 @@ function acaPrem(magi,fpl100,fpl400,_tg,caps){
   const cp=_cap(p)/100;
   return magi*cp/12;
 }
+// Sweep R9-3 (v423): the poverty line for the plan's HOUSEHOLD. The ACA measures a married couple's joint MAGI
+// against the 2-person line, so an MFJ plan reads the mfjFpl* fields (the D_USD default for a plan that lacks
+// them); a single filer reads fpl*, exactly as before. Every ACA figure goes through here — the engine, the
+// PDF, the AI prompt and the glossary facts — so none of them can quote the 1-person cliff to a couple.
+function _fplOf(s){
+  const mfj=!!s&&s.filingStatus==='mfj';
+  const pick=(k,mk)=>{if(!mfj)return s?s[k]:D_USD[k];const v=+s[mk];return v>0?v:D_USD[mk];};
+  return {fpl100:pick('fpl100','mfjFpl100'),fpl250:pick('fpl250','mfjFpl250'),fpl400:pick('fpl400','mfjFpl400')};
+}
 
 // UK income tax calculation
 // UK taxes: 401k withdrawals + UKP + equity gains + part-time income
@@ -1005,10 +1440,9 @@ function ukIncomeTax(ukTaxableIncome,pa,basicCeil,basicRate,higherCeil,higherRat
     let _ePA=pa;const _ts=pa*7.956;
     if(ukTaxableIncome>_ts)_ePA=Math.max(0,pa-Math.floor((ukTaxableIncome-_ts)/2));
     const _ti=Math.max(0,ukTaxableIncome-_ePA);
-    const _bB=Math.max(0,basicCeil-pa),_hB=Math.max(0,higherCeil-basicCeil);
+    const _bB=Math.max(0,basicCeil-pa),_hB=Math.max(0,higherCeil-_bB);
     const _inB=Math.min(_ti,_bB),_inH=Math.min(Math.max(0,_ti-_inB),_hB),_inA=Math.max(0,_ti-_inB-_inH);
-    _trRow(_tg,'UK-taxable income',ukTaxableIncome,'usd/yr',{kind:'in',
-      formula:'US Social Security + 401k + UK State Pension + equity gains + part-time (Article 17(3) taxes social security in the country of residence)'});
+    _trRow(_tg,'= UK-taxable income',ukTaxableIncome,'usd/yr',{kind:'total',formula:'the items above'});
     _trRow(_tg,'− personal allowance',_ePA,'usd/yr',{kind:'minus',
       formula:_ePA<pa?'tapered: £1 lost for every £2 of income above the ~£100k equivalent':'full personal allowance'});
     if(_ePA<pa)_trRow(_tg,'allowance lost to the taper',pa-_ePA,'usd/yr',{kind:'flag'});
@@ -1027,7 +1461,11 @@ function ukIncomeTax(ukTaxableIncome,pa,basicCeil,basicRate,higherCeil,higherRat
   const ti=Math.max(0,ukTaxableIncome-effPA);
   if(ti<=0)return 0;
   const basicBand=Math.max(0,basicCeil-pa); // basic rate band width
-  const higherBand=Math.max(0,higherCeil-basicCeil);
+  // ⚠ Sweep R2-10 (v405): the higher band ends at £125,140 of TAXABLE income (the additional-rate
+  // threshold), so its width is higherCeil − the basic BAND, not − the basic CEILING. The old width was
+  // one personal allowance too narrow: 45% started at £112,570 taxable, overcharging incomes ~£112–125k
+  // (£130k gross: £45,331 against HMRC's £44,703).
+  const higherBand=Math.max(0,higherCeil-basicBand);
   let tax=0;
   let remaining=ti;
   // Basic rate
@@ -1041,27 +1479,28 @@ function ukIncomeTax(ukTaxableIncome,pa,basicCeil,basicRate,higherCeil,higherRat
 }
 
 // ── v4: Canadian federal income tax ──────────────────────────────
-// Brackets in USD equivalent; personal amount deducted first
+// Brackets in USD equivalent (see TAX_FX). ⚠ Sweep R2-6 (v405): the basic personal amount is a
+// non-refundable CREDIT at the lowest rate, as on the T1 — all income runs through the brackets and
+// pa × r1 comes off the result. It used to be DEDUCTED from income first, which relieves it at the
+// TOP marginal rate and understated tax by (marginal − lowest rate) × BPA for anyone above bracket 1.
 function canadianFedTax(income,pa,b1,b2,b3,b4,r1,r2,r3,r4,r5,_tg){
+  const inc=Math.max(0,income);
+  const B=[b1,b2,b3,b4,Infinity],R=[r1,r2,r3,r4,r5];
+  let gross=0,lo=0;const _s=[];
+  for(let i=0;i<5;i++){const hi=Math.max(lo,B[i]),s=Math.max(0,Math.min(inc,hi)-lo);_s.push(s);gross+=s*(R[i]/100);lo=hi;}
+  const credit=Math.min(gross,Math.max(0,pa)*(r1/100));
   if(_tg){
-    const _ti=Math.max(0,income-pa);
-    _trRow(_tg,'Gross income',income,'usd/yr',{kind:'in'});
-    _trRow(_tg,'− basic personal amount',pa,'usd/yr',{kind:'minus'});
-    _trRow(_tg,'= taxable income',_ti,'usd/yr',{kind:'total'});
-    const _s=[Math.max(0,Math.min(_ti,b1)),Math.max(0,Math.min(_ti,b2)-b1),Math.max(0,Math.min(_ti,b3)-b2),
-              Math.max(0,Math.min(_ti,b4)-b3),Math.max(0,_ti-b4)],_r=[r1,r2,r3,r4,r5];
-    for(let i=0;i<5;i++)_trRow(_tg,'Federal '+_r[i]+'%',_s[i]*(_r[i]/100),'usd/yr',{base:_s[i],skipZero:true});
+    _trRow(_tg,'Gross income',inc,'usd/yr',{kind:'in',
+      note:'US Social Security is included at 85%: the US–Canada treaty (Art. XVIII) exempts the other 15% (CRA line 25600).'});
+    for(let i=0;i<5;i++)_trRow(_tg,'Federal '+R[i]+'%',_s[i]*(R[i]/100),'usd/yr',{base:_s[i],skipZero:true});
+    _trRow(_tg,'− basic personal amount credit',credit,'usd/yr',{kind:'minus',skipZero:true,
+      formula:'basic personal amount × '+r1+'% (the lowest rate) — a credit, not a deduction'});
   }
-  const ti=Math.max(0,income-pa);if(ti<=0)return 0;
-  if(ti<=b1)return ti*(r1/100);
-  if(ti<=b2)return b1*(r1/100)+(ti-b1)*(r2/100);
-  if(ti<=b3)return b1*(r1/100)+(b2-b1)*(r2/100)+(ti-b2)*(r3/100);
-  if(ti<=b4)return b1*(r1/100)+(b2-b1)*(r2/100)+(b3-b2)*(r3/100)+(ti-b3)*(r4/100);
-  return b1*(r1/100)+(b2-b1)*(r2/100)+(b3-b2)*(r3/100)+(b4-b3)*(r4/100)+(ti-b4)*(r5/100);
+  return Math.max(0,gross-credit);
 }
 
 // ── v4: Australian federal income tax ────────────────────────────
-// Post-Stage-3 rates (2024-25 onward): 16%, 30%, 37%, 45% — the DEFAULTS, not constants.
+// Resident rates: 15%, 30%, 37%, 45% from 1 July 2026 (16% for 2024-26; 14% from 1 July 2027) — the DEFAULTS, not constants.
 // Includes the Low Income Tax Offset (LITO, up to $700)
 // The four marginal rates arrive as data (`r` = {r1,r2,r3,r4}) rather than as literals in the
 // arithmetic. They used to be hardcoded, which is why this function went on charging the pre-Stage-3
@@ -1069,14 +1508,28 @@ function canadianFedTax(income,pa,b1,b2,b3,b4,r1,r2,r3,r4,r5,_tg){
 // refresh a number that is a field, and these were not. Defaults preserve the old behaviour for any
 // caller that omits them.
 function _ausLito(income){
-  // Low Income Tax Offset: $700 up to $37,500, reduced 5c per dollar to $45,000 (leaving $325), then
-  // 1.5c per dollar to $66,667. The previous single-taper approximation ran one straight line from
+  // Low Income Tax Offset: A$700 up to A$37,500, reduced 5c per dollar to A$45,000 (leaving A$325), then
+  // 1.5c per dollar to A$66,667. The previous single-taper approximation ran one straight line from
   // $37,500 at 1.5c, which still stood at $262 when the hard cutoff at $66,667 knocked it to zero —
   // a $262 cliff the real offset does not have. Two segments, continuous at both joins.
-  if(income<=37500)return 700;
-  if(income<=45000)return 700-(income-37500)*0.05;
-  if(income<=66667)return Math.max(0,325-(income-45000)*0.015);
+  // ⚠ Sweep R2-1 (v405): `income` is USD, so the A$ statute figures are converted at the fixed TAX_FX
+  // rate. They were applied as if they were US dollars, which inflated the offset by ~40%. LITO is not
+  // indexed in law, so these are not inflated per phase either.
+  // Sweep R20-6 (v467): at TODAY's rate when live rates are loaded, like the thresholds (_taxFxFactor).
+  const _r=(_taxFxLive&&_taxFxLive.AUD>0)?_taxFxLive.AUD:TAX_FX.AUD;
+  const A=v=>v/_r;
+  if(income<=A(37500))return A(700);
+  if(income<=A(45000))return A(700)-(income-A(37500))*0.05;
+  if(income<=A(66667))return Math.max(0,A(325)-(income-A(45000))*0.015);
   return 0;
+}
+// Medicare levy. ⚠ Sweep R2-7 (v405): once taxable income passes the low-income threshold the levy is
+// the rate × ALL taxable income, not × the excess; between the threshold and the shade-in ceiling it is
+// 10c per dollar above the threshold, which is exactly min(rate × income, 10% × excess). Charging only
+// the excess understated it by ~A$544/yr for most retirees.
+function _ausLevy(income,thr,ratePct){
+  if(!(income>thr)||!(ratePct>0))return 0;
+  return Math.min(income*(ratePct/100),(income-thr)*0.10);
 }
 function australianFedTax(income,free,b1,b2,b3,r,_tg){
   const r1=(r&&r.r1!=null)?r.r1:19, r2=(r&&r.r2!=null)?r.r2:32.5,
@@ -1088,7 +1541,7 @@ function australianFedTax(income,free,b1,b2,b3,r,_tg){
     _trRow(_tg,'Tax-free threshold',free,'usd/yr',{kind:'threshold'});
     for(let i=0;i<4;i++)_trRow(_tg,_r[i]+'% band',_s[i]*(_r[i]/100),'usd/yr',{base:_s[i],skipZero:true});
     _trRow(_tg,'− Low Income Tax Offset (LITO)',_ausLito(income),'usd/yr',{kind:'minus',skipZero:true,
-      formula:'$700 below $37,500, tapering to $0 at $66,667'});
+      formula:'A$700 below A$37,500, tapering to A$0 at A$66,667 (converted to USD)'});
   }
   if(income<=free)return 0;
   let tax;
@@ -1126,16 +1579,20 @@ function _lumpIncrementalTax(o){
       +Math.max(0,g-o.cadPA)*((o.cadProvRate||0)/100);
     if(o.isAustralian)return australianFedTax(g,o.ausFree,o.ausB1,o.ausB2,o.ausB3,
         {r1:o.ausR1,r2:o.ausR2,r3:o.ausR3,r4:o.ausR4},null)
-      +Math.max(0,g-o.ausLevyThresh)*((o.ausLevyRate||0)/100);
+      +_ausLevy(g,o.ausLevyThresh,o.ausLevyRate||0);
     // UK residents: the UK bill is the binding one (US tax is largely wiped out by the Foreign Tax
     // Credit), so the incremental cost of a draw is modelled as UK income tax.
     if(o.isUkRes)return ukIncomeTax(Math.max(0,g),o.ukPA,o.ukBasicCeil,o.ukBasicRate,o.ukHigherCeil,o.ukHigherRate,o.ukAddlRate,null);
     if(!o.subjectUS)return 0;
-    return fedTax(Math.max(0,g-o.ded),o.brk10,o.brk12,o.brk22,null);
+    return fedTax(Math.max(0,g-o.ded),o.brk10,o.brk12,o.brk22,null,o.brk24,o.brk32,o.brk35);
   };
   // v400: a UK resident's draw stacks on the UK base, not the US one (see ukBase_ann in calcPhase).
   const base=(o.isUkRes&&o.ukBase!=null)?o.ukBase:o.gross;
-  return Math.max(0,taxAt(base+extra)-taxAt(base))+Math.max(0,o.stateExtra||0)*((o.stateRate||0)/100);
+  // Sweep R19-1 (v458): a married couple in the UK, Canada or Australia is taxed person by person — the spouse's share
+  // (spouseBase) is taxed on its own, and a draw from YOUR 401k stacks on YOUR share.
+  const sp=(o.isCanadian||o.isAustralian||o.isUkRes)?Math.max(0,Math.min(base,o.spouseBase||0)):0;
+  const taxHH=g=>sp>0?taxAt(Math.max(0,g-sp))+taxAt(sp):taxAt(g);
+  return Math.max(0,taxHH(base+extra)-taxHH(base))+Math.max(0,o.stateExtra||0)*((o.stateRate||0)/100);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1147,6 +1604,11 @@ function _lumpIncrementalTax(o){
 // to carry three hand-inlined copies of the cascade, so the sourcing lives HERE and they all call it.
 // Pure & DOM-free — this block is inside the slice mobile/extract.mjs lifts.
 const LUMP_ACCTS=['cash','equity','k401','roth','super']; // also the automatic cascade order
+// Sweep R25-3 (v497): Australian Super is PRESERVED until 60 — the preservation age of everyone born after 30 June 1964, so of
+// anyone under 60 today. Nothing is paid from it before then: a monthly draw waits for 60 (simPhase, Monte Carlo, the backtest)
+// and a one-time expense skips it (_lumpSpecAt). It was paid from any age, tax-free — a $50,000 car at 55 took $40,000 of Super.
+const SUPER_PRESERVATION_AGE=60;
+const SUPER_LOCK_TXT='Super is preserved until 60 (the preservation age of anyone under 60 today), so nothing is paid from it before then. Move this expense to a phase that starts at 60 or later, or choose another account for it.';
 // Trace-safe account names. The UI has its own richer labels (LUMP_ACCT_LABELS), but those live
 // outside the slice mobile/extract.mjs lifts, and trace rows must stay DOM-free.
 const LUMP_ACCT_TRACE={cash:'cash / savings',equity:'the taxable brokerage account',k401:'the 401k / IRA',roth:'the Roth',super:'superannuation'};
@@ -1174,6 +1636,17 @@ function _lumpSpec(l){
   }
   return{acct:a,split:sp,fallback,fallbackAccts,grossUp:isOut&&!!(l&&l.grossUp)};
 }
+// Sweep R24-3 (v491): the funding rule IN A PHASE — a pre-59½ phase (p0/p0b) whose 401k is LOCKED never cascades into it (the
+// automatic order and "use other accounts if short" skip it); an expense that names the 401k still draws on it, and calcPhase
+// charges the 10% penalty. It spilled into the locked 401k (a $60,000 roof at 50: $40,000 of it from the 401k, no penalty).
+// The engine, Monte Carlo and the historical backtest all fund lumps through this.
+// R25-3: a phase that starts before 60 takes nothing from Super — named, in a split or as a fallback (`locked`, see applyLumpDraw).
+function _lumpSpecAt(l,phaseKey,mode,startAge){
+  let sp=_lumpSpec(l);
+  if(sp.fallback&&(phaseKey==='p0'||phaseKey==='p0b')&&(mode||'locked')==='locked')sp=Object.assign({},sp,{fallbackAccts:sp.fallbackAccts.filter(k=>k!=='k401')});
+  if(startAge!=null&&startAge<SUPER_PRESERVATION_AGE-1e-9)sp=Object.assign({},sp,{locked:['super'],fallbackAccts:sp.fallbackAccts.filter(k=>k!=='super')});
+  return sp;
+}
 /**
  * Take `amt` out of a balance bag per `spec`. Returns a NEW bag, what each account gave up, and the
  * part no permitted account could cover. With strict sourcing `unfunded` is a normal answer rather
@@ -1184,7 +1657,8 @@ function applyLumpDraw(bal,amt,spec){
   const b={cash:bal.cash||0,equity:bal.equity||0,k401:bal.k401||0,roth:bal.roth||0,super:bal.super||0};
   const drawn={cash:0,equity:0,k401:0,roth:0,super:0};
   let need=amt>0?amt:0;
-  const take=(k,cap)=>{const t=Math.min(b[k],cap,need);if(!(t>0))return;b[k]-=t;drawn[k]+=t;need-=t;};
+  const take=(k,cap)=>{if(spec.locked&&spec.locked.indexOf(k)>=0)return; // R25-3: an account this phase cannot touch
+    const t=Math.min(b[k],cap,need);if(!(t>0))return;b[k]-=t;drawn[k]+=t;need-=t;};
   if(spec.acct==='split')LUMP_ACCTS.forEach(k=>take(k,spec.split[k]));
   else if(spec.acct!=='auto')take(spec.acct,need);
   // Re-walking every account is safe: whatever the named source already gave is gone from the bag.
@@ -1223,9 +1697,24 @@ function simPhase(o){
       phaseStartAge,ssColaRate,spouseSSColaRate,tripleLockRate,cppColaRate,oasColaRate,agePensionColaRate,
       equityCostBasis,ssBaseAge,ukpBaseAge,cppBaseAge,oasBaseAge,agePensionBaseAge,spouseSSBaseAge,spouseAgeDelta,
       usPensionBase,usPensionColaRate,usPensionBaseAge,usPensionEndAge,
-      usPension2Base,usPension2ColaRate,usPension2BaseAge,usPension2EndAge}=o;
+      usPension2Base,usPension2ColaRate,usPension2BaseAge,usPension2EndAge,ssMaxOfTwo}=o;
   const ssBA=ssBaseAge||62,ukpBA=ukpBaseAge||67,spBA=spouseSSBaseAge||62;
   const spDelta=spouseAgeDelta||0; // primary age - spouse age; 0 = same age (back-compat)
+  // Sweep R19-1 (v458): the SPOUSE's own UK State Pension / CPP / OAS / Age Pension, on the spouse's age line (your age −
+  // spDelta), growing like yours. Added into the same stream totals — every card, chart and CSV shows the household
+  // figure — and reported separately (avgSp*) so calcPhase can tax each person's share on its own.
+  const spUkpBase=o.spUkpBase||0,spCppBase=o.spCppBase||0,spOasBase=o.spOasBase||0,spApBase=o.spApBase||0;
+  const spUkpBA=o.spUkpBaseAge||67,spCppBA=o.spCppBaseAge||65,spOasBA=o.spOasBaseAge||65,spApBA=o.spApBaseAge||67;
+  const _spPen=(base,ba,a,grow)=>{const sa=a-spDelta;return (base>0&&sa>=ba-1e-9)?grow(base,sa-ba):0;};
+  const _gUkp=(b,y)=>tripleLockUKP(b,y,tripleLockRate),_gCpp=(b,y)=>colaUSS(b,y,_numOr(cppColaRate,2.6)),
+    _gOas=(b,y)=>colaUSS(b,y,_numOr(oasColaRate,2.6)),_gAp=(b,y)=>colaUSS(b,y,_numOr(agePensionColaRate,2.6));
+  // Sweep R19-2 (v458): the earnings test (see _etOpts). Before FRA a month's benefit is reduced by the year's excess
+  // earnings ÷ 2 (÷ 3 above the higher limit in the year before FRA), spread over the year; each month's withholding
+  // counts as that share of a month, and from FRA the benefit is recalculated as if claimed that many months later.
+  // Not applied inside the survivor projection's "larger of the two" mode, where only the recredit carries over.
+  const _et=o.et||null;let etWYou=_et?_et.wYouIn:0,etWSp=_et?_et.wSpIn:0,etSum=0;
+  const _etWh=(age,fra,earn)=>age<fra-1-1e-9?Math.max(0,earn-_et.lim)/24:age<fra-1e-9?Math.max(0,earn-_et.limFra)/36:0;
+  const _etMult=(claim,w,fra,drc)=>w>0&&claim<fra?ssBenefitMult(Math.min(fra,claim+w/12),fra,drc)/ssBenefitMult(claim,fra,drc):1;
   const cppBA=cppBaseAge||65,oasBA=oasBaseAge||65,apBA=agePensionBaseAge||67;
   const usPenBA=usPensionBaseAge||65; // v9: US pension/disability activation age (like CPP/OAS)
   const usPen2BA=usPension2BaseAge||65; // v9: second US pension/disability stream
@@ -1238,6 +1727,9 @@ function simPhase(o){
   bRoth=bRoth||0; wRoth=wRoth||0;
   bSuper=bSuper||0; wSuper=wSuper||0;
   let costBasis=equityCostBasis!=null?equityCostBasis:(bEquity*0.9);
+  // Under the hood (sweep R13): balances entering the phase, for the 'growth' and 'gain' trace groups. Read only
+  // by calcPhase's trace; nothing below feeds back into the simulation.
+  const _trPre={b401k,bCash,bEquity,bRoth,bSuper,basis:costBasis};
   // ─── Cash events at the start of the phase ──────────────────────────────────────────────────────
   // Callers pass the per-event arrays; the legacy scalar totals are still honoured so an older caller
   // (and the self-test fixtures) keep working, taking the pre-sourcing defaults from _lumpSpec.
@@ -1265,7 +1757,13 @@ function simPhase(o){
     // feeds it back on a second pass, because the tax can't be known until the draw is known.
     const amt=(l.amtUSD||0)+((l._grossUpExtra>0)?l._grossUpExtra:0);
     const eqBefore=_bag.equity,basisBefore=costBasis;
-    const r=applyLumpDraw(_bag,amt,_lumpSpec(l));_bag=r.bal;
+    const _spA=_lumpSpecAt(l,o.phaseKey,o.earlyAccessMode,phaseStartAge),_spL=_lumpSpec(l); // R24-3, R25-3
+    const r=applyLumpDraw(_bag,amt,_spA);_bag=r.bal;
+    // R24-3: short only because the locked 401k was skipped (it still holds money) — so the screens can say so, not "no account can cover it".
+    const k401Locked=r.unfunded>0.5&&_spA.fallback&&_spL.fallbackAccts.indexOf('k401')>=0&&_spA.fallbackAccts.indexOf('k401')<0&&(r.bal.k401||0)>0.5;
+    // R25-3: short only because Super is preserved until 60 — it still holds money and this expense could have used it.
+    const superLocked=r.unfunded>0.5&&(_spA.locked||[]).indexOf('super')>=0&&(r.bal.super||0)>0.5
+      &&(_spL.acct==='super'||(_spL.acct==='split'&&(_spL.split.super||0)>0)||(_spL.fallback&&_spL.fallbackAccts.indexOf('super')>=0));
     // Selling taxable holdings realises the gain embedded in what was sold, and returns the rest of
     // the basis. (Arithmetically this is the same proportional basis reduction as before — it just
     // wasn't reported as a gain, so a brokerage-funded expense looked tax-free.)
@@ -1277,27 +1775,47 @@ function simPhase(o){
     }
     LUMP_ACCTS.forEach(k=>{lumpDrawn[k]+=r.drawn[k];});
     lumpUnfunded+=r.unfunded;
-    lumpDetail.push({id:l.id,dir:'out',amt,setAmt:l.amtUSD||0,drawn:r.drawn,unfunded:r.unfunded,gain});
+    lumpDetail.push({id:l.id,dir:'out',amt,setAmt:l.amtUSD||0,drawn:r.drawn,unfunded:r.unfunded,gain,k401Locked,superLocked});
   });
   bCash=_bag.cash;bEquity=_bag.equity;b401k=_bag.k401;bRoth=_bag.roth;bSuper=_bag.super;
+  const _trOpen={basis:costBasis,bEquity}; // trace only: after this phase's one-time events
+  const _trGr={k401:0,cash:0,equity:0,roth:0,super:0},_trPaid={ss:0,spSS:0,ssSp:0,ukp:0,cpp:0,oas:0,ap:0,usPen:0,usPen2:0};
   const rothConvMo=(rothConversionAnn||0)/12;
-  const m1=r401k/100/12,m2=rCash/100/12,m3=(rEquity||0)/100/12,m4=(rRoth||7)/100/12,m5=(rSuper||7)/100/12;
+  // ⚠ Sweep R3-1 (v408): a rate the user enters as "%/yr" is a true ANNUAL return, so the monthly rate is
+  // (1+r)^(1/12)−1. It used to be r/12, which compounds to 7.23%/yr for "7%" and left every dashboard
+  // balance ~0.23%/yr ahead of Monte Carlo, the historical backtest and Drawdown, which all read the rate
+  // as annual (−6.7% on the default plan's ending balance once aligned). _monthlyRate is the one converter.
+  const m1=_monthlyRate(r401k),m2=_monthlyRate(rCash),m3=_monthlyRate(rEquity||0),m4=_monthlyRate(_numOr(rRoth,7)),m5=_monthlyRate(_numOr(rSuper,7));
   let curSS=hasSS&&ussBase>0?colaUSS(ussBase,phaseStartAge-ssBA,ssColaRate):0;
   // v6: spouse age = primary age - delta. Gate spouse SS to flow only when SPOUSE reaches claim age.
+  // ⚠ Sweep R4-1 (v410): ONLY the spouse's age gates it. It was also gated on `hasSS` — YOUR claim — so a
+  //   spouse claiming at 62 while you wait for 70 was paid nothing for eight years (~$158k), which is the
+  //   very split claim the SS Optimizer's couples search recommends.
   const spouseAgeAtPhaseStart=phaseStartAge-spDelta;
-  let curSpSS=hasSS&&spouseSSBase>0&&spouseAgeAtPhaseStart>=spBA
-    ?colaUSS(spouseSSBase,spouseAgeAtPhaseStart-spBA,spouseSSColaRate||2.6):0;
+  let curSpSS=spouseSSBase>0&&spouseAgeAtPhaseStart>=spBA
+    ?colaUSS(spouseSSBase,spouseAgeAtPhaseStart-spBA,_numOr(spouseSSColaRate,2.6)):0;
   let curUKP=hasUKP&&ukpBase>0?tripleLockUKP(ukpBase,phaseStartAge-ukpBA,tripleLockRate):0;
-  let curCPP=hasCPP&&cppBase>0&&phaseStartAge>=cppBA?colaUSS(cppBase,phaseStartAge-cppBA,cppColaRate||2.6):0;
-  let curOAS=hasOAS&&oasBase>0&&phaseStartAge>=oasBA?colaUSS(oasBase,phaseStartAge-oasBA,oasColaRate||2.6):0;
-  let curAP=hasAgePension&&agePensionBase>0&&phaseStartAge>=apBA?colaUSS(agePensionBase,phaseStartAge-apBA,agePensionColaRate||2.6):0;
+  let curCPP=hasCPP&&cppBase>0&&phaseStartAge>=cppBA?colaUSS(cppBase,phaseStartAge-cppBA,_numOr(cppColaRate,2.6)):0;
+  let curOAS=hasOAS&&oasBase>0&&phaseStartAge>=oasBA?colaUSS(oasBase,phaseStartAge-oasBA,_numOr(oasColaRate,2.6)):0;
+  let curAP=hasAgePension&&agePensionBase>0&&phaseStartAge>=apBA?colaUSS(agePensionBase,phaseStartAge-apBA,_numOr(agePensionColaRate,2.6)):0;
   // v9: US pension/disability — escalates at its own COLA (0 ⇒ flat). Activates at usPenBA like CPP/OAS.
   let curUsPen=usPensionBase>0&&phaseStartAge>=usPenBA&&phaseStartAge<usPenEA?colaUSS(usPensionBase,phaseStartAge-usPenBA,usPensionColaRate||0):0;
   let curUsPen2=usPension2Base>0&&phaseStartAge>=usPen2BA&&phaseStartAge<usPen2EA?colaUSS(usPension2Base,phaseStartAge-usPen2BA,usPension2ColaRate||0):0;
   let sumSS=0,sumSpSS=0,sumUKP=0,sumCPP=0,sumOAS=0,sumAP=0,sumUsPen=0,sumUsPen2=0,sumTaxableEquity=0;
+  let curSpUKP=_spPen(spUkpBase,spUkpBA,phaseStartAge,_gUkp),curSpCPP=_spPen(spCppBase,spCppBA,phaseStartAge,_gCpp),
+    curSpOAS=_spPen(spOasBase,spOasBA,phaseStartAge,_gOas),curSpAP=_spPen(spApBase,spApBA,phaseStartAge,_gAp);
+  let sumSpUKP=0,sumSpCPP=0,sumSpOAS=0,sumSpAP=0; // R19-1
+  // Sweep R20-1 (v467): the spousal top-ups (see _spousalOpts) — each PIA grown at the SSA COLA from the age its amount
+  // refers to; paid on top of the payee's own benefit, never in the survivor run.
+  const _sps=ssMaxOfTwo?null:(o.spousal||null);let sumSpsYou=0,sumSpsSp=0;
+  // Sweep R21-1 (v474): the survivor run's survivor benefit (_survivorSSOpts). It REPLACES the late spouse's own benefit
+  // stream, from the age the survivor claims it, growing at the COLA on the same once-a-year steps as the benefits.
+  const _sv=ssMaxOfTwo?(o.survSS||null):null;
+  // Sweep R22-1 (v481): the survivor run's CPP survivor's pension (_survivorCppOpts), in place of the late spouse's CPP.
+  const _svC=o.survCpp||null;let sumSvCpp=0;
   // Actual (balance-capped) withdrawals, accumulated monthly. These can fall short of the configured
   // amounts once a bucket runs dry — see the capping note in the loop.
-  let sumW401k=0,sumWCash=0,sumWEquity=0,sumWRoth=0,sumWSuper=0,sumConv=0;
+  let sumW401k=0,sumWCash=0,sumWEquity=0,sumWRoth=0,sumWSuper=0,sumConv=0,superPresMo=0; // R25-3: months a Super draw waited for 60
   // First age each bucket hit zero WHILE it was being drawn from (null = never / not drawn from).
   const dep={b401k:null,cash:null,equity:null,roth:null,super:null};
   // ─── Annual snapshots (Year-By-Year-Schedule Phase 2) ───────────────────────────────────────────
@@ -1320,16 +1838,19 @@ function simPhase(o){
     yr.drawn=yr.w401k+yr.wCash+yr.wEquity+yr.wRoth+yr.wSuper;
     yr.income=yr.ss+yr.spSS+yr.ukp+yr.cpp+yr.oas+yr.ap+yr.usPen+yr.usPen2;
     yearRows.push(yr);yr=null;};
+  // R18-5: the 401k balance on reaching o.captureAge (the RMD start age) when it falls inside this phase.
+  let b401kAtCap=null;const _capAge=o.captureAge;
   for(let i=0;i<months;i++){
     if(i%12===0){_yrClose();yr=_yrNew(phaseStartAge+i/12);}
     const ageNow=phaseStartAge+i/12;
+    if(b401kAtCap===null&&_capAge!=null&&ageNow>=_capAge-1e-9)b401kAtCap=b401k;
     if(i>0&&i%12===0){
       if(hasSS&&ussBase>0)curSS=colaUSS(ussBase,ageNow-ssBA,ssColaRate);
-      if(hasSS&&spouseSSBase>0){const spAgeNow=ageNow-spDelta;curSpSS=spAgeNow>=spBA?colaUSS(spouseSSBase,spAgeNow-spBA,spouseSSColaRate||2.6):0;}
+      if(spouseSSBase>0){const spAgeNow=ageNow-spDelta;curSpSS=spAgeNow>=spBA?colaUSS(spouseSSBase,spAgeNow-spBA,_numOr(spouseSSColaRate,2.6)):0;}
       if(hasUKP&&ukpBase>0)curUKP=tripleLockUKP(ukpBase,ageNow-ukpBA,tripleLockRate);
-      if(hasCPP&&cppBase>0)curCPP=ageNow>=cppBA?colaUSS(cppBase,ageNow-cppBA,cppColaRate||2.6):0;
-      if(hasOAS&&oasBase>0)curOAS=ageNow>=oasBA?colaUSS(oasBase,ageNow-oasBA,oasColaRate||2.6):0;
-      if(hasAgePension&&agePensionBase>0)curAP=ageNow>=apBA?colaUSS(agePensionBase,ageNow-apBA,agePensionColaRate||2.6):0;
+      if(hasCPP&&cppBase>0)curCPP=ageNow>=cppBA?colaUSS(cppBase,ageNow-cppBA,_numOr(cppColaRate,2.6)):0;
+      if(hasOAS&&oasBase>0)curOAS=ageNow>=oasBA?colaUSS(oasBase,ageNow-oasBA,_numOr(oasColaRate,2.6)):0;
+      if(hasAgePension&&agePensionBase>0)curAP=ageNow>=apBA?colaUSS(agePensionBase,ageNow-apBA,_numOr(agePensionColaRate,2.6)):0;
       if(usPensionBase>0)curUsPen=(ageNow>=usPenBA&&ageNow<usPenEA)?colaUSS(usPensionBase,ageNow-usPenBA,usPensionColaRate||0):0;
       if(usPension2Base>0)curUsPen2=(ageNow>=usPen2BA&&ageNow<usPen2EA)?colaUSS(usPension2Base,ageNow-usPen2BA,usPension2ColaRate||0):0;
     } else if(i>0){
@@ -1344,17 +1865,67 @@ function simPhase(o){
       if(curUsPen>0&&ageNow>=usPenEA)curUsPen=0;
       if(curUsPen2>0&&ageNow>=usPen2EA)curUsPen2=0;
       // v6: spouse SS mid-year activation — turns on the month spouse crosses claim age
-      if(hasSS&&spouseSSBase>0&&curSpSS===0&&(ageNow-spDelta)>=spBA)curSpSS=spouseSSBase;
+      if(spouseSSBase>0&&curSpSS===0&&(ageNow-spDelta)>=spBA)curSpSS=spouseSSBase;
     }
-    sumSS+=curSS; sumSpSS+=curSpSS; sumUKP+=curUKP;
-    sumCPP+=curCPP; sumOAS+=curOAS; sumAP+=curAP; sumUsPen+=curUsPen; sumUsPen2+=curUsPen2;
-    yr.months++; yr.ss+=curSS; yr.spSS+=curSpSS; yr.ukp+=curUKP;
-    yr.cpp+=curCPP; yr.oas+=curOAS; yr.ap+=curAP; yr.usPen+=curUsPen; yr.usPen2+=curUsPen2;
+    // R19-1: the spouse's pensions — re-grown each year on the spouse's age, switched on the month they start.
+    if(i>0&&i%12===0){curSpUKP=_spPen(spUkpBase,spUkpBA,ageNow,_gUkp);curSpCPP=_spPen(spCppBase,spCppBA,ageNow,_gCpp);
+      curSpOAS=_spPen(spOasBase,spOasBA,ageNow,_gOas);curSpAP=_spPen(spApBase,spApBA,ageNow,_gAp);}
+    else if(i>0){const sa=ageNow-spDelta;
+      if(spUkpBase>0&&curSpUKP===0&&sa>=spUkpBA-1e-9)curSpUKP=spUkpBase;if(spCppBase>0&&curSpCPP===0&&sa>=spCppBA-1e-9)curSpCPP=spCppBase;
+      if(spOasBase>0&&curSpOAS===0&&sa>=spOasBA-1e-9)curSpOAS=spOasBase;if(spApBase>0&&curSpAP===0&&sa>=spApBA-1e-9)curSpAP=spApBase;}
+    // R19-2: the earnings test — the recredit from FRA, then this month's withholding before FRA.
+    let cSS=curSS,cSpSS=curSpSS;
+    if(_et){
+      const spAge=ageNow-spDelta;
+      if(cSS>0&&ageNow>=_et.fraYou-1e-9)cSS*=_etMult(_et.claimYou,etWYou,_et.fraYou,_et.drcYou);
+      if(cSpSS>0&&spAge>=_et.fraSp-1e-9)cSpSS*=_etMult(_et.claimSp,etWSp,_et.fraSp,_et.drcSp);
+      if(!ssMaxOfTwo){
+        const w1=cSS>0&&_et.earnYou>0?Math.min(cSS,_etWh(ageNow,_et.fraYou,_et.earnYou)):0;
+        if(w1>0){etWYou+=w1/cSS;cSS-=w1;etSum+=w1;}
+        const w2=cSpSS>0&&_et.earnSp>0?Math.min(cSpSS,_etWh(spAge,_et.fraSp,_et.earnSp)):0;
+        if(w2>0){etWSp+=w2/cSpSS;cSpSS-=w2;etSum+=w2;}
+      }
+    }
+    // Survivor projection only (sweep R4-2): the survivor is paid the LARGER of their own benefit and the
+    // late spouse's, month by month, each on its own timeline — so a benefit that had not started at the
+    // death still arrives when it was due, instead of being lost. Booked as the survivor's own SS.
+    let _svL=false;
+    if(_sv){ // R21-1: the late spouse's stream becomes the survivor benefit
+      const x=(_sv.amt>0&&ageNow>=_sv.from-1e-9)?colaUSS(_sv.amt,phaseStartAge+Math.floor(i/12)-_sv.base,_sv.cola):0;
+      if(_sv.slot==='you')cSS=x;else cSpSS=x;
+      _svL=x>0&&x>=(_sv.slot==='you'?cSpSS:cSS);
+    }
+    if(_sps){ // R20-1: the spousal top-ups, once both have claimed. Each PIA takes its COLA once a year, on the same
+      // phase-year steps as the benefits themselves, so a top-up on a PIA claimed at FRA is exactly half the benefit paid.
+      const sa=ageNow-spDelta,a0=phaseStartAge+Math.floor(i/12);
+      const pY=colaUSS(_sps.piaYou,a0-_sps.baseYou,_sps.cola),pS=colaUSS(_sps.piaSp,a0-spDelta-_sps.baseSp,_sps.cola);
+      if(sa>=_sps.spStart-1e-9&&0.5*pY>pS){const x=(0.5*pY-pS)*_sps.spFactor;cSpSS+=x;sumSpsSp+=x;}
+      if(ageNow>=_sps.youStart-1e-9&&0.5*pS>pY){const x=(0.5*pS-pY)*_sps.youFactor;cSS+=x;sumSpsYou+=x;}
+    }
+    // R22-1: the CPP survivor's pension, from the death — a flat rate + 37.5% of the late spouse's pension at 65 while the
+    // survivor is under 65, 60% from 65 — cut so that it and the survivor's own CPP stay within the combined maximum. The
+    // pension and both statutory figures step up once a year at the CPP COLA, as CPP does.
+    let svCpp=0;
+    if(_svC&&ageNow>=_svC.from-1e-9){
+      const y=phaseStartAge+Math.floor(i/12),late=colaUSS(_svC.at65,y-_svC.from,_svC.cola);
+      const due=ageNow-_svC.shift>=65-1e-9?0.6*late:colaUSS(_svC.flat,y-_svC.inflBase,_svC.cola)+0.375*late;
+      svCpp=Math.max(0,Math.min(due,colaUSS(_svC.cap,y-_svC.inflBase,_svC.cola)-(_svC.slot==='you'?curCPP:curSpCPP)));
+      sumSvCpp+=svCpp;
+    }
+    const paySS=ssMaxOfTwo?Math.max(cSS,cSpSS):cSS, paySpSS=ssMaxOfTwo?0:cSpSS;
+    sumSS+=paySS; sumSpSS+=paySpSS; sumUKP+=curUKP+curSpUKP;
+    sumCPP+=curCPP+curSpCPP+svCpp; sumOAS+=curOAS+curSpOAS; sumAP+=curAP+curSpAP; sumUsPen+=curUsPen; sumUsPen2+=curUsPen2;
+    sumSpUKP+=curSpUKP; sumSpCPP+=curSpCPP; sumSpOAS+=curSpOAS; sumSpAP+=curSpAP;
+    if(paySS>0)_trPaid.ss++; if(paySpSS>0)_trPaid.spSS++; if(ssMaxOfTwo&&(_sv?_svL:curSpSS>curSS))_trPaid.ssSp++; if(curUKP>0)_trPaid.ukp++;
+    if(curCPP>0)_trPaid.cpp++; if(curOAS>0)_trPaid.oas++; if(curAP>0)_trPaid.ap++; if(curUsPen>0)_trPaid.usPen++; if(curUsPen2>0)_trPaid.usPen2++;
+    yr.months++; yr.ss+=paySS; yr.spSS+=paySpSS; yr.ukp+=curUKP+curSpUKP;
+    yr.cpp+=curCPP+curSpCPP+svCpp; yr.oas+=curOAS+curSpOAS; yr.ap+=curAP+curSpAP; yr.usPen+=curUsPen; yr.usPen2+=curUsPen2;
     // Every withdrawal is capped at what the account can actually supply (the taxable-equity line
     // below has always worked this way; the others used to subtract unconditionally and floor at 0).
     // Without the cap the planner keeps paying income out of a $0 account, and a phantom 401k draw
     // also inflates taxable income and MAGI — enough to falsely trip the ACA cliff or IRMAA.
     const g401k=b401k*(1+m1);
+    _trGr.k401+=g401k-b401k;
     const act401k=Math.min(w401k,g401k);
     // A Roth conversion is discretionary, so the living-expense withdrawal has first claim on the 401k.
     const actConv=Math.min(rothConvMo,Math.max(0,g401k-act401k));
@@ -1362,10 +1933,11 @@ function simPhase(o){
     sumW401k+=act401k; sumConv+=actConv;
     yr.w401k+=act401k; yr.conv+=actConv;
     const gCash=bCash*(1+m2);
+    _trGr.cash+=gCash-bCash;
     const actCash=Math.min(wCash,gCash);
     bCash=gCash-actCash; if(bCash<0)bCash=0;
     sumWCash+=actCash; yr.wCash+=actCash;
-    bEquity=bEquity+bEquity*m3;
+    {const _g=bEquity*m3;_trGr.equity+=_g;bEquity=bEquity+_g;} // same arithmetic as bEquity+bEquity*m3
     const actualW=Math.min(wEquity,bEquity);
     if(actualW>0&&bEquity>0){
       const gainRatio=(bEquity-costBasis)/bEquity;
@@ -1377,11 +1949,14 @@ function simPhase(o){
     sumWEquity+=actualW; yr.wEquity+=actualW;
     // The conversion lands in the Roth before that month's Roth withdrawal is taken.
     const gRoth=bRoth*(1+m4)+actConv;
+    _trGr.roth+=gRoth-bRoth-actConv;
     const actRoth=Math.min(wRoth,gRoth);
     bRoth=gRoth-actRoth; if(bRoth<0)bRoth=0;
     sumWRoth+=actRoth; yr.wRoth+=actRoth;
     const gSuper=bSuper*(1+m5);
-    const actSuper=Math.min(wSuper,gSuper);
+    _trGr.super+=gSuper-bSuper;
+    const _supPres=wSuper>0&&ageNow<SUPER_PRESERVATION_AGE-1e-9;if(_supPres)superPresMo++; // R25-3: preserved until 60
+    const actSuper=_supPres?0:Math.min(wSuper,gSuper);
     bSuper=gSuper-actSuper; if(bSuper<0)bSuper=0;
     sumWSuper+=actSuper; yr.wSuper+=actSuper;
     if(dep.b401k==null&&w401k>0&&b401k<=0)dep.b401k=ageNow;
@@ -1393,15 +1968,21 @@ function simPhase(o){
   _yrClose(); // the trailing segment (a phase of 30 months closes 12, 12, then 6)
   const avgTaxableEquity=months?sumTaxableEquity/months:0;
   const _avg=s=>months?s/months:0;
-  return{b401k,bCash,bEquity,bRoth,bSuper,costBasis,lumpUnfunded,lumpDrawn,lumpAdded,lumpDetail,lumpEqGain,yearRows,
+  return{tr:{pre:_trPre,open:_trOpen,growth:_trGr,paid:_trPaid},b401k,bCash,bEquity,bRoth,bSuper,costBasis,lumpUnfunded,lumpDrawn,lumpAdded,lumpDetail,lumpEqGain,yearRows,b401kAtCap,
     // Achievable monthly withdrawals (≤ the configured amounts). calcPhase taxes and reports THESE.
     avgW401k:_avg(sumW401k),avgWCash:_avg(sumWCash),avgWEquity:_avg(sumWEquity),
     avgWRoth:_avg(sumWRoth),avgWSuper:_avg(sumWSuper),
-    convActualAnn:_avg(sumConv)*12,depletedAt:dep,
+    convActualAnn:_avg(sumConv)*12,depletedAt:dep,superPresMo,
     avgSS:months?sumSS/months:curSS,avgSpSS:months?sumSpSS/months:curSpSS,
     avgUKP:months?sumUKP/months:curUKP,
     avgCPP:months?sumCPP/months:curCPP,avgOAS:months?sumOAS/months:curOAS,
-    avgAP:months?sumAP/months:curAP,avgUsPen:months?sumUsPen/months:curUsPen,avgUsPen2:months?sumUsPen2/months:curUsPen2,avgTaxableEquity};
+    avgAP:months?sumAP/months:curAP,avgUsPen:months?sumUsPen/months:curUsPen,avgUsPen2:months?sumUsPen2/months:curUsPen2,avgTaxableEquity,
+    // R19-1: the spouse's share of the pension streams above; R19-2: the earnings test.
+    avgSpUKP:_avg(sumSpUKP),avgSpCPP:_avg(sumSpCPP),avgSpOAS:_avg(sumSpOAS),avgSpAP:_avg(sumSpAP),
+    etWithheldMo:_avg(etSum),etWYouOut:etWYou,etWSpOut:etWSp,
+    avgSpousalYou:_avg(sumSpsYou),avgSpousalSp:_avg(sumSpsSp), // R20-1: inside avgSS / avgSpSS
+    avgSvCpp:_avg(sumSvCpp), // R22-1: inside avgCPP
+    etMultYou:_et?_etMult(_et.claimYou,etWYou,_et.fraYou,_et.drcYou):1,etMultSp:_et?_etMult(_et.claimSp,etWSp,_et.fraSp,_et.drcSp):1};
 }
 
 // CONTRACT: the input `p` here is the per-phase CONFIG (balances in, withdrawals, tax params for one
@@ -1457,27 +2038,44 @@ function calcPhase(p){
   const isAustralian=p.isAustralian||false;
   // v6: when false, all US federal tax / IRMAA / ACA / SS-provisional zero out
   const subjectUS=p.subjectToUsTax!==false;
+  // R19-2: the earnings test, its limits inflated to the phase like every threshold (the same midpoint rule as inflMult).
+  const _etPh=p.et?Object.assign({},p.et,(()=>{const y=p.phaseStartAge+p.months/24-p.retireStartAge,m=y>0?Math.pow(1+p.inflationRate/100,y):1;
+    return {lim:p.et.lim*m,limFra:p.et.limFra*m};})()):null;
   const sim=simPhase({
     b401k:p.b401k,bCash:p.bCash,bEquity:p.bEquity||0,bRoth:p.bRoth||0,bSuper:p.bSuper||0,
     months:p.months,w401k:p.w401k,wCash:p.wCash,wEquity:wEquity_mo,wRoth:wRoth_mo,wSuper:wSuper_mo,
     rothConversionAnn:rothConvAnn,
-    r401k:p.r401k,rCash:p.rCash,rEquity:p.rEquity||0,rRoth:p.rRoth||7,rSuper:p.rSuper||7,
+    r401k:p.r401k,rCash:p.rCash,rEquity:p.rEquity||0,rRoth:_numOr(p.rRoth,7),rSuper:_numOr(p.rSuper,7),
     lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,
     lumpInItems:p.lumpInItems,lumpOutItems:p.lumpOutItems,
+    phaseKey:p.phaseKey,earlyAccessMode:p.ssdiMode?'disability':(p.earlyAccessMode||'locked'), // R24-3: a locked pre-59½ 401k is never a fallback (SSDI: the disability exception)
     ussBase:p.ussBase,ukpBase:p.ukpBase,
     cppBase:p.cppBase||0,oasBase:p.oasBase||0,agePensionBase:p.agePensionBase||0,
-    spouseSSBase:mfj?(p.spouseSS||0):0,spouseAgeDelta:p.spouseAgeDelta||0,
+    // A survivor run (sweep R4-2) files single but still carries the late spouse's benefit; simPhase pays
+    // the larger of the two rather than both.
+    spouseSSBase:(mfj||p.survivorRun)?(p.spouseSS||0):0,spouseAgeDelta:p.spouseAgeDelta||0,
+    ssMaxOfTwo:!!p.survivorRun,
     hasSS:p.hasSS,hasUKP:p.hasUKP,hasCPP:p.hasCPP||false,hasOAS:p.hasOAS||false,hasAgePension:p.hasAgePension||false,
     phaseStartAge:p.phaseStartAge,
-    ssColaRate:p.ssColaRate,spouseSSColaRate:p.spouseSSColaRate||2.6,tripleLockRate:p.tripleLockRate,
-    cppColaRate:p.cppColaRate||2.6,oasColaRate:p.oasColaRate||2.6,agePensionColaRate:p.agePensionColaRate||2.6,
+    ssColaRate:p.ssColaRate,spouseSSColaRate:_numOr(p.spouseSSColaRate,2.6),tripleLockRate:p.tripleLockRate,
+    cppColaRate:_numOr(p.cppColaRate,2.6),oasColaRate:_numOr(p.oasColaRate,2.6),agePensionColaRate:_numOr(p.agePensionColaRate,2.6),
     equityCostBasis:p.equityCostBasis,ssBaseAge:p.ssBaseAge,ukpBaseAge:p.ukpBaseAge,
     cppBaseAge:p.cppBaseAge||65,oasBaseAge:p.oasBaseAge||65,agePensionBaseAge:p.agePensionBaseAge||67,
     spouseSSBaseAge:p.spouseSSBaseAge||62,
     usPensionBase:p.usPensionBase||0,usPensionColaRate:p.usPensionColaRate,usPensionBaseAge:p.usPensionBaseAge||65,
     usPensionEndAge:p.usPensionEndAge,
     usPension2Base:p.usPension2Base||0,usPension2ColaRate:p.usPension2ColaRate,usPension2BaseAge:p.usPension2BaseAge||65,
-    usPension2EndAge:p.usPension2EndAge});
+    usPension2EndAge:p.usPension2EndAge,
+    // R19-1: the spouse's own pensions (0 unless the plan pays them).
+    spUkpBase:p.spUkpBase||0,spUkpBaseAge:p.spUkpBaseAge,spCppBase:p.spCppBase||0,spCppBaseAge:p.spCppBaseAge,
+    spOasBase:p.spOasBase||0,spOasBaseAge:p.spOasBaseAge,spApBase:p.spApBase||0,spApBaseAge:p.spApBaseAge,
+    // R19-2: the earnings test, its limits inflated to the phase like every threshold (the same midpoint rule as inflMult).
+    et:_etPh,
+    spousal:p.spousal||null, // R20-1
+    survSS:p.survSS||null, // R21-1
+    survCpp:p.survCpp||null, // R22-1
+    // R18-5: an RMD age inside this phase — the estimate needs the 401k balance then, not at the phase's start.
+    captureAge:((p.rmdStartAge||73)+(p.ownAgeShift||0))>p.phaseStartAge+1e-9?(p.rmdStartAge||73)+(p.ownAgeShift||0):null});
   // ACHIEVABLE withdrawals — what the accounts could actually supply. The config values above are the
   // user's intent and are preserved (never mutated) so the UI can show "set → actual" and so reverting
   // an experimental early-phase change restores everything automatically.
@@ -1486,13 +2084,35 @@ function calcPhase(p){
   const uss_ann=sim.avgSS*12,spSS_ann=sim.avgSpSS*12,ukp_ann=sim.avgUKP*12,w_ann=aW401k*12;
   const cpp_ann=sim.avgCPP*12,oas_ann=sim.avgOAS*12,ap_ann=sim.avgAP*12;
   const partTime_ann=partTime_mo*12;
+  if(_etPh&&((sim.etWithheldMo||0)>0.005||sim.etMultYou!==1||sim.etMultSp!==1)){// TRACE (R19-2): the earnings test
+    const g=_trGroup(T,'ssearn','How the Social Security earnings test applies',null,'ssEarningsTest');
+    _trRow(g,'Your earnings counted',_etPh.earnYou,'usd/yr',{kind:'in',skipZero:true,note:'Part-time / additional income, by the owner set on the Edit tab.'});
+    _trRow(g,'Your spouse’s earnings counted',_etPh.earnSp,'usd/yr',{kind:'in',skipZero:true});
+    _trRow(g,'Limit before the year of full retirement age',_etPh.lim,'usd/yr',{kind:'threshold',note:'$1 withheld for every $2 above it. In the year you reach FRA, $1 for every $3 above '+Math.round(_etPh.limFra).toLocaleString()+'.'});
+    _trRow(g,'Social Security withheld',sim.etWithheldMo||0,'usd/mo',{kind:'minus',skipZero:true,
+      formula:'the year’s excess earnings ÷ 2 (÷ 3 in the year of FRA), spread over the year',note:'Not lost: SSA recalculates the benefit at full retirement age for the months withheld.'});
+    if(sim.etMultYou!==1)_trRow(g,'Your benefit from full retirement age',sim.etMultYou,'mult',{kind:'rate',
+      note:'Recalculated as if claimed '+Math.round(sim.etWYouOut)+' month(s) later, for the benefits withheld.'});
+    if(sim.etMultSp!==1)_trRow(g,'Your spouse’s benefit from their full retirement age',sim.etMultSp,'mult',{kind:'rate',
+      note:'Recalculated as if claimed '+Math.round(sim.etWSpOut)+' month(s) later.'});
+  }
   const usPension_ann=sim.avgUsPen*12; // v9: US pension/disability annual (cash received, taxable or not)
   const usPension2_ann=sim.avgUsPen2*12; // v9: second US pension/disability stream
   // Combined ordinary-income portion across BOTH streams (each stream taxable independently).
   const usPensionTaxableInc_ann=(usPensionTaxable?usPension_ann:0)+(usPension2Taxable?usPension2_ann:0);
+  // Sweep R13-4 (v439): an A$ plan set to "USA Res." — Super withdrawals are ordinary US income (the US taxes a
+  // US resident on foreign pension payments). After-tax contributions are not tracked, so this can overstate it.
+  const superUS_ann=p.superTaxedUS?aWSuper_mo*12:0;
+  // Sweep R13-8 (v439): declared before the provisional-income worksheet, because rental income is part of the
+  // adjusted gross income that worksheet starts from. It was left out, understating the taxable share of SS.
+  const rentalIncome_ann=rentalTaxable?rentalAnn:0;
   const taxableEquity_ann=sim.avgTaxableEquity*12;
   const convIncome_ann=sim.convActualAnn; // capped at the 401k that was actually there to convert
-  const totalSS_ann=uss_ann+spSS_ann;
+  // Sweep R12-3 (v434): CPP and OAS are paid abroad. For a C$ plan set to "USA Res." the US–Canada treaty
+  // (Art. XVIII(5)) taxes them only in the US and AS US SOCIAL SECURITY — so they join the provisional-income
+  // worksheet, the taxable share, and MAGI (ACA adds back the untaxed part). They were not paid at all.
+  const cadAsSS_ann=isCanadian?0:(cpp_ann+oas_ann);
+  const totalSS_ann=uss_ann+spSS_ann+cadAsSS_ann;
   // ── US-UK treaty, Article 17(3) ─────────────────────────────────────────────────────────────
   // "Payments made by a Contracting State under the provisions of the social security or similar
   //  legislation of that State to a resident of the other Contracting State shall be taxable only
@@ -1520,31 +2140,57 @@ function calcPhase(p){
   // the engine was (correctly) leaving out of the US figure.
   const _gSs=(isCanadian||isAustralian||!subjectUS||ukTaxesSS||!totalSS_ann)?null:_trGroup(T,'ssprov','How much of your Social Security is taxable','tg-ssprov','ssProvisional');
   const taxExemptInt_ann=p.taxExemptInt||0;   // v14: untaxed, but counts toward MAGI and SS provisional income
-  const sp=isCanadian||isAustralian||!subjectUS||ukTaxesSS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
-  // Ordinary income varies by country:
-  const rentalIncome_ann=rentalTaxable?rentalAnn:0;
-  // Canada: CPP + OAS are taxable; SS/UKP also included as ordinary income (treaty nuance not modelled — taxed at full CA rate)
+  const sp=isCanadian||isAustralian||!subjectUS||ukTaxesSS?0:ssPct(w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann+rentalIncome_ann+superUS_ann,0,totalSS_ann,mfj,_gSs,taxExemptInt_ann);
+  // Ordinary income varies by country (rentalIncome_ann is declared above the provisional-income worksheet).
+  // Sweep R13-3 (v439): US municipal-bond interest is tax-free in the US only — Canada and Australia tax it.
+  // Canada: CPP + OAS are taxable; UKP is ordinary income; US Social Security enters at 85% — the US–Canada
+  //   treaty (Art. XVIII(5)) lets Canada tax it but exempts 15% (CRA line 25600). Sweep R2-12 (v405): it
+  //   used to go in at 100%.
   // Australia: Age Pension is taxable; SS/UKP also included as ordinary income; Super withdrawals are tax-FREE (added to total_mo not gross)
   const gross=isCanadian
-    ? w_ann+uss_ann+spSS_ann+ukp_ann+cpp_ann+oas_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann
+    ? w_ann+(uss_ann+spSS_ann)*0.85+ukp_ann+cpp_ann+oas_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann
     : isAustralian
-      ? w_ann+uss_ann+spSS_ann+ukp_ann+ap_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann
+      ? w_ann+uss_ann+spSS_ann+ukp_ann+ap_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann
       // ukTaxesSS ⇒ Article 17(3) puts Social Security beyond US reach entirely, so it leaves the
       // US base rather than entering it at the 85% provisional share.
-      : w_ann+(ukTaxesSS?0:(uss_ann+spSS_ann)*sp)+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann;
+      : w_ann+(ukTaxesSS?0:totalSS_ann*sp)+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+superUS_ann;
   // The UK-taxable base, in ONE place: UK income tax and the lump-sum UK tax below both read it.
   // Social Security goes in FULL, because the 85% provisional-income rule is a US construct.
   // v400: the lump-sum call used to be handed the US `gross`, which has held no Social Security for a
   // UK resident since v365 (and does hold conversions, rental and US pensions, which this base does
   // not), so a one-off 401k draw was priced from far too low a starting point. On the treaty fixture a
   // $60k draw in phase 4 was charged $16,617 of UK tax instead of $23,898.
-  const ukBase_ann=w_ann+ukp_ann+taxableEquity_ann+partTime_ann+(ukTaxesSS?(uss_ann+spSS_ann):0);
+  // Sweep R13-3 (v439): plus a taxable US pension (treaty Art. 17(1): a pension is taxed where you live), rental
+  // income (the UK taxes a resident's rent wherever the property is) and US municipal-bond interest (tax-free in the
+  // US only). They were left out, and because UK tax is usually the larger bill once SS is in it, the Foreign Tax
+  // Credit then hid the US charge too — the income was taxed nowhere.
+  const ukBase_ann=w_ann+ukp_ann+taxableEquity_ann+partTime_ann+(ukTaxesSS?(uss_ann+spSS_ann):0)
+    +rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann;
+  // Sweep R19-1 (v458): the UK, Canada and Australia tax each PERSON — each spouse has their own allowance and bands. A
+  // married couple's combined income went through ONE allowance and one set of bands (+49% to +71% on a typical couple).
+  // Each base is now split by whose income it is: the spouse's Social Security and own pensions are theirs; part-time
+  // income and the second US pension follow the owners set on the Edit tab (shared part-time income is half each);
+  // brokerage gains, rent and municipal-bond interest are taken as joint (half each); the 401k — and so its withdrawals
+  // and Roth conversions — and your own pensions are yours. The survivor projection files single, so it is never split.
+  const _perPerson=mfj&&!p.survivorRun;
+  const spUkp_ann=sim.avgSpUKP*12,spCpp_ann=sim.avgSpCPP*12,spOas_ann=sim.avgSpOAS*12,spAp_ann=sim.avgSpAP*12;
+  const _spCommon=spUkp_ann+(p.partTimeOwner==='spouse'?1:p.partTimeOwner==='me'?0:0.5)*partTime_ann
+    +((p.usPension2Owner==='spouse'&&usPension2Taxable)?usPension2_ann:0)+(taxableEquity_ann+rentalIncome_ann+taxExemptInt_ann)/2;
+  const _spCa=_perPerson&&isCanadian?Math.min(gross,spSS_ann*0.85+spCpp_ann+spOas_ann+_spCommon):0;
+  const _spAu=_perPerson&&isAustralian?Math.min(gross,spSS_ann+spAp_ann+_spCommon):0;
+  const _spUk=_perPerson&&!isCanadian&&!isAustralian&&ukTaxesSS?Math.min(ukBase_ann,spSS_ann+_spCommon):0;
+  const _splitNote='Their Social Security and own pensions, part-time income and second pension as marked on the Edit tab, and half of joint items (brokerage gains, rent, municipal-bond interest).';
   {// TRACE: what gross taxable income is actually made of. `gross` survives in the result bag but
    // its composition never did, so the UI could only ever show the total.
     const g=_trGroup(T,'income','What counts as taxable income',null,'taxableIncome');
     _trRow(g,'401k withdrawals',w_ann,'usd/yr',{kind:'in',skipZero:true,
       note:(p.w401k||0)*12>w_ann+0.5?'This is the ACHIEVABLE draw — the account could not fund the full amount you configured.':null});
-    if(isCanadian||isAustralian){
+    if(isCanadian){
+      // v405 (sweep R2-12): 85%, matching `gross` above — the treaty exempts the other 15%.
+      _trRow(g,'Social Security (85%)',uss_ann*0.85,'usd/yr',{kind:'in',skipZero:true,base:uss_ann,baseAs:'of',
+        formula:'total SS × 85% — the US–Canada treaty (Art. XVIII) exempts 15% (CRA line 25600)'});
+      _trRow(g,'Spouse Social Security (85%)',spSS_ann*0.85,'usd/yr',{kind:'in',skipZero:true,base:spSS_ann,baseAs:'of'});
+    }else if(isAustralian){
       _trRow(g,'Social Security',uss_ann,'usd/yr',{kind:'in',skipZero:true});
       _trRow(g,'Spouse Social Security',spSS_ann,'usd/yr',{kind:'in',skipZero:true});
     }else if(ukTaxesSS){
@@ -1552,8 +2198,8 @@ function calcPhase(p){
       if(uss_ann+spSS_ann>0)_trRow(g,'Social Security',0,'flagv',{kind:'flag',
         note:'Not US-taxable: as a UK resident your US Social Security is taxed in the UK instead (US-UK treaty, Article 17(3)).'});
     }else{
-      _trRow(g,'Taxable Social Security',(uss_ann+spSS_ann)*sp,'usd/yr',{kind:'in',skipZero:true,
-        base:uss_ann+spSS_ann,baseAs:'of',formula:'total SS × taxable share (see the Social Security group)'});
+      _trRow(g,'Taxable Social Security',totalSS_ann*sp,'usd/yr',{kind:'in',skipZero:true,
+        base:totalSS_ann,baseAs:'of',formula:cadAsSS_ann>0?'total SS, CPP and OAS × taxable share — the US–Canada treaty treats CPP and OAS as US Social Security':'total SS × taxable share (see the Social Security group)'});
     }
     _trRow(g,'UK State Pension',ukp_ann,'usd/yr',{kind:'in',skipZero:true});
     if(isCanadian){_trRow(g,'CPP',cpp_ann,'usd/yr',{kind:'in',skipZero:true});_trRow(g,'OAS',oas_ann,'usd/yr',{kind:'in',skipZero:true});}
@@ -1565,8 +2211,12 @@ function calcPhase(p){
     _trRow(g,'Rental income',rentalIncome_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'US pension / disability',usPensionTaxableInc_ann,'usd/yr',{kind:'in',skipZero:true,
       formula:'both streams, each counted only when taxable'});
+    if(isCanadian||isAustralian)_trRow(g,'US municipal-bond interest',taxExemptInt_ann,'usd/yr',{kind:'in',skipZero:true,
+      note:'Tax-free in the US only: '+(isCanadian?'Canada':'Australia')+' taxes interest wherever it is paid.'}); // R13-3
+    _trRow(g,'Super withdrawals (US-taxable)',superUS_ann,'usd/yr',{kind:'in',skipZero:true, // R13-4
+      note:'A US resident is taxed on Australian super payments. The whole withdrawal is counted because after-tax contributions are not tracked, so this may overstate the tax.'});
     _trRow(g,'= gross taxable income',gross,'usd/yr',{kind:'total'});
-    if(taxExemptInt_ann>0)_trRow(g,'Tax-exempt interest (excluded)',taxExemptInt_ann,'usd/yr',{kind:'flag',
+    if(taxExemptInt_ann>0&&!isCanadian&&!isAustralian)_trRow(g,'Tax-exempt interest (excluded)',taxExemptInt_ann,'usd/yr',{kind:'flag',
       note:'Municipal-bond interest is not taxable income, so it is not in the figure above — but it DOES count toward your MAGI and toward the provisional income that decides how much of your Social Security is taxed.'});
     if(aWRoth_mo>0)_trRow(g,'Roth withdrawals (excluded)',aWRoth_mo*12,'usd/yr',{kind:'flag',
       note:'Roth money is not taxable income and does not count toward MAGI — the main lever for ACA and IRMAA.'});
@@ -1584,25 +2234,33 @@ function calcPhase(p){
   const adjBrk10=Math.round(p.brk10*inflMult);
   const adjBrk12=Math.round(p.brk12*inflMult);
   const adjBrk22=Math.round(p.brk22*inflMult);
+  const adjBrk24=Math.round((p.brk24||201775)*inflMult);
+  const adjBrk32=Math.round((p.brk32||256225)*inflMult);
+  const adjBrk35=Math.round((p.brk35||640600)*inflMult);
   const adjStdDed=Math.round(p.stdDed*inflMult);
   const adjSeniorDed=Math.round(p.seniorDed*inflMult);
   const adjFpl100=Math.round(p.fpl100*inflMult);
   const adjFpl250=Math.round((p.fpl250||p.fpl100*2.5)*inflMult);
   const adjFpl400=Math.round(p.fpl400*inflMult);
   const adjIrmaa=Math.round((p.irmaa||109000)*inflMult);
-  const estYear=Math.round(new Date().getFullYear()+yrs);
+  // R21-10: the plan's year (R20-7), not today's — on 1 January the label moved a year against the engine's birth year.
+  const estYear=Math.round(((p.planYear>1900)?p.planYear:new Date().getFullYear())+yrs);
   // MFJ: use wider brackets and deductions
   const adjBrk10Eff =mfj?Math.round((p.mfjBrk10||24800)*inflMult):adjBrk10;
   const adjBrk12Eff =mfj?Math.round((p.mfjBrk12||98000)*inflMult):adjBrk12;
   const adjBrk22Eff =mfj?Math.round((p.mfjBrk22||208000)*inflMult):adjBrk22;
+  const adjBrk24Eff =mfj?Math.round((p.mfjBrk24||403550)*inflMult):adjBrk24;
+  const adjBrk32Eff =mfj?Math.round((p.mfjBrk32||512450)*inflMult):adjBrk32;
+  const adjBrk35Eff =mfj?Math.round((p.mfjBrk35||768700)*inflMult):adjBrk35;
   const adjStdDedEff=mfj?Math.round((p.mfjStdDed||30000)*inflMult):adjStdDed;
-  const adjSenDedEff=mfj?Math.round((p.mfjSeniorDed||3200)*inflMult):adjSeniorDed;
+  const adjSenDedEff=mfj?Math.round(_numOr(p.mfjSeniorDed,D_USD.mfjSeniorDed)*inflMult):adjSeniorDed;
   const adjIrmaaEff =mfj?Math.round((p.mfjIrmaa||218000)*inflMult):adjIrmaa;
   {// TRACE: the inflation multipliers. Every threshold below is the base-year value × inflMult,
    // which is the single most common "why isn't this the number I entered?" question.
     const g=_trGroup(T,'infl','Inflating the tax thresholds to this phase','tg-inflation','inflRate');
     _trRow(g,'Phase midpoint age',midAge,'age',{kind:'in'});
-    _trRow(g,'Years from the start of the plan',yrs,'num',{formula:'phase midpoint age − retirement start age'});
+    _trRow(g,'Years from the start of the plan',yrs,'num',{formula:'phase midpoint age − the age the plan starts from (your age today once you replan)',
+      note:p.survivorRun?'The survivor scenario keeps the plan’s own start here, not the age of the first death, so its figures are in the plan’s money.':undefined});
     _trRow(g,'Inflation rate',p.inflationRate,'pct',{kind:'rate'});
     _trRow(g,'Inflation multiplier',inflMult,'mult',{kind:'total',formula:'(1 + inflation) ^ years'});
     if(Math.abs(hcInfl-infl)>1e-9){
@@ -1614,69 +2272,113 @@ function calcPhase(p){
       _trRow(g,'10% bracket ceiling',adjBrk10Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk10||24800):p.brk10,baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'12% bracket ceiling',adjBrk12Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk12||98000):p.brk12,baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'22% bracket ceiling',adjBrk22Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk22||208000):p.brk22,baseAs:'from',formula:'base × inflation multiplier'});
+      // R13 (Under the hood): the upper ceilings the engine has walked since sweep R2-5 were never shown here.
+      _trRow(g,'24% bracket ceiling',adjBrk24Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk24||403550):(p.brk24||201775),baseAs:'from',formula:'base × inflation multiplier'});
+      _trRow(g,'32% bracket ceiling',adjBrk32Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk32||512450):(p.brk32||256225),baseAs:'from',formula:'base × inflation multiplier'});
+      _trRow(g,'35% bracket ceiling (37% above)',adjBrk35Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk35||768700):(p.brk35||640600),baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'Standard deduction',adjStdDedEff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjStdDed||30000):p.stdDed,baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'IRMAA threshold',adjIrmaaEff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjIrmaa||218000):(p.irmaa||109000),baseAs:'from',formula:'base × inflation multiplier'});
-      _trRow(g,'100% federal poverty level',adjFpl100,'usd/yr',{kind:'threshold',base:p.fpl100,baseAs:'from',formula:'base × inflation multiplier'});
-      _trRow(g,'400% FPL (ACA cliff)',adjFpl400,'usd/yr',{kind:'threshold',base:p.fpl400,baseAs:'from',formula:'base × inflation multiplier'});
+      _trRow(g,'100% federal poverty level'+(mfj?' (2-person household)':''),adjFpl100,'usd/yr',{kind:'threshold',base:p.fpl100,baseAs:'from',formula:'base × inflation multiplier'});
+      _trRow(g,'400% FPL (ACA cliff)'+(mfj?' (2-person household)':''),adjFpl400,'usd/yr',{kind:'threshold',base:p.fpl400,baseAs:'from',formula:'base × inflation multiplier'});
     }
     if(mfj)_trRow(g,'Filing as Married Filing Jointly',1,'flagv',{kind:'flag',
       note:'Bracket ceilings and the standard deduction use the wider MFJ values.'});
   }
-  let ded=adjStdDedEff;
-  if(age>=65){ded+=adjSenDedEff;}
+  // Sweep R10-1 (v426): the age-65 extra deduction is PER PERSON. mfjSeniorDed holds the amount for a couple
+  // who are BOTH 65+, so each spouse 65+ at the phase midpoint takes half of it. It used to follow your age
+  // alone — both halves from your 65 (a younger spouse's too) and neither while only your spouse was 65+.
+  // Sweep R11-4 (v429): in a survivor run where YOU died, the survivor is your spouse, whose age is the plan's
+  // age line minus ownAgeShift (0 everywhere else).
+  const _ownAge=age-(p.ownAgeShift||0);
+  const _sen65=mfj?((_ownAge>=65?1:0)+((age-(p.spouseAgeDelta||0))>=65?1:0)):(_ownAge>=65?1:0);
+  const senDedApplied=mfj?Math.round(adjSenDedEff*_sen65/2):(_sen65?adjSeniorDed:0);
+  let ded=adjStdDedEff+senDedApplied;
   const ti=Math.max(0,gross-ded);
   if(subjectUS&&!isCanadian&&!isAustralian){// TRACE: gross → taxable income
     const g=_trGroup(T,'ded','From gross income to taxable income',null,'stdDed');
     _trRow(g,'Gross taxable income',gross,'usd/yr',{kind:'in'});
     _trRow(g,'− standard deduction',adjStdDedEff,'usd/yr',{kind:'minus'});
-    if(age>=65)_trRow(g,'− age-65 additional deduction',adjSenDedEff,'usd/yr',{kind:'minus',
-      formula:'applies from age 65 in this phase'});
+    if(senDedApplied>0)_trRow(g,'− age-65 additional deduction',senDedApplied,'usd/yr',{kind:'minus',
+      formula:mfj?(_sen65===2?'both of you are 65+ in this phase':'one of you is 65+ in this phase — half the couple’s amount'):'applies from age 65 in this phase'});
     _trRow(g,'= taxable income',ti,'usd/yr',{kind:'total',formula:'max(0, gross − deductions)'});
   }
   // Country-specific tax
   const foreign=p.foreignResident||false;
   const isUkRes=p.ukResident||false;
   let tax_a=0,usTaxBeforeFTC=0,ukTax_a=0,ftc_a=0,tax_mo,cadTax_a=0,ausTax_a=0,stateTax_a=0,adjStatePensionCap=0;
+  // Sweep R24-5 (v491): the bands a UK / Canadian / Australian resident's tax was worked out on — each person's taxable income and
+  // the thresholds (inflated to the phase, at today's exchange rate) with the rate above each — so the AI's Plan Health block quotes
+  // the engine's own headroom. It quoted the WIDTH of the UK basic band as "headroom" and gave Canadian / Australian plans none.
+  let taxBands=null;
   if(isCanadian){
     // Canadian federal income tax — no US tax for Canadian residents
-    const adjCadPA=Math.round((p.cadPersonalAmount||16129)*inflMult);
-    const adjCadB1=Math.round((p.cadBrk1||57375)*inflMult);
-    const adjCadB2=Math.round((p.cadBrk2||114750)*inflMult);
-    const adjCadB3=Math.round((p.cadBrk3||158519)*inflMult);
-    const adjCadB4=Math.round((p.cadBrk4||220000)*inflMult);
+    const adjCadPA=Math.round((p.cadPersonalAmount||11680)*inflMult);
+    const adjCadB1=Math.round((p.cadBrk1||41536)*inflMult);
+    const adjCadB2=Math.round((p.cadBrk2||83072)*inflMult);
+    const adjCadB3=Math.round((p.cadBrk3||128751)*inflMult);
+    const adjCadB4=Math.round((p.cadBrk4||183858)*inflMult);
     const _gC=_trGroup(T,'cadtax','How your Canadian income tax is calculated','tg-canada',null);
-    cadTax_a=canadianFedTax(gross,adjCadPA,adjCadB1,adjCadB2,adjCadB3,adjCadB4,
-      p.cadRate1||15,p.cadRate2||20.5,p.cadRate3||26,p.cadRate4||29,p.cadRate5||33,_gC);
+    _trFxRow(_gC,p,'CAD','C$','basic personal amount and brackets'); // R20-6
+    const _cadFed=(x,tg)=>canadianFedTax(x,adjCadPA,adjCadB1,adjCadB2,adjCadB3,adjCadB4,
+      p.cadRate1||15,p.cadRate2||20.5,p.cadRate3||26,p.cadRate4||29,p.cadRate5||33,tg);
     // Canadian provincial tax: simplified flat rate (default 12%, user-configurable)
     // Real provincial rates range from ~5% (low ON brackets) to ~25% (high QC brackets); 12% is a representative average.
     const cadProvRate=(p.cadProvincialRate!=null?p.cadProvincialRate:12);
-    const cadProvTax=Math.max(0,gross-adjCadPA)*(cadProvRate/100);
+    let cadProvTax;
+    if(_spCa>0){ // R19-1: each spouse's own basic personal amount and brackets
+      _trRow(_gC,'Your share of the income',gross-_spCa,'usd/yr',{kind:'in'});
+      const t1=_cadFed(gross-_spCa,_gC);_trRow(_gC,'= federal tax on your share',t1,'usd/yr',{kind:'total'});
+      _trRow(_gC,'Your spouse’s share',_spCa,'usd/yr',{kind:'in',note:_splitNote});
+      const t2=_cadFed(_spCa,_gC);_trRow(_gC,'= federal tax on your spouse’s share',t2,'usd/yr',{kind:'total'});
+      cadTax_a=t1+t2;
+      cadProvTax=(Math.max(0,gross-_spCa-adjCadPA)+Math.max(0,_spCa-adjCadPA))*(cadProvRate/100);
+    }else{
+      cadTax_a=_cadFed(gross,_gC);
+      cadProvTax=Math.max(0,gross-adjCadPA)*(cadProvRate/100);
+    }
     _trRow(_gC,'= federal tax',cadTax_a,'usd/yr',{kind:'total'});
-    _trRow(_gC,'+ provincial tax at '+cadProvRate+'%',cadProvTax,'usd/yr',{base:Math.max(0,gross-adjCadPA),
+    _trRow(_gC,'+ provincial tax at '+cadProvRate+'%',cadProvTax,'usd/yr',{base:_spCa>0?Math.max(0,gross-_spCa-adjCadPA)+Math.max(0,_spCa-adjCadPA):Math.max(0,gross-adjCadPA),
       note:'A simplified flat provincial rate, not full provincial brackets. Real rates range from about 5% to 25% depending on province and income.'});
     cadTax_a=cadTax_a+cadProvTax;
     _trRow(_gC,'= total Canadian tax',cadTax_a,'usd/yr',{kind:'total'});
+    taxBands={cc:'CA',label:'Canadian',you:gross-(_spCa||0),spouse:_spCa||0,note:'federal brackets; provincial tax is a flat '+cadProvRate+'% on top',
+      steps:[[adjCadPA,p.cadRate1||15],[adjCadB1,p.cadRate2||20.5],[adjCadB2,p.cadRate3||26],[adjCadB3,p.cadRate4||29],[adjCadB4,p.cadRate5||33]]}; // R24-5
     _trRow(_gC,'US federal tax',0,'usd/yr',{kind:'flag',note:'Canadian residents pay no US federal income tax in this model.'});
     tax_a=cadTax_a;
   } else if(isAustralian){
     // Australian federal income tax — gross excludes Super withdrawals (they're tax-free)
-    const adjAusFree=Math.round((p.ausTaxFreeThreshold||18200)*inflMult);
-    const adjAusB1=Math.round((p.ausBrk1||45000)*inflMult);
-    const adjAusB2=Math.round((p.ausBrk2||135000)*inflMult);
-    const adjAusB3=Math.round((p.ausBrk3||190000)*inflMult);
+    const adjAusFree=Math.round((p.ausTaxFreeThreshold||12941)*inflMult);
+    const adjAusB1=Math.round((p.ausBrk1||31997)*inflMult);
+    const adjAusB2=Math.round((p.ausBrk2||95990)*inflMult);
+    const adjAusB3=Math.round((p.ausBrk3||135097)*inflMult);
     const ausRates={r1:p.ausRate1,r2:p.ausRate2,r3:p.ausRate3,r4:p.ausRate4};
     const _gA=_trGroup(T,'austax','How your Australian income tax is calculated','tg-australia',null);
-    ausTax_a=australianFedTax(gross,adjAusFree,adjAusB1,adjAusB2,adjAusB3,ausRates,_gA);
-    // Medicare Levy: charged on income above the single-person threshold, which is a field now
-    // rather than a literal so it can be refreshed with everything else.
+    _trFxRow(_gA,p,'AUD','A$','tax-free threshold and brackets'); // R20-6
+    if(_spAu>0){ // R19-1: each spouse's own tax-free threshold, brackets and Low Income Tax Offset
+      _trRow(_gA,'Your share of the income',gross-_spAu,'usd/yr',{kind:'in'});
+      const t1=australianFedTax(gross-_spAu,adjAusFree,adjAusB1,adjAusB2,adjAusB3,ausRates,_gA);
+      _trRow(_gA,'= tax on your share',t1,'usd/yr',{kind:'total'});
+      _trRow(_gA,'Your spouse’s share',_spAu,'usd/yr',{kind:'in',note:_splitNote});
+      const t2=australianFedTax(_spAu,adjAusFree,adjAusB1,adjAusB2,adjAusB3,ausRates,_gA);
+      _trRow(_gA,'= tax on your spouse’s share',t2,'usd/yr',{kind:'total'});
+      ausTax_a=t1+t2;
+    }else ausTax_a=australianFedTax(gross,adjAusFree,adjAusB1,adjAusB2,adjAusB3,ausRates,_gA);
+    // Medicare Levy: the rate × ALL taxable income once it passes the low-income threshold, shaded in
+    // at 10c per dollar just above it (_ausLevy). The threshold is a field so it can be refreshed.
     const medLevyRate=(p.ausMedicareLevy!=null?p.ausMedicareLevy:2);
-    const medLevyThreshold=Math.round((p.ausLevyThreshold||27222)*inflMult);
-    const medLevy=Math.max(0,gross-medLevyThreshold)*(medLevyRate/100);
+    const medLevyThreshold=Math.round((p.ausLevyThreshold||19356)*inflMult);
+    // R19-1: the levy is each person's too, on their own income and threshold.
+    const medLevy=_spAu>0?_ausLevy(gross-_spAu,medLevyThreshold,medLevyRate)+_ausLevy(_spAu,medLevyThreshold,medLevyRate)
+      :_ausLevy(gross,medLevyThreshold,medLevyRate);
+    const _levyShaded=medLevy>0&&medLevy<gross*(medLevyRate/100)-0.005;
     _trRow(_gA,'= federal tax after LITO',ausTax_a,'usd/yr',{kind:'total'});
-    _trRow(_gA,'+ Medicare Levy at '+medLevyRate+'%',medLevy,'usd/yr',{base:Math.max(0,gross-medLevyThreshold),
-      formula:'(gross − levy threshold) × levy rate'});
+    _trRow(_gA,'+ Medicare Levy at '+medLevyRate+'%',medLevy,'usd/yr',{base:medLevy>0?gross:0,
+      formula:_levyShaded?'10% × (income − levy threshold): the shade-in band just above the threshold'
+        :'levy rate × all taxable income, once it is above the levy threshold'});
     ausTax_a=ausTax_a+medLevy;
     _trRow(_gA,'= total Australian tax',ausTax_a,'usd/yr',{kind:'total'});
+    taxBands={cc:'AU',label:'Australian',you:gross-(_spAu||0),spouse:_spAu||0,note:'plus the Medicare Levy; Super withdrawals are not in it',
+      steps:[[adjAusFree,ausRates.r1!=null?ausRates.r1:15],[adjAusB1,ausRates.r2!=null?ausRates.r2:30],[adjAusB2,ausRates.r3!=null?ausRates.r3:37],[adjAusB3,ausRates.r4!=null?ausRates.r4:45]]}; // R24-5
     _trRow(_gA,'US federal tax',0,'usd/yr',{kind:'flag',note:'Australian residents pay no US federal income tax in this model.'});
     tax_a=ausTax_a;
   } else {
@@ -1685,7 +2387,7 @@ function calcPhase(p){
       _trGroup(T,'fedbrk','US federal income tax',null,null);
     if(!subjectUS)_trRow(_gF,'Not subject to US federal tax',0,'flagv',{kind:'flag',
       note:'This plan is set to "not subject to US federal tax", so no US federal income tax is calculated.'});
-    usTaxBeforeFTC=subjectUS?fedTax(ti,adjBrk10Eff,adjBrk12Eff,adjBrk22Eff,_gF):0;
+    usTaxBeforeFTC=subjectUS?fedTax(ti,adjBrk10Eff,adjBrk12Eff,adjBrk22Eff,_gF,adjBrk24Eff,adjBrk32Eff,adjBrk35Eff):0;
     if(subjectUS)_trRow(_gF,'= total federal tax',usTaxBeforeFTC,'usd/yr',{kind:'total'});
     tax_a=usTaxBeforeFTC;
     if(isUkRes&&!foreign){
@@ -1696,8 +2398,31 @@ function calcPhase(p){
       const adjUkBasicCeil=Math.round((p.ukBasicCeil||63542)*inflMult);
       const adjUkHigherCeil=Math.round((p.ukHigherCeil||158352)*inflMult);
       const _gU=_trGroup(T,'uktax','How your UK income tax is calculated','tg-uk','ukAllowance');
-      ukTax_a=ukIncomeTax(ukTaxableIncome,adjUkPA,adjUkBasicCeil,p.ukBasicRate||20,adjUkHigherCeil,p.ukHigherRate||40,p.ukAdditionalRate||45,_gU);
+      _trFxRow(_gU,p,'GBP','£','personal allowance and bands'); // R20-6
+      // Sweep R13-3 (v439): the UK base item by item, so the band walk starts from a total the reader can check.
+      _trRow(_gU,'401k withdrawals',w_ann,'usd/yr',{kind:'in',skipZero:true});
+      _trRow(_gU,'US Social Security (in full)',ukTaxesSS?(uss_ann+spSS_ann):0,'usd/yr',{kind:'in',skipZero:true,
+        note:'Article 17(3) of the treaty: taxed only in the UK, where you live.'});
+      _trRow(_gU,'UK State Pension',ukp_ann,'usd/yr',{kind:'in',skipZero:true});
+      _trRow(_gU,'Taxable equity gains',taxableEquity_ann,'usd/yr',{kind:'in',skipZero:true});
+      _trRow(_gU,'Part-time work',partTime_ann,'usd/yr',{kind:'in',skipZero:true});
+      _trRow(_gU,'US pension / disability',usPensionTaxableInc_ann,'usd/yr',{kind:'in',skipZero:true,
+        note:'Article 17(1): a private or employer pension is taxed where you live. A US government-service pension (Article 19) is taxed only in the US, so if yours is one this overstates the UK tax.'});
+      _trRow(_gU,'Rental income',rentalIncome_ann,'usd/yr',{kind:'in',skipZero:true,
+        note:'The UK taxes a resident’s rental income wherever the property is.'});
+      _trRow(_gU,'US municipal-bond interest',taxExemptInt_ann,'usd/yr',{kind:'in',skipZero:true,
+        note:'Tax-free in the US only; the UK taxes it.'});
+      const _ukT=(x,tg)=>ukIncomeTax(x,adjUkPA,adjUkBasicCeil,p.ukBasicRate||20,adjUkHigherCeil,p.ukHigherRate||40,p.ukAdditionalRate||45,tg);
+      if(_spUk>0){ // R19-1: each spouse's own personal allowance and bands
+        _trRow(_gU,'Your share of the income',ukTaxableIncome-_spUk,'usd/yr',{kind:'in'});
+        const t1=_ukT(ukTaxableIncome-_spUk,_gU);_trRow(_gU,'= UK tax on your share',t1,'usd/yr',{kind:'total'});
+        _trRow(_gU,'Your spouse’s share',_spUk,'usd/yr',{kind:'in',note:_splitNote});
+        const t2=_ukT(_spUk,_gU);_trRow(_gU,'= UK tax on your spouse’s share',t2,'usd/yr',{kind:'total'});
+        ukTax_a=t1+t2;
+      }else ukTax_a=_ukT(ukTaxableIncome,_gU);
       _trRow(_gU,'= total UK income tax',ukTax_a,'usd/yr',{kind:'total'});
+      taxBands={cc:'UK',label:'UK',you:ukTaxableIncome-(_spUk||0),spouse:_spUk||0,note:'US Social Security, 401k, pensions, gains, part-time, rental and US municipal interest',
+        steps:[[adjUkPA,p.ukBasicRate||20],[adjUkBasicCeil,p.ukHigherRate||40],[adjUkHigherCeil,p.ukAdditionalRate||45]]}; // R24-5
       ftc_a=Math.min(ukTax_a,usTaxBeforeFTC);
       tax_a=Math.max(0,usTaxBeforeFTC-ftc_a);
       {const g=_trGroup(T,'ftc','Foreign Tax Credit — avoiding double taxation','tg-uk','ftc');
@@ -1750,7 +2475,7 @@ function calcPhase(p){
   const ftc_mo=ftc_a/12;
   const wEquity_ann=wEquity_mo*12;
   // MAGI for ACA: 401k + SS (full, both spouses) + UKP + part-time + taxable equity + Roth conversion + taxable rental (US only)
-  const magi=w_ann+uss_ann+spSS_ann+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann;
+  const magi=w_ann+uss_ann+spSS_ann+cadAsSS_ann+ukp_ann+partTime_ann+taxableEquity_ann+convIncome_ann+rentalIncome_ann+usPensionTaxableInc_ann+taxExemptInt_ann+superUS_ann; // R12-3, R13-4
   // v14: ONE MAGI cannot serve both ACA and IRMAA — the two definitions genuinely differ.
   //   ACA MAGI   = AGI + tax-exempt interest + the UNTAXED part of Social Security (added back)
   //   IRMAA MAGI = AGI + tax-exempt interest  ... and AGI holds only the TAXABLE share of SS
@@ -1758,24 +2483,25 @@ function calcPhase(p){
   // in a low-income phase, and worst for the person whose income is mostly Social Security or SSDI.
   // `sp` (the taxable share, from the provisional-income worksheet) is already computed above, so
   // this is a second view of the same income, not new maths.
-  const ssUntaxed_ann=(uss_ann+spSS_ann)*(1-sp);
+  const ssUntaxed_ann=totalSS_ann*(1-sp); // R12-3: CPP/OAS as US SS for a US resident
   const irmaaMagi=Math.max(0,magi-ssUntaxed_ann);
   if(subjectUS&&!isCanadian&&!isAustralian&&!foreign&&!isUkRes){// TRACE: MAGI drives ACA and IRMAA
     const g=_trGroup(T,'magi','What goes into your MAGI',null,'magi');
     _trRow(g,'401k withdrawals',w_ann,'usd/yr',{kind:'in',skipZero:true});
-    _trRow(g,'Social Security (in FULL, not the taxable share)',uss_ann+spSS_ann,'usd/yr',{kind:'in',skipZero:true,
-      note:'MAGI counts all of your Social Security, even though only part of it is taxable income.'});
+    _trRow(g,cadAsSS_ann>0?'Social Security, CPP and OAS (in FULL)':'Social Security (in FULL, not the taxable share)',totalSS_ann,'usd/yr',{kind:'in',skipZero:true,
+      note:'MAGI counts all of your Social Security, even though only part of it is taxable income.'+(cadAsSS_ann>0?' The US–Canada treaty treats CPP and OAS as US Social Security.':'')});
     _trRow(g,'UK State Pension',ukp_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'Part-time work',partTime_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'Taxable equity gains',taxableEquity_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'Roth conversion',convIncome_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'Rental income',rentalIncome_ann,'usd/yr',{kind:'in',skipZero:true});
     _trRow(g,'US pension / disability',usPensionTaxableInc_ann,'usd/yr',{kind:'in',skipZero:true});
+    _trRow(g,'Super withdrawals',superUS_ann,'usd/yr',{kind:'in',skipZero:true}); // R13-4
     _trRow(g,'Tax-exempt interest',taxExemptInt_ann,'usd/yr',{kind:'in',skipZero:true,
       note:'Municipal-bond interest is added back for BOTH the ACA and IRMAA, even though you pay no income tax on it.'});
     _trRow(g,'= MAGI for the ACA',magi,'usd/yr',{kind:'total'});
     _trRow(g,'− the untaxed part of your Social Security',ssUntaxed_ann,'usd/yr',{kind:'minus',skipZero:true,
-      base:uss_ann+spSS_ann,baseAs:'of',formula:'total Social Security × (1 − taxable share)',
+      base:totalSS_ann,baseAs:'of',formula:'total Social Security × (1 − taxable share)',
       note:'IRMAA reads your tax return, which contains only the taxable part of Social Security. The ACA adds the untaxed part back, so the two figures differ.'});
     _trRow(g,'= MAGI for IRMAA',irmaaMagi,'usd/yr',{kind:'total',skipZero:true});
     _trRow(g,'Roth and cash withdrawals',0,'flagv',{kind:'flag',
@@ -1791,7 +2517,7 @@ function calcPhase(p){
   // how much of it reaches the expense. That is why existing plans' balances and income are unmoved.
   const _lumpOrd=(sim.lumpDrawn&&sim.lumpDrawn.k401)||0;   // 401k money is ordinary income
   const _lumpGain=sim.lumpEqGain||0;                        // the gain slice of any holdings sold
-  let lumpTax=0,lumpTaxSpike=null;
+  let lumpTax=0,lumpTaxSpike=null,lumpPen=0;
   if(_lumpOrd>0||_lumpGain>0){
     // How much of the draw the state can reach: a 401k draw is pension income, so a state that exempts
     // pensions only taxes the part above its cap (0 = uncapped, i.e. fully exempt).
@@ -1807,23 +2533,31 @@ function calcPhase(p){
       }
     }
     lumpTax=_lumpIncrementalTax({
-      gross,ukBase:ukBase_ann,extraOrdinary:_lumpOrd,extraGain:_lumpGain,stateExtra,stateRate:p.stateTaxRate||0,
+      // R19-1: spouseBase — a married couple abroad is taxed person by person; the draw stacks on YOUR share.
+      gross,ukBase:ukBase_ann,spouseBase:_spCa||_spAu||_spUk||0,extraOrdinary:_lumpOrd,extraGain:_lumpGain,stateExtra,stateRate:p.stateTaxRate||0,
       isCanadian,isAustralian,isUkRes,subjectUS,ded,
-      brk10:adjBrk10Eff,brk12:adjBrk12Eff,brk22:adjBrk22Eff,
+      brk10:adjBrk10Eff,brk12:adjBrk12Eff,brk22:adjBrk22Eff,brk24:adjBrk24Eff,brk32:adjBrk32Eff,brk35:adjBrk35Eff,
       ukPA:Math.round((p.ukPersonalAllowance||15911)*inflMult),ukBasicCeil:Math.round((p.ukBasicCeil||63542)*inflMult),
       ukBasicRate:p.ukBasicRate||20,ukHigherCeil:Math.round((p.ukHigherCeil||158352)*inflMult),
       ukHigherRate:p.ukHigherRate||40,ukAddlRate:p.ukAdditionalRate||45,
-      cadPA:Math.round((p.cadPersonalAmount||16129)*inflMult),cadB1:Math.round((p.cadBrk1||57375)*inflMult),
-      cadB2:Math.round((p.cadBrk2||114750)*inflMult),cadB3:Math.round((p.cadBrk3||158519)*inflMult),
-      cadB4:Math.round((p.cadBrk4||220000)*inflMult),cadR1:p.cadRate1||15,cadR2:p.cadRate2||20.5,
+      cadPA:Math.round((p.cadPersonalAmount||11680)*inflMult),cadB1:Math.round((p.cadBrk1||41536)*inflMult),
+      cadB2:Math.round((p.cadBrk2||83072)*inflMult),cadB3:Math.round((p.cadBrk3||128751)*inflMult),
+      cadB4:Math.round((p.cadBrk4||183858)*inflMult),cadR1:p.cadRate1||15,cadR2:p.cadRate2||20.5,
       cadR3:p.cadRate3||26,cadR4:p.cadRate4||29,cadR5:p.cadRate5||33,
       cadProvRate:(p.cadProvincialRate!=null?p.cadProvincialRate:12),
-      ausFree:Math.round((p.ausTaxFreeThreshold||18200)*inflMult),ausB1:Math.round((p.ausBrk1||45000)*inflMult),
-      ausB2:Math.round((p.ausBrk2||135000)*inflMult),ausB3:Math.round((p.ausBrk3||190000)*inflMult),
-      ausR1:(p.ausRate1!=null?p.ausRate1:16),ausR2:(p.ausRate2!=null?p.ausRate2:30),
+      ausFree:Math.round((p.ausTaxFreeThreshold||12941)*inflMult),ausB1:Math.round((p.ausBrk1||31997)*inflMult),
+      ausB2:Math.round((p.ausBrk2||95990)*inflMult),ausB3:Math.round((p.ausBrk3||135097)*inflMult),
+      ausR1:(p.ausRate1!=null?p.ausRate1:15),ausR2:(p.ausRate2!=null?p.ausRate2:30),
       ausR3:(p.ausRate3!=null?p.ausRate3:37),ausR4:(p.ausRate4!=null?p.ausRate4:45),
-      ausLevyThresh:Math.round((p.ausLevyThreshold||27222)*inflMult),ausLevyRate:(p.ausMedicareLevy!=null?p.ausMedicareLevy:2)
+      ausLevyThresh:Math.round((p.ausLevyThreshold||19356)*inflMult),ausLevyRate:(p.ausMedicareLevy!=null?p.ausMedicareLevy:2)
     });
+    // Sweep R24-3 (v491): the §72(t) 10% on the 401k money a one-time expense takes BEFORE 59½ — as on the phase's own draw in
+    // 'penalty' mode, and in 'locked' mode, where only an expense that names the 401k reaches it (_lumpSpecAt). Not under the Rule
+    // of 55 or the disability exception, and gated like the regular penalty (US tax only). It was taxed as income alone: a $60,000
+    // roof at 50 from the 401k skipped a $6,000 penalty. Inside lumpTax, so the gross-up and the funded check include it.
+    // SSDI plans run on the default mode and are exempt (disability, §72(t)(2)(A)(iii)), as their regular draw is.
+    if(subjectUS&&!isCanadian&&!isAustralian&&!p.ssdiMode&&(p.phaseKey==='p0'||p.phaseKey==='p0b')&&_lumpOrd>0
+       &&((p.earlyAccessMode||'locked')==='penalty'||(p.earlyAccessMode||'locked')==='locked')){lumpPen=0.10*_lumpOrd;lumpTax+=lumpPen;}
     // Flag-only: a one-year income spike can cross a cliff that the phase AVERAGE never shows. We do
     // not recompute the subsidy (see _lumpIncrementalTax) — we tell the user it would happen.
     if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
@@ -1848,9 +2582,11 @@ function calcPhase(p){
   if(lumpTax>0){
     const taxableOf=d=>((d.drawn&&d.drawn.k401)||0)+(d.gain||0);
     const totTaxable=lumpDetail.reduce((a,d)=>a+(d.dir==='out'?taxableOf(d):0),0);
+    const totK=lumpDetail.reduce((a,d)=>a+(d.dir==='out'?((d.drawn&&d.drawn.k401)||0):0),0); // R24-3: the penalty follows the 401k money
     lumpDetail.forEach(d=>{
       if(d.dir!=='out')return;
-      d.tax=totTaxable>0?lumpTax*(taxableOf(d)/totTaxable):0;
+      d.pen=totK>0?lumpPen*(((d.drawn&&d.drawn.k401)||0)/totK):0;
+      d.tax=(totTaxable>0?(lumpTax-lumpPen)*(taxableOf(d)/totTaxable):0)+d.pen;
       // What actually reaches the expense. A grossed-up event lands on its full sticker price; an
       // ordinary one is short by its own tax bill.
       d.delivered=Math.max(0,(d.amt||0)-(d.unfunded||0)-d.tax);
@@ -1886,8 +2622,11 @@ function calcPhase(p){
         _trRow(g,nm+' — tax created by funding it',d.tax||0,'usd',{kind:'minus',skipZero:true,
           formula:'tax on this phase’s income plus the draw, minus tax on the income alone',
           note:'Charged once, in the year of the expense — it is not added to the phase’s yearly income, which would tax it every year of the phase. Approximate: a single-year spike cannot be modelled to the dollar inside a multi-year phase.'});
+        _trRow(g,nm+' — of which the 10% early-withdrawal penalty',d.pen||0,'usd',{kind:'flag',skipZero:true, // R24-3
+          formula:'10% × the 401k money it took before 59½',
+          note:(p.earlyAccessMode||'locked')==='locked'?'Your 401k is set to stay locked before 59½, so the automatic order never reaches it — this expense names the 401k itself, and a withdrawal before 59½ carries the 10% IRS penalty on top of income tax.':'A withdrawal before 59½ carries the 10% IRS penalty on top of income tax, like the phase’s regular 401k draw.'});
         _trRow(g,nm+' — the accounts could not cover',d.unfunded||0,'usd',{kind:'flag',skipZero:true,
-          note:'Only the accounts you chose were allowed to pay. Tick "Use other accounts if short" to let it spill over.'});
+          note:d.superLocked?SUPER_LOCK_TXT:d.k401Locked?'Your 401k is set to stay locked before 59½, so it is not used to cover a shortfall. Name the 401k as this expense’s account (it then pays the 10% penalty), or change the pre-59½ 401k access on the Edit tab.':'Only the accounts you chose were allowed to pay. Tick "Use other accounts if short" to let it spill over.'});
         _trRow(g,nm+' — reaches the expense',d.delivered||0,'usd',{kind:'total'});
       });
       // Phase totals, so several events still reconcile against the balance movement above.
@@ -1908,10 +2647,12 @@ function calcPhase(p){
   }
   // v8: NIIT — 3.8% surtax on net investment income (taxable equity gains + taxable rental) above the
   // MAGI threshold. US residents only — NIIT is not creditable via the Foreign Tax Credit, so we omit
-  // it for UK/foreign residents rather than let FTC wrongly offset it. Threshold inflated like IRMAA.
+  // it for UK/foreign residents rather than let FTC wrongly offset it.
+  // ⚠ Sweep R2-8 (v405): the threshold is NOT inflated. IRC §1411 fixes it at $200k / $250k and it has
+  // never been indexed; inflating it like IRMAA let later phases escape NIIT they would really owe.
   let niit_a=0;
   if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
-    const niitThr=Math.round((mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000))*inflMult);
+    const niitThr=Math.round(mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000));
     const netInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
     // v14: NIIT has its own MAGI too, and it is AGI-based — so it excludes BOTH the untaxed part
     // of Social Security (AGI never contained it) and tax-exempt interest (NIIT does not add it
@@ -1921,7 +2662,7 @@ function calcPhase(p){
     niit_a=0.038*Math.min(netInv,Math.max(0,niitMagi-niitThr));
     if(niit_a>0){const g=_trGroup(T,'niit','Net Investment Income Tax (NIIT)',null,'niit');
       _trRow(g,'Net investment income',netInv,'usd/yr',{kind:'in',formula:'taxable equity gains + taxable rental income'});
-      _trRow(g,'NIIT threshold'+(mfj?' (MFJ)':''),niitThr,'usd/yr',{kind:'threshold',formula:'base × inflation multiplier'});
+      _trRow(g,'NIIT threshold'+(mfj?' (MFJ)':''),niitThr,'usd/yr',{kind:'threshold',formula:'fixed in law — not indexed for inflation'});
       _trRow(g,'MAGI above the threshold',Math.max(0,niitMagi-niitThr),'usd/yr',{});
       _trRow(g,'= NIIT at 3.8%',niit_a,'usd/yr',{kind:'total',formula:'3.8% × min(net investment income, MAGI − threshold)'});
     }
@@ -1983,9 +2724,14 @@ function calcPhase(p){
     frozen:!!t.frozen
   })):null;
   if(foreign||isUkRes||isCanadian||isAustralian||!subjectUS){
-    health_mo=(p.expatHealthcare||0)*hcInflMult;
+    // Sweep R17-2 (v449): the budget is entered for the household. In the survivor run it covers one person, half of it,
+    // as US Medicare falls to one set of premiums there; the survivor abroad kept paying the couple's whole budget.
+    const _hcShare=p.survivorRun?0.5:1;
+    health_mo=(p.expatHealthcare||0)*_hcShare*hcInflMult;
     {const g=_trGroup(T,'medicare','How your healthcare cost is estimated',null,'expatHealthcare');
-      _trRow(g,'Healthcare budget you entered',p.expatHealthcare||0,'usd/mo',{kind:'in'});
+      _trRow(g,'Healthcare budget you entered',p.expatHealthcare||0,'usd/mo',{kind:'in',note:'For your household.'});
+      if(_hcShare!==1&&(p.expatHealthcare||0)>0)_trRow(g,'× the survivor’s share',_hcShare,'mult',{kind:'rate',
+        note:'One person of the two the budget was for.'});
       _trRow(g,'× healthcare inflation to this phase',hcInflMult,'mult',{kind:'rate'});
       _trRow(g,'= estimated healthcare cost',health_mo,'usd/mo',{kind:'total'});
       _trRow(g,'US Medicare and ACA',0,'flagv',{kind:'flag',
@@ -1998,7 +2744,8 @@ function calcPhase(p){
   // old arithmetic — that identity is what the single-filer fixtures assert. For a couple both
   // enrolled it charges two sets of premiums, which is what they actually pay and what the planner
   // used to miss. The ACA side is deliberately NOT multiplied: acaPrem models one household premium
-  // against 1-person FPL figures, and a couple's marketplace premium is not twice a single's, so we
+  // against the household's own poverty line (_fplOf — the 2-person line for MFJ since sweep R9-3), and a couple's
+  // marketplace premium is not twice a single's, so we
   // scale it by the share of the household not yet on Medicare rather than pretending otherwise.
   else{
     const medCostPer=adjMedicare+adjMedicareD;
@@ -2042,18 +2789,26 @@ function calcPhase(p){
   }
   const irmaaOver=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&irmaaMagi>adjIrmaaEff;
   // RMD (US 401k only)
-  const rmdStartAge=p.rmdStartAge||73;
+  // R11-4: ownAgeShift moves the RMD onto the survivor's own age line (a spouse who inherits the 401k and
+  // treats it as their own) — the start age AND the divisor. 0 outside a survivor run.
+  const _rmdSh=p.ownAgeShift||0;
+  const rmdStartAge=(p.rmdStartAge||73)+_rmdSh;
   const phaseEndAge=p.phaseStartAge+(p.months/12);
   const rmdAge=Math.max(p.phaseStartAge,rmdStartAge);
-  const rmdDivisor=rmdDivisorFor(rmdAge); // IRS Uniform Lifetime Table lookup (was a linear approximation)
-  const rmdEst=p.b401k>0&&phaseEndAge>rmdStartAge?(p.b401k/rmdDivisor/12):0;
+  const rmdDivisor=rmdDivisorFor(rmdAge-_rmdSh); // IRS Uniform Lifetime Table lookup (was a linear approximation)
+  // Sweep R18-5 (v452): the estimate is taken on the balance AT the RMD age. It used the phase's opening balance with the
+  // RMD-age divisor, which overstates a phase that starts before the RMD age (a 73–90 phase with RMDs at 75: $1,866/mo
+  // against about $1,732, and a "shortfall" the plan did not have). Unchanged for a phase starting at or after it.
+  const _rmdBal=(rmdStartAge>p.phaseStartAge+1e-9&&sim.b401kAtCap!=null)?sim.b401kAtCap:p.b401k;
+  const rmdEst=_rmdBal>0&&phaseEndAge>rmdStartAge?(_rmdBal/rmdDivisor/12):0;
   // Compare against the ACHIEVABLE draw: if the 401k can't fund the RMD, the shortfall is real, not less.
   const rmdShortfall=rmdEst>0&&aW401k<rmdEst?rmdEst-aW401k:0;
   if(rmdEst>0){// TRACE: RMD via the IRS Uniform Lifetime Table (NOT the old linear approximation)
     const g=_trGroup(T,'rmd','How your Required Minimum Distribution is estimated','tg-rmd','rmd');
-    _trRow(g,'401k balance entering this phase',p.b401k,'usd',{kind:'in'});
-    _trRow(g,'RMD start age',rmdStartAge,'age',{kind:'threshold'});
-    _trRow(g,'Age used for the divisor',rmdAge,'age',{});
+    if(_rmdBal!==p.b401k)_trRow(g,'401k balance at the RMD start age',_rmdBal,'usd',{kind:'in',note:'The age falls inside this phase, so the balance on reaching it.'});
+    else _trRow(g,'401k balance entering this phase',p.b401k,'usd',{kind:'in'});
+    _trRow(g,'RMD start age',rmdStartAge-_rmdSh,'age',{kind:'threshold',note:p.rmdAuto?'From the birth year (SECURE 2.0): 73 if born 1951–1959, 75 if born 1960 or later.':undefined});
+    _trRow(g,'Age used for the divisor',rmdAge-_rmdSh,'age',{});
     _trRow(g,'IRS Uniform Lifetime Table divisor',rmdDivisor,'num',{kind:'rate',
       formula:'IRS Publication 590-B distribution period for that age'});
     _trRow(g,'= required minimum distribution',rmdEst,'usd/mo',{kind:'total',formula:'balance ÷ divisor ÷ 12'});
@@ -2081,21 +2836,132 @@ function calcPhase(p){
         note:depAge!=null?'This account runs out at age '+depAge+', so the full amount could not be drawn.':'The balance could not fund the full amount you configured.'});
     };
     const _d=sim.depletedAt||{};
+    if(p.slotFromFirstHalf)_trRow(g,'Withdrawals for this part of the phase',0,'flagv',{kind:'flag',
+      note:'You have not set this part separately, so it uses the amounts from the first part of the phase.'});
     _wd('401k',p.w401k||0,aW401k,_d.b401k);
     _wd('Cash',p.wCash||0,aWCash,_d.cash);
     _wd('Equity',wEquity_mo,aWEquity_mo,_d.equity);
     _wd('Roth',wRoth_mo,aWRoth_mo,_d.roth);
-    _wd('Super',wSuper_mo,aWSuper_mo,_d.super);
+    if((sim.superPresMo||0)>0){ // R25-3
+      _trRow(g,'Super — you set',wSuper_mo,'usd/mo',{kind:'in'});
+      _trRow(g,'Super — months of this phase before 60',sim.superPresMo,'num',{kind:'flag',
+        note:'Super is preserved until 60 (the preservation age of anyone under 60 today), so the draw starts at 60.'});
+      _trRow(g,'Super — paid, averaged over the whole phase',aWSuper_mo,'usd/mo',{kind:'total',
+        formula:'the monthly draw × the months from 60 ÷ the phase’s months'+(_d.super!=null?' (less what the account could not fund)':'')});
+    } else _wd('Super',wSuper_mo,aWSuper_mo,_d.super);
     if(rothConvAnn>0&&Math.abs(rothConvAnn-sim.convActualAnn)>0.005)
       _trRow(g,'Roth conversion — actually converted',sim.convActualAnn,'usd/yr',{kind:'flag',
         base:rothConvAnn,baseAs:'from',note:'Capped at the 401k balance actually available to convert.'});
   }
+  // ── Under the hood (sweep R13): three groups the trace lacked. Each is a read-out of the simulation above; none
+  //    changes a figure. 'streams' — where each guaranteed income comes from; 'gain' — the taxable part of each
+  //    brokerage sale (the cost basis carried phase to phase, R13-2); 'growth' — how the accounts grew, with the
+  //    annual-rate → monthly-rate rule of sweep R3-1.
+  {const tr=sim.tr||{},paid=tr.paid||{},M=p.months||0;
+   const _fm=n=>n>=M?'every month of this phase':n+' of this phase’s '+M+' months';
+   const _pc=r=>(+r||0).toFixed(1)+'%';
+   const _stream=(lbl,avg,base,baseAge,rate,n,extra,note,eduNote)=>{
+     if(!(avg>0.005))return;
+     _trRow(g,lbl,avg,'usd/mo',{kind:'in',base:base>0?base:null,baseUnit:'usd/mo',baseAs:'from',
+       formula:'the amount at age '+(Math.round(baseAge*10)/10)+' × (1 + '+_pc(rate)+') per year since, stepped up once a year; paid '+_fm(n)+(extra||'')+', averaged over the phase',
+       note:note||undefined});
+   };
+   const g=_trGroup(T,'streams','Where your guaranteed income comes from',null,'cola');
+   const spAgeNote=' (your spouse reaches '+(Math.round((p.spouseSSBaseAge||62)*10)/10)+' when you are '+(Math.round(((p.spouseSSBaseAge||62)+(p.spouseAgeDelta||0))*10)/10)+')';
+   if(p.survivorRun){
+     _stream('Social Security — the larger of their own and the survivor benefit',sim.avgSS,p.ussBase||0,p.ssBaseAge||62,p.ssColaRate,paid.ss||0,'',
+       'Each month the survivor is paid the larger of their own benefit and the survivor benefit on the late spouse’s record (how it is worked out: “How the survivor scenario is set up”)'
+       +((paid.ssSp||0)>0?' — here the survivor benefit was the larger for '+paid.ssSp+' of '+M+' months.':'.'));
+   }else{
+     _stream(p.ssdiMode?'Your SSDI / Social Security':'Your Social Security',sim.avgSS,p.ussBase||0,p.ssBaseAge||62,p.ssColaRate,paid.ss||0,'',
+       p.ssdiMode?'SSDI carries the ordinary Social Security COLA and becomes your retirement benefit at full retirement age at the same amount.':null);
+     _stream('Your spouse’s Social Security',sim.avgSpSS,p.spouseSS||0,p.spouseSSBaseAge||62,_numOr(p.spouseSSColaRate,2.6),paid.spSS||0,spAgeNote,
+       'Their own benefit is paid from their own claim age, whatever age you claim at; it grows at the same COLA as yours.');
+     // R20-1: the spousal top-ups, inside the two figures above.
+     const _spsNote='SSA pays a spouse up to half of the other’s full-retirement amount (PIA), less their own. It is cut for claiming before full retirement age, never grows past it, and starts only once you have both claimed.';
+     if((sim.avgSpousalSp||0)>0.005)_trRow(g,'… of which the spousal top-up on your record',sim.avgSpousalSp,'usd/mo',{kind:'in',
+       formula:'(½ × your PIA − their PIA) × the spousal reduction at their age when you have both claimed, averaged over the phase',note:_spsNote});
+     if((sim.avgSpousalYou||0)>0.005)_trRow(g,'… of which your spousal top-up on your spouse’s record',sim.avgSpousalYou,'usd/mo',{kind:'in',
+       formula:'(½ × their PIA − your PIA) × the spousal reduction at your age when you have both claimed, averaged over the phase',note:_spsNote});
+   }
+   _stream('UK State Pension',sim.avgUKP,p.ukpBase||0,p.ukpBaseAge||67,p.tripleLockRate,paid.ukp||0,'',
+     'Grows at the triple-lock rate you set.');
+   const _cadUS=!isCanadian;
+   // R22-1: in a survivor run the late spouse's CPP is gone — the line is the survivor's own CPP and the survivor's pension.
+   if(p.survivorRun&&p.survCpp){if((sim.avgCPP||0)>0.005)_trRow(g,'CPP — the survivor’s own and the survivor’s pension',sim.avgCPP,'usd/mo',{kind:'in',
+     formula:'the survivor’s own CPP from their own start age, growing at the CPP COLA, plus the CPP survivor’s pension below; averaged over the phase',
+     note:_cadUS?'You are not a Canadian tax resident in this plan: the US–Canada treaty taxes CPP only in the US, as Social Security.':undefined});}
+   else _stream('Canada Pension Plan (CPP)',sim.avgCPP,p.cppBase||0,p.cppBaseAge||65,p.cppColaRate,paid.cpp||0,'',
+     _cadUS?'You are not a Canadian tax resident in this plan: the US–Canada treaty taxes CPP only in the US, as Social Security.':null);
+   if((sim.avgSvCpp||0)>0.005)_trRow(g,'… of which the CPP survivor’s pension',sim.avgSvCpp,'usd/mo',{kind:'in', // R22-1
+     formula:'the flat rate + 37.5% of the late spouse’s pension at 65 while the survivor is under 65, 60% from 65 — cut so that it and the survivor’s own CPP stay within the combined maximum; averaged over the phase',
+     note:'Paid from the death, in place of the late spouse’s own CPP (how it is worked out: “How the survivor scenario is set up”).'});
+   _stream('Old Age Security (OAS)',sim.avgOAS,p.oasBase||0,p.oasBaseAge||65,p.oasColaRate,paid.oas||0,'',
+     _cadUS?'Taxed only in the US, as Social Security (US–Canada treaty).':null);
+   _stream('Australian Age Pension',sim.avgAP,p.agePensionBase||0,p.agePensionBaseAge||67,p.agePensionColaRate,paid.ap||0,'',null);
+   // R21-6: a pension paid in local money, converted at the rate in use (_penFxFactor) — shown when that is not × 1.
+   [['GBP','£',(sim.avgUKP||0)>0.005,'UK State Pension'],['CAD','C$',(sim.avgCPP||0)+(sim.avgOAS||0)>0.005,'CPP and OAS'],['AUD','A$',(sim.avgAP||0)>0.005,'Age Pension']]
+     .forEach(([c,sym,on,what])=>{const at=p.penFxAt?+p.penFxAt[c]:0,lv=p.taxFxLive?+p.taxFxLive[c]:0;
+       if(on&&at>0&&lv>0&&Math.abs(at/lv-1)>1e-9)_trRow(g,what+' — held in '+sym,at/lv,'mult',{kind:'rate',formula:'the rate it was entered at ÷ the rate in use',
+         note:'Paid in '+sym+', so its '+sym+' amount stays as entered when the dollar moves: entered at '+sym+'1 = US$'+(1/at).toFixed(3)+', converted at '+sym+'1 = US$'+(1/lv).toFixed(3)+'. The amounts above are already converted.'});});
+   const _pen=(lbl,avg,base,ba,rate,n,end,taxable)=>_stream(lbl,avg,base,ba,rate,n,
+     (end!=null&&end!==''?'; it stops at '+end:''),taxable?null:'Tax-free (for example a VA disability payment).');
+   _pen('US pension / disability',sim.avgUsPen,p.usPensionBase||0,p.usPensionBaseAge||65,p.usPensionColaRate,paid.usPen||0,p.usPensionEndAge,p.usPensionTaxable!==false);
+   _pen('Second US pension / disability',sim.avgUsPen2,p.usPension2Base||0,p.usPension2BaseAge||65,p.usPension2ColaRate,paid.usPen2||0,p.usPension2EndAge,p.usPension2Taxable!==false);
+   if(!g.rows.length)T.groups.pop(); // nothing guaranteed is paid in this phase
+  }
+  {const tr=sim.tr||{},pre=tr.pre||{},op=tr.open||{};
+   const eqIn=pre.bEquity||0,sold=aWEquity_mo*p.months;
+   if(eqIn>0.5||sold>0.5||(op.bEquity||0)>0.5){
+     const g=_trGroup(T,'gain','The taxable part of each brokerage sale',null,'equityGain');
+     _trRow(g,'Brokerage balance entering this phase',eqIn,'usd',{kind:'sub'});
+     const src=p.basisSource||'prev';
+     _trRow(g,'Cost basis entering this phase',pre.basis||0,'usd',{kind:'sub',
+       formula:src==='pct'?'balance × (1 − the gain % you entered for it, '+(+p.equityGainPctIn||0).toFixed(0)+'%)'
+         :src==='carried'?(p.survivorRun?'the couple’s cost basis at the first death, after any step-up the death brings (“How the survivor scenario is set up”)':'the couple’s cost basis at the first death, carried into this re-run')
+         :'carried from the previous phase: a sale returns its share of basis tax-free, and growth adds gain',
+       note:src==='carried'?'Carried rather than reset to the pre-plan gain %, so the sales are taxed on the gain built up since the plan began (less any the death steps up).':undefined});
+     if(eqIn>0)_trRow(g,'Share of the balance that is gain',Math.max(0,(eqIn-(pre.basis||0))/eqIn*100),'pct',{kind:'rate',
+       formula:'(balance − cost basis) ÷ balance'});
+     if((op.basis||0)-(pre.basis||0)>0.5)_trRow(g,'Money added by one-time events',(op.basis||0)-(pre.basis||0),'usd',{kind:'flag',
+       note:'Money arriving in the brokerage enters at its current value, so it carries no gain.'});
+     _trRow(g,'Sold for your monthly withdrawals',sold,'usd',{skipZero:true});
+     _trRow(g,'= taxable gain realised',taxableEquity_ann*p.months/12,'usd',{kind:'total',
+       formula:'each month’s sale × (balance − cost basis) ÷ balance, summed over the phase',
+       note:'That is '+(p.months?'the taxable equity gains figure above, over the whole phase':'')+'. Only the gain is taxed; the rest of each sale is your own money coming back.'});
+     _trRow(g,'Gain realised selling to pay one-time expenses',sim.lumpEqGain||0,'usd',{skipZero:true,kind:'flag',
+       note:'Taxed with the expense (see the one-time events group).'});
+     _trRow(g,'Cost basis leaving this phase',sim.costBasis||0,'usd',{kind:'sub'});
+   }
+  }
+  {const tr=sim.tr||{},pre=tr.pre||{},gr=tr.growth||{},M=p.months||0;
+   const open=(pre.b401k||0)+(pre.bCash||0)+(pre.bEquity||0)+(pre.bRoth||0)+(pre.bSuper||0);
+   const LK=['cash','equity','k401','roth','super'];
+   const added=LK.reduce((t,k)=>t+((sim.lumpAdded||{})[k]||0),0),drawnL=LK.reduce((t,k)=>t+((sim.lumpDrawn||{})[k]||0),0);
+   const growth=(gr.k401||0)+(gr.cash||0)+(gr.equity||0)+(gr.roth||0)+(gr.super||0);
+   const wdr=(aW401k+aWCash+aWEquity_mo+aWRoth_mo+aWSuper_mo)*M;
+   const close=(sim.b401k||0)+(sim.bCash||0)+(sim.bEquity||0)+(sim.bRoth||0)+(sim.bSuper||0);
+   if(open>0.5||close>0.5){
+     const g=_trGroup(T,'growth','How your accounts grow in this phase',null,null);
+     _trRow(g,'Balances entering this phase (all accounts)',open,'usd',{kind:'in'});
+     _trRow(g,'+ one-time windfalls',added,'usd',{kind:'in',skipZero:true});
+     _trRow(g,'− one-time expenses (with any tax withdrawn to pay them)',drawnL,'usd',{kind:'minus',skipZero:true});
+     _trRow(g,'+ investment growth',growth,'usd',{kind:'in',skipZero:true,
+       formula:'each month: balance × ((1 + annual return) ^ (1/12) − 1), which compounds to exactly the annual return over a year'});
+     _trRow(g,'− your withdrawals',wdr,'usd',{kind:'minus',skipZero:true,formula:'what the accounts actually paid (see the withdrawals group)'});
+     _trRow(g,'= balances leaving this phase',close,'usd',{kind:'total'});
+     const acc=[['401k',gr.k401,p.r401k],['Cash',gr.cash,p.rCash],['Brokerage',gr.equity,p.rEquity],['Roth',gr.roth,p.rRoth],['Super',gr.super,p.rSuper]];
+     acc.forEach(([l,v,r])=>{if(Math.abs(v||0)>0.5)_trRow(g,l+' growth at '+(+r||0).toFixed(2)+'% a year',v,'usd',{kind:'sub'});});
+     if(rothConvAnn>0&&sim.convActualAnn>0)_trRow(g,'Roth conversions moved from the 401k to the Roth',sim.convActualAnn*M/12,'usd',{kind:'flag',
+       note:'A transfer between your own accounts: it changes neither total above.'});
+   }
+  }
   {// TRACE: the bottom line, and every deduction between gross and net.
     const g=_trGroup(T,'net','From gross income to what you keep',null,'realNominal');
     _trRow(g,'Total income',total_mo,'usd/mo',{kind:'in',formula:'all withdrawals + pensions + part-time + rental'});
-    _trRow(g,isUkRes?'− US federal tax (after credit)':'− income tax',tax_mo,'usd/mo',{kind:'minus',skipZero:true});
+    _trRow(g,isUkRes?'− US federal tax (after credit)':'− income tax',tax_mo,'usd/mo',{kind:'minus',skipZero:true,id:'tax'});
     _trRow(g,'− UK income tax',ukTax_mo,'usd/mo',{kind:'minus',skipZero:true});
-    _trRow(g,'− state income tax',stateTax_mo,'usd/mo',{kind:'minus',skipZero:true});
+    _trRow(g,'− state income tax',stateTax_mo,'usd/mo',{kind:'minus',skipZero:true,id:'statetax'});
     _trRow(g,'− healthcare',health_mo,'usd/mo',{kind:'minus',skipZero:true,id:'health'});
     _trRow(g,'= net income',net_mo,'usd/mo',{kind:'total',id:'net'});
     _trRow(g,'= in today’s money',net_real,'usd/mo',{kind:'total',id:'netreal',
@@ -2109,6 +2975,7 @@ function calcPhase(p){
     trace:_trFinish(T), // "under the hood" working — see _trNew for the shape and rules
     end:{b401k:sim.b401k,bcash:sim.bCash,bEquity:sim.bEquity,bRoth:sim.bRoth,bSuper:sim.bSuper,costBasis:sim.costBasis},
     ti,tax_a,usTaxBeforeFTC,tax_mo,ukTax_a,ukTax_mo,ftc_a,ftc_mo,cadTax_a,ausTax_a,niit_a,stateTax_a,stateTax_mo,isUkRes,isCanadian,isAustralian,
+    taxBands, // R24-5: {cc,label,you,spouse,note,steps:[[threshold,rate above]]} for a UK / Canadian / Australian resident, else null
     // v15: the §72(t) penalty is INSIDE tax_a already; carried separately so the phase card and
     // the PDF can name it instead of leaving an unexplained bulge in "Federal tax".
     earlyPen_a,earlyPen_mo:earlyPen_a/12,earlyAccessMode:p.earlyAccessMode||'locked',
@@ -2116,16 +2983,22 @@ function calcPhase(p){
     sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,medicareUnits:medUnits,medicareHeads:medHeads,spouseMedicareFrac:p.spouseMedicareFrac||0,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
     // the tax that funding it created and whether that spike would cross an ACA/IRMAA threshold.
-    lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpEqGain:sim.lumpEqGain||0,
+    lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpPen,lumpEqGain:sim.lumpEqGain||0,
     ukp_grown:sim.avgUKP,uss_grown:sim.avgSS,spSS_grown:sim.avgSpSS,
+    // R19-1: the spouse's share of the pension streams (inside ukp_grown / cpp_grown / … too) and each person's taxed share;
+    // R19-2: the earnings test — benefits withheld this phase (monthly average), the months carried, the FRA recredit.
+    spUkp_grown:sim.avgSpUKP,spCpp_grown:sim.avgSpCPP,spOas_grown:sim.avgSpOAS,spAp_grown:sim.avgSpAP,
+    taxSpouseShare:_spCa||_spAu||_spUk||0,
+    ssWithheld_mo:sim.etWithheldMo||0,etWYouOut:sim.etWYouOut||0,etWSpOut:sim.etWSpOut||0,etMultYou:sim.etMultYou,etMultSp:sim.etMultSp,
     cpp_grown:sim.avgCPP,oas_grown:sim.avgOAS,ap_grown:sim.avgAP,
     yearsFromStart:yrs,
     // wEquity_mo/wRoth_mo/wSuper_mo report the ACHIEVABLE draw, so every renderer is truthful by default.
     // wSet/wActual/depletedAt let the phase cards show "set → actual" without recomputing.
     wEquity_mo:aWEquity_mo,wRoth_mo:aWRoth_mo,wSuper_mo:aWSuper_mo,
-    wSet:{w401k:p.w401k||0,wCash:p.wCash||0,wEquity:wEquity_mo,wRoth:wRoth_mo,wSuper:wSuper_mo,rothConvAnn},
+    // R25-3: a Super draw set before 60 is not "unpaid" — it waits for the preservation age — so the set figure counts the months from 60.
+    wSet:{w401k:p.w401k||0,wCash:p.wCash||0,wEquity:wEquity_mo,wRoth:wRoth_mo,wSuper:(sim.superPresMo>0&&p.months>0)?wSuper_mo*Math.max(0,p.months-sim.superPresMo)/p.months:wSuper_mo,rothConvAnn},
     wActual:{w401k:aW401k,wCash:aWCash,wEquity:aWEquity_mo,wRoth:aWRoth_mo,wSuper:aWSuper_mo,rothConvAnn:sim.convActualAnn},
-    depletedAt:sim.depletedAt,
+    depletedAt:sim.depletedAt,superPresMo:sim.superPresMo||0,
     // Per-12-month slices of this phase — balances, withdrawals and COLA'd streams only. Carries NO
     // tax figure by design; tax is a phase-level quantity (see simPhase's yearRows comment).
     yearRows:sim.yearRows||[],
@@ -2136,8 +3009,8 @@ function calcPhase(p){
     usPension2_mo:sim.avgUsPen2,usPension2_ann,usPension2Taxable, // v9: second US pension/disability
 
     fpl100:adjFpl100,fpl250:adjFpl250,fpl400:adjFpl400,
-    adjBrk10:adjBrk10Eff,adjBrk12:adjBrk12Eff,adjBrk22:adjBrk22Eff,
-    adjStdDed:adjStdDedEff,adjSeniorDed:adjSenDedEff,adjMedicare,adjMedicareD,estYear
+    adjBrk10:adjBrk10Eff,adjBrk12:adjBrk12Eff,adjBrk22:adjBrk22Eff,adjBrk24:adjBrk24Eff,adjBrk32:adjBrk32Eff,adjBrk35:adjBrk35Eff,
+    adjStdDed:adjStdDedEff,adjSeniorDed:adjSenDedEff,senDedApplied,adjMedicare,adjMedicareD,estYear
   };
 }
 
@@ -2156,7 +3029,7 @@ function calcPhase(p){
 //   Income:     total_mo, net_mo, net_real; uss_grown, spSS_grown, ukp_grown, cpp/oas/ap_grown;
 //               wEquity_mo, wRoth_mo, wSuper_mo, partTime_mo, rental_mo; partTimeAnnual, taxableEquity_ann.
 //   Tax:        ti (taxable income), tax_mo/tax_a, ukTax_*, ftc_*, niit_a, stateTax_*, gross, ded, sp (SS taxable %).
-//   Brackets:   adjBrk10/adjBrk12/adjBrk22, adjStdDed, adjSeniorDed, estYear (inflation-adjusted to the phase).
+//   Brackets:   adjBrk10/adjBrk12/adjBrk22/adjBrk24/adjBrk32/adjBrk35, adjStdDed, adjSeniorDed, estYear (inflation-adjusted to the phase).
 //   Healthcare: magi, aca, health_mo, hasMedicare, adjMedicare(+D), acaSubsidyEligible, acaCsrEligible,
 //               fpl100/fpl250/fpl400, irmaaOver, adjIrmaa, adjIrmaaSurch, lookbackMagi/irmaaProximity/
 //               irmaaSurch_mo (added after the loop; surch_mo>0 ⇒ already included in health_mo/net_mo).
@@ -2180,15 +3053,26 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
   const curAge=s.currentAge&&s.currentAge>s.startAge?s.currentAge:0;
   const cfg=buildPhaseConfig(s.startAge,p5End,curAge,s);
   const results=[];
-  let cur401=s.bal401k,curCash=s.balCash,curEquity=s.balEquity||0,curRoth=s.balRoth||0,curSuper=s.superBal||0;
-  let curCostBasis=curEquity*(1-(s.equityGainPct||10)/100);
+  // Sweep R13-4 (v439): Super belongs to an A$ plan only (see _superBal).
+  let cur401=s.bal401k,curCash=s.balCash,curEquity=s.balEquity||0,curRoth=s.balRoth||0,curSuper=_superBal(s);
+  // Sweep R13-2 (v439): `_costBasis` — a survivor / couple-at-death re-run starts from the couple's balances at the
+  // death AND their cost basis then. It was reset to the pre-plan gain %, forgetting the gain built up since, which
+  // understated the survivor's tax on every brokerage sale (average $194/mo across 1,500 random couples).
+  let curCostBasis=(s._costBasis!=null)?s._costBasis:curEquity*(1-_numOr(s.equityGainPct,10)/100);
+  const _basisFrom=(s._costBasis!=null)?'carried':'pct';
   const mfj=(s.filingStatus==='mfj');
   const isCanadian=(activeCurrency==='CAD')&&(s.cadResident!==false);
   const isAustralian=(activeCurrency==='AUD')&&(s.ausResident!==false);
+  // R19-2: months of benefit withheld by the earnings test so far (a survivor / couple-at-death re-run starts with the
+  // couple's), carried phase to phase for the recredit at FRA.
+  // R24-2: a replanned plan starts from the months withheld before today (etWithheldYou/Sp); a survivor re-run from the couple's.
+  let etCarry={you:s._etWYou!=null?s._etWYou:(+s.etWithheldYou||0),sp:s._etWSp!=null?s._etWSp:(+s.etWithheldSp||0)};
+  // R19-1: the spouse's own pensions travel with the spouse's SS — a married plan, or the survivor run.
+  const spPaid=mfj||!!s._survivorRun;
   cfg.forEach((pc,i)=>{
-    const pk=s[pc.phaseKey];
+    const pk=_phaseSlot(s,pc); // R8-5: an unseeded split half runs on its first half's settings
     const origPhaseNum=parseInt(pc.phaseKey.replace('p','').replace('b',''));
-    const lItems=!pc.isSplitSecond?lumpsArr.filter(l=>l.phase===origPhaseNum&&l.amtUSD>0):[];
+    const lItems=_takesLumps(cfg,i)?lumpsArr.filter(l=>l.phase===origPhaseNum&&l.amtUSD>0):[]; // R8-3
     // Kept as individual events (each carries its own account sourcing) as well as the two totals that
     // the display paths still read.
     const lIn=lItems.filter(l=>l.dir!=='out'),lOut=lItems.filter(l=>l.dir==='out');
@@ -2196,18 +3080,20 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
     const lTotalOut=lOut.reduce((a,l)=>a+l.amtUSD,0); // one-time expenses
     // v4: CPP/OAS/Age Pension active when ANY portion of phase is past their base age
     // Per-month gating in simPhase ensures partial-phase activation is honoured.
-    const hasCPP=isCanadian&&pc.endAge>(s.cppBaseAge||65)&&(s.cpp||0)>0;
-    const hasOAS=isCanadian&&pc.endAge>(s.oasBaseAge||65)&&(s.oas||0)>0;
+    // R12-3: paid in any C$ plan (the card that sets them is shown for every C$ plan); the residence decides
+    // only how they are taxed (Canada, or the US as Social Security).
+    const hasCPP=(activeCurrency==='CAD')&&pc.endAge>(s.cppBaseAge||65)&&(s.cpp||0)>0;
+    const hasOAS=(activeCurrency==='CAD')&&pc.endAge>(s.oasBaseAge||65)&&(s.oas||0)>0;
     const hasAgePension=isAustralian&&pc.endAge>(s.agePensionBaseAge||67)&&(s.agePension||0)>0;
-    const r=calcPhase({
+    const _cpIn={
       b401k:cur401,bCash:curCash,bEquity:curEquity,bRoth:curRoth,bSuper:curSuper,
       equityCostBasis:curCostBasis,
       months:pc.months,w401k:pk.w401k,wCash:pk.wcash,
-      wEquity:pk.wEquity||0,wRoth:pk.wRoth||0,wSuper:pk.wSuper||0,
+      wEquity:pk.wEquity||0,wRoth:pk.wRoth||0,wSuper:(activeCurrency==='AUD')?(pk.wSuper||0):0, // R13-4
       rothConversionAnn:pk.rothConversion||0,
       rentalAnn:pk.rentalAnn||0,rentalTaxable:s.rentalTaxable!==false,
       taxExemptInt:pk.taxExemptInt||0,   // v14: ||0 is load-bearing (shallow merge, see above)
-      rEquity:s.rEquity||0,rRoth:s.rRoth||7,rSuper:s.rSuper||7,
+      rEquity:s.rEquity||0,rRoth:_numOr(s.rRoth,7),rSuper:_numOr(s.rSuper,7),
       partTimeAnnual:pk.partTime||0,
       r401k:s.r401k,rCash:s.rCash,
       // v13: ONE figure each, straight off the plan — never a per-phase override. hasSS/hasUKP
@@ -2215,11 +3101,26 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // per-phase copy here is what let the Phases tab silently outrank Income streams, and it also
       // made every clone-and-tweak caller (survivor scenario, AI dry-run) a no-op.
       ussBase:pc.hasSS?(s.uss||0):0,
-      ukpBase:pc.hasUKP?(s.ukp||0):0,
-      cppBase:hasCPP?(s.cpp||0):0,oasBase:hasOAS?(s.oas||0):0,
-      agePensionBase:hasAgePension?(s.agePension||0):0,
-      spouseSS:mfj&&pc.hasSS?(s.spouseSS||0):0,
-      spouseSSColaRate:s.spouseSSColaRate||2.6,spouseSSBaseAge:s.spouseSSBaseAge||62,
+      // R21-6: the local-money pensions at the rate in use (_penUSD), so their £ / C$ / A$ amount stays as entered.
+      ukpBase:pc.hasUKP?_penUSD(s,'ukp'):0,
+      cppBase:hasCPP?_penUSD(s,'cpp'):0,oasBase:hasOAS?_penUSD(s,'oas'):0,
+      agePensionBase:hasAgePension?_penUSD(s,'agePension'):0,penFxAt:s.penFxAt||null,
+      // Sweep R4-1 (v410): no longer gated on pc.hasSS (YOUR claim) — simPhase gates it on the spouse's age.
+      // `_survivorRun` exists only on calcSurvivorPhases' private copy of the plan (never on S, never saved).
+      spouseSS:(mfj||s._survivorRun)?(s.spouseSS||0):0,survivorRun:!!s._survivorRun,
+      // Sweep B5: the spouse's benefit gets the SAME SSA COLA as yours. It used to read spouseSSColaRate,
+      // which has no input and sat at 2.6%, so a 0% or 2% COLA left the spouse's benefit on the old rate.
+      spouseSSColaRate:_numOr(s.ssColaRate,2.6),spouseSSBaseAge:s.spouseSSBaseAge||62,
+      // R19-1: the spouse's own pensions, gated like yours (UKP any residence, CPP/OAS a C$ plan, Age Pension an AUS resident)
+      spUkpBase:spPaid?_penUSD(s,'spouseUkp'):0,spUkpBaseAge:s.spouseUkpBaseAge||67,
+      spCppBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseCpp'):0,spCppBaseAge:s.spouseCppBaseAge||65,
+      spOasBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseOas'):0,spOasBaseAge:s.spouseOasBaseAge||65,
+      spApBase:spPaid&&isAustralian?_penUSD(s,'spouseAgePension'):0,spApBaseAge:s.spouseAgePensionBaseAge||67,
+      partTimeOwner:(s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared',usPension2Owner:s.usPension2Owner==='spouse'?'spouse':'me',
+      et:_etOpts(s,pk,mfj,etCarry), // R19-2
+      spousal:_spousalOpts(s,mfj), // R20-1
+      survSS:s._survivorRun?(s._survSS||null):null, // R21-1: the survivor benefit, by SSA's survivor rules (calcSurvivorPhases)
+      survCpp:s._survivorRun?(s._survCpp||null):null, // R22-1: the CPP survivor's pension (calcSurvivorPhases)
       // v6: positive delta = primary is older than spouse; 0 = same age (backward-compatible)
       spouseAgeDelta:(s.currentAge||s.startAge||0) - ((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0)),
       filingStatus:s.filingStatus||'single',
@@ -2237,12 +3138,20 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       medicareUnits:(pc.medicareUnits!=null?pc.medicareUnits:(pc.medicareFrac!=null?pc.medicareFrac:(pc.hasMedicare?1:0))),
       medicareHeads:pc.medicareHeads||1,
       isCanadian,isAustralian,
-      phaseStartAge:pc.startAge,retireStartAge:curAge||s.startAge,
+      superTaxedUS:(activeCurrency==='AUD')&&!isAustralian, // R13-4: A$ plan, USA Res. — Super is US income
+      // Under the hood only (R13): how the brokerage cost basis entered this phase, whether a split half is running
+      // on its first half's settings, and SSDI — read by calcPhase's trace, never by its arithmetic.
+      basisSource:i===0?_basisFrom:'prev',equityGainPctIn:_numOr(s.equityGainPct,10),
+      slotFromFirstHalf:!!pc.isSplitSecond&&pk!==s[pc.phaseKey],ssdiMode:!!s.ssdiMode,
+      // Sweep R12-2 (v434): `_inflBaseAge` — a survivor / couple-at-death re-run starts at the death age but is
+      // still in the PLAN's money: its brackets, thresholds and healthcare costs inflate from the plan's start.
+      phaseStartAge:pc.startAge,retireStartAge:s._inflBaseAge||curAge||s.startAge,
+      planYear:s.planYear||null, // R21-10: the calendar year the plan's ages are anchored to (R20-7)
       ssColaRate:s.ssColaRate,tripleLockRate:s.triplelock,inflationRate:s.inflation,
       ssBaseAge:s.ssBaseAge||62,ukpBaseAge:s.ukpBaseAge||67,
       cppBaseAge:s.cppBaseAge||65,oasBaseAge:s.oasBaseAge||65,
       agePensionBaseAge:s.agePensionBaseAge||67,
-      cppColaRate:s.cppColaRate||2.6,oasColaRate:s.oasColaRate||2.6,agePensionColaRate:s.agePensionColaRate||2.6,
+      cppColaRate:_numOr(s.cppColaRate,2.6),oasColaRate:_numOr(s.oasColaRate,2.6),agePensionColaRate:_numOr(s.agePensionColaRate,2.6),
       // v9: US pension/disability — COLA null/'' ⇒ track general inflation (single source of truth here)
       usPensionBase:s.usPension||0,usPensionBaseAge:s.usPensionBaseAge||65,
       usPensionEndAge:(s.usPensionEndAge!=null&&s.usPensionEndAge!=='')?s.usPensionEndAge:null, // null ⇒ for life
@@ -2254,13 +3163,15 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       usPension2Taxable:s.usPension2Taxable!==false,
       lumpCash:lTotal,lumpOut:lTotalOut,lumpItems:lItems,lumpInItems:lIn,lumpOutItems:lOut,
       stdDed:s.stdDed,seniorDed:s.seniorDed,brk10:s.brk10,brk12:s.brk12,brk22:s.brk22,irmaa:s.irmaa,
+      brk24:s.brk24||201775,brk32:s.brk32||256225,brk35:s.brk35||640600,
       irmaaSurcharge:(s.irmaaSurcharge!=null?s.irmaaSurcharge:88), // v10: 0 = flag-only
       irmaaTiers:(Array.isArray(s.irmaaTiers)&&s.irmaaTiers.length?s.irmaaTiers:null),  // v14: full ladder
       irmaaRelief:s.irmaaRelief||'lookback',
       irmaaManualPremium:s.irmaaManualPremium||0,
-      mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:s.mfjSeniorDed||3200,
+      mfjStdDed:s.mfjStdDed||30000,mfjSeniorDed:_numOr(s.mfjSeniorDed,D_USD.mfjSeniorDed),
       mfjBrk10:s.mfjBrk10||24800,mfjBrk12:s.mfjBrk12||98000,mfjBrk22:s.mfjBrk22||208000,mfjIrmaa:s.mfjIrmaa||218000,
-      fpl100:s.fpl100,fpl250:s.fpl250,fpl400:s.fpl400,
+      mfjBrk24:s.mfjBrk24||403550,mfjBrk32:s.mfjBrk32||512450,mfjBrk35:s.mfjBrk35||768700,
+      ..._fplOf(s), // R9-3: the household's poverty line (2-person for MFJ)
       // v16: the ACA applicable-percentage ladder travels with the other ACA figures. Miss this
       // line and acaPrem silently falls back to the shipped defaults, ignoring the user's plan.
       acaCap133:s.acaCap133,acaCap150:s.acaCap150,acaCap200:s.acaCap200,
@@ -2271,25 +3182,60 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       niitThreshold:s.niitThreshold||200000,niitThresholdMfj:s.niitThresholdMfj||250000,
       stateTaxRate:s.stateTaxRate||0,stateSSExempt:s.stateSSExempt!==false,statePensionExempt:!!s.statePensionExempt,statePensionDeductionCap:s.statePensionDeductionCap||0,
       foreignResident:s.foreignResident||false,ukResident:s.ukResident||false,
-      ukPersonalAllowance:s.ukPersonalAllowance||15911,ukBasicCeil:s.ukBasicCeil||63542,
-      ukBasicRate:s.ukBasicRate||20,ukHigherCeil:s.ukHigherCeil||158352,
+      // Sweep R20-6 (v467): × _taxFxFactor — the thresholds at today's exchange rate when live rates are loaded (else × 1).
+      ukPersonalAllowance:(s.ukPersonalAllowance||15911)*_taxFxFactor(s,'GBP'),ukBasicCeil:(s.ukBasicCeil||63542)*_taxFxFactor(s,'GBP'),
+      ukBasicRate:s.ukBasicRate||20,ukHigherCeil:(s.ukHigherCeil||158352)*_taxFxFactor(s,'GBP'),
+      taxFxAt:s.taxFxAt||null,taxFxLive:_taxFxLive,
       ukHigherRate:s.ukHigherRate||40,ukAdditionalRate:s.ukAdditionalRate||45,
       // v4: Canadian/Australian tax params
-      cadPersonalAmount:s.cadPersonalAmount||16129,
-      cadBrk1:s.cadBrk1||57375,cadBrk2:s.cadBrk2||114750,cadBrk3:s.cadBrk3||158519,cadBrk4:s.cadBrk4||220000,
+      cadPersonalAmount:(s.cadPersonalAmount||11680)*_taxFxFactor(s,'CAD'),
+      cadBrk1:(s.cadBrk1||41536)*_taxFxFactor(s,'CAD'),cadBrk2:(s.cadBrk2||83072)*_taxFxFactor(s,'CAD'),
+      cadBrk3:(s.cadBrk3||128751)*_taxFxFactor(s,'CAD'),cadBrk4:(s.cadBrk4||183858)*_taxFxFactor(s,'CAD'),
       cadRate1:s.cadRate1||15,cadRate2:s.cadRate2||20.5,cadRate3:s.cadRate3||26,cadRate4:s.cadRate4||29,cadRate5:s.cadRate5||33,
-      ausTaxFreeThreshold:s.ausTaxFreeThreshold||18200,
-      ausBrk1:s.ausBrk1||45000,ausBrk2:s.ausBrk2||135000,ausBrk3:s.ausBrk3||190000,
-      ausRate1:(s.ausRate1!=null?s.ausRate1:16),ausRate2:(s.ausRate2!=null?s.ausRate2:30),
+      // Sweep R2-13 (v405): these two were never passed, so calcPhase always used its 12% / 2% fallbacks —
+      // the Edit boxes (and the refreshed 10% provincial default) changed nothing.
+      cadProvincialRate:_numOr(s.cadProvincialRate,12),ausMedicareLevy:_numOr(s.ausMedicareLevy,2),
+      ausTaxFreeThreshold:(s.ausTaxFreeThreshold||12941)*_taxFxFactor(s,'AUD'),
+      ausBrk1:(s.ausBrk1||31997)*_taxFxFactor(s,'AUD'),ausBrk2:(s.ausBrk2||95990)*_taxFxFactor(s,'AUD'),
+      ausBrk3:(s.ausBrk3||135097)*_taxFxFactor(s,'AUD'),
+      ausRate1:(s.ausRate1!=null?s.ausRate1:15),ausRate2:(s.ausRate2!=null?s.ausRate2:30),
       ausRate3:(s.ausRate3!=null?s.ausRate3:37),ausRate4:(s.ausRate4!=null?s.ausRate4:45),
-      ausLevyThreshold:s.ausLevyThreshold||27222,
-      rmdStartAge:s.rmdStartAge||73});
+      ausLevyThreshold:(s.ausLevyThreshold||19356)*_taxFxFactor(s,'AUD'),
+      rmdStartAge:_rmdStartAgeOf(s),rmdAuto:!(typeof s.rmdStartAge==='number'&&s.rmdStartAge>0), // R18-5
+      ownAgeShift:s._survAgeShift||0}; // R11-4: survivor runs only — the survivor's age = plan age − this
+    const r=calcPhase(_cpIn);
+    // Sweep R23-2 (v486): the year of death may be filed JOINTLY — the IRS lets a surviving spouse file a joint return for the
+    // year the spouse died. The survivor run filed single from the death (surv23.mjs: $2,800–$4,100 of tax too much that year).
+    // The engine taxes a phase as a block, so the phase is re-run as a joint return and its income and state tax are blended in
+    // by the months of it that fall in the first year after the death. US federal tax only: a UK, Canadian or Australian
+    // resident is taxed alone either way.
+    if(s._survivorRun&&s._jointYear&&r.subjectUS!==false&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian){
+      const a0=curAge||s.startAge,jm=Math.max(0,Math.min(pc.endAge,a0+1)-Math.max(pc.startAge,a0))*12;
+      if(jm>0.01&&pc.months>0){
+        const rJ=calcPhase({..._cpIn,filingStatus:'mfj'}),f=Math.min(1,jm/pc.months);
+        const dT=((rJ.tax_mo||0)-(r.tax_mo||0))*f,dS=((rJ.stateTax_mo||0)-(r.stateTax_mo||0))*f;
+        if(Math.abs(dT+dS)>0.005){
+          r.tax_mo+=dT;r.tax_a=(r.tax_a||0)+dT*12;r.stateTax_mo=(r.stateTax_mo||0)+dS;r.stateTax_a=(r.stateTax_a||0)+dS*12;
+          r.net_mo-=dT+dS;r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
+          r.jointYear={months:jm,savedMo:-(dT+dS)};
+          const gN=traceGroup(r,'net');
+          if(gN){
+            const rt=_trFindRow(gN,'tax'),rs=_trFindRow(gN,'statetax'),rn=_trFindRow(gN,'net'),rr=_trFindRow(gN,'netreal');
+            if(rt)rt.value=r.tax_mo;if(rs)rs.value=r.stateTax_mo;if(rn)rn.value=r.net_mo;if(rr)rr.value=r.net_real;
+            _trRow(gN,'… includes the tax saved by a joint return for the year of death',-(dT+dS),'usd/mo',{kind:'flag',
+              formula:'(tax at joint rates − tax at single rates) × '+(Math.round(jm*10)/10)+' of this phase’s '+pc.months+' months (the first year after the death)',
+              note:'The IRS lets a surviving spouse file a joint return for the year the spouse died; the tax lines above include it.'});
+          }
+        }
+      }
+    }
     const phaseUss=s.uss||0; // v13: same single figure the engine was handed above
-    const phaseUkp=s.ukp||0;
+    const phaseUkp=_penUSD(s,'ukp'); // R21-6
     const ssColaNote=pc.hasSS&&phaseUss>0&&s.ssColaRate>0?`COLA: ${fmtC(phaseUss)} → ${fmtC(r.uss_grown)}/mo`:'';
-    const tlNote=pc.hasUKP&&phaseUkp>0?`Triple Lock: ${fmtC(phaseUkp)} → ${fmtC(r.ukp_grown)}/mo`:'';
-    const cppNote=isCanadian&&hasCPP&&s.cpp>0?`CPP COLA: ${fmtC(s.cpp)} → ${fmtC(r.cpp_grown)}/mo`:'';
-    const apNote=isAustralian&&hasAgePension&&s.agePension>0?`Age Pension: ${fmtC(s.agePension)} → ${fmtC(r.ap_grown)}/mo`:'';
+    // R19-1: ukp_grown / cpp_grown / ap_grown now include the spouse's own pension — these notes are YOURS, so subtract it.
+    const tlNote=pc.hasUKP&&phaseUkp>0?`Triple Lock: ${fmtC(phaseUkp)} → ${fmtC(r.ukp_grown-(r.spUkp_grown||0))}/mo`:'';
+    const cppNote=hasCPP&&s.cpp>0?`CPP COLA: ${fmtC(_penUSD(s,'cpp'))} → ${fmtC(r.cpp_grown-(r.spCpp_grown||0))}/mo`:'';
+    const apNote=isAustralian&&hasAgePension&&s.agePension>0?`Age Pension: ${fmtC(_penUSD(s,'agePension'))} → ${fmtC(r.ap_grown-(r.spAp_grown||0))}/mo`:'';
      results.push({label:pc.label,ages:`${pc.startAge}–${pc.endAge}`,months:pc.months,cfg:pk,...r,color:pc.color,
        ukpGrown:r.ukp_grown,tlNote,ssColaNote,cppNote,apNote,phaseKey:pc.phaseKey,
        hasCPP,hasOAS,hasAgePension,isCanadian,isAustralian,
@@ -2304,6 +3250,21 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
        superDepleted: (r.end.bSuper||0) <= 0});
     cur401=r.end.b401k; curCash=r.end.bcash; curEquity=r.end.bEquity||0;
     curRoth=r.end.bRoth||0; curSuper=r.end.bSuper||0; curCostBasis=r.end.costBasis||0;
+    // R24-2 (v491): Under the hood — the months a Replan carried in (first phase only).
+    if(i===0&&s._etWYou==null&&((+s.etWithheldYou||0)>0||(+s.etWithheldSp||0)>0)&&r.trace){
+      const g=traceGroup(r,'ssearn')||_trGroup(r.trace,'ssearn','How the Social Security earnings test applies',null,'ssEarningsTest');
+      _trRow(g,'Months withheld before the replan',(+s.etWithheldYou||0)+(+s.etWithheldSp||0),'num',{kind:'flag',
+        note:'Benefits the earnings test withheld before today (from the plan’s own projection when you replanned'+((+s.etWithheldSp||0)>0?'; yours '+Math.round(+s.etWithheldYou||0)+', your spouse’s '+Math.round(+s.etWithheldSp||0):'')+'). SSA still repays them from full retirement age as a higher benefit, so they count toward it.'});
+      _trFinish(r.trace);
+    }
+    // R28-1 (v505): Under the hood — a phase that stops at the plan's end, not at the boundary set for it.
+    if(pc.endCappedAt!=null&&r.trace){
+      const g=_trGroup(r.trace,'span','How long this phase runs',null,'phaseAge');
+      _trRow(g,'Boundary set for the end of this phase',pc.endCappedAt,'age',{kind:'in'});
+      _trRow(g,'Your plan ends at',pc.endAge,'age',{kind:'flag',note:'No phase runs past the plan’s end, so this phase stops there and the phases after it are not used. Raise the end age (the + beside “Age” at the top of the Overview) or lower the boundary on the Edit tab to change it.'});
+      _trFinish(r.trace);
+    }
+    etCarry={you:r.etWYouOut||etCarry.you,sp:r.etWSpOut||etCarry.sp}; // R19-2
   });
   // simPhase reports depletion PER PHASE, so a phase that merely STARTS empty records its own start age
   // (Phase 5 would claim cash "ran out at 73" when it really ran out at 69 back in Phase 4). Carry the
@@ -2532,7 +3493,8 @@ function calcAllPhases(s,p5End,lumpsArr){
   // displayCurrency belongs in the fingerprint because _calcAllPhasesUncached bakes fmtC-formatted
   // strings into the result (tlNote / ssColaNote / cppNote / apNote). Without it, switching display
   // currency returned the cached array and those pills kept the OLD currency symbol.
-  try{ key=p5End+'|'+activeCurrency+'|'+displayCurrency+'|'+JSON.stringify(lumpsArr||[])+'|'+JSON.stringify(s); }catch(_){}
+  // R20-6: and the live exchange rates, which now set the UK / Canadian / Australian thresholds.
+  try{ key=p5End+'|'+activeCurrency+'|'+displayCurrency+'|'+JSON.stringify(_taxFxLive)+'|'+JSON.stringify(lumpsArr||[])+'|'+JSON.stringify(s); }catch(_){}
   if(key!==null&&key===_capMemoKey)return _capMemoVal;
   const val=_calcAllPhasesUncached(s,p5End,lumpsArr);
   if(key!==null){_capMemoKey=key;_capMemoVal=val;}
@@ -2543,40 +3505,380 @@ function calcAllPhases(s,p5End,lumpsArr){
 // Models the surviving spouse's finances after one spouse dies at `survivorDeathAge`.
 // Approach: run the baseline (both alive) to capture real balances at the death age, then
 // project FORWARD from that age as a SINGLE filer keeping only the larger Social Security
-// benefit (the smaller one stops). This reuses the replan-from-age machinery, so pre-death
+// benefit (the smaller one stops; see sweep R4-2 below for benefits not yet started). This reuses the replan-from-age machinery, so pre-death
 // years stay correctly taxed as MFJ and only the post-death years switch to single.
 // Returns the survivor's phase array (ages ≥ deathAge), or null if not applicable.
+// Sweep R9-5 (v423): the first-death age the projection uses, on YOUR age line. An age before the plan's current
+// age (the default 75 for anyone replanned past 75) is a death that has not happened — the plan still has you
+// both alive today — so it is read as "now". It used to project from today while quoting the past age, pricing
+// the lost benefit at that age ("Social Security check lost $0" with both being paid) and setting the survivor's
+// first months against the couple's later ones.
+function _survivorDeathAge(s){
+  const cur=(s.currentAge&&s.currentAge>s.startAge)?s.currentAge:s.startAge;
+  return Math.max(+s.survivorDeathAge||75,cur);
+}
+// Sweep R11-4 (v429): every survivor sentence names WHO died — the choice decides whose pensions stop and
+// whose ages the survivor runs on. They all read "If a spouse dies when you are 75", whoever it was.
+function _survivorWhoDies(s){return (s&&s.survivorFirstDeath)==='spouse'?'spouse':'me';}
+function _survivorIf(surv){
+  const a=surv&&surv._deathAge,me=!surv||surv._who!=='spouse';
+  const re=S.currentAge&&S.currentAge>S.startAge;
+  if(surv&&surv._deathFromToday){
+    const when=re?'now':'as the plan starts';
+    return me?`If you die ${when} (you are ${a})`:`If your spouse dies ${when} (you are ${a})`;
+  }
+  const sa=surv&&surv._survivorAge;
+  return me?`If you die at ${a}${sa!=null&&Math.abs(sa-a)>1e-9?` (your spouse is ${Math.round(sa*2)/2})`:''}`
+    :`If your spouse dies when you are ${a}`;
+}
 function calcSurvivorPhases(){
   if(S.filingStatus!=='mfj'||!S.survivorEnabled)return null;
-  const deathAge=S.survivorDeathAge||75;
+  const deathAge=_survivorDeathAge(S);
   const base=calcAllPhases(S,p5EndAge,lumps);
   if(!base.length)return null;
-  // Reconstruct starting balances per phase to find balances at the death age.
-  let startBals={b401k:S.bal401k,bCash:S.balCash,bEquity:S.balEquity||0,bRoth:S.balRoth||0,bSuper:S.superBal||0};
-  let deathBals=null,deathPhase=null;
-  for(const p of base){
-    if(deathAge<p.phaseEndAge){deathBals=startBals;deathPhase=p;break;}
-    startBals={b401k:p.end.b401k,bCash:p.end.bcash,bEquity:p.end.bEquity||0,bRoth:p.end.bRoth||0,bSuper:p.end.bSuper||0};
-  }
-  if(!deathBals){return null;} // death at/after plan end — nothing to show
-  // Surviving spouse keeps the LARGER benefit (already COLA-grown to the death age in the baseline).
-  const survivorSS=Math.max(deathPhase.uss_grown||0,deathPhase.spSS_grown||0);
+  if(deathAge>=base[base.length-1].phaseEndAge-1e-9)return null; // death at/after plan end — nothing to show
+  // ⚠ Sweep R4-2 (v410). This used to (a) start the survivor from the balances at the START of the phase
+  //   the death fell in — a death at 84 inside a 73–90 phase began from the age-73 balance, discarding
+  //   eleven years of growth and withdrawals; (b) hand the survivor the PHASE-AVERAGE benefit rather than
+  //   the one being paid at the death age; and (c) give the survivor NO Social Security for life when the
+  //   first death came before either benefit had started. It also moved the claim age to the death age,
+  //   which reshaped the phases and dropped any split-half withdrawals the user had set.
+  //   Now: the balances are the couple's AT the death age (_balancesAtAge), and the survivor keeps both
+  //   benefits on their real timelines and is paid the larger each month (simPhase `ssMaxOfTwo`), with the
+  //   plan's own claim age — so the phases, and every phase's settings, are the couple's own.
+  const curAge=S.currentAge&&S.currentAge>S.startAge?S.currentAge:0;
+  const planStart=curAge||S.startAge;
+  const deathBals=_balancesAtAge(S,p5EndAge,lumps,deathAge);
   const sv=JSON.parse(JSON.stringify(S));
-  sv.currentAge=deathAge;            // replan-from-death-age
+  if(deathAge>planStart){
+    sv.currentAge=deathAge;          // replan-from-death-age
+    // Keep the age gap: the late spouse's benefit still starts on THEIR age line.
+    if(S.spouseCurrentAge>0)sv.spouseCurrentAge=S.spouseCurrentAge+(deathAge-planStart);
+  }
   sv.bal401k=deathBals.b401k;sv.balCash=deathBals.bCash;sv.balEquity=deathBals.bEquity;
   sv.balRoth=deathBals.bRoth;sv.superBal=deathBals.bSuper;
   sv.filingStatus='single';
-  sv.spouseSS=0;sv.spouseCurrentAge=0;
-  sv.uss=survivorSS;sv.ssBaseAge=deathAge;sv.ssStartAge=Math.min(deathAge,70); // amount is "current at death age"
-  // v9: scale each US pension/disability stream by the % that continues to the survivor
-  // (100 = joint-and-survivor, 50 = typical J&S, 0 = single-life / disability ends at death).
-  sv.usPension=(S.usPension||0)*((S.usPensionSurvivorPct!=null?S.usPensionSurvivorPct:100)/100);
-  sv.usPension2=(S.usPension2||0)*((S.usPension2SurvivorPct!=null?S.usPension2SurvivorPct:100)/100);
-  const survivor=calcAllPhases(sv,p5EndAge,lumps);
+  sv._inflBaseAge=planStart; // R12-2: the inflation clock does not restart at the death
+  sv._costBasis=deathBals.costBasis; // R13-2: nor does the gain inside the brokerage
+  const _su=_survivorStepUp(S,deathBals);sv._costBasis=_su.basis; // R23-1: less the part the death steps up
+  sv._jointYear=true; // R23-2: the year of death may be filed jointly (calcAllPhases applies it to US federal tax)
+  sv._survivorRun=true;              // spouse's benefit kept, paid as "the larger of the two" (never both)
+  sv.rmdStartAge=_rmdStartAgeOf(S);   // R18-5: the run's currentAge is the death age, which would move an automatic age
+  sv.birthYear=_planBirthYear(S);     // R19-2: and the estimated birth year (FRA, the earnings test) with it
+  // R19-2: the earnings-test months withheld before the death carry into the survivor's recredit at FRA.
+  {const _pre=base.filter(p=>p.phaseEndAge<=deathAge+1e-9);const _l=_pre[_pre.length-1];
+   sv._etWYou=_l?(_l.etWYouOut||0):(+S.etWithheldYou||0);sv._etWSp=_l?(_l.etWSpOut||0):(+S.etWithheldSp||0);} // R24-2
+  // Sweep R11-4 (v429): WHO dies first. The run used YOUR age line (you survive) but cut YOUR pensions to their
+  // survivor % (you died) — a 59-year-old widow was charged Medicare, and a surviving pensioner lost half a
+  // pension they still draw. Now the choice decides both, consistently.
+  const meDie=_survivorWhoDies(S)==='me';
+  const gap=(S.spouseCurrentAge>0)?((curAge||S.startAge||0)-S.spouseCurrentAge):0; // your age − spouse's, >0 = spouse younger
+  sv._survSS=_survivorSSOpts(S,meDie,deathAge); // R21-1: the survivor benefit, by SSA's survivor rules
+  sv._survCpp=_survivorCppOpts(S,meDie,deathAge,planStart); // R22-1: the CPP survivor's pension, by the CPP's rules
+  if(meDie){
+    // v9: scale each US pension/disability stream by the % that continues to the survivor
+    // (100 = joint-and-survivor, 50 = typical J&S, 0 = single-life / disability ends at death).
+    sv.usPension=(S.usPension||0)*((S.usPensionSurvivorPct!=null?S.usPensionSurvivorPct:100)/100);
+    // R11-4b (v432, owner's choice): your government pensions follow their own survivor rules. The UK State
+    // Pension and Age Pension continue at the % the user enters (UK default 0: what a spouse inherits depends on the
+    // record — little or nothing under the new UK State Pension; Age Pension default 32.7, R22-2: the survivor moves to
+    // the single rate). CPP stops and the survivor is paid the CPP survivor's pension (R22-1, sv._survCpp). OAS stops.
+    // They were kept in full, which gave a survivor $1,100–$1,800/mo of pension that ends at a death.
+    sv.ukp=(S.ukp||0)*(_numOr(S.ukpSurvivorPct,0)/100);
+    sv.agePension=(S.agePension||0)*(_numOr(S.agePensionSurvivorPct,D_USD.agePensionSurvivorPct)/100);
+    sv.cpp=0;
+    sv.oas=0;
+    // The survivor is your spouse: Medicare, the RMD start and divisor, and the age-65 deduction follow the
+    // SPOUSE's age. The phases stay on your age line (every boundary is), shifted by the gap.
+    if(gap){
+      const spMed=S.spouseMedicareStartAge;
+      sv.medicareStartAge=((spMed!=null&&spMed!==''&&spMed!=='never')?+spMed:65)+gap;
+      sv._survAgeShift=gap;
+      // R18-5: an automatic RMD age is the SPOUSE's, by their birth year (yours + the gap); the engine adds the gap.
+      if(S.rmdStartAge==null)sv.rmdStartAge=_rmdAgeForBirthYear(_planBirthYear(S)+gap);
+    }
+  }
+  // Sweep R18-2 (v452): WHOSE income. The second US pension may be your spouse's own (it has no other box), and the
+  // "Additional annual income" may be either person's earnings; both continued in full after either death. The owner's
+  // death applies the stream's rule; the survivor keeps their own.
+  const dying=meDie?'me':'spouse';
+  // Sweep R19-1 (v458): the spouse's own government pensions. If you die they are the survivor's own and continue; if
+  // your spouse dies they follow the rules yours do — UKP / Age Pension at the survivor %, CPP's survivor's pension (R22-1),
+  // OAS stops.
+  if(!meDie){
+    sv.spouseUkp=(S.spouseUkp||0)*(_numOr(S.ukpSurvivorPct,0)/100);
+    sv.spouseAgePension=(S.spouseAgePension||0)*(_numOr(S.agePensionSurvivorPct,D_USD.agePensionSurvivorPct)/100);
+    sv.spouseCpp=0;
+    sv.spouseOas=0;
+  }
+  const p2Owner=S.usPension2Owner==='spouse'?'spouse':'me';
+  if(p2Owner===dying)sv.usPension2=(S.usPension2||0)*((S.usPension2SurvivorPct!=null?S.usPension2SurvivorPct:100)/100);
+  const ptOwner=(S.partTimeOwner==='me'||S.partTimeOwner==='spouse')?S.partTimeOwner:'shared';
+  const _PK=['p0','p1','p2','p3','p4','p5','p0b','p1b','p2b','p3b','p4b','p5b'];
+  // Part-time income in the years after the death — what the survivor run keeps or loses (a job that ended earlier is neither).
+  const ptAny=base.some(p=>p.phaseEndAge>deathAge+1e-9&&(p.partTime_mo||0)>0);
+  if(ptOwner===dying)_PK.forEach(k=>{if(sv[k])sv[k].partTime=0;});
+  // Sweep R18-1 (v452): an annuity added from the Annuity tool is written into the phases' rent. A single-life annuity
+  // (on your life — the tool's default, and what a plan saved before its coverage was stored is taken to hold) stops at
+  // your death; the survivor run kept paying it. Read through typeof: mobile's engine bundle declares it, a bare slice may not.
+  const _ann=(typeof _annuityPlanState!=='undefined'&&_annuityPlanState&&typeof _annuityPlanState==='object')?_annuityPlanState:null;
+  let annStopMo=0;
+  if(meDie&&_ann&&_ann.coverage!=='joint'&&Array.isArray(_ann.phaseChanges))_ann.phaseChanges.forEach(c=>{
+    const ph=sv[c.key];if(!ph)return;const a=Math.max(0,Math.min(ph.rentalAnn||0,c.addedUSD||0));
+    ph.rentalAnn=(ph.rentalAnn||0)-a;annStopMo=Math.max(annStopMo,a/12);});
+  // A one-time event in a phase that began before the death has already happened: it is inside the
+  // balances above, so the survivor run must not apply it a second time at the death age.
+  const _num=k=>parseInt(String(k).replace('p','').replace('b',''),10);
+  const done=new Set(buildPhaseConfig(S.startAge,p5EndAge,curAge,S)
+    .filter((pc,i,a)=>_takesLumps(a,i)&&pc.startAge<deathAge-1e-9).map(pc=>_num(pc.phaseKey))); // R8-3
+  const lumpsAfter=(lumps||[]).filter(l=>deathAge<=planStart||!done.has(l.phase));
+  const survivor=_calcAllPhasesUncached(sv,p5EndAge,lumpsAfter);
   // Attach the baseline counterpart (same ages, both-alive) for side-by-side comparison.
   survivor._baseline=base;
+  // Sweep R10-2 (v426): the couple over the SAME years as the survivor's first phase — the plan re-run from the
+  // death age with the couple's balances then, both alive. Every survivor-vs-couple figure (Plan Health, the
+  // survivor goal, the What-if card, mobile) divides by this. They used the baseline phase the death falls in,
+  // averaged over the whole phase: a death at 85 in a 73–95 phase set the survivor's 85–95 income against the
+  // couple's 73–95 average, missing twelve years of inflation — "covers 108% ✓" for a plan covering 96%.
+  if(deathAge>planStart){
+    const cp=JSON.parse(JSON.stringify(S));
+    cp.currentAge=deathAge;
+    cp._inflBaseAge=planStart; // R12-2
+    cp._costBasis=deathBals.costBasis; // R13-2
+    cp.rmdStartAge=_rmdStartAgeOf(S);  // R18-5: as sv
+    cp.birthYear=sv.birthYear;cp._etWYou=sv._etWYou;cp._etWSp=sv._etWSp; // R19-2
+    if(S.spouseCurrentAge>0)cp.spouseCurrentAge=S.spouseCurrentAge+(deathAge-planStart);
+    cp.bal401k=deathBals.b401k;cp.balCash=deathBals.bCash;cp.balEquity=deathBals.bEquity;
+    cp.balRoth=deathBals.bRoth;cp.superBal=deathBals.bSuper;
+    const couple=_calcAllPhasesUncached(cp,p5EndAge,lumpsAfter);
+    survivor._coupleAtDeath=couple.find(p=>p.phaseKey===survivor[0].phaseKey)||couple[0]||null;
+  }else survivor._coupleAtDeath=base.find(p=>p.phaseKey===survivor[0].phaseKey)||base[0]||null;
   survivor._deathAge=deathAge;
+  survivor._who=meDie?'me':'spouse';          // R11-4
+  survivor._stepUp=_su.share>0?_su:null;       // R23-1: for the What-if card's method sentence
+  survivor._ptStopped=ptAny&&ptOwner===dying;  // R18-2: for the What-if card's method sentence
+  survivor._annStopMo=annStopMo;               // R18-1
+  survivor._survivorAge=meDie?deathAge-gap:deathAge;
+  survivor._deathFromToday=(+S.survivorDeathAge||75)<deathAge; // R9-5
+  // The two benefits as they stand at the death age (0 = not yet started), for "the check that stops".
+  const delta=(S.currentAge||S.startAge||0)-((S.spouseCurrentAge>0)?S.spouseCurrentAge:(S.currentAge||S.startAge||0));
+  const cola=S.ssColaRate,spAge=deathAge-delta,spBA=S.spouseSSBaseAge||62;
+  const own=(S.uss||0)>0&&deathAge>=Math.max(S.ssdiMode?40:62,Math.min(70,S.ssStartAge||62))?colaUSS(S.uss,deathAge-(S.ssBaseAge||62),cola):0;
+  const other=(S.spouseSS||0)>0&&spAge>=spBA?colaUSS(S.spouseSS,spAge-spBA,_numOr(cola,2.6)):0;
+  // Sweep R21-4 (v474): what the death stops, from the two engine runs over the first year after it — the couple's Social
+  // Security (both benefits and any spousal top-ups) less the survivor's. `lost` was the smaller OWN benefit, which left out
+  // the top-ups: "$0/mo lost" for a spouse with no record of their own, whose household loses the whole top-up.
+  const _yr1=ph=>{const ys=(ph&&ph.yearRows)||[];const y=ys.find(r=>r.ageStart<=deathAge+1e-9&&r.ageStart+r.months/12>deathAge+1e-9)||ys[0];
+    return y&&y.months?(y.ss+y.spSS)/y.months:0;};
+  const _cSS=_yr1(survivor._coupleAtDeath),_sSS=_yr1(survivor[0]);
+  survivor._ssAtDeath={own,other,couple:_cSS,kept:_sSS,lost:Math.max(0,_cSS-_sSS)};
+  // Under the hood (sweep R13): how this run is set up. Every rule the sweep changed in the survivor projection —
+  // who dies (R11-4), the balances AND cost basis at the death (R4-2, R13-2), the larger-of-two benefit (R4-2), the
+  // pension shares (R11-4b), the spouse's ages (R11-4), the inflation base (R12-2), events already past (R4-2) and
+  // the couple it is compared with (R10-2) — as rows the "Under the hood" pane shows above the survivor's phases.
+  {const T0=_trNew(),g=_trGroup(T0,'survsetup','How the survivor scenario is set up',null,'survivor');
+   _trRow(g,'Who dies first',0,'flagv',{kind:'flag',note:meDie
+     ?'You do. Your spouse survives, on their own ages; your pensions continue only at the shares below.'
+     :'Your spouse does. You survive, on your own ages, and keep every pension of your own.'});
+   _trRow(g,'First death — your age',deathAge,'age',{kind:'in',
+     note:survivor._deathFromToday?'The age you entered has already passed in this plan, so the scenario starts now.':undefined});
+   if(meDie&&gap)_trRow(g,'Your spouse’s age then',survivor._survivorAge,'age',{});
+   let _bf=false;const _b=(l,v)=>{if(!(Math.abs(v||0)>=0.005))return; // the formula once, on the first balance shown
+     _trRow(g,l+' at the first death',v,'usd',{kind:'sub',formula:_bf?undefined:'your plan run to that age with both of you alive'});_bf=true;};
+   _b('401k',deathBals.b401k);_b('Cash',deathBals.bCash);_b('Brokerage',deathBals.bEquity);_b('Roth',deathBals.bRoth);_b('Super',deathBals.bSuper);
+   if((deathBals.bEquity||0)>0)_trRow(g,'Brokerage cost basis at the first death',deathBals.costBasis||0,'usd',{kind:'sub',
+     note:'The couple’s basis then — the gain built up since the plan began.'});
+   // R23-1: the step-up at the death.
+   if(_su.gain>0.5){
+     if(_su.share>0)_trRow(g,'Cost basis after the step-up at the death',_su.basis,'usd',{kind:'sub',base:_su.gain,baseUnit:'usd',baseAs:'of',
+       formula:'the basis above + '+(_su.share===1?'all':'half')+' of the gain in the brokerage at the death',
+       note:_su.rule==='community'?'A community-property state ('+S.stateName+'): both halves take their value at the death as their cost basis (IRC §1014(b)(6)), so the gain built up before it is gone.'
+         :'The late spouse’s half takes its value at the death as its cost basis (US: IRC §1014; the UK likewise), so the gain on that half is gone. In a community-property state both halves are stepped up — set your state on the Edit tab.'});
+     else _trRow(g,'No step-up at the death',0,'flagv',{kind:'flag',
+       note:'Canada and Australia carry the cost basis over to a surviving spouse, so the survivor keeps the couple’s basis.'});
+   }
+   const _jointOk=S.subjectToUsTax!==false&&!S.ukResident&&!(activeCurrency==='CAD'&&S.cadResident!==false)&&!(activeCurrency==='AUD'&&S.ausResident!==false);
+   _trRow(g,'Filing status after the death',0,'flagv',{kind:'flag',
+     note:(_jointOk?'Joint for the year of death — the IRS lets a surviving spouse file jointly that year, so the survivor’s first 12 months are taxed at joint rates — then single: ':'Single: ')
+       +'the brackets, deduction, IRMAA, NIIT and poverty-line thresholds are one person’s.'});
+   if(own>0||other>0||(S.uss||0)>0||(S.spouseSS||0)>0){
+     _trRow(g,'Your Social Security at the death',own,'usd/mo',{note:own>0?undefined:(S.uss||0)>0?'Not yet started at that age.':'No benefit of your own.'});
+     _trRow(g,'Your spouse’s Social Security at the death',other,'usd/mo',{note:other>0?undefined:(S.spouseSS||0)>0?'Not yet started at that age.':'No benefit of their own.'});
+     // R21-1: the survivor benefit, by SSA's survivor rules (_survivorSSOpts).
+     const sb=sv._survSS;
+     if(sb&&sb.amt>0){
+       const late=meDie?'You':'Your spouse',lp=meDie?'your':'their',sp=meDie?'your spouse':'you',ca=Math.round(sb.claimAge*10)/10;
+       const why=sb.rule==='limit'?late+' claimed at '+ca+', before full retirement age, so '+sp+' '+(meDie?'receives':'receive')+' at least 82.5% of '+lp+' full-retirement amount (the “widow’s limit”).'
+         :sb.rule==='claimed'?'The benefit '+(meDie?'you were':'your spouse was')+' paid (claimed at '+ca+').'
+         :sb.rule==='credits'?late+' had not claimed by the death, so it is '+lp+' full-retirement amount plus the delayed credits earned up to '+(Math.round(sb.lateAge*10)/10)+' — not the amount planned at '+ca+'.'
+         :sb.rule==='pia'?late+' had not claimed and '+(meDie?'were':'was')+' under full retirement age, so it is '+lp+' full-retirement amount.'
+         :'SSDI: '+lp+' full-retirement amount.';
+       _trRow(g,'Survivor benefit on '+(meDie?'your':'your spouse’s')+' record',colaUSS(sb.amt,sb.from-sb.base,sb.cola),'usd/mo',{kind:'in',note:why});
+       _trRow(g,(meDie?'Your spouse claims':'You claim')+' it at',sb.start,'age',{kind:'flag',
+         note:'The later of the death and the earlier of '+(meDie?'their':'your')+' own planned claim age and '+(meDie?'their':'your')+' survivor full retirement age ('+ssFmtFRA(sb.sfra)+').'});
+       if(sb.factor<1-1e-9)_trRow(g,'Cut for claiming it before survivor full retirement age',sb.factor,'mult',{kind:'rate',
+         note:'SSA pays 71.5% at 60, rising to 100% at '+ssFmtFRA(sb.sfra)+'.'});
+     }
+     _trRow(g,'Social Security the survivor is paid in the first year',survivor._ssAtDeath.kept,'usd/mo',{kind:'total',
+       note:'The larger of '+(meDie?'their':'your')+' own benefit and the survivor benefit, month by month; one not yet started pays nothing until it does.'});
+     _trRow(g,'Social Security the death stops',survivor._ssAtDeath.lost,'usd/mo',{kind:'minus',
+       note:'The couple’s benefits over the same year, spousal top-ups included, less the survivor’s.'});
+   }
+   const _sh=(lbl,amt,pct,note)=>{if((amt||0)>0)_trRow(g,lbl,pct,'pct',{kind:'rate',base:amt,baseUnit:'usd/mo',baseAs:'of',note});};
+   // R22-1: the CPP survivor's pension (_survivorCppOpts), in place of the late spouse's own CPP.
+   const _cppRows=()=>{const c=sv._survCpp;if(!c)return;
+     const lp=meDie?'your':'your spouse’s',sa=Math.round(c.survAge*10)/10,u65=c.survAge<65-1e-9;
+     _trRow(g,'CPP survivor’s pension — '+lp+' CPP at 65',c.at65,'usd/mo',{kind:'in',base:c.late,baseUnit:'usd/mo',baseAs:'from',
+       formula:'the pension entered for age '+(Math.round(c.lateBA*10)/10)+' ÷ '+c.adj.toFixed(3)+' (the CPP adjustment for starting at that age)'+(c.lateAge>c.lateBA+1e-9?', indexed to the death':''),
+       note:'The survivor’s pension is worked out on the pension at 65, whatever age '+(meDie?'you':'they')+' started it or planned to.'});
+     _trRow(g,'CPP survivor’s pension — paid from',c.from,'age',{kind:'flag',
+       note:'The death ('+(meDie?'your spouse is':'you are')+' '+sa+'), in place of '+lp+' own CPP.'});
+     _trRow(g,'CPP survivor’s pension — share of that pension',u65?37.5:60,'pct',{kind:'rate',base:c.at65,baseUnit:'usd/mo',baseAs:'of',
+       note:u65?'Under 65 the survivor is paid 37.5% plus a flat amount (the row below); from 65, 60%.':'60% for a survivor aged 65 or over.'});
+     if(u65)_trRow(g,'CPP survivor’s pension — flat amount under 65',c.flat,'usd/mo',{kind:'in',
+       note:'At the plan’s start, rising with the CPP COLA (Settings: refreshable).'});
+     _trRow(g,'CPP combined maximum — survivor’s and own pension',c.cap,'usd/mo',{kind:'flag',
+       note:'With a CPP pension of '+(meDie?'their':'your')+' own, the survivor’s pension is cut so the two together stay within this (at the plan’s start, rising with the CPP COLA). The CPP works the limit out from each pension’s details; the plan applies the at-65 maximum at every age.'});
+   };
+   // R18-2: the second pension by its owner; part-time income by whose it is.
+   if((S.usPension2||0)>0){
+     if(p2Owner===dying)_sh(p2Owner==='me'?'Your second US pension — share that continues':'Your spouse’s pension — share that continues to you',
+       S.usPension2,S.usPension2SurvivorPct!=null?S.usPension2SurvivorPct:100);
+     else _trRow(g,p2Owner==='me'?'Your second US pension':'Your spouse’s pension (the second stream)',0,'flagv',{kind:'flag',
+       note:'Continues in full: it belongs to the survivor.'});
+   }
+   if(ptAny)_trRow(g,'Part-time / additional income',0,'flagv',{kind:'flag',note:ptOwner==='shared'
+     ?'Continues after the first death: it is marked as both of yours (Edit tab, survivor settings).'
+     :ptOwner===dying?(ptOwner==='me'?'Stops: it is yours, and you die first.':'Stops: it is your spouse’s, and they die first.')
+     :(ptOwner==='me'?'Continues: it is yours, and you survive.':'Continues: it is your spouse’s, and they survive.')});
+   // R22-2: why the Age Pension share defaults to 32.7%.
+   const _apSurvNote='A survivor moves from the couple rate to the single rate, about 1.327 times as much (A$1,237.70 against A$933.00 a fortnight from 20 Sep 2026). The survivor keeps their own Age Pension; 32.7% of the late spouse’s added to it gives the single rate when the two are equal. Change it on the Edit tab.';
+   // R19-1: the spouse's own pensions when your spouse dies first.
+   if(!meDie){
+     _sh('Your spouse’s UK State Pension — share that continues',_penUSD(S,'spouseUkp'),_numOr(S.ukpSurvivorPct,0),'The UK State Pension → survivor % on the Edit tab, applied to theirs.');
+     if(activeCurrency==='AUD')_sh('Your spouse’s Age Pension — share that continues',_penUSD(S,'spouseAgePension'),_numOr(S.agePensionSurvivorPct,D_USD.agePensionSurvivorPct),_apSurvNote);
+     if(activeCurrency==='CAD'){_cppRows();_sh('Your spouse’s OAS — share that continues',_penUSD(S,'spouseOas'),0,'OAS stops at death.');}
+   }else if(((S.spouseUkp||0)+(S.spouseCpp||0)+(S.spouseOas||0)+(S.spouseAgePension||0))>0)_trRow(g,'Your spouse’s own pensions',0,'flagv',{kind:'flag',
+     note:'Continue in full: they belong to the survivor.'});
+   if(sv._etWYou>0||sv._etWSp>0)_trRow(g,'Earnings-test months carried',(sv._etWYou||0)+(sv._etWSp||0),'num',{kind:'flag',
+     note:'Social Security withheld before the death for earnings above the limit; the survivor’s benefit is still recalculated for it at full retirement age.'});
+   if(annStopMo>0)_trRow(g,'Single-life annuity — stops at your death',annStopMo,'usd/mo',{kind:'minus',
+     note:'Added from the Annuity tool on your life with no survivor benefit, so the survivor does not receive it.'});
+   if(meDie){
+     _sh('Your US pension — share that continues',S.usPension,S.usPensionSurvivorPct!=null?S.usPensionSurvivorPct:100);
+     _sh('Your UK State Pension — share that continues',_penUSD(S,'ukp'),_numOr(S.ukpSurvivorPct,0),'What a spouse inherits depends on your record; set it on the Edit tab.');
+     if(activeCurrency==='AUD')_sh('Your Age Pension — share that continues',_penUSD(S,'agePension'),_numOr(S.agePensionSurvivorPct,D_USD.agePensionSurvivorPct),_apSurvNote);
+     if(activeCurrency==='CAD'){
+       _cppRows();
+       _sh('Your OAS — share that continues',_penUSD(S,'oas'),0,'OAS stops at death.');
+     }
+     if(gap)_trRow(g,'Medicare, RMDs and the age-65 deduction',gap,'num',{kind:'flag',
+       note:'These follow your spouse’s age: the phases stay on your age line, and these three rules use it minus the '+Math.abs(gap)+'-year difference.'});
+   }
+   // R17-2: an overseas healthcare budget is the household's; the survivor pays one person's half (calcPhase).
+   if(_usHealthExcluded(S)&&(S.expatHealthcare||0)>0)_trRow(g,'Overseas healthcare budget — the survivor’s share',50,'pct',{kind:'rate',
+     base:S.expatHealthcare,baseUnit:'usd/mo',baseAs:'of',note:'The budget you entered is for the two of you; after the first death it covers one person, as Medicare does.'});
+   _trRow(g,'Inflation measured from age',planStart,'age',{kind:'flag',
+     note:'The plan’s start, not the death, so the survivor’s figures are in the plan’s own money and compare with the couple’s.'});
+   const _gone=(lumps||[]).length-lumpsAfter.length;
+   if(_gone>0)_trRow(g,'One-time events before the first death',_gone,'num',{kind:'flag',
+     note:'Already inside the balances above, so they are not applied again.'});
+   if(survivor._coupleAtDeath)_trRow(g,'The couple’s net income over the same years',survivor._coupleAtDeath.net_mo,'usd/mo',{
+     formula:'your plan re-run from the death age with both of you alive',
+     note:'What Plan Health and the What-if compare the survivor’s income with.'});
+   _trRow(g,'Survivor’s spending need',_numOr(S.survivorSpendPct,100),'pct',{kind:'rate',note:'Share of the couple’s spending the survivor needs (Edit tab).'});
+   survivor._setup=g;}
   return survivor;
+}
+// US Medicare and the ACA are not modelled for this residence, so the overseas healthcare budget is used instead. The same
+// test as calcPhase's (foreign / UK / Canadian / Australian resident, or not a US taxpayer), read from a plan.
+function _usHealthExcluded(s){
+  return !!(s.foreignResident||s.ukResident||(activeCurrency==='CAD'&&s.cadResident!==false)||(activeCurrency==='AUD'&&s.ausResident!==false)||s.subjectToUsTax===false);
+}
+// The plan's balances at `age` exactly (sweep R4-2). Runs the plan with the phase that contains `age`
+// ending there — the balance path up to that point does not depend on where a phase ends — and reads
+// the last phase's closing balances. Only a "withdraw extra to cover the tax" expense in that phase can
+// differ slightly, because its tax is priced on the shortened phase.
+// Sweep R13-4 (v439): Super is an Australian account and belongs to an A$ plan only — as CPP and OAS belong to a C$
+// plan (R12-3). Everything that starts from the plan's Super balance reads it here. Outside A$ the Australia card that
+// holds it is hidden, so it used to be drawn tax-free, grown and counted where it could not be seen or changed.
+function _superBal(s){return activeCurrency==='AUD'?((s&&s.superBal)||0):0;}
+function _balancesAtAge(s,p5End,lumpsArr,age){
+  const curAge=s.currentAge&&s.currentAge>s.startAge?s.currentAge:0;
+  // R13-2: the cost basis too, so a re-run from this age taxes sales on the gain built up by then.
+  const init={b401k:s.bal401k,bCash:s.balCash,bEquity:s.balEquity||0,bRoth:s.balRoth||0,bSuper:_superBal(s),
+    costBasis:(s._costBasis!=null)?s._costBasis:(s.balEquity||0)*(1-_numOr(s.equityGainPct,10)/100),
+    etWYou:+s.etWithheldYou||0,etWSp:+s.etWithheldSp||0}; // R24-2: the earnings-test months withheld so far
+  if(age<=(curAge||s.startAge)+1e-9)return init;
+  const pc=buildPhaseConfig(s.startAge,p5End,curAge,s).find(p=>age>p.startAge+1e-9&&age<p.endAge-1e-9);
+  let t=s,e=p5End;
+  if(pc){
+    const n=parseInt(pc.phaseKey.replace('p','').replace('b',''),10);
+    if(n>=5)e=age;
+    else if(n>=1){t={...s};t['phaseAge'+n+'end']=age;}
+  }
+  let last=null;
+  _calcAllPhasesUncached(t,e,lumpsArr||[]).forEach(r=>{if(r.phaseEndAge<=age+1e-6)last=r;});
+  return last?{b401k:last.end.b401k,bCash:last.end.bcash,bEquity:last.end.bEquity||0,bRoth:last.end.bRoth||0,bSuper:last.end.bSuper||0,
+    costBasis:last.end.costBasis||0,etWYou:last.etWYouOut||0,etWSp:last.etWSpOut||0}:init;
+}
+// What each "Withdraw extra to cover the tax" expense actually takes out: the expense PLUS its tax, as the
+// engine resolves it (sweep R5-1). Monte Carlo and the historical backtest draw lumps themselves and used
+// the bare amount, so their balances ran 1.3–3% above the dashboard's (23% in one phase). The tax depends
+// only on the phase's income, which neither simulation varies, so the engine's figure is the right one.
+// Returns {id: amount} for gross-up expenses only; every other lump keeps its own amtUSD.
+// Sweep R6-1 (v417): the accounts the plan DRAWS from — any phase slot with a withdrawal set on it, the
+// same rule Plan Health's two solvency checks use. Monte Carlo's "probability solvent" and the backtest's
+// "survived" are judged on these, so money the plan never touches (a Roth left for heirs) can no longer
+// keep a plan "solvent" after the accounts paying the bills are empty (one plan read 100% against 2%).
+// `any` false = nothing is drawn, and callers then fall back to the whole portfolio.
+function _drawnAcctFlags(s){
+  const K=['p0','p0b','p1','p1b','p2','p2b','p3','p3b','p4','p4b','p5','p5b'];
+  const on=f=>K.some(k=>s&&s[k]&&(+s[k][f]||0)>0);
+  const d={b401k:on('w401k'),bcash:on('wcash'),bEquity:on('wEquity'),bRoth:on('wRoth'),bSuper:on('wSuper')};
+  d.any=d.b401k||d.bcash||d.bEquity||d.bRoth||d.bSuper;
+  return d;
+}
+// Sweep R25-1 (v497, owner's choice B): which withdrawals the plan PAYS at its own assumed returns, account by account. The market
+// tests — Monte Carlo, the historical backtest, Plan Health's stress check, the Stress grid — fail a run when bad returns leave one of
+// THESE short (or the drawn accounts empty). They called a run solvent while any drawn account held money, so cash drawn only in the
+// first years kept a plan at 100% with a fifth of its withdrawals unpaid. A withdrawal the plan already leaves unpaid at its assumed
+// returns is the plan's own gap — Portfolio Survives' finding, named on each tool (_baseGapNote) — and is not counted again: counted,
+// it put the default plan's Monte Carlo at 0% for a $100/mo cash draw that outlasts the cash.
+const _PAID_KEYS=[['w401k','401k','b401k'],['wCash','cash','cash'],['wEquity','brokerage','equity'],['wRoth','Roth','roth'],['wSuper','Super','super']];
+function _paidAtBase(phs){
+  const set={},paid={},ok={};_PAID_KEYS.forEach(([k])=>{set[k]=0;paid[k]=0;});
+  (phs||[]).forEach(p=>{const ws=p.wSet||{},wa=p.wActual||{},mo=p.months||0;_PAID_KEYS.forEach(([k])=>{set[k]+=(ws[k]||0)*mo;paid[k]+=(wa[k]||0)*mo;});});
+  _PAID_KEYS.forEach(([k])=>{ok[k]=set[k]>0&&paid[k]>=set[k]*0.995;});
+  return ok;
+}
+// The same test on a shocked projection: the base-paid withdrawals left unpaid, and the first account that fell short with the age it
+// ran dry. `unpaid` = more than 0.5% short AND more than `left` — the money still in the drawn accounts at the end, which a household
+// would spend to cover it. Per account alone, a plan that spends each account down close to the end failed half its Monte Carlo runs
+// whenever one account ran dry a few months early (the Help examples fell from 99% to ~50%) with far more left in the others.
+function _unpaidOn(phs,ok,left){
+  let set=0,paid=0,acct=null,age=null;
+  (phs||[]).forEach(p=>{const ws=p.wSet||{},wa=p.wActual||{},mo=p.months||0;
+    _PAID_KEYS.forEach(([k,lbl,d])=>{if(!ok[k])return;set+=(ws[k]||0)*mo;paid+=(wa[k]||0)*mo;
+      if(!acct&&(ws[k]||0)-(wa[k]||0)>1){acct=lbl;age=(p.depletedAt&&p.depletedAt[d]!=null)?p.depletedAt[d]:p.phaseStartAge;}});});
+  const amt=Math.max(0,set-paid);
+  return {unpaid:set>0&&paid<set*0.995&&(left==null||amt>left),pct:set>0?(1-paid/set)*100:0,acct,age,amt,left};
+}
+function _drawnTotal(d,b401k,bcash,bEquity,bRoth,bSuper){
+  if(!d.any)return b401k+bcash+bEquity+bRoth+bSuper;
+  return (d.b401k?b401k:0)+(d.bcash?bcash:0)+(d.bEquity?bEquity:0)+(d.bRoth?bRoth:0)+(d.bSuper?bSuper:0);
+}
+function _lumpDrawAmounts(s,p5End,lumpsArr){
+  const out={};
+  if(!lumpsArr||!lumpsArr.some(l=>l&&l.dir==='out'&&l.grossUp))return out;
+  try{
+    _calcAllPhasesUncached(s,p5End,lumpsArr).forEach(r=>(r.lumpDetail||[]).forEach(d=>{
+      if(d.dir!=='out')return;
+      const l=lumpsArr.find(x=>x.id===d.id);
+      if(l&&l.grossUp&&d.amt>0)out[d.id]=d.amt;
+    }));
+  }catch(e){}
+  return out;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2596,8 +3898,8 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     return mean+std*Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
   }
   const runs=Math.min(Math.max(parseInt(s.mcRuns)||500,50),2000);
-  const sigSt=(s.mcSigma||12)/100;
-  const sigCa=(s.mcSigmaCash||4)/100;
+  const sigSt=_numOr(s.mcSigma,12)/100;
+  const sigCa=_numOr(s.mcSigmaCash,4)/100;
   // v8: inflation volatility. Withdrawals are scaled by each run's realised inflation RELATIVE to the
   // expected path, so σ=0 reproduces the prior nominal-withdrawal behaviour exactly, while σ>0 makes
   // inflation uncertainty widen the outcome band and affect solvency.
@@ -2608,33 +3910,37 @@ function computeMonteCarlo(s,p5End,lumpsArr){
   // Per-phase lump EVENTS (windfalls in / one-time expenses out), keyed by phase number — applied at
   // the start of each phase so MC reflects lump-sum events like calcAllPhases does. Kept as individual
   // events rather than totals so each one's account sourcing is honoured here too.
-  const _mcLump=pc=>{
-    if(!lumpsArr||!lumpsArr.length||pc.isSplitSecond)return null;
+  const _guAmt=_lumpDrawAmounts(s,p5End,lumpsArr); // sweep R5-1: gross-up expenses draw expense + tax
+  const _mcLump=(pc,i)=>{
+    if(!lumpsArr||!lumpsArr.length||!_takesLumps(cfg,i))return null; // R8-3: first remaining segment
     const n=parseInt(pc.phaseKey.replace('p','').replace('b',''));
     const items=lumpsArr.filter(l=>l.phase===n&&l.amtUSD>0);
-    return items.length?{in:items.filter(l=>l.dir!=='out'),out:items.filter(l=>l.dir==='out')}:null;
+    return items.length?{in:items.filter(l=>l.dir!=='out'),out:items.filter(l=>l.dir==='out'),pk:pc.phaseKey}:null; // R24-3: pk
   };
   // Build age checkpoints (start + each phase end)
   const checkpoints=[{age:cfg[0].startAge},...cfg.map(pc=>({age:pc.endAge}))];
   // Run simulations
-  const allRuns=[];
+  const allRuns=[],drawnFinal=[];
+  const _dr=_drawnAcctFlags(s); // sweep R6-1: solvency counts only the accounts the plan draws from
+  const _supOn=activeCurrency==='AUD',unpaidRun=[]; // R25-3: Super is part of an A$ plan only; R25-1: runs that left withdrawals unpaid
+  const _ok=_paidAtBase(_calcAllPhasesUncached(s,p5End,lumpsArr)); // R25-1 (B): the withdrawals the plan pays at its assumed returns
   for(let r=0;r<runs;r++){
-    let b401k=s.bal401k,bCash=s.balCash,bEq=s.balEquity||0,bRoth=s.balRoth||0,bSup=s.superBal||0;
+    let b401k=s.bal401k,bCash=s.balCash,bEq=s.balEquity||0,bRoth=s.balRoth||0,bSup=_superBal(s); // R13-4
     const runVals=[b401k+bCash+bEq+bRoth+bSup]; // value at start
     // v8: track this run's realised inflation vs the expected path; wm scales withdrawals.
-    let runInfl=1,planInfl=1,totalMonth=0;
-    cfg.forEach(pc=>{
-      const pk=s[pc.phaseKey];
+    let runInfl=1,planInfl=1,totalMonth=0,wSetRun=0,wPaidRun=0;
+    cfg.forEach((pc,pi)=>{
+      const pk=_phaseSlot(s,pc); // R8-5
       const r1=Math.max(-0.5,randNorm(s.r401k/100,sigSt)),m1=Math.pow(1+r1,1/12)-1;
       const r2=Math.max(-0.1,randNorm(s.rCash/100,sigCa)),m2=Math.pow(1+r2,1/12)-1;
       const r3=Math.max(-0.5,randNorm((s.rEquity||0)/100,sigSt)),m3=Math.pow(1+r3,1/12)-1;
-      const r4=Math.max(-0.5,randNorm((s.rRoth||7)/100,sigSt)),m4=Math.pow(1+r4,1/12)-1;
-      const r5=Math.max(-0.5,randNorm((s.rSuper||7)/100,sigSt)),m5=Math.pow(1+r5,1/12)-1;
-      const _lp=_mcLump(pc);
+      const r4=Math.max(-0.5,randNorm(_numOr(s.rRoth,7)/100,sigSt)),m4=Math.pow(1+r4,1/12)-1;
+      const r5=Math.max(-0.5,randNorm(_numOr(s.rSuper,7)/100,sigSt)),m5=Math.pow(1+r5,1/12)-1;
+      const _lp=_mcLump(pc,pi);
       if(_lp){
         let _bag={cash:bCash,equity:bEq,k401:b401k,roth:bRoth,super:bSup};
         _lp.in.forEach(l=>{_bag=applyLumpDeposit(_bag,l.amtUSD,_lumpSpec(l)).bal;});
-        _lp.out.forEach(l=>{_bag=applyLumpDraw(_bag,l.amtUSD,_lumpSpec(l)).bal;});
+        _lp.out.forEach(l=>{_bag=applyLumpDraw(_bag,_guAmt[l.id]!=null?_guAmt[l.id]:l.amtUSD,_lumpSpecAt(l,_lp.pk,s.ssdiMode?'disability':s.earlyAccessMode,pc.startAge)).bal;}); // R24-3 (SSDI: the disability exception); R25-3: Super before 60
         bCash=_bag.cash;bEq=_bag.equity;b401k=_bag.k401;bRoth=_bag.roth;bSup=_bag.super;
       }
       for(let i=0;i<pc.months;i++){
@@ -2644,16 +3950,33 @@ function computeMonteCarlo(s,p5End,lumpsArr){
           runInfl*=(1+yi); planInfl*=(1+meanInfl);
         }
         const wm=planInfl>0?runInfl/planInfl:1; // 1 when σ=0 ⇒ identical to prior behaviour
-        b401k=Math.max(0,b401k*(1+m1)-pk.w401k*wm);
-        bCash=Math.max(0,bCash*(1+m2)-pk.wcash*wm);
-        bEq=Math.max(0,bEq*(1+m3)-(pk.wEquity||0)*wm);
-        bRoth=Math.max(0,bRoth*(1+m4)-(pk.wRoth||0)*wm);
-        bSup=Math.max(0,bSup*(1+m5)-(pk.wSuper||0)*wm);
+        // Sweep R3-2 (v408): Roth conversions move money 401k → Roth exactly as simPhase does — after the
+        // living-expense draw has first claim on the 401k, landing in the Roth before its own draw. They
+        // are a fixed nominal amount (not spending), so they are not scaled by wm. Ignoring them left the
+        // converted money in the 401k, paying its full draw for years after the real plan had emptied it.
+        const g401k=b401k*(1+m1),a401k=Math.min(pk.w401k*wm,Math.max(0,g401k));
+        const conv=Math.min((pk.rothConversion||0)/12,Math.max(0,g401k-a401k));
+        b401k=Math.max(0,g401k-a401k-conv);
+        // Sweep R25-1 (v497): each draw is what its account could pay (the balances come out as before), and the run keeps what the
+        // plan ASKED for against what it PAID — Portfolio Survives' rule (_portfolioSurvival). A run was "solvent" while any drawn
+        // account held money, so cash drawn only in the first years kept a plan at 100% with a fifth of its withdrawals unpaid.
+        // R25-3: nothing is paid from Super before 60, and a draw set there is not counted as asked for.
+        const wSu=(_supOn&&pc.startAge+i/12>=SUPER_PRESERVATION_AGE-1e-9)?(pk.wSuper||0)*wm:0;
+        const gC=bCash*(1+m2),aC=Math.min(pk.wcash*wm,Math.max(0,gC));bCash=Math.max(0,gC-aC);
+        const gE=bEq*(1+m3),aE=Math.min((pk.wEquity||0)*wm,Math.max(0,gE));bEq=Math.max(0,gE-aE);
+        const gR=bRoth*(1+m4)+conv,aR=Math.min((pk.wRoth||0)*wm,Math.max(0,gR));bRoth=Math.max(0,gR-aR);
+        const gS=bSup*(1+m5),aS=Math.min(wSu,Math.max(0,gS));bSup=Math.max(0,gS-aS);
+        if(_ok.w401k){wSetRun+=(pk.w401k||0)*wm;wPaidRun+=a401k;} if(_ok.wCash){wSetRun+=(pk.wcash||0)*wm;wPaidRun+=aC;}
+        if(_ok.wEquity){wSetRun+=(pk.wEquity||0)*wm;wPaidRun+=aE;} if(_ok.wRoth){wSetRun+=(pk.wRoth||0)*wm;wPaidRun+=aR;} if(_ok.wSuper){wSetRun+=wSu;wPaidRun+=aS;}
         totalMonth++;
       }
       runVals.push(b401k+bCash+bEq+bRoth+bSup);
     });
     allRuns.push(runVals);
+    drawnFinal.push(_drawnTotal(_dr,b401k,bCash,bEq,bRoth,bSup));
+    // R25-1: the base-paid withdrawals this run left unpaid — more than 0.5% short AND more than the drawn accounts still hold (a shortfall
+    // the rest of the household's drawn money covers is not a failure; see _unpaidOn).
+    unpaidRun.push(wSetRun>0&&wPaidRun<wSetRun*0.995&&(wSetRun-wPaidRun)>drawnFinal[drawnFinal.length-1]);
   }
   // Percentile helper
   function pct(arr,p){const a=[...arr].sort((x,y)=>x-y);return a[Math.max(0,Math.floor(p/100*(a.length-1)))];}
@@ -2662,9 +3985,11 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     const vals=allRuns.map(r=>r[ci]);
     return{age:checkpoints[ci].age,p10:pct(vals,10),p25:pct(vals,25),p50:pct(vals,50),p75:pct(vals,75),p90:pct(vals,90)};
   });
-  // Probability of solvency at final age
-  const finalVals=allRuns.map(r=>r[r.length-1]);
-  const probSolvent=Math.round(finalVals.filter(v=>v>0).length/runs*100);
+  // Probability of solvency at final age. Sweep R6-1 (v417): judged on the accounts the plan draws from
+  // (_drawnAcctFlags). The percentile bands above still show the WHOLE portfolio, untouched money included.
+  // R25-1 (v497): and bad returns must not have left short, beyond what the drawn accounts still hold, the withdrawals the plan pays at its
+  // assumed returns (_paidAtBase, _unpaidOn).
+  const probSolvent=Math.round(drawnFinal.filter((v,k)=>v>0&&!unpaidRun[k]).length/runs*100);
   const median=cpData[cpData.length-1].p50;
   const p10end=cpData[cpData.length-1].p10;
   const p90end=cpData[cpData.length-1].p90;
@@ -2685,14 +4010,33 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     // Survivor projection: reuses the desktop calcSurvivorPhases verbatim; we feed it the S/p5EndAge/lumps
     // it expects via the module globals, then read its result. Returns null when N/A (not MFJ, survivor
     // off, or death at/after plan end). The result carries _baseline (both-alive phases) + _deathAge.
-    survivorPhases: function (plan, p5End, lumpsArr) {
-      S = plan; p5EndAge = p5End; lumps = lumpsArr || [];
-      try { return calcSurvivorPhases(); } finally { S = undefined; p5EndAge = undefined; lumps = undefined; }
+    survivorPhases: function (plan, p5End, lumpsArr, annuity) {
+      S = plan; p5EndAge = p5End; lumps = lumpsArr || []; _annuityPlanState = (annuity && typeof annuity === 'object') ? annuity : null;
+      try { return calcSurvivorPhases(); } finally { S = undefined; p5EndAge = undefined; lumps = undefined; _annuityPlanState = null; }
     },
     computeMonteCarlo: computeMonteCarlo,
     rmdDivisorFor: rmdDivisorFor,
+    // Desktop v405: converts a pre-v405 plan's C$/A$ tax thresholds to USD equivalents, once.
+    // state.js mergePlan calls it on every load / import / slot restore.
+    migrateTaxUnits: _migrateTaxUnits,
     ssBenefitAtAge: ssBenefitAtAge,
+    // Desktop sweep R20-1: the spousal top-up once both have claimed (the guaranteed-income floor adds it).
+    spousalFloorMo: _spousalFloorMo,
+    // Desktop sweep R21-6/7/8/11: the rate the plan's money converts at (mobile's fixed rates), the factor a £ / C$ / A$
+    // pension is held at, the plan-year birth estimate, and the earnings-test model for the optimizer table.
+    setTaxFxLive: _setTaxFxLive,
+    penFxFactor: _penFxFactor,
+    planBirthYear: _planBirthYear,
+    ssEtCumModelFor: _ssEtCumModelFor,
+    // Desktop sweep R22-8: the RMD start age (automatic from the birth year), for the What-if Roth window.
+    rmdStartAgeOf: _rmdStartAgeOf,
     ssFRA: ssFRA,
+    // Desktop sweep R8-7: the cohort's delayed retirement credit (8% from 1943, less before).
+    ssDrcPct: ssDrcPct,
+    // Desktop sweep R8-5: seed a split phase's second half (pNb) from its first half, as desktop does.
+    seedSplitSlots: _seedSplitSlots,
+    // Desktop sweep R13-2: the plan's balances (and brokerage cost basis) at an age — the Replan gain box starts there.
+    balancesAtAge: _balancesAtAge,
     ssFmtFRA: ssFmtFRA,
     PHASE_COLORS: PHASE_COLORS,
     PHASE0_COLOR: PHASE0_COLOR,

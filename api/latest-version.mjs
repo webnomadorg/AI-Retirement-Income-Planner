@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 400, released: '2026-09-22', headline: 'Some figures change with this update if your plan uses UK residence; plans on any other residence are unaffected. Phase cards now say that US Social Security is taxed in the UK only, which is how the planner already calculates it. If you live in the UK and are not a US taxpayer, your Social Security is now included in your UK tax. One-off withdrawals by UK residents are now taxed on top of income that includes Social Security, so a large planned withdrawal may deliver less than before.' }; /* __LATEST__ */
+const LATEST = { build: 507, released: '2026-09-29', headline: 'Improved engine calculations throughout, several engine bug fixes and general interface updates. Your projected figures will move a little, and most long-range balances now come out a few percent lower, so check your plan after updating. Saved plans carry over automatically.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 

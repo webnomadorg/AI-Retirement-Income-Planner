@@ -363,9 +363,14 @@ console.log('  published facts match the engine');
        it was not one. The engine marks FIVE checks US-only, and that sentence had been
        wrong for as long as the "twelve" had. Deriving both numbers means a legitimate
        sub-count passes and a stale one still fails. */
-    const usOnly = (body.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/)
-      || app.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/) || [, ''])[1]
-      .split(',').filter((s) => s.trim()).length;
+    /* ⚠ Since app-v418 (sweep R7-2) the planner has no US_ONLY_CHECKS list: which checks are US-only is
+       decided from the plan's own phases, keyed by title in NA_WHEN = {'Tax Bracket Efficiency':!usTaxLive, …}.
+       Count NA_WHEN's titles; the old list is still read for an older src/. */
+    const naWhen = (body.match(/NA_WHEN\s*=\s*\{([^}]*)\}/) || app.match(/NA_WHEN\s*=\s*\{([^}]*)\}/) || [, ''])[1];
+    const usOnly = naWhen ? (naWhen.match(/'[^']+'\s*:/g) || []).length
+      : (body.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/)
+        || app.match(/US_ONLY_CHECKS\s*=\s*\[([^\]]*)\]/) || [, ''])[1]
+        .split(',').filter((s) => s.trim()).length;
     ok('the engine marks some checks US-only', usOnly > 0, `found ${usOnly}`);
 
     const right = new Set([
