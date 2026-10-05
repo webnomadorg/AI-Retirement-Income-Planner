@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 507, released: '2026-09-29', headline: 'Improved engine calculations throughout, several engine bug fixes and general interface updates. Your projected figures will move a little, and most long-range balances now come out a few percent lower, so check your plan after updating. Saved plans carry over automatically.' }; /* __LATEST__ */
+const LATEST = { build: 586, released: '2026-10-04', headline: 'Your income around retirement now shapes your first Medicare premiums, and Medicare, ACA and one-off tax figures are worked out year by year, with several engine bug fixes and general interface updates. Some figures will move, mostly in the years around Medicare, so check your plan after updating. Saved plans carry over automatically.' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 

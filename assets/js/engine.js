@@ -88,7 +88,7 @@ function _trFindRow(g,id){
 // run (SS taxability has to be resolved before gross income can be totalled, for instance), so the
 // trace is sorted into reading order once at the end rather than contorting the engine to match.
 const TRACE_ORDER=['span','infl','streams','income','gain','ssprov','ded','fedbrk','uktax','ftc','cadtax','austax','medlevy',
-  'niit','statetax','magi','lump','aca','medicare','rmd','wd','growth','net'];
+  'niit','statetax','magi','lump','aca','medicare','retyear','rmd','wd','growth','net']; // v515: + retyear
 function _trFinish(T){
   const ix=id=>{const i=TRACE_ORDER.indexOf(id);return i<0?TRACE_ORDER.length:i;};
   T.groups.sort((a,b)=>ix(a.id)-ix(b.id));
@@ -271,6 +271,13 @@ const D_USD={
   //         projection to today (yours, your spouse's), so SSA's recalculation at full retirement age still repays them. 0 for a plan
   //         that has not been replanned; Reset to original plan clears them. ──
   etWithheldYou:0, etWithheldSp:0,
+  // ── R30-4 (v511): the IRMAA MAGI for the two years before a Replan, {age, magi:[2 years ago, last year]} in USD/yr — saved by
+  //         applyReplan (the plan's own projection, or the Replan panel's boxes); null before any Replan; Reset clears it. ──
+  irmaaPre:null,
+  // ── R31-3 (v513): what a Replan left of the Roth conversions of the five years before it, {age, basis, conv:[{age, amt}]} USD —
+  //         replayed by applyReplan from the plan's own projection (basis = seasoned principal left); Plan Health's seasoning check
+  //         holds the conversions back until each one's five years are up. null without a Replan; Reset clears it. ──
+  rothConvPre:null,
   // ── v2: filing status + spouse SS ──
   filingStatus:'single', // 'single' | 'mfj'
   spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,
@@ -333,6 +340,18 @@ const D_USD={
   // 'current' is an ASSUMPTION, not a guarantee — SSA decides case by case and re-determines every
   // year. The UI copy has to say so. ──
   irmaaRelief:'lookback', irmaaManualPremium:0,
+  // ── v515: income BEFORE and IN the year you retire (owner, 2026-10-02: "one box, SSA-44 off, include retirement-year salary").
+  //   preRetMagi    — MAGI per year in the two years before retiring (USD; null = not entered). Medicare prices IRMAA for the
+  //                   first two Medicare years from those returns, so a 65-year-old leaving a $150,000 salary pays a surcharge
+  //                   the plan's own income never shows. Used only for a plan that has not been replanned (a Replan has its own
+  //                   boxes, irmaaPre).
+  //   preRetSsa44   — "I'll file SSA-44 (work stoppage)": those years' income — and the retirement-year salary — are left out
+  //                   of IRMAA (Social Security uses the retirement income instead). OFF by default: the cautious figure.
+  //   retYearSalary — salary earned in the calendar year you retire, before retiring (USD). Taxed together with that year's
+  //                   retirement income, counted in that year's ACA MAGI, and in the IRMAA lookback two years on.
+  //   retYearMonth  — the month you retire, 1–12 (null = mid-year, July): the months worked before it set how much of that
+  //                   year is retirement income.
+  preRetMagi:null, preRetSsa44:false, retYearSalary:0, retYearMonth:null,
   // ── v8: Net Investment Income Tax (3.8% surtax on investment income above the MAGI threshold) ──
   niitThreshold:200000, niitThresholdMfj:250000,
   // ── v8: US state income tax — flat-rate approximation (like the Canadian provincial proxy).
@@ -674,7 +693,9 @@ function buildPhaseConfig(startAge,p5End,currentAge,phaseAges){
     :((_spMedRaw!=null&&_spMedRaw!=='')?(+_spMedRaw+_spAgeDelta):(65+_spAgeDelta));
   // Build raw phases without hasSS (derived below from ssAge)
   const rawPhases=[
-    ...(earlyRetire?[{label:'Pre 59½',startAge,endAge:59.5,hasUKP:false,hasMedicare:false,phaseKey:'p0',color:PHASE0_COLOR}]:[]),
+    // Sweep R31-2 (v513): capped at the plan's end like every other boundary (R28-1), so _balancesAtAge can end a run inside it. No
+    // real plan ends before 80, so no projection changes.
+    ...(earlyRetire?[{label:'Pre 59½',startAge,endAge:Math.min(_endCap,59.5),hasUKP:false,hasMedicare:false,phaseKey:'p0',color:PHASE0_COLOR}]:[]),
     {label:'Phase 1',startAge:earlyRetire?59.5:startAge,endAge:a1,hasUKP:false,hasMedicare:false,phaseKey:'p1',color:PHASE_COLORS[0],_natEnd:_nat1},
     {label:'Phase 2',startAge:a1,endAge:a2,hasUKP:false,hasMedicare:false,phaseKey:'p2',color:PHASE_COLORS[1],_natEnd:_nat2},
     {label:'Phase 3',startAge:a2,endAge:a3,hasUKP:false,hasMedicare:true,phaseKey:'p3',color:PHASE_COLORS[2],_natEnd:_nat3},
@@ -839,7 +860,115 @@ function syncIrmaaReliefUI(){
   const warn=document.getElementById('irmaa-relief-warn');
   if(warn)warn.style.display=(m==='lookback')?'none':'';
   const inp=document.getElementById('e-irmaaManualPremium');
-  if(inp&&document.activeElement!==inp)inp.value=S.irmaaManualPremium||'';
+  if(inp&&document.activeElement!==inp)inp.value=S.irmaaManualPremium?_money2(S.irmaaManualPremium):''; // v526: two digits after the point
+  syncPreRetUI(); // v515
+  try{_wizPreRetVis();}catch(_){} // v522
+}
+// v515 / v522: your income around retirement (Edit values → Taxes & healthcare, and the setup wizard). Money in the display
+// currency, stored USD. v522 (owner: "this is a confusing part for the user so I want to guide them as much as possible"):
+//   • the pre-retirement box and its SSA-44 tick show only when they can change something — Medicare (yours, or your spouse's on
+//     your age line) starting in the two years after you retire, strictly (retiring at exactly 63 reads the retirement year, not
+//     the years before), and the IRMAA setting on "Two years back" ("Assume relief granted" / "Premium from my notice" already
+//     replace the lookback for every year, so the box did nothing there and the Learn card still nagged);
+//   • each part says what it is worth to THIS plan, live (SSA-44's saving; the first year's extra tax and ACA premium);
+//   • the retirement-age boxes (Edit and wizard) say what that age means for these questions, with a link to them.
+function _medInfo(s){
+  const R=+s.startAge||0,medYou=(s.medicareStartAge!=null&&s.medicareStartAge!=='')?+s.medicareStartAge:65;
+  const cur=(s.currentAge&&s.currentAge>s.startAge)?s.currentAge:R;
+  // v529: as the engine has it — the spouse's own Medicare age when one is set, 'never' = not enrolled.
+  const spRaw=s.spouseMedicareStartAge;
+  const medSp=(s.filingStatus!=='mfj'||spRaw==='never')?Infinity:((spRaw!=null&&spRaw!=='')?+spRaw:65)+((s.spouseCurrentAge>0)?(cur-s.spouseCurrentAge):0);
+  return{R,medYou,medSp,first:Math.min(medYou,medSp),spouseFirst:medSp<medYou-1e-9};
+}
+// R32-1 (v532): by calendar year (_retCal). The years BEFORE retiring are read by premiums in the first two calendar years —
+// ages up to s0 + 2; the year you retire by the premiums of the calendar year two on — ages s0 + 2 to s0 + 3.
+function _preRetRelevant(s){if(_usHealthExcluded(s))return false;const m=_medInfo(s);return _retCal(s).s0+2>Math.max(m.R,m.first)+1e-9;}
+function _retYrIrmaaRelevant(s){if(_usHealthExcluded(s))return false;const m=_medInfo(s);return _retCal(s).s0+3>Math.max(m.R,m.first)+1e-9;}
+function _irmaaLookbackMode(s){return (s.irmaaRelief||'lookback')==='lookback';}
+// The ages whose premiums read the years before retiring, e.g. "65 and 66"; whose they are.
+// R32-1: as a span on the calendar — "65 to 66½".
+function _preRetAges(s){const m=_medInfo(s),c=_retCal(s),a0=Math.max(m.R,m.first),a1=c.s0+2,list=a1>a0+1e-9?[a0,a1]:[];
+  return{list,text:list.length?_ageHalf(a0)+' to '+_ageHalf(a1):'',who:m.spouseFirst?'your spouse’s':'your',m};}
+// What ticking SSA-44 is worth to this plan: the Medicare surcharge it removes (or adds back), total, and the phases it touches.
+function _preRetSsa44Worth(){
+  try{
+    const a=calcAllPhases(S,p5EndAge,lumps),c=JSON.parse(JSON.stringify(S));c.preRetSsa44=!S.preRetSsa44;
+    const b=_calcAllPhasesUncached(c,p5EndAge,lumps);let d=0;const ph=[];
+    a.forEach((p,i)=>{const q=b[i];if(!q)return;const x=((p.irmaaSurch_mo||0)-(q.irmaaSurch_mo||0))*(p.months||0);if(Math.abs(x)>0.5){d+=x;ph.push(p.label+', ages '+p.ages);}});
+    // v524: with IRMAA on "flag only" nothing is charged, so the difference is in the FLAG, not the cost.
+    const fl=[];a.forEach((p,i)=>{const q=b[i];if(q&&!!p.irmaaOver!==!!q.irmaaOver)fl.push(p.label+', ages '+p.ages);});
+    return{amt:Math.abs(d),phases:ph,flagOnly:(+S.irmaaSurcharge===0),flagPhases:fl};
+  }catch(e){return null;}
+}
+// One or two plain sentences for under a retirement-age box: what this age means for these questions.
+function _retireAgeGuideHtml(forWizard){
+  if(_usHealthExcluded(S)||(S.currentAge&&S.currentAge>S.startAge))return '';
+  const m=_medInfo(S),R=Math.round(m.R*2)/2,lines=[];
+  if(_preRetRelevant(S)&&_irmaaLookbackMode(S)){const pa=_preRetAges(S);
+    lines.push(`Retiring at ${R}: Medicare will set ${pa.who} first premiums${pa.list.length?` (at ${m.spouseFirst?'your age ':''}${pa.text})`:''} from your income <strong>before</strong> you retire.`);}
+  else if(_retYrIrmaaRelevant(S)&&_irmaaLookbackMode(S)&&!S.preRetSsa44)
+    lines.push(`Retiring at ${R}: your income in the year you retire &mdash; salary included &mdash; sets ${m.spouseFirst?'your spouse’s':'your'} Medicare premiums from ${m.spouseFirst?'your age ':''}${_ageHalf(Math.max(_retCal(S).s0+2,m.first))} to ${_ageHalf(_retCal(S).s0+3)}.`);
+  lines.push(`Still earning a salary the year you retire? It is taxed together with that year's withdrawals${m.R<m.first-1e-9?' and counts toward that year’s ACA subsidy':''}.`);
+  const it=lines.length>1?'them':'it';
+  return lines.join(' ')+(forWizard?` Enter ${it} below.`:` <a href="#" class="ph-jump" onclick="event.preventDefault();goToEditCard('preret-block','taxes',false);return false;">Enter ${it} under Taxes &amp; healthcare &rarr;</a>`);
+}
+function syncPreRetUI(){
+  // The retirement-age guide on the Edit tab (Accounts) — also shown when the Healthcare card is not.
+  {const g=document.getElementById('startage-guide');if(g){const h=_retireAgeGuideHtml(false);g.innerHTML=h;g.style.display=h?'':'none';}}
+  const blk=document.getElementById('preret-block');if(!blk)return;
+  blk.style.display=_usHealthExcluded(S)?'none':'';
+  const c=displayCurrency,t=(id,s)=>{const l=document.getElementById(id);if(l)l.textContent=s;},hm=(id,s)=>{const l=document.getElementById(id);if(l)l.innerHTML=s;};
+  t('lbl-preRetMagi',`Your income in each of the two years before you retire (MAGI /yr, ${c})`);
+  t('lbl-retYearSalary',`Salary earned in the year you retire, before retiring (${c})`);
+  const sv=(id,v)=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=v;};
+  sv('e-preRetMagi',(S.preRetMagi==null||S.preRetMagi==='')?'':Math.round(toDisplay(+S.preRetMagi)));
+  sv('e-retYearSalary',(+S.retYearSalary||0)>0?Math.round(toDisplay(+S.retYearSalary)):'');
+  sv('e-retYearMonth',S.retYearMonth?String(S.retYearMonth):'');
+  const cb=document.getElementById('e-preRetSsa44');if(cb)cb.checked=!!S.preRetSsa44;
+  const re=!!(S.currentAge&&S.currentAge>S.startAge),rel=_preRetRelevant(S),look=_irmaaLookbackMode(S);
+  {const e=document.getElementById('preret-replan-note');if(e)e.style.display=re?'':'none';}
+  // Before you retire: only where it can change a premium, and only under the two-year rule.
+  {const part=document.getElementById('preret-irmaa-part');if(part)part.style.display=(rel&&look)?'':'none';
+   const n=document.getElementById('preret-relief-note');
+   if(n){n.style.display=(rel&&!look)?'':'none';
+     n.textContent=(S.irmaaRelief==='manual')
+       ?'Your Medicare setting below (“Premium from my notice”) replaces the calculation, so your income before retiring isn’t needed.'
+       :'Your Medicare setting below (“Assume relief granted”) already uses your retirement income for every year, so your income before retiring isn’t needed.';}}
+  if(rel&&look){const pa=_preRetAges(S);
+    hm('preret-why',`Retiring at ${Math.round(pa.m.R*2)/2}, ${pa.who} premiums at ${pa.m.spouseFirst?'your age ':''}${pa.text} read your <strong>working</strong> income.`);
+    // what the SSA-44 tick is worth to this plan, when there is a figure to price
+    const w=document.getElementById('preret-ssa44-worth');
+    if(w){const has=S.preRetMagi!=null&&S.preRetMagi!=='';
+      if(!has||blk.offsetParent===null){w.style.display='none';}
+      else{const r=_preRetSsa44Worth();w.style.display=r?'':'none';
+        if(r)w.textContent=(r.flagOnly&&r.amt<1)?(r.flagPhases.length?`IRMAA is set to flag only, so the plan does not charge it — your income before retiring would trigger it in ${r.flagPhases.join(', ')}${S.preRetSsa44?' without SSA-44':''}.`:'At these figures it makes no difference — your income before retiring stays under the IRMAA threshold.')
+          :r.amt<1?'At these figures it makes no difference — your income before retiring stays under the IRMAA threshold.'
+          :S.preRetSsa44?`Without it you would pay about ${fmtC(r.amt)} more in Medicare surcharges (${r.phases.join(', ')}).`
+          :`Filing it would save about ${fmtC(r.amt)} in Medicare surcharges (${r.phases.join(', ')}).`;}}}
+  // Salary in the year you retire: why it matters here, and what it adds to the first year.
+  {const m=_medInfo(S),bits=[];
+   if(m.R<m.first-1e-9)bits.push('counts toward that year’s ACA subsidy for the months after you retire');
+   if(_retYrIrmaaRelevant(S)&&look&&!S.preRetSsa44)bits.push(`is in the return Medicare reads for your premiums from ${_ageHalf(Math.max(_retCal(S).s0+2,m.first))} to ${_ageHalf(_retCal(S).s0+3)}`);
+   hm('preret-sal-why',bits.length===1?' and '+bits[0]:bits.length===2?', '+bits[0]+', and '+bits[1]:'');
+   const e=document.getElementById('retyr-effect');
+   if(e){const sal=+S.retYearSalary||0;
+     if(sal<=0||re||blk.offsetParent===null){e.style.display='none';}
+     else{let ph=[];try{ph=calcAllPhases(S,p5EndAge,lumps)||[];}catch(_){}const p0=ph[0],p1=ph[1];
+       e.style.display=p0?'':'none';
+       if(p0){const tx=p0.retYrTax||0,ac=p0.retYrAca||0,both=p1&&((p1.retYrCarryTax||0)+(p1.retYrCarryAca||0))>0.5; // v524: may span two phases
+         e.textContent=(Math.abs(tx)+ac)<1?'At these figures it adds nothing to your first year.'
+           :`In your first year this ${tx<-0.5?`lowers federal tax by about ${fmtC(-tx)} (a one-time event in that year lands in lower brackets than a full year’s)`:`adds about ${fmtC(tx)} of federal tax`}${ac>0.5?` and ${fmtC(ac)} of ACA premium`:''} — already counted in ${both?p0.label+' and '+p1.label:p0.label}.`;}}}} // R42-2: it can be a credit
+}
+function setPreRetMagi(v){S.preRetMagi=(v===''||v==null)?null:Math.max(0,toUSD(parseFloat(v)||0));liveCalcDebounced();}
+function setPreRetSsa44(on){S.preRetSsa44=!!on;liveCalc();}
+function setRetYearSalary(v){S.retYearSalary=Math.max(0,toUSD(parseFloat(v)||0));liveCalcDebounced();}
+function setRetYearMonth(v){const m=parseInt(v,10);S.retYearMonth=(m>=1&&m<=12)?m:null;liveCalc();}
+// The wizard's copy of the same questions (step 2): the pre-retirement box shows once the start age makes it matter, and the
+// line under the age says why (v522).
+function _wizPreRetVis(){
+  const us=!_usHealthExcluded(S),a=document.getElementById('wiz-retyear-row'),b=document.getElementById('wiz-preret-field');
+  if(a)a.style.display=us?'':'none';if(b)b.style.display=(us&&_preRetRelevant(S)&&_irmaaLookbackMode(S))?'':'none';
+  const g=document.getElementById('wiz-startage-guide');if(g){const h=_retireAgeGuideHtml(true);g.innerHTML=h;g.style.display=h?'':'none';}
 }
 function renderIrmaaTierGrid(){
   const host=document.getElementById('irmaa-tier-grid'); if(!host)return;
@@ -854,9 +983,10 @@ function renderIrmaaTierGrid(){
     // v15: no inline width — #irmaa-tier-grid input now picks up the same border, radius, padding,
     // background and focus ring as every other input on this tab, in all six themes. These used to
     // be bare browser-default boxes sitting next to properly styled ones.
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partB||0))}"
+    // v526: with their cents, as CMS publishes them ($81.20, not 81) — whole dollars disagreed with the Part B box above (202.90).
+    mk(`<input type="number" step="any" data-cents value="${_money2(toDisplay(t.partB||0))}"
          aria-label="Part B premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partB',this.value)"/>`);
-    mk(`<input type="number" step="1" value="${Math.round(toDisplay(t.partD||0))}"
+    mk(`<input type="number" step="any" data-cents value="${_money2(toDisplay(t.partD||0))}"
          aria-label="Part D premium per month, tier ${i+1}" oninput="_setIrmaaTier(${i},'partD',this.value)"/>`);
   });
 }
@@ -1081,10 +1211,21 @@ function _etOpts(s,pk,mfj,carry){
   const by=_planBirthYear(s);
   const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
   const spBy=Math.round(by+gap);
-  return {earnYou,earnSp,lim:_numOr(s.ssEarningsLimit,24480),limFra:_numOr(s.ssEarningsLimitFra,65160),
+  return {earnYou,earnSp,lim:_numOr(s.ssEarningsLimit,24480),limFra:_numOr(s.ssEarningsLimitFra,65160),s0:_retCal(s).s0, // R35-3: the calendar
     fraYou:ssFRA(by),drcYou:ssDrcPct(by),claimYou:s.ssStartAge||62,
     fraSp:ssFRA(spBy),drcSp:ssDrcPct(spBy),claimSp:s.spouseSSBaseAge||62,
     wYouIn:(carry&&carry.you)||0,wSpIn:(carry&&carry.sp)||0};
+}
+// R35-3 (v545): the earnings test's withholding for one month, year by year. The limits are re-set every January (with inflation)
+// while earnings are flat in dollars inside a phase; the year-of-FRA limit applies from January of the CALENDAR year you reach FRA,
+// to the earnings before FRA. The phase used the limits of its middle year and the 12 months before FRA (r35probe P3: withholding
+// moved by median $309, recredited from FRA), and the claim-age tools used today's limits for every year. Ages on YOUR line (the
+// calendar's); `fra` on your line too; cal = {s0 (Jan 1 of the retirement year), base (the age the limits are today's), i}.
+function _etWithheldMo(age,fra,earn,lim,limFra,cal){
+  if(!(age<fra-1e-9))return 0;
+  const k=Math.floor(age-cal.s0+1e-9),kF=Math.floor(fra-cal.s0+1e-9),g=Math.pow(1+(cal.i||0),Math.max(0,cal.s0+k+0.5-cal.base));
+  if(k===kF){const n=Math.max(0.5,(fra-(cal.s0+kF))*12);return Math.max(0,earn*n/12-limFra*g)/(3*n);}
+  return Math.max(0,earn-lim*g)/24;
 }
 // Sweep R19-2 / R21-11 (v474): the SS earnings test as CUMULATIVE benefits by claim age, for the claim-age tools (the
 // desktop SS Optimizer and What-if slider, mobile's optimizer and slider). Pure: a plan and its end age. null when the
@@ -1096,8 +1237,11 @@ function _ssEtCumModelFor(s,endAge,ssAtAge,ssAmt,ssBaseAge,spAtAge,spSSAmt,spSSB
   const shareYou=s.ssdiMode?0:(own==='me'?1:own==='shared'?0.5:0),shareSp=mfj?(own==='spouse'?1:own==='shared'?0.5:0):0;
   const earnAt=a=>{const pc=cfg.find(c=>a>=c.startAge-1e-9&&a<c.endAge-1e-9);return pc?((_phaseSlot(s,pc).partTime)||0):0;}; // YOUR age line
   const lim=_numOr(s.ssEarningsLimit,24480),limFra=_numOr(s.ssEarningsLimitFra,65160);
-  const wh=(age,f,earn)=>age<f-1-1e-9?Math.max(0,earn-lim)/24:age<f-1e-9?Math.max(0,earn-limFra)/36:0;
-  const any=a0=>{for(let a=62;a<Math.max(fra,spFra+gap);a+=1/12)if(earnAt(a)*Math.max(shareYou,shareSp)>lim)return true;return false;};
+  // R35-3: each year's limits on the plan's calendar (they were today's for every year); ages on YOUR line
+  const _cal={s0:_retCal(s).s0,base:curAge||s.startAge,i:_numOr(+s.inflation,3)/100};
+  const wh=(aY,fY,earn)=>_etWithheldMo(aY,fY,earn,lim,limFra,_cal);
+  const limAt=aY=>lim*Math.pow(1+_cal.i,Math.max(0,_cal.s0+Math.floor(aY-_cal.s0+1e-9)+0.5-_cal.base));
+  const any=a0=>{for(let a=62;a<Math.max(fra,spFra+gap);a+=1/12)if(earnAt(a)*Math.max(shareYou,shareSp)>limAt(a))return true;return false;};
   if(!(ssAmt>0)||!any())return null;
   // Cumulative benefit from claim age `ca` to age `to`, both on the person's own age line; `toYour` maps it to your line.
   // One monthly pass per claim age to age 110, cached: cum(ca,to) is then a lookup (the breakeven search asks many times).
@@ -1107,7 +1251,7 @@ function _ssEtCumModelFor(s,endAge,ssAtAge,ssAmt,ssBaseAge,spAtAge,spSSAmt,spSSB
     const k=key+ca;let arr=memo[k];
     if(!arr){arr=[0];const m=atAge(amt,base,ca);let W=0,paid=0;
       for(let a=ca;a<110;a+=1/12){
-        if(a<f-1e-9){const w=Math.min(m,share>0?wh(a,f,earnAt(toYour(a))*share):0);W+=m>0?w/m:0;paid+=m-w;}
+        if(a<f-1e-9){const aY=toYour(a),w=Math.min(m,share>0?wh(aY,f+(aY-a),earnAt(aY)*share):0);W+=m>0?w/m:0;paid+=m-w;}
         else paid+=m*(W>0&&ca<f?ssBenefitMult(Math.min(f,ca+W/12),f,d)/ssBenefitMult(ca,f,d):1);
         arr.push(paid);}
       memo[k]=arr;}
@@ -1563,14 +1707,31 @@ function australianFedTax(income,free,b1,b2,b3,r,_tg){
  * year of a ten-year phase; amortising it over the phase would flatten the bracket jump that is the
  * whole point. So the lump's tax is charged once, and the phase's income figures are left alone.
  *
- * DELIBERATE LIMITS (flagged to the user rather than modelled): ACA subsidies, IRMAA, NIIT and the UK
- * Foreign Tax Credit are not recomputed for the spike year — they are phase-average constructs here.
- * calcPhase raises a threshold-crossing warning instead. State tax is flat in this model, so its
+ * DELIBERATE LIMIT: the UK Foreign Tax Credit is not recomputed for the spike year. NIIT is — calcPhase adds the 3.8% the event
+ * creates on that year's own MAGI (R38-1, v555), outside this function. ACA and IRMAA ARE too (R36-1, v548):
+ * the expense's income (`lumpMagi`) is in the ACA of the phase's first year and in IRMAA's calendar-year MAGI; calcPhase still
+ * flags a crossing so the user sees why. State tax is flat in this model, so its
  * incremental cost is exactly rate × the state-taxable slice, passed in as `stateExtra`.
  * "This phase's ordinary income" means the base of the tax being charged: the US `gross`, or for a UK
  * resident the UK base passed as `ukBase` (the two differ, most of all by Social Security).
  * Pure & DOM-free.
  */
+// Sweep R43-1 (v572): the trace note on a one-time event's year (lumpTaxSpike) — written in calcPhase, rewritten when the salary in the
+// year you retire joins that year (calcAllPhases, R42-2).
+function _lumpSpikeNote(sp){
+  const lim=sp.kind==='aca'?'that year’s 400% FPL subsidy cliff':sp.current?'that year’s IRMAA threshold':'the IRMAA threshold Medicare applies to that year’s income (two years on)'; // R48-2
+  const amt=Math.round(sp.thresh).toLocaleString();
+  return sp.crosses
+    ?`Crosses ${lim} of ${amt} — and it is charged: ${sp.kind==='aca'?'that year’s ACA premium is in this phase’s healthcare':sp.current?'with SSA-44 relief assumed, Medicare uses that year’s own income, so the IRMAA it sets is in that year’s premiums, in this phase’s healthcare':'Medicare reads that year two years on, and the IRMAA it sets is in the healthcare of the phase it lands in'}.`
+    :`Still under ${lim} of ${amt}, with ${Math.round(sp.headroom).toLocaleString()} to spare. Only the taxable part of a one-off counts — a sale from a taxable account adds the gain, not the whole amount.`;
+}
+// R47-2 / R48-2: the trace row for the one-time event's year verdict, re-set after the IRMAA pass re-judges it (updated, added or removed).
+function _lumpSpikeTraceSet(r){
+  const gL=traceGroup(r,'lump'),row=gL?_trFindRow(gL,'lumpspike'):null,sp=r.lumpTaxSpike;
+  const nt=sp?_lumpSpikeNote(sp)+(sp.calFrom!=null?' Medicare reads the calendar year it lands in, from age '+_ageHalf(sp.calFrom)+' — part of it in the phase before.':'')+(sp.salary?' That year includes the salary you earn before retiring.':''):'';
+  if(row){if(sp){row.value=sp.spike;row.note=nt;}else gL.rows.splice(gL.rows.indexOf(row),1);}
+  else if(gL&&sp)_trRow(gL,'Income in the year of the one-time event',sp.spike,'usd',{kind:'flag',id:'lumpspike',note:nt});
+}
 function _lumpIncrementalTax(o){
   const extra=(o.extraOrdinary||0)+(o.extraGain||0);
   if(!(extra>0))return 0;
@@ -1713,7 +1874,8 @@ function simPhase(o){
   // counts as that share of a month, and from FRA the benefit is recalculated as if claimed that many months later.
   // Not applied inside the survivor projection's "larger of the two" mode, where only the recredit carries over.
   const _et=o.et||null;let etWYou=_et?_et.wYouIn:0,etWSp=_et?_et.wSpIn:0,etSum=0;
-  const _etWh=(age,fra,earn)=>age<fra-1-1e-9?Math.max(0,earn-_et.lim)/24:age<fra-1e-9?Math.max(0,earn-_et.limFra)/36:0;
+  const _etWh=(age,fra,earn)=>_et.cal?_etWithheldMo(age,fra,earn,_et.lim0,_et.limFra0,_et.cal) // R35-3: ages on YOUR line
+    :age<fra-1-1e-9?Math.max(0,earn-_et.lim)/24:age<fra-1e-9?Math.max(0,earn-_et.limFra)/36:0;
   const _etMult=(claim,w,fra,drc)=>w>0&&claim<fra?ssBenefitMult(Math.min(fra,claim+w/12),fra,drc)/ssBenefitMult(claim,fra,drc):1;
   const cppBA=cppBaseAge||65,oasBA=oasBaseAge||65,apBA=agePensionBaseAge||67;
   const usPenBA=usPensionBaseAge||65; // v9: US pension/disability activation age (like CPP/OAS)
@@ -1882,7 +2044,7 @@ function simPhase(o){
       if(!ssMaxOfTwo){
         const w1=cSS>0&&_et.earnYou>0?Math.min(cSS,_etWh(ageNow,_et.fraYou,_et.earnYou)):0;
         if(w1>0){etWYou+=w1/cSS;cSS-=w1;etSum+=w1;}
-        const w2=cSpSS>0&&_et.earnSp>0?Math.min(cSpSS,_etWh(spAge,_et.fraSp,_et.earnSp)):0;
+        const w2=cSpSS>0&&_et.earnSp>0?Math.min(cSpSS,_etWh(ageNow,_et.fraSp+spDelta,_et.earnSp)):0; // R35-3: on your line (the calendar's)
         if(w2>0){etWSp+=w2/cSpSS;cSpSS-=w2;etSum+=w2;}
       }
     }
@@ -2007,18 +2169,25 @@ function calcPhase(p){
   // don't use the option pay nothing for it.
   if(!p._grossUpResolved&&(p.lumpOutItems||[]).some(l=>_lumpSpec(l).grossUp)){
     const withExtra=ex=>(p.lumpOutItems||[]).map(l=>(ex[l.id]>0?{...l,_grossUpExtra:ex[l.id]}:l));
-    let extras={};
-    for(let i=0;i<10;i++){
+    // Sweep R46-2 (v578): from the second round, a secant step on h(e) = tax(e) − e (the shortfall the expense would arrive with) —
+    // the slope is what the last two rounds show. The plain step removes only (1 − the marginal rate) of the error per round, and
+    // before 59½ the 10% penalty (and a state's rate) on top left 140 of 500 grossed-up 401k expenses more than $3 short after ten
+    // rounds, up to $55 on $200,000 (r46probe P2). Settled = the extra already covers its own tax to within 50¢.
+    let extras={},prev={};
+    for(let i=0;i<12;i++){
       const probe=calcPhase({...p,_grossUpResolved:true,lumpOutItems:withExtra(extras)});
-      const next={};let settled=true;
+      const next={},now={};let settled=true;
       (probe.lumpDetail||[]).forEach(d=>{
         const src=(p.lumpOutItems||[]).find(x=>x.id===d.id);
         if(!src||!_lumpSpec(src).grossUp)return;
-        next[d.id]=d.tax||0;
-        if(Math.abs((next[d.id]||0)-(extras[d.id]||0))>0.5)settled=false;
+        const e=extras[d.id]||0,h=(d.tax||0)-e,q=prev[d.id];now[d.id]={e,h};
+        let n=d.tax||0;
+        if(q&&Math.abs(e-q.e)>1e-6){const sl=(h-q.h)/(e-q.e);if(sl<-0.05){const s=e-h/sl;if(isFinite(s)&&s>=0)n=s;}}
+        next[d.id]=n;
+        if(Math.abs(h)>0.5)settled=false;
       });
-      extras=next;
       if(settled)break;
+      prev=now;extras=next;
     }
     return calcPhase({...p,_grossUpResolved:true,lumpOutItems:withExtra(extras)});
   }
@@ -2040,7 +2209,9 @@ function calcPhase(p){
   const subjectUS=p.subjectToUsTax!==false;
   // R19-2: the earnings test, its limits inflated to the phase like every threshold (the same midpoint rule as inflMult).
   const _etPh=p.et?Object.assign({},p.et,(()=>{const y=p.phaseStartAge+p.months/24-p.retireStartAge,m=y>0?Math.pow(1+p.inflationRate/100,y):1;
-    return {lim:p.et.lim*m,limFra:p.et.limFra*m};})()):null;
+    // R35-3: lim/limFra = the phase's middle year (Under the hood); simPhase prices each month on its own year's (lim0, cal)
+    return {lim:p.et.lim*m,limFra:p.et.limFra*m,lim0:p.et.lim,limFra0:p.et.limFra,
+      cal:p.et.s0!=null?{s0:p.et.s0,base:p.retireStartAge,i:p.inflationRate/100}:null};})()):null;
   const sim=simPhase({
     b401k:p.b401k,bCash:p.bCash,bEquity:p.bEquity||0,bRoth:p.bRoth||0,bSuper:p.bSuper||0,
     months:p.months,w401k:p.w401k,wCash:p.wCash,wEquity:wEquity_mo,wRoth:wRoth_mo,wSuper:wSuper_mo,
@@ -2088,9 +2259,9 @@ function calcPhase(p){
     const g=_trGroup(T,'ssearn','How the Social Security earnings test applies',null,'ssEarningsTest');
     _trRow(g,'Your earnings counted',_etPh.earnYou,'usd/yr',{kind:'in',skipZero:true,note:'Part-time / additional income, by the owner set on the Edit tab.'});
     _trRow(g,'Your spouse’s earnings counted',_etPh.earnSp,'usd/yr',{kind:'in',skipZero:true});
-    _trRow(g,'Limit before the year of full retirement age',_etPh.lim,'usd/yr',{kind:'threshold',note:'$1 withheld for every $2 above it. In the year you reach FRA, $1 for every $3 above '+Math.round(_etPh.limFra).toLocaleString()+'.'});
+    _trRow(g,'Limit before the year of full retirement age',_etPh.lim,'usd/yr',{kind:'threshold',note:'$1 withheld for every $2 above it. In the year you reach FRA, $1 for every $3 above '+Math.round(_etPh.limFra).toLocaleString()+'. Both at the middle of this phase: they rise with inflation every year, and each year is withheld against its own.'});
     _trRow(g,'Social Security withheld',sim.etWithheldMo||0,'usd/mo',{kind:'minus',skipZero:true,
-      formula:'the year’s excess earnings ÷ 2 (÷ 3 in the year of FRA), spread over the year',note:'Not lost: SSA recalculates the benefit at full retirement age for the months withheld.'});
+      formula:'each year’s excess earnings ÷ 2 (÷ 3 in the calendar year you reach FRA, on the earnings before it), spread over the year',note:'Not lost: SSA recalculates the benefit at full retirement age for the months withheld.'});
     if(sim.etMultYou!==1)_trRow(g,'Your benefit from full retirement age',sim.etMultYou,'mult',{kind:'rate',
       note:'Recalculated as if claimed '+Math.round(sim.etWYouOut)+' month(s) later, for the benefits withheld.'});
     if(sim.etMultSp!==1)_trRow(g,'Your spouse’s benefit from their full retirement age',sim.etMultSp,'mult',{kind:'rate',
@@ -2290,8 +2461,14 @@ function calcPhase(p){
   // Sweep R11-4 (v429): in a survivor run where YOU died, the survivor is your spouse, whose age is the plan's
   // age line minus ownAgeShift (0 everywhere else).
   const _ownAge=age-(p.ownAgeShift||0);
-  const _sen65=mfj?((_ownAge>=65?1:0)+((age-(p.spouseAgeDelta||0))>=65?1:0)):(_ownAge>=65?1:0);
-  const senDedApplied=mfj?Math.round(adjSenDedEff*_sen65/2):(_sen65?adjSeniorDed:0);
+  // Sweep R46-1 (v578): each person's share for the part of the phase they are 65+, by month (as Medicare beside it, medicareFrac).
+  // It tested the phase MIDPOINT, all or nothing: a phase 63–67 took it in all four years, 62–67 in none, though only the years from
+  // 65 qualify (r46probe P1: 1,033 phases spanning a 65th birthday, the phase's tax off by median $497, > $500 in 515). The phase is
+  // taxed on its average year, so its deduction is the average too. Phases wholly before or after 65 are unchanged.
+  const _pmD=Math.max(1,p.months||12),_f65=a0=>1-Math.min(_pmD,Math.max(0,Math.ceil((65-a0)*12-0.5-1e-9)))/_pmD; // a0: age at the start
+  const _fOwn65=_f65(p.phaseStartAge-(p.ownAgeShift||0)),_fSp65=mfj?_f65(p.phaseStartAge-(p.spouseAgeDelta||0)):0;
+  const _sen65=mfj?_fOwn65+_fSp65:_fOwn65; // people 65+, averaged over the phase
+  const senDedApplied=mfj?Math.round(adjSenDedEff*_sen65/2):Math.round(adjSeniorDed*_sen65);
   let ded=adjStdDedEff+senDedApplied;
   const ti=Math.max(0,gross-ded);
   if(subjectUS&&!isCanadian&&!isAustralian){// TRACE: gross → taxable income
@@ -2299,7 +2476,10 @@ function calcPhase(p){
     _trRow(g,'Gross taxable income',gross,'usd/yr',{kind:'in'});
     _trRow(g,'− standard deduction',adjStdDedEff,'usd/yr',{kind:'minus'});
     if(senDedApplied>0)_trRow(g,'− age-65 additional deduction',senDedApplied,'usd/yr',{kind:'minus',
-      formula:mfj?(_sen65===2?'both of you are 65+ in this phase':'one of you is 65+ in this phase — half the couple’s amount'):'applies from age 65 in this phase'});
+      formula:mfj?(_sen65>2-1e-9?'both of you are 65+ in this phase'
+          :'half the couple’s amount for each of you, for the part of this phase you are 65+ ('+Math.round(_fOwn65*100)+'% of it for you, '+Math.round(_fSp65*100)+'% for your spouse)')
+        :(_sen65>1-1e-9?'applies from age 65 — all of this phase':'for the '+Math.round(_sen65*100)+'% of this phase from your 65th birthday'), // R46-1
+      note:_sen65>0&&_sen65<(mfj?2:1)-1e-9?'Someone turns 65 during this phase. Its tax is worked out on its average year, so the extra deduction counts for the share of the phase from that birthday.':undefined});
     _trRow(g,'= taxable income',ti,'usd/yr',{kind:'total',formula:'max(0, gross − deductions)'});
   }
   // Country-specific tax
@@ -2470,7 +2650,7 @@ function calcPhase(p){
     }
   }
   tax_mo=tax_a/12;
-  const stateTax_mo=stateTax_a/12;
+  let stateTax_mo=stateTax_a/12; // R37-2: + a taxable windfall's state tax (the lump section)
   const ukTax_mo=ukTax_a/12;
   const ftc_mo=ftc_a/12;
   const wEquity_ann=wEquity_mo*12;
@@ -2485,6 +2665,18 @@ function calcPhase(p){
   // this is a second view of the same income, not new maths.
   const ssUntaxed_ann=totalSS_ann*(1-sp); // R12-3: CPP/OAS as US SS for a US resident
   const irmaaMagi=Math.max(0,magi-ssUntaxed_ann);
+  // R37-1 (v552): MAGI year by year inside the phase. A pension starting or ending part-way through, a spouse's Social Security
+  // starting, a 401k running dry: the year-by-year ACA (R32-2) and IRMAA (R32-1/R34-1) priced every year on the phase's AVERAGE
+  // (r37probe: 57 of 800 plans off by more than $500, both ways — a pension from 58 to 61 in a phase from 55: ACA $5,256 too high).
+  // Each 12-month row of the simulation (the ACA's slices) = the phase's MAGI + that year's change in Social Security (all of it for
+  // the ACA, the taxable share for IRMAA), taxable pensions, the UK State Pension, 401k draws and conversions. Tax stays per phase.
+  let magiYears=null,irmaaMagiYears=null;
+  {const _yr=sim.yearRows||[],_mo=_yr.reduce((t,y)=>t+(y.months||0),0);
+   if(_yr.length>1&&_mo>0){
+     const fS=y=>(y.ss||0)+(y.spSS||0),fV=y=>(usPensionTaxable?(y.usPen||0):0)+(usPension2Taxable?(y.usPen2||0):0)+(y.ukp||0)+(y.w401k||0)+(y.conv||0);
+     const aS=_yr.reduce((t,y)=>t+fS(y),0)/_mo*12,aV=_yr.reduce((t,y)=>t+fV(y),0)/_mo*12;
+     magiYears=_yr.map(y=>{const k=y.months>0?12/y.months:0;return Math.max(0,magi+(fS(y)*k-aS)+(fV(y)*k-aV));});
+     irmaaMagiYears=_yr.map(y=>{const k=y.months>0?12/y.months:0;return Math.max(0,irmaaMagi+sp*(fS(y)*k-aS)+(fV(y)*k-aV));});}}
   if(subjectUS&&!isCanadian&&!isAustralian&&!foreign&&!isUkRes){// TRACE: MAGI drives ACA and IRMAA
     const g=_trGroup(T,'magi','What goes into your MAGI',null,'magi');
     _trRow(g,'401k withdrawals',w_ann,'usd/yr',{kind:'in',skipZero:true});
@@ -2517,13 +2709,34 @@ function calcPhase(p){
   // how much of it reaches the expense. That is why existing plans' balances and income are unmoved.
   const _lumpOrd=(sim.lumpDrawn&&sim.lumpDrawn.k401)||0;   // 401k money is ordinary income
   const _lumpGain=sim.lumpEqGain||0;                        // the gain slice of any holdings sold
-  let lumpTax=0,lumpTaxSpike=null,lumpPen=0;
-  if(_lumpOrd>0||_lumpGain>0){
+  // R37-2 (v552): money coming in that the user ticks as taxable (a pension commutation, a deferred bonus, an annuity surrender's
+  // gain) is ordinary income in its year: taxed once — its own share of the one-year spike, spread over this phase like the
+  // retirement-year salary's tax (v515; no balance moves) — and in that year's ACA and IRMAA MAGI (lumpMagi). It was always tax-free.
+  // Sweep R44-1 (v574): except the part paid INTO the 401k / IRA (or into Super that the US taxes as it comes out, R13-4) — a rollover:
+  // it is taxed as ordinary income when it is withdrawn, like the rest of the account. It was taxed now AND again on the way out
+  // (r44probe P1: 600 of 600 such windfalls, median $20,035 charged on money that stays pre-tax). The Roth part stays taxed now (a
+  // conversion). In order: simPhase records the money-in events first, one per item.
+  const _lumpDefer=d=>d&&d.added?((d.added.k401||0)+(p.superTaxedUS?(d.added.super||0):0)):0;
+  const _lumpInD=(sim.lumpDetail||[]).filter(d=>d.dir!=='out');
+  const _lumpInTxOf=(l,i)=>l&&l.taxable&&(+l.amtUSD||0)>0?Math.max(0,+l.amtUSD-_lumpDefer(_lumpInD.find(d=>d.id!=null&&d.id===l.id)||_lumpInD[i])):0;
+  const _lumpInTx=(p.lumpInItems||[]).reduce((t,l,i)=>t+_lumpInTxOf(l,i),0);
+  // Sweep R45-1 (v576): the event's income lifts that year's provisional income too, so more of Social Security is taxable (up to
+  // 85%) — as the salary in the year you retire does (v527). The tax was on the event alone, at the phase's share: a $60,000 401k roof
+  // with $56,743 of benefits 25% taxable left out $4,086 (r45probe P1: median $2,353 in 907 events, > $500 in 840). The Social
+  // Security it makes taxable is in its tax (lumpTax / lumpInTax, so the gross-up covers it), its NIIT and that year's IRMAA income
+  // (lumpIrmaaMagi) — not the ACA's, whose MAGI already holds all of Social Security. Wherever `sp` is the US share (as for it).
+  const _ssProvOth=w_ann+partTime_ann+ukp_ann+convIncome_ann+taxableEquity_ann+usPensionTaxableInc_ann+rentalIncome_ann+superUS_ann;
+  const _lumpSsX=x=>(x>0&&totalSS_ann>0&&subjectUS&&!isUkRes&&!ukTaxesSS&&!isCanadian&&!isAustralian)
+    ?Math.max(0,totalSS_ann*(ssPct(_ssProvOth+x,0,totalSS_ann,mfj,null,taxExemptInt_ann)-sp)):0;
+  const _ssXo=_lumpSsX(_lumpOrd+_lumpGain),_ssXa=_lumpSsX(_lumpOrd+_lumpGain+_lumpInTx); // the expenses' / all the events'
+  let lumpTax=0,lumpTaxSpike=null,lumpYearLine=null,lumpPen=0,lumpInTax=0,lumpInState=0,lumpNiit=0,lumpInNiit=0;
+  if(_lumpOrd>0||_lumpGain>0||_lumpInTx>0){
     // How much of the draw the state can reach: a 401k draw is pension income, so a state that exempts
     // pensions only taxes the part above its cap (0 = uncapped, i.e. fully exempt).
     let stateExtra=0;
     if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian&&(p.stateTaxRate||0)>0){
       stateExtra=_lumpGain;
+      if(p.stateSSExempt===false)stateExtra+=_ssXo; // Sweep R46-3 (v578): a state that taxes SS taxes the SS the event makes taxable (R45-1)
       if(!p.statePensionExempt)stateExtra+=_lumpOrd;
       else if(adjStatePensionCap>0){
         // The recurring pension income already consumed some of the cap; only the remainder shelters
@@ -2532,9 +2745,9 @@ function calcPhase(p){
         stateExtra+=Math.max(0,_lumpOrd-(adjStatePensionCap-used));
       }
     }
-    lumpTax=_lumpIncrementalTax({
+    const _lta=(xo,xs)=>_lumpIncrementalTax({
       // R19-1: spouseBase — a married couple abroad is taxed person by person; the draw stacks on YOUR share.
-      gross,ukBase:ukBase_ann,spouseBase:_spCa||_spAu||_spUk||0,extraOrdinary:_lumpOrd,extraGain:_lumpGain,stateExtra,stateRate:p.stateTaxRate||0,
+      gross,ukBase:ukBase_ann,spouseBase:_spCa||_spAu||_spUk||0,extraOrdinary:xo,extraGain:_lumpGain,stateExtra:xs,stateRate:p.stateTaxRate||0,
       isCanadian,isAustralian,isUkRes,subjectUS,ded,
       brk10:adjBrk10Eff,brk12:adjBrk12Eff,brk22:adjBrk22Eff,brk24:adjBrk24Eff,brk32:adjBrk32Eff,brk35:adjBrk35Eff,
       ukPA:Math.round((p.ukPersonalAllowance||15911)*inflMult),ukBasicCeil:Math.round((p.ukBasicCeil||63542)*inflMult),
@@ -2551,6 +2764,13 @@ function calcPhase(p){
       ausR3:(p.ausRate3!=null?p.ausRate3:37),ausR4:(p.ausRate4!=null?p.ausRate4:45),
       ausLevyThresh:Math.round((p.ausLevyThreshold||19356)*inflMult),ausLevyRate:(p.ausMedicareLevy!=null?p.ausMedicareLevy:2)
     });
+    lumpTax=(_lumpOrd>0||_lumpGain>0)?_lta(_lumpOrd+_ssXo,stateExtra):0; // R45-1: + the Social Security it makes taxable
+    // R37-2: the taxable money coming in — federal on top of the expenses' spike; its state tax at the flat rate, on the state line
+    if(_lumpInTx>0){
+      lumpInTax=Math.max(0,_lta(_lumpOrd+_ssXa+_lumpInTx,stateExtra)-lumpTax); // R45-1
+      if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian&&(p.stateTaxRate||0)>0)
+        lumpInState=(_lumpInTx+(p.stateSSExempt===false?Math.max(0,_ssXa-_ssXo):0))*(p.stateTaxRate/100); // R46-3
+    }
     // Sweep R24-3 (v491): the §72(t) 10% on the 401k money a one-time expense takes BEFORE 59½ — as on the phase's own draw in
     // 'penalty' mode, and in 'locked' mode, where only an expense that names the 401k reaches it (_lumpSpecAt). Not under the Rule
     // of 55 or the disability exception, and gated like the regular penalty (US tax only). It was taxed as income alone: a $60,000
@@ -2558,20 +2778,46 @@ function calcPhase(p){
     // SSDI plans run on the default mode and are exempt (disability, §72(t)(2)(A)(iii)), as their regular draw is.
     if(subjectUS&&!isCanadian&&!isAustralian&&!p.ssdiMode&&(p.phaseKey==='p0'||p.phaseKey==='p0b')&&_lumpOrd>0
        &&((p.earlyAccessMode||'locked')==='penalty'||(p.earlyAccessMode||'locked')==='locked')){lumpPen=0.10*_lumpOrd;lumpTax+=lumpPen;}
+    // Sweep R38-1 (v555): the 3.8% Net Investment Income Tax in the event's year. A gain realised to pay an expense is net investment
+    // income, and any one-time taxable income raises the MAGI that NIIT is measured on; the spike's tax had no NIIT, so a $300,000
+    // house deposit at 61–67 (a $181,460 gain) left out $2,868 (r38probe P1: 232 of 691 gain-funded expenses > $500). That year's NIIT
+    // with the event minus without it, on the year's own MAGI (R37-1) and the unindexed threshold (R2-8): in the expense's tax
+    // (lumpTax, so the gross-up and the funded check include it) and a taxable windfall's (lumpInTax). A windfall is not investment
+    // income itself — it only raises the MAGI.
+    if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
+      const _nThr=Math.round(mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000)),_nInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
+      const _nM0=Math.max(0,((irmaaMagiYears&&irmaaMagiYears[0]!=null)?irmaaMagiYears[0]:irmaaMagi)-taxExemptInt_ann); // NIIT's MAGI that year
+      const _nt=(x,g)=>0.038*Math.min(_nInv+g,Math.max(0,_nM0+x-_nThr)),_xo=_lumpOrd+_lumpGain;
+      if(_xo>0)lumpNiit=Math.max(0,_nt(_xo+_ssXo,_lumpGain)-_nt(0,0)); // R45-1: NIIT's MAGI (AGI) holds the taxable Social Security
+      if(_lumpInTx>0)lumpInNiit=Math.max(0,_nt(_xo+_lumpInTx+_ssXa,_lumpGain)-_nt(_xo+_ssXo,_lumpGain));
+      lumpTax+=lumpNiit;lumpInTax+=lumpInNiit;
+    }
     // Flag-only: a one-year income spike can cross a cliff that the phase AVERAGE never shows. We do
     // not recompute the subsidy (see _lumpIncrementalTax) — we tell the user it would happen.
     if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
-      const spike=magi+_lumpOrd+_lumpGain;
+      const spike=magi+_lumpOrd+_lumpGain+_lumpInTx; // R37-2: + taxable money coming in
       // Recorded whenever a one-off adds income and the phase AVERAGE is still under the threshold —
       // `crosses` says whether it actually goes over. A near miss matters too: selling from a taxable
       // account only adds the GAIN, so it often lands just under the line, and without this the user
       // has no way to see their headroom shrink from comfortable to almost nothing.
       // v14: an IRMAA threshold must be compared against the IRMAA MAGI, an ACA one against the
       // ACA MAGI. The spike itself is taxable income, so it lands in both the same way.
-      const thr=p.hasMedicare?adjIrmaaEff:adjFpl400;
-      const baseMagi=p.hasMedicare?irmaaMagi:magi;
-      const spikeM=baseMagi+(spike-magi);
-      if(baseMagi<=thr)lumpTaxSpike={kind:p.hasMedicare?'irmaa':'aca',thresh:thr,magi:baseMagi,spike:spikeM,
+      // Sweep R43-1 (v572): the event's YEAR — the phase's first twelve months, where it lands. It judged the phase AVERAGE against the
+      // middle year's line, and IRMAA whenever anyone reached Medicare in the phase: wrong for year one in 6 of 75 ACA verdicts and 9 of
+      // 866 IRMAA ones, and in a phase Medicare starts part-way through, 99 of 198 events crossing the ACA cliff in a marketplace year
+      // were judged against IRMAA instead (r43probe). Now: ACA when someone is on the marketplace in that first month (year one's MAGI,
+      // R37-1, against year one's cliff, R32-2), else IRMAA (that year's IRMAA MAGI against the threshold Medicare applies to it two
+      // years on, R34-1). The salary in the year you retire joins it in calcAllPhases (R42-2).
+      const _pe=p.phaseStartAge+p.months/12,_spn=Math.max(1e-9,p.months/12),_mf0=(p.medicareFrac!=null?p.medicareFrac:(p.hasMedicare?1:0)),_smf0=p.spouseMedicareFrac||0;
+      const _A0=p.phaseStartAge+0.5/12,_u0=(_mf0>0&&_A0>=_pe-_mf0*_spn-1e-6?1:0)+(_smf0>0&&_A0>=_pe-_smf0*_spn-1e-6?1:0);
+      const _onMkt=(p.medicareHeads||1)-_u0>0,_mm0=Math.min(12,p.months);
+      const kind=_onMkt?'aca':'irmaa';
+      const thr=_onMkt?adjFpl400*Math.pow(1+infl,_mm0/24-p.months/24)
+        :adjIrmaaEff*Math.pow(1+infl,Math.max(-Math.max(0,yrs),_mm0/24+2-p.months/24)); // not before today, like the IRMAA pass's _e0
+      const baseMagi=_onMkt?((magiYears&&magiYears[0]!=null)?magiYears[0]:magi):((irmaaMagiYears&&irmaaMagiYears[0]!=null)?irmaaMagiYears[0]:irmaaMagi);
+      const spikeM=baseMagi+(spike-magi)+(_onMkt?0:_ssXa); // R45-1: IRMAA's MAGI holds the Social Security it makes taxable
+      lumpYearLine={kind,thresh:thr}; // the event year's line, for the salary in the year you retire (calcAllPhases)
+      if(baseMagi<=thr)lumpTaxSpike={kind,thresh:thr,magi:baseMagi,spike:spikeM,
         crosses:spikeM>thr,headroom:Math.max(0,thr-spikeM)};
     }
   }
@@ -2579,6 +2825,20 @@ function calcPhase(p){
   // each one drew. Brackets apply to the combined spike, so the split has to come after the total.
   // (This runs BEFORE the trace below, which reports each event's own tax.)
   const lumpDetail=(sim.lumpDetail||[]).map(d=>({...d}));
+  // R37-2: each taxable windfall's share of its tax (federal + state), for the card, PDF and AI; charged in the phase's tax below.
+  lumpDetail.forEach(d=>{if(d.dir==='out')return;const src=(p.lumpInItems||[]).find(x=>x.id===d.id); // R44-1: taxed as it is withdrawn
+    if(src&&src.taxable&&_lumpDefer(d)>0.005)d.txDeferred=Math.min(d.amt||0,_lumpDefer(d));});
+  if(lumpInTax+lumpInState>0.005){
+    const txOf=d=>{const src=(p.lumpInItems||[]).find(x=>x.id===d.id);return d.dir!=='out'&&src&&src.taxable?Math.max(0,(d.amt||0)-_lumpDefer(d)):0;}; // R44-1
+    const tot=lumpDetail.reduce((t,d)=>t+txOf(d),0);
+    lumpDetail.forEach(d=>{const a=txOf(d);if(a>0&&tot>0){d.taxIn=(lumpInTax+lumpInState)*a/tot;d.niitIn=lumpInNiit*a/tot;}}); // R38-1: + its NIIT
+    const yrsP=Math.max(1e-9,(p.months||12)/12);
+    tax_a+=lumpInTax/yrsP;if(subjectUS)usTaxBeforeFTC+=lumpInTax/yrsP;tax_mo=tax_a/12;
+    if(lumpInState>0){stateTax_a+=lumpInState/yrsP;stateTax_mo=stateTax_a/12;
+      const _gSt=T.groups.find(g=>g.id==='statetax')||_trGroup(T,'statetax','How your state income tax is calculated',null,'stateTax');
+      _trRow(_gSt,'+ state tax on taxable money coming in',lumpInState/yrsP,'usd/yr',{kind:'minus',
+        formula:'the taxable amount'+(p.stateSSExempt===false&&_ssXa-_ssXo>0.5?' (and the Social Security it makes taxable — your state taxes it)':'')+' × your state rate, once, spread over this phase'});}
+  }
   if(lumpTax>0){
     const taxableOf=d=>((d.drawn&&d.drawn.k401)||0)+(d.gain||0);
     const totTaxable=lumpDetail.reduce((a,d)=>a+(d.dir==='out'?taxableOf(d):0),0);
@@ -2586,6 +2846,7 @@ function calcPhase(p){
     lumpDetail.forEach(d=>{
       if(d.dir!=='out')return;
       d.pen=totK>0?lumpPen*(((d.drawn&&d.drawn.k401)||0)/totK):0;
+      d.niit=totTaxable>0?lumpNiit*(taxableOf(d)/totTaxable):0; // R38-1: its share of the year's extra NIIT (inside d.tax)
       d.tax=(totTaxable>0?(lumpTax-lumpPen)*(taxableOf(d)/totTaxable):0)+d.pen;
       // What actually reaches the expense. A grossed-up event lands on its full sticker price; an
       // ordinary one is short by its own tax bill.
@@ -2610,6 +2871,14 @@ function calcPhase(p){
         if(d.dir!=='out'){
           _trRow(g,nm+' — money in',d.amt||0,'usd',{kind:'in'});
           LUMP_ACCTS.forEach(k=>_trRow(g,nm+' — paid into '+LUMP_ACCT_TRACE[k],(d.added&&d.added[k])||0,'usd',{skipZero:true}));
+          if((d.txDeferred||0)>0.005)_trRow(g,nm+' — of which paid into '+(p.superTaxedUS&&(d.added.super||0)>0.005&&!((d.added.k401||0)>0.005)?'Super':'the 401k / IRA')+': taxed as it is withdrawn',d.txDeferred,'usd',{kind:'flag', // R44-1
+            note:'Taxable money rolled into a pre-tax account is not income when it arrives: it is taxed as ordinary income as you withdraw it, like the rest of that account. It is not taxed here and is not in that year’s ACA or IRMAA income. Only the part paid elsewhere is.'});
+          if((d.taxIn||0)>0.005)_trRow(g,nm+' — tax on it as income',d.taxIn,'usd',{kind:'minus', // R37-2
+            formula:'tax on this phase’s income plus '+((d.txDeferred||0)>0.005?'the part not paid into the 401k':'it')+(_ssXa-_ssXo>0.5?' and the Social Security it makes taxable':'')+', minus tax on the income alone (and your state rate on it)', // R44-1, R45-1
+            note:'You marked it taxable. Charged once and spread over this phase like the rest of its tax; it also counts in that year’s ACA and IRMAA income. No balance moves — it lands in full.'});
+          if((d.niitIn||0)>0.005)_trRow(g,nm+' — of which the 3.8% Net Investment Income Tax',d.niitIn,'usd',{kind:'flag', // R38-1
+            formula:'3.8% × (that year’s net investment income, or its MAGI over the threshold, whichever is smaller) — with it, minus without it',
+            note:'It is not investment income itself, but it raises the income NIIT is measured on, so more of your investment income is over the threshold that year.'});
           return;
         }
         const grossed=(d.amt||0)>(d.setAmt||0)+0.5;
@@ -2620,8 +2889,11 @@ function calcPhase(p){
         _trRow(g,nm+' — taxable gain realised on holdings sold',d.gain||0,'usd',{skipZero:true,
           formula:'amount sold × the share of that account which is gain'});
         _trRow(g,nm+' — tax created by funding it',d.tax||0,'usd',{kind:'minus',skipZero:true,
-          formula:'tax on this phase’s income plus the draw, minus tax on the income alone',
+          formula:'tax on this phase’s income plus the draw'+(_ssXo>0.5?' and the Social Security it makes taxable':'')+', minus tax on the income alone', // R45-1
           note:'Charged once, in the year of the expense — it is not added to the phase’s yearly income, which would tax it every year of the phase. Approximate: a single-year spike cannot be modelled to the dollar inside a multi-year phase.'});
+        _trRow(g,nm+' — of which the 3.8% Net Investment Income Tax',d.niit||0,'usd',{kind:'flag',skipZero:true, // R38-1
+          formula:'3.8% × (that year’s net investment income, or its MAGI over the threshold, whichever is smaller) — with the expense, minus without it',
+          note:'A gain realised to pay it is investment income, and the draw raises the income NIIT is measured on ($200,000 single, $250,000 married — not indexed for inflation).'});
         _trRow(g,nm+' — of which the 10% early-withdrawal penalty',d.pen||0,'usd',{kind:'flag',skipZero:true, // R24-3
           formula:'10% × the 401k money it took before 59½',
           note:(p.earlyAccessMode||'locked')==='locked'?'Your 401k is set to stay locked before 59½, so the automatic order never reaches it — this expense names the 401k itself, and a withdrawal before 59½ carries the 10% IRS penalty on top of income tax.':'A withdrawal before 59½ carries the 10% IRS penalty on top of income tax, like the phase’s regular 401k draw.'});
@@ -2635,14 +2907,11 @@ function calcPhase(p){
         LUMP_ACCTS.forEach(k=>_trRow(g,'All events — added to '+LUMP_ACCT_TRACE[k],(sim.lumpAdded&&sim.lumpAdded[k])||0,'usd',{kind:'in',skipZero:true}));
         _trRow(g,'= total tax created this phase',lumpTax,'usd',{kind:'total',skipZero:true});
       }
-      if(lumpTaxSpike){
-        const _lim=lumpTaxSpike.kind==='aca'?'400% FPL subsidy cliff':'IRMAA threshold';
-        const _amt=Math.round(lumpTaxSpike.thresh).toLocaleString();
-        _trRow(g,'Income in the year of the expense',lumpTaxSpike.spike,'usd',{kind:'flag',
-          note:lumpTaxSpike.crosses
-            ?`Crosses the ${_lim} of ${_amt} for that one year. The planner prices ACA and IRMAA off the phase average, so this is a warning rather than a re-priced figure.`
-            :`Still under the ${_lim} of ${_amt}, with ${Math.round(lumpTaxSpike.headroom).toLocaleString()} to spare. Only the taxable part of a one-off counts — a sale from a taxable account adds the gain, not the whole amount.`});
-      }
+      if(_ssXa>0.5)_trRow(g,'Social Security the one-time event'+(lumpDetail.length>1?'s make':' makes')+' taxable that year',_ssXa,'usd',{kind:'flag',id:'lumpssx', // R45-1
+        formula:'your Social Security × (its taxable share with the event − this phase’s share of '+Math.round(sp*100)+'%)',
+        note:'The event counts in that year’s provisional income, so more of your benefit is taxed (up to 85%). The tax above includes the tax on it, and Medicare counts it in that year’s IRMAA income. The ACA already counts all of your Social Security.'});
+      if(lumpTaxSpike)_trRow(g,'Income in the year of the one-time event',lumpTaxSpike.spike,'usd',{kind:'flag',id:'lumpspike', // R37-2: an expense or taxable money in
+          note:_lumpSpikeNote(lumpTaxSpike)}); // R43-1: that year's own line
     }
   }
   // v8: NIIT — 3.8% surtax on net investment income (taxable equity gains + taxable rental) above the
@@ -2667,6 +2936,10 @@ function calcPhase(p){
       _trRow(g,'= NIIT at 3.8%',niit_a,'usd/yr',{kind:'total',formula:'3.8% × min(net investment income, MAGI − threshold)'});
     }
     tax_a+=niit_a; usTaxBeforeFTC+=niit_a; tax_mo=tax_a/12;
+    // R38-1 (v555): a taxable windfall's NIIT is already charged (in lumpInTax, spread over the phase) — shown with the phase's NIIT
+    if(lumpInNiit>0){const _y=Math.max(1e-9,(p.months||12)/12);niit_a+=lumpInNiit/_y;
+      _trRow(T.groups.find(g=>g.id==='niit')||_trGroup(T,'niit','Net Investment Income Tax (NIIT)',null,'niit'),'+ in the year your taxable money comes in',lumpInNiit/_y,'usd/yr',{kind:'in',
+        formula:'that year’s NIIT with the money minus without it, spread over this phase'});}
   }
   // ── v15: §72(t) 10% additional tax on an early 401k withdrawal ─────────────────────────────
   // Only ever charged when the user has explicitly chosen to accept it. Being in the pre-59½
@@ -2695,7 +2968,7 @@ function calcPhase(p){
       note:'Charged on top of ordinary income tax, and not reduced by the Foreign Tax Credit.'});
     tax_a+=earlyPen_a; usTaxBeforeFTC+=earlyPen_a; tax_mo=tax_a/12;
   }
-  let health_mo,acaVal=null;
+  let health_mo,acaVal=null,acaCliffYrs=null,acaYrs=null;
   // v13: share of this phase spent on Medicare (1 = all, 0 = none, between = it starts mid-phase).
   // Absent ⇒ derive from hasMedicare, so any caller predating this field behaves exactly as before.
   const medFrac=(p.medicareFrac!=null?p.medicareFrac:(p.hasMedicare?1:0));
@@ -2766,6 +3039,63 @@ function calcPhase(p){
       acaCost=acaVal===-1?Math.max(magi*(_ovr/100)/12,700):acaVal;
       if(acaVal===-1)_trRow(_gA,'= estimated full premium',acaCost,'usd/mo',{kind:'total',
         formula:'the greater of about '+_ovr+'% of MAGI or a $700/mo floor for an older enrollee'});
+      // R32-2 (v533): year by year. The income is flat in dollars across a phase while the poverty line — and the 400% cliff —
+      // rises with inflation every year, so a long pre-Medicare phase can sit over the cliff in its early years and under it
+      // later (or the reverse). It was priced once, at the phase's midpoint: 246 of 3,000 random plans were off by more than
+      // $500 over such a phase, both ways, up to $6,328 (aca-years.mjs). Each twelve months now gets the line of its own
+      // midpoint, weighted by the household's months on the marketplace; a phase of a year or less is unchanged.
+      // R33-2 (v537): how many of the phase's years sit over the cliff, {over,of} — the card, Plan Health, the PDF and the AI say "over
+      // the cliff in N of its M years" when a long phase straddles it, rather than judging the whole phase at its midpoint.
+      acaCliffYrs={over:acaVal===-1?1:0,of:1,line:adjFpl400};
+      // Sweep R38-2 (v555): each marketplace year's own MAGI and the factor on its poverty line ({a: its start age, mg, f}, lines =
+      // fpl100/250/400 × f) — the years the premium is priced on, so the badges, popovers, Plan Health and the warnings can judge the
+      // years rather than the phase average against the middle year's lines (_acaBandsOf). Year one includes a one-time event's income.
+      acaYrs=[{a:p.phaseStartAge,mg:magi,f:1}];
+      if(p.months>12){
+        const _pe=p.phaseStartAge+p.months/12,_sp=Math.max(1e-9,p.months/12);
+        const _onP=medFrac>0?_pe-medFrac*_sp:Infinity,_onS=(p.spouseMedicareFrac||0)>0?_pe-p.spouseMedicareFrac*_sp:Infinity;
+        const _raw=(x,mg)=>acaPrem(mg,adjFpl100*x,adjFpl400*x,null,p.acaCap133!=null?p:null);
+        let _tw=0,_tc=0,_ov=0,_of=0,_fm=Infinity;const _ay=[];
+        for(let j=0;12*j<p.months;j++){
+          const mm=Math.min(12,p.months-12*j),f=Math.pow(1+infl,(12*j+mm/2)/12-p.months/24);let w=0;
+          for(let q=0;q<mm;q++){const A=p.phaseStartAge+(12*j+q+0.5)/12,u=(A>=_onP-1e-6?1:0)+(A>=_onS-1e-6?1:0);w+=Math.max(0,(medHeads-u)/medHeads);}
+          const mg=(magiYears&&magiYears[j]!=null)?magiYears[j]:magi; // R37-1: that year's own MAGI
+          if(w>0){const v=_raw(f,mg);_tw+=w;_tc+=(v===-1?Math.max(mg*(_ovr/100)/12,700):v)*w;_of++;if(v===-1)_ov++;if(f<_fm)_fm=f;_ay.push({a:p.phaseStartAge+j,mg,f});}
+        }
+        if(_ay.length)acaYrs=_ay; // R38-2
+        if(_of)acaCliffYrs={over:_ov,of:_of,line:adjFpl400*_fm}; // line: the lowest the cliff gets in this phase (the lever)
+        if(_tw>0){const avg=_tc/_tw;
+          if(Math.abs(avg-acaCost)>0.5)_trRow(_gA,'Priced year by year — the average over this phase',avg,'usd/mo',{kind:'total',
+            formula:'each year’s premium with that year’s poverty line, averaged over the months on the marketplace',
+            note:'Your income stays the same in dollars while the poverty line (and the 400% cliff) rises with inflation each year, so the subsidy changes from year to year. The figure above is the middle of the phase.'});
+          if(_ov>0&&_ov<_of)_trRow(_gA,'Years over the 400% cliff — no subsidy in them',_ov,'num',{kind:'rate',
+            formula:'of the '+_of+' years of this phase on the marketplace',
+            note:'The cliff rises with inflation each year while your income stays the same in dollars, so this phase is over it in some years and under it in the rest.'});
+          acaCost=avg;}
+      }
+      // R36-1 (v548): a one-time expense paid from taxable money is income in its year — the phase's FIRST twelve months (it lands at
+      // the phase's start). Its tax was charged as a one-year spike, but the ACA saw only the phase's own income: a $30,000 roof at
+      // 62–65 left out $4,464 of premium (r36probe P1: 231 of 511 plans with such an expense off by more than $500). Over the cliff
+      // the full-price proxy is read at the cliff, as for the retirement-year salary (v524): a year already unsubsidised pays no more.
+      const _lmp=(_lumpOrd||0)+(_lumpGain||0)+(_lumpInTx||0); // R37-2: + taxable money coming in
+      if(_lmp>0){
+        const _pe=p.phaseStartAge+p.months/12,_sp=Math.max(1e-9,p.months/12);
+        const _onP=medFrac>0?_pe-medFrac*_sp:Infinity,_onS=(p.spouseMedicareFrac||0)>0?_pe-p.spouseMedicareFrac*_sp:Infinity;
+        const _wAt=i=>{const A=p.phaseStartAge+(i+0.5)/12,u=(A>=_onP-1e-6?1:0)+(A>=_onS-1e-6?1:0);return Math.max(0,(medHeads-u)/medHeads);};
+        const mm0=Math.min(12,p.months),f0=Math.pow(1+infl,mm0/24-p.months/24);let w0=0,wAll=0;
+        for(let i=0;i<p.months;i++){const w=_wAt(i);wAll+=w;if(i<mm0)w0+=w;}
+        const _cc=x=>{const v=acaPrem(x,adjFpl100*f0,adjFpl400*f0,null,p.acaCap133!=null?p:null);return v===-1?Math.max(Math.min(x,adjFpl400*f0)*(_ovr/100)/12,700):v;};
+        const m0=(magiYears&&magiYears[0]!=null)?magiYears[0]:magi; // R37-1: the first year's own MAGI
+        if(acaYrs&&acaYrs[0]&&acaYrs[0].a===p.phaseStartAge)acaYrs[0]={...acaYrs[0],mg:acaYrs[0].mg+_lmp}; // R38-2: that year's MAGI has it
+        const ex=Math.max(0,_cc(m0+_lmp)-_cc(m0));
+        if(ex>0.005&&w0>0&&wAll>0){
+          acaCost+=ex*w0/wAll;
+          if(acaPrem(m0+_lmp,adjFpl100*f0,adjFpl400*f0,null,p.acaCap133!=null?p:null)===-1&&acaPrem(m0,adjFpl100*f0,adjFpl400*f0,null,p.acaCap133!=null?p:null)!==-1)
+            acaCliffYrs={...acaCliffYrs,over:Math.min(acaCliffYrs.of,acaCliffYrs.over+1)};
+          _trRow(_gA,'+ the one-time expense’s income in its year',ex*w0/wAll,'usd/mo',{kind:'in',
+            formula:'that year’s premium at this phase’s MAGI + the expense’s taxable '+'income − at the MAGI alone, spread over this phase’s months on the marketplace',
+            note:'The expense lands at the start of this phase, so its income is in the first year’s MAGI, which sets that year’s subsidy.'});}
+      }
     }
     health_mo=medUnits*medCostPer+acaShare*acaCost;
     if(medUnits>0){
@@ -2802,7 +3132,27 @@ function calcPhase(p){
   const _rmdBal=(rmdStartAge>p.phaseStartAge+1e-9&&sim.b401kAtCap!=null)?sim.b401kAtCap:p.b401k;
   const rmdEst=_rmdBal>0&&phaseEndAge>rmdStartAge?(_rmdBal/rmdDivisor/12):0;
   // Compare against the ACHIEVABLE draw: if the 401k can't fund the RMD, the shortfall is real, not less.
-  const rmdShortfall=rmdEst>0&&aW401k<rmdEst?rmdEst-aW401k:0;
+  const _rmdShort1=rmdEst>0&&aW401k<rmdEst?rmdEst-aW401k:0;
+  // Sweep R31-1 (v513): every RMD year, from the plan's own year rows — the 401k balance entering each year ÷ that age's divisor,
+  // against the 401k money actually drawn that year. The estimate above is the FIRST RMD year only, and a level draw that clears it
+  // falls short later: the divisor falls every year (26.5 at 73, 12.2 at 90) and a growing balance raises the minimum further ($1M
+  // at 7%, $4,100/mo from 73: short from 74, about $26,282/mo required by 94). rmdShortfall is now the LARGEST monthly shortfall in
+  // any year of the phase (never less than the first-year one); rmdShortFrom is the first age short, rmdShortAge the largest's age,
+  // rmdShortReq / rmdShortDraw the minimum and the draw that year (monthly). A warning only — the plan does not take the RMD.
+  let _rmdYrMax=0,rmdShortFrom=_rmdShort1>0?rmdAge:null,rmdShortAge=_rmdShort1>0?rmdAge:null,
+      rmdShortReq=_rmdShort1>0?rmdEst:0,rmdShortDraw=_rmdShort1>0?aW401k:0;
+  if(phaseEndAge>rmdStartAge){const _yr=sim.yearRows||[];
+    _yr.forEach((y,i)=>{
+      if(!(y.months>0)||y.ageStart<rmdStartAge-1e-9)return;
+      const bal=i?(((_yr[i-1]||{}).end||{}).b401k||0):(p.b401k||0);if(!(bal>0))return;
+      const req=bal/rmdDivisorFor(y.ageStart-_rmdSh)/12,drawn=(y.w401k||0)/y.months,sh=req-drawn;
+      if(sh>0.5){
+        if(rmdShortFrom==null||y.ageStart<rmdShortFrom)rmdShortFrom=y.ageStart;
+        if(sh>_rmdYrMax&&sh>_rmdShort1){_rmdYrMax=sh;rmdShortAge=y.ageStart;rmdShortReq=req;rmdShortDraw=drawn;}
+      }
+    });
+  }
+  const rmdShortfall=Math.max(_rmdShort1,_rmdYrMax);
   if(rmdEst>0){// TRACE: RMD via the IRS Uniform Lifetime Table (NOT the old linear approximation)
     const g=_trGroup(T,'rmd','How your Required Minimum Distribution is estimated','tg-rmd','rmd');
     if(_rmdBal!==p.b401k)_trRow(g,'401k balance at the RMD start age',_rmdBal,'usd',{kind:'in',note:'The age falls inside this phase, so the balance on reaching it.'});
@@ -2811,10 +3161,14 @@ function calcPhase(p){
     _trRow(g,'Age used for the divisor',rmdAge-_rmdSh,'age',{});
     _trRow(g,'IRS Uniform Lifetime Table divisor',rmdDivisor,'num',{kind:'rate',
       formula:'IRS Publication 590-B distribution period for that age'});
-    _trRow(g,'= required minimum distribution',rmdEst,'usd/mo',{kind:'total',formula:'balance ÷ divisor ÷ 12'});
+    _trRow(g,'= required minimum distribution (first RMD year)',rmdEst,'usd/mo',{kind:'total',formula:'balance ÷ divisor ÷ 12'});
     _trRow(g,'Your achievable 401k draw',aW401k,'usd/mo',{});
     if(rmdShortfall>0)_trRow(g,'Shortfall below the minimum',rmdShortfall,'usd/mo',{kind:'flag',
       note:'Taking less than the RMD can incur an IRS penalty. This compares against the ACHIEVABLE draw, so the shortfall is real.'});
+    // R31-1: the later years, each on its own balance and divisor.
+    if(_rmdYrMax>0)_trRow(g,'Largest shortfall in a later year (age '+Math.floor(rmdShortAge-_rmdSh)+')',_rmdYrMax,'usd/mo',{kind:'flag',
+      formula:'that year: 401k balance entering it ÷ the divisor for that age ÷ 12, minus the 401k money drawn that year',
+      note:'From age '+Math.floor(rmdShortFrom-_rmdSh)+' the required minimum is above your 401k draw. It rises every year as the IRS divisor falls, so a level withdrawal that clears the first year can fall short later.'});
   }
   const rental_mo=rentalAnn/12;
   // Total monthly cash flow — all income streams
@@ -2969,6 +3323,8 @@ function calcPhase(p){
   }
   // v13: medFrac<1 rather than !hasMedicare — a phase Medicare starts part-way through still has
   // ACA months before it, and the subsidy applies to those. Identical when medFrac is 1 or 0.
+  // ⚠ Sweep R38-2 (v555): these two judge the phase AVERAGE against the middle year's lines and are kept for older readers (the
+  // phone, the demo). The desktop's badges, popovers, Plan Health, tips, PDF and AI judge the years instead — _acaBandsOf(acaYrs).
   const acaSubsidyEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&medFrac<1&&magi>adjFpl100;
   const acaCsrEligible=!foreign&&!isUkRes&&!isCanadian&&!isAustralian&&subjectUS&&medFrac<1&&magi>adjFpl100&&magi<=adjFpl250;
   return{
@@ -2979,11 +3335,15 @@ function calcPhase(p){
     // v15: the §72(t) penalty is INSIDE tax_a already; carried separately so the phase card and
     // the PDF can name it instead of leaving an unexplained bulge in "Federal tax".
     earlyPen_a,earlyPen_mo:earlyPen_a/12,earlyAccessMode:p.earlyAccessMode||'locked',
-    magi,irmaaMagi,taxExemptInt:taxExemptInt_ann,aca:acaVal,health_mo,total_mo,net_mo,net_real,
+    magi,irmaaMagi,taxExemptInt:taxExemptInt_ann,ssTotal_a:totalSS_ann,netInv_a:Math.max(0,taxableEquity_ann+rentalIncome_ann),aca:acaVal,acaCliffYrs,acaYrs,health_mo,total_mo,net_mo,net_real,
     sp,hasMedicare:p.hasMedicare,medicareFrac:medFrac,medicareUnits:medUnits,medicareHeads:medHeads,spouseMedicareFrac:p.spouseMedicareFrac||0,gross,ded,lumpCash:p.lumpCash,lumpOut:p.lumpOut||0,lumpUnfunded:sim.lumpUnfunded||0,lumpItems:p.lumpItems,
     // Per-account sourcing outcome, so renderers can say which pot actually paid for each event, plus
     // the tax that funding it created and whether that spike would cross an ACA/IRMAA threshold.
-    lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpPen,lumpEqGain:sim.lumpEqGain||0,
+    lumpDrawn:sim.lumpDrawn,lumpAdded:sim.lumpAdded,lumpDetail,lumpTax,lumpTaxSpike,lumpYearLine,lumpPen,lumpEqGain:sim.lumpEqGain||0,
+    lumpMagi:(_lumpOrd||0)+(_lumpGain||0)+(_lumpInTx||0), // R36-1 / R37-2: one-time taxable income — in MAGI for the year the phase starts
+    lumpSsX:_ssXa||0,lumpIrmaaMagi:(_lumpOrd||0)+(_lumpGain||0)+(_lumpInTx||0)+(_ssXa||0), // R45-1: + the Social Security it makes taxable (IRMAA only)
+    lumpInTax,magiYears,irmaaMagiYears, // R37-2: tax on taxable money coming in; R37-1: MAGI by 12-month row
+    lumpNiit,lumpInNiit, // R38-1: the NIIT a one-time expense / taxable money in adds in its year (inside lumpTax / lumpInTax)
     ukp_grown:sim.avgUKP,uss_grown:sim.avgSS,spSS_grown:sim.avgSpSS,
     // R19-1: the spouse's share of the pension streams (inside ukp_grown / cpp_grown / … too) and each person's taxed share;
     // R19-2: the earnings test — benefits withheld this phase (monthly average), the months carried, the FRA recredit.
@@ -3004,7 +3364,7 @@ function calcPhase(p){
     yearRows:sim.yearRows||[],
     rothConvAnn,taxableEquity_ann,partTime_mo,partTimeAnnual:p.partTimeAnnual||0,
     acaSubsidyEligible,acaCsrEligible,irmaaOver,adjIrmaa:adjIrmaaEff,adjIrmaaSurch,adjIrmaaTiers,adjIrmaaManual,irmaaRelief:(p.irmaaRelief||'lookback'),adjStatePensionCap,foreign,mfj,subjectUS,
-    rmdEst,rmdShortfall,rentalAnn,rental_mo,
+    rmdEst,rmdShortfall,rmdShortFrom,rmdShortAge,rmdShortReq,rmdShortDraw,rentalAnn,rental_mo, // R31-1
     usPension_mo:sim.avgUsPen,usPension_ann,usPensionTaxable, // v9: US pension/disability
     usPension2_mo:sim.avgUsPen2,usPension2_ann,usPension2Taxable, // v9: second US pension/disability
 
@@ -3014,6 +3374,81 @@ function calcPhase(p){
   };
 }
 
+// Sweep R30-4 (v511): the IRMAA lookback across a Replan. Medicare prices IRMAA on the income from two years earlier, and for a
+// replanned plan those years fall before its restart, where the lookback took the first REMAINING phase's own income: a $120,000
+// conversion at 62–65 priced IRMAA at 65–67 ($271/mo) until a Replan at 66 dropped it. applyReplan now saves the plan's own IRMAA
+// MAGI (or the figures typed in its panel) for the two years before today as s.irmaaPre = {age, magi:[2 years ago, last year]},
+// USD/yr; it holds only while s.currentAge is that Replan's age (a survivor run restarts elsewhere and keeps its old behaviour).
+function _irmaaPreAt(s,age){
+  const pre=s&&s.irmaaPre;
+  if(!pre||!Array.isArray(pre.magi)||!(+s.currentAge>0)||Math.abs(+s.currentAge-(+pre.age||0))>1e-6)return null;
+  // R35-1 (v545): the two figures are TAX years — "last year" is the calendar year before the one holding the Replan age, "2 years
+  // ago" the one before — on the calendar the retirement month pins (_retCal). They were the two AGE years before the Replan: IRMAA
+  // reads calendar years (R32-1), so each premium year read a 50/50 blend of them, a year late (r35probe P2: 127 of 416 replans off
+  // by more than $500; "last year" $160,000 never charged). The current year's months before the Replan: the first phase stands in.
+  const s0=_retCal(s).s0,kNow=Math.floor(+pre.age-s0+1e-9),k=Math.floor(age-s0+1e-9);
+  if(k!==kNow-2&&k!==kNow-1)return null;
+  const v=pre.magi[k===kNow-2?0:1];
+  return (v!=null&&v!==''&&isFinite(+v))?+v:null;
+}
+// The IRMAA MAGI the plan assigns to an age: the phase that holds it; before the first phase, the Replan's saved figure, else the
+// first phase stands in; past the end, the last phase. Also pre-fills the Replan panel from the plan's own projection.
+// R37-1: inside a phase, the 12-month row's own IRMAA MAGI (irmaaMagiYears) — not the phase's average.
+function _irmaaMagiAt(r,age){const y=r.irmaaMagiYears;if(Array.isArray(y)&&y.length){const j=Math.floor(age-r.phaseStartAge+1e-9);
+  if(j>=0&&j<y.length&&y[j]!=null)return y[j];}return r.irmaaMagi!=null?r.irmaaMagi:r.magi;}
+function _irmaaLookbackMagi(results,s,age){
+  const _im=r=>(r.irmaaMagi!=null?r.irmaaMagi:r.magi);
+  for(let i=0;i<results.length;i++)if(age>=results[i].phaseStartAge&&age<results[i].phaseEndAge)return _irmaaMagiAt(results[i],age);
+  if(age<results[0].phaseStartAge){const v=_irmaaPreAt(s,age);return v!=null?v:_im(results[0]);}
+  return _im(results[results.length-1]);
+}
+// v515: the income Medicare's IRMAA looks back to before the plan begins, for a plan that has not been replanned: `pre` = the
+// income in each of the two years before retiring (s.preRetMagi), `yrA` = the retirement year (salary + that year's retirement
+// income, set on results[0] by the retirement-year pass). null when neither is in play or when SSA-44 is ticked.
+function _preRetLookback(s,results){
+  if(!s||!results||!results.length||s._survivorRun)return null;
+  if(s.currentAge&&s.currentAge>s.startAge)return null;   // a restarted plan: the Replan's own record (R30-4)
+  if(s.preRetSsa44)return null;                            // SSA-44: Social Security uses the retirement income
+  const R=+s.startAge;if(!(results[0].phaseStartAge<=R+1e-9))return null;
+  const pre=(s.preRetMagi!=null&&s.preRetMagi!==''&&isFinite(+s.preRetMagi))?Math.max(0,+s.preRetMagi):null;
+  const yrA=(results[0].retYrIrmaaMagi!=null&&isFinite(+results[0].retYrIrmaaMagi))?+results[0].retYrIrmaaMagi:null;
+  return (pre!=null||yrA!=null)?{R,pre,yrA}:null;
+}
+// R32-1 (v532, owner): Medicare's two-year lookback is by CALENDAR tax year; the planner works in ages. The year you retire
+// pins the calendar: its January falls at age s0 = R − (m−1)/12 (R the retirement age, m the month you retire — July when not
+// set), and every January after is a whole year on. A month at age A is in calendar year ⌊A − s0⌋ (0 = the year you retire), and
+// its premium reads the return for the year two before: before retiring → your figure (preRetMagi); the year you retire → its
+// salary + that year's retirement income (retYrIrmaaMagi); later → the plan's own income over those twelve months, phase by phase
+// (_irmaaLookbackMagi month by month, so a year spanning two phases is blended and a Replan's saved figures still apply).
+function _retCal(s){const R=+(s&&s.startAge)||0,m=(s&&s.retYearMonth>=1&&s.retYearMonth<=12)?Math.round(s.retYearMonth):7;return{R,m,s0:R-(m-1)/12};}
+function _irmaaCalendar(s,results){
+  const s0=_retCal(s).s0,pr=_preRetLookback(s,results),J=s&&s._irmaaJoint,cache={};
+  // R36-1 (v548): a one-time expense's income is in the MAGI of the calendar year its phase starts in (the lump lands there) — the
+  // return Medicare reads two years on. It was never in any year's MAGI (r36probe P1: $120,000 at 67–73 left out $5,358 of IRMAA).
+  // R45-1 (v576): + the Social Security the event makes taxable (lumpIrmaaMagi; a result without it — frozen data — reads lumpMagi)
+  const lumpIn=k=>{let t=0;for(const r of results)if((r.lumpMagi||0)>0&&Math.floor(r.phaseStartAge-s0+1e-9)===k)t+=(r.lumpIrmaaMagi!=null?+r.lumpIrmaaMagi:r.lumpMagi);return t;};
+  const yearMagi=k=>{if(k in cache)return cache[k];const a0=s0+k;let t=0;for(let i=0;i<12;i++)t+=_irmaaLookbackMagi(results,s,a0+(i+0.5)/12);return(cache[k]=t/12+lumpIn(k));};
+  // R34-2 (v541): a survivor run. The returns Medicare reads in the first years after a death — the two years before it and the
+  // year of death (filed jointly, R23-2) — are the COUPLE's: their income, at the married thresholds (tierOf `joint`). The run
+  // restarts at the death, so its own first phase stood in: the survivor's single income at single thresholds (r34probe P4: 37 of
+  // 441 survivor runs charged more than $500 too much, up to $11,804; never too little). J = {kd, years, dm} from calcSurvivorPhases.
+  const jointMagi=k=>{const c='j'+k;if(c in cache)return cache[c];let v;
+    if(k<J.kd)v=+J.years[k];
+    else{let t=0;for(let i=0;i<12;i++){const d=J.dm[i];t+=(d!=null?+d:_irmaaLookbackMagi(results,s,s0+k+(i+0.5)/12));}v=t/12+lumpIn(k);} // the year of death: both, then the survivor
+    return(cache[c]=v);};
+  return{s0,lookback(A){const k=Math.floor(A-s0+1e-9)-2,a0=s0+k,a1=a0+1;
+    if(J&&k<=J.kd&&(k===J.kd?Array.isArray(J.dm):(J.years&&J.years[k]!=null)))return{v:jointMagi(k),src:'joint',k,a0,a1};
+    if(pr&&k<0&&pr.pre!=null)return{v:pr.pre,src:'pre',k,a0,a1};
+    if(pr&&k===0&&pr.yrA!=null)return{v:pr.yrA+lumpIn(0),src:'yrA',k,a0,a1};
+    return{v:yearMagi(k),src:'plan',k,a0,a1};}};
+}
+// "65", "66½": an age to the nearest half year, for the trace and the cards.
+function _ageHalf(a){const v=Math.round((+a||0)*2)/2;return Number.isInteger(v)?String(v):Math.floor(v)+'½';}
+// R32-1: the phase's IRMAA months grouped into stretches that read the same kind of income at the same bracket (for display).
+function _irmaaRunsMerged(p){const out=[];(p.irmaaYears||[]).forEach(x=>{const l=out[out.length-1];
+  if(l&&l.tier===x.tier&&l.src===x.src&&Math.abs(l.a1-x.a0)<1e-6){const ml=l.a1-l.a0,mx=x.a1-x.a0; // R34-1: amounts differ by year — the average
+    l.pB=(l.pB*ml+x.pB*mx)/(ml+mx);l.pD=(l.pD*ml+x.pD*mx)/(ml+mx);l.a1=x.a1;l.ta1=x.ta1;if(x.magi>l.magi)l.magi=x.magi;if(x.u>l.u)l.u=x.u;}
+  else out.push({...x});});return out;}
 // CONTRACT: (s = state like S, p5End = plan end age, lumpsArr = lumps[]) -> ARRAY of phase RESULTS —
 //   THE canonical "phs" array consumed by every renderer, chart and analysis. Walks the phases
 //   carrying balances forward. Each element is referred to as `p` in renderers.
@@ -3053,6 +3488,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
   const curAge=s.currentAge&&s.currentAge>s.startAge?s.currentAge:0;
   const cfg=buildPhaseConfig(s.startAge,p5End,curAge,s);
   const results=[];
+  let _retYrCarry=null; // v524: the part of the retirement year's extra cost that falls in the second phase
   // Sweep R13-4 (v439): Super belongs to an A$ plan only (see _superBal).
   let cur401=s.bal401k,curCash=s.balCash,curEquity=s.balEquity||0,curRoth=s.balRoth||0,curSuper=_superBal(s);
   // Sweep R13-2 (v439): `_costBasis` — a survivor / couple-at-death re-run starts from the couple's balances at the
@@ -3204,15 +3640,175 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       rmdStartAge:_rmdStartAgeOf(s),rmdAuto:!(typeof s.rmdStartAge==='number'&&s.rmdStartAge>0), // R18-5
       ownAgeShift:s._survAgeShift||0}; // R11-4: survivor runs only — the survivor's age = plan age − this
     const r=calcPhase(_cpIn);
+    // v515: the year you retire. Salary earned before retiring shares a tax year with the rest of that year's retirement income,
+    // so it is taxed on top of it (one standard deduction, higher brackets), it counts in that year's ACA MAGI for the months on
+    // the marketplace after retiring, and it is in the return Medicare reads two years on (retYrIrmaaMagi, read by the IRMAA pass).
+    // US federal tax and the ACA only, the plan's first phase only, never a restarted plan or a survivor run. The cost is a
+    // one-time amount spread over the phase like the rest of its tax; no balance moves.
+    if(i===0&&!curAge&&!s._survivorRun&&(+s.retYearSalary||0)>0&&r.subjectUS!==false&&!r.foreign&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian){
+      const sal=+s.retYearSalary,mon=(s.retYearMonth>=1&&s.retYearMonth<=12)?Math.round(s.retYearMonth):7,worked=mon-1,f=(12-worked)/12;
+      const tx=x=>fedTax(Math.max(0,x-(r.ded||0)),r.adjBrk10,r.adjBrk12,r.adjBrk22,null,r.adjBrk24,r.adjBrk32,r.adjBrk35);
+      const G=r.gross||0;
+      // v527: the salary also lifts that year's provisional income, so more of the Social Security paid after retiring is taxable
+      // (retire at 68 having claimed at 67: up to 85% instead of the plan's own share), and it can carry the year over the NIIT
+      // threshold. Social Security paid while still working is outside the plan, like the salary.
+      const mfjY=(_cpIn.filingStatus==='mfj'),ssA=+r.ssTotal_a||0,spA=+r.sp||0,teA=+r.taxExemptInt||0;
+      const oth=Math.max(0,G-ssA*spA);                       // the phase's other ordinary income (provisional-income worksheet)
+      const spY=ssA>0?ssPct(sal+f*oth,0,f*ssA,mfjY,null,f*teA):0;
+      const ssExtra=Math.max(0,f*ssA*(spY-spA));
+      const yrTaxable=sal+f*G+ssExtra;
+      const exInc=Math.max(0,tx(yrTaxable)-tx(sal)-f*tx(G));
+      const niitThr=mfjY?(+s.niitThresholdMfj||250000):(+s.niitThreshold||200000);
+      const exNiit=Math.max(0,0.038*Math.min(f*(+r.netInv_a||0),Math.max(0,yrTaxable-niitThr))-f*(+r.niit_a||0));
+      // Sweep R42-2 (v568): a one-time event in this phase lands in this same return — the plan starts in the year you retire — but its
+      // spike is priced on the phase's yearly income (lumpTax / lumpInTax; its NIIT on year one's MAGI, R38-1) as if the salary were not
+      // there: with a taxable windfall too, that year's federal tax was short by > $500 in 560 of 800 plans (r42probe P3, median
+      // $1,612). The event on top of that year's income, minus on top of the phase's, is charged here with the salary's extra tax —
+      // signed: a short retirement year can put it in LOWER brackets than the phase's full year.
+      const X=+r.lumpMagi||0,gX=+r.lumpEqGain||0;let exStack=0,exStackNiit=0,ssB=0;
+      if(X>0){
+        // Sweep R45-1 (v576): the Social Security the event makes taxable THAT year, on top of what the salary already made taxable (spY),
+        // on the benefit paid after retiring — its own row charged the phase's (lumpSsX)
+        ssB=ssA>0?Math.max(0,f*ssA*(ssPct(sal+f*oth+X,0,f*ssA,mfjY,null,f*teA)-spY)):0;
+        exStack=(tx(yrTaxable+X+ssB)-tx(yrTaxable))-(tx(G+X+(+r.lumpSsX||0))-tx(G));
+        const nBoth=Math.max(0,0.038*Math.min(f*(+r.netInv_a||0)+gX,Math.max(0,yrTaxable+X+ssB-niitThr))-f*(+r.niit_a||0));
+        exStackNiit=nBoth-exNiit-((+r.lumpNiit||0)+(+r.lumpInNiit||0));
+      }
+      const exTax=exInc+exNiit+exStack+exStackNiit;
+      const medAge=(s.medicareStartAge!=null&&s.medicareStartAge!=='')?+s.medicareStartAge:65;
+      const _pm=pc.months||1; // the phase's months (r.months is set after this, with the other identity fields)
+      // v524: the retirement months of that tax year, and its months on the marketplace — over the whole year, which can run past a
+      // short first phase (retire at 64½ in January: six months in Phase 2, six in Phase 3).
+      const yrMo=12-worked,acaMo=Math.max(0,Math.min(yrMo,(medAge-pc.startAge)*12));
+      const _m0=(r.magiYears&&r.magiYears[0]!=null)?r.magiYears[0]:(r.magi||0); // R37-1: the first year's own MAGI
+      const lmpY=+r.lumpMagi||0; // R42-2: a one-time event's income is in that year too
+      const acaMagiY=sal+f*_m0+lmpY;
+      let exAca=0;
+      if(acaMo>0&&(r.medicareFrac||0)<1){
+        const top=(_cpIn.acaCapTop!=null?_cpIn.acaCapTop:D_USD.acaCapTop);
+        // v524: above the subsidy cliff the premium is the full price whatever the income, so the planner's full-price proxy is read
+        // at the cliff itself, not at the income: a plan already over the cliff loses nothing more to a salary (256 of 3,000 random
+        // plans were charged up to ~$5,000 because the proxy scales with MAGI).
+        // Sweep R42-1 (v568): year one's own poverty line (acaYrs[0].f, R32-2), as the engine prices year one and the one-time event's
+        // extra (R36-1); it read the phase's MIDDLE year, so a first phase of several years charged too much or too little (r42probe P1:
+        // 74 of 728 off by > $500 — $1,130 for a year already over its own, lower cliff).
+        const f0=(r.acaYrs&&r.acaYrs[0]&&r.acaYrs[0].a===r.phaseStartAge)?(r.acaYrs[0].f||1):Math.pow(1+_numOr(s.inflation,3)/100,(Math.min(12,_pm)/2)/12-_pm/24);
+        const L1=(r.fpl100||0)*f0,L4=(r.fpl400||0)*f0;
+        const cost=x=>{const v=acaPrem(x,L1,L4,null,_cpIn.acaCap133!=null?_cpIn:null);return v===-1?Math.max(Math.min(x,L4||x)*(top/100)/12,700):v;};
+        const share=Math.max(0,Math.min(1,((r.medicareHeads||1)-(r.medicareUnits||0))/(r.medicareHeads||1)))||1;
+        // R42-2: on top of year one WITH the event's income — the event's own extra (calcPhase) already counts it from the phase's
+        // year one, so the cliff's full-price jump is charged once (it was charged by both: r42probe P2, 505 of 800 off by > $500)
+        exAca=Math.max(0,(cost(acaMagiY)-cost(_m0+lmpY))*acaMo*share);
+      }
+      r.retYrSalary=sal;r.retYrMonth=mon;r.retYrWorked=worked;r.retYrTax=exTax;r.retYrAca=exAca;r.retYrAcaMagi=acaMagiY;
+      r.retYrIrmaaMagi=sal+f*_irmaaMagiAt(r,r.phaseStartAge)+ssExtra; // v527: + the Social Security the salary made taxable; R37-1: year 1
+      r.retYrSsExtra=ssExtra;r.retYrNiit=exNiit;r.retYrStack=exStack+exStackNiit; // R42-2
+      if(X>0&&!s.preRetSsa44)r.lumpIrmaaMagi=X+ssB; // R45-1: the event's IRMAA income in that year's return (with the salary in it)
+      // Sweep R43-1 (v572): the one-time event's year verdict with the salary in it — that year's ACA MAGI against year one's cliff, or its
+      // IRMAA MAGI against the threshold two years on. Over the line on the salary alone → no event crossing to report.
+      // (A retirement year late in the calendar can bring that year's income UNDER the line where the plan's year one was over it, so
+      // the verdict can appear here as well as change or go.)
+      if(lmpY>0&&r.lumpYearLine){const ln=r.lumpYearLine,base=ln.kind==='aca'?acaMagiY-lmpY:(r.retYrIrmaaMagi||0);
+        if(base>ln.thresh)r.lumpTaxSpike=null;
+        else{const sv=base+lmpY+(ln.kind==='irmaa'?ssB:0); /* R45-1 */r.lumpTaxSpike={kind:ln.kind,thresh:ln.thresh,magi:base,spike:sv,crosses:sv>ln.thresh,headroom:Math.max(0,ln.thresh-sv),salary:true};}
+        const gL=traceGroup(r,'lump'),row=gL?_trFindRow(gL,'lumpspike'):null,nt=r.lumpTaxSpike?_lumpSpikeNote(r.lumpTaxSpike)+' That year includes the salary you earn before retiring.':'';
+        if(row){if(r.lumpTaxSpike){row.value=r.lumpTaxSpike.spike;row.note=nt;}else gL.rows.splice(gL.rows.indexOf(row),1);}
+        else if(gL&&r.lumpTaxSpike)_trRow(gL,'Income in the year of the one-time event',r.lumpTaxSpike.spike,'usd',{kind:'flag',id:'lumpspike',note:nt});
+      }
+      // v524: this phase carries the share of the year it holds; the rest goes to the next phase (applied below when it runs).
+      const shT=Math.min(_pm,yrMo)/yrMo,shH=acaMo>0?Math.min(_pm,acaMo)/acaMo:1;
+      if(shT<1-1e-9||shH<1-1e-9)_retYrCarry={tax:exTax*(1-shT),aca:exAca*(1-shH),from:r.label};
+      const dT=exTax*shT/_pm,dH=exAca*shH/_pm;
+      if(Math.abs(dT)+dH>0.005){ // R42-2: the tax can be a credit (the event in a short year's lower brackets)
+        r.tax_mo+=dT;r.tax_a=(r.tax_a||0)+dT*12;r.usTaxBeforeFTC=(r.usTaxBeforeFTC||0)+dT*12;
+        r.health_mo+=dH;r.net_mo-=dT+dH;r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);r.retYrAcaMo=dH; // R33-2: the ACA popover adds it
+        const _gN=traceGroup(r,'net');
+        {const a=_trFindRow(_gN,'tax');if(a)a.value=r.tax_mo;const b=_trFindRow(_gN,'health');if(b)b.value=r.health_mo;
+         const c=_trFindRow(_gN,'net');if(c)c.value=r.net_mo;const d=_trFindRow(_gN,'netreal');if(d)d.value=r.net_real;}
+      }
+      if(r.trace&&r.trace.groups){
+        const g={id:'retyear',title:'The year you retire',tgId:'tg-irmaa',eduKey:'irmaa',rows:[]};r.trace.groups.push(g);
+        _trRow(g,'Salary earned before you retire',sal,'usd',{kind:'in',note:'Paid in '+worked+' month'+(worked===1?'':'s')+' of that year (you retire in month '+mon+(s.retYearMonth?'':' — mid-year, as no month is set')+'). Its own tax was withheld from your pay, so it is not a cost of the plan.'});
+        _trRow(g,'+ retirement income for the rest of that year',f*G,'usd',{kind:'in',formula:'this phase’s yearly taxable income × '+(12-worked)+'/12'});
+        if(ssExtra>0.5)_trRow(g,'+ Social Security the salary makes taxable',ssExtra,'usd',{kind:'in',
+          formula:'that year’s taxable share ('+Math.round(spY*100)+'%) − this phase’s ('+Math.round(spA*100)+'%), on the Social Security paid after you retire',
+          note:'The salary counts in that year’s provisional income, so more of the benefit is taxed. Benefits paid while you were still working are outside the plan.'});
+        _trRow(g,'= that year’s taxable income',yrTaxable,'usd',{kind:'total'});
+        _trRow(g,exNiit>0.5?'Extra federal income tax from the two sharing one year':'Extra federal tax from the two sharing one year',exInc,'usd',{kind:'minus',
+          formula:'tax on that year’s income − tax on the salary alone − the tax this phase already charges for those months',
+          note:'One standard deduction instead of two, and the retirement income lands in higher brackets. Spread over this phase like the rest of its tax'+(shT<1-1e-9?' — the part of that year after this phase ends ('+Math.round((1-shT)*100)+'%) is in the next phase.':'.')});
+        if(Math.abs(exStack+exStackNiit)>0.5)_trRow(g,'± a one-time event in the same return',exStack+exStackNiit,'usd',{kind:'minus', // R42-2
+          formula:'its tax (and 3.8% NIIT) on top of that year’s income − on top of this phase’s yearly income, as its own row charges it',
+          note:'The plan starts in the year you retire, so a one-time event in this phase shares the salary’s tax return; its own row prices it on this phase’s yearly income.'});
+        if(exNiit>0.5){
+          _trRow(g,'+ Net Investment Income Tax the salary brings on',exNiit,'usd',{kind:'minus',formula:'3.8% × min(that year’s investment income, that year’s income − '+'$'+Math.round(niitThr).toLocaleString('en-US')+') − what this phase already charges for those months'});
+        }
+        if(exNiit>0.5||Math.abs(exStack+exStackNiit)>0.5)_trRow(g,'= extra federal tax that year',exTax,'usd',{kind:'total'});
+        if(acaMo>0)_trRow(g,'That year’s ACA income (MAGI)',acaMagiY,'usd',{kind:'in',note:'The marketplace subsidy for the months after you retire is set from the whole calendar year’s income, salary included'+(lmpY>0.5?' — and the one-time event’s, whose own extra premium is in its row, so this is only what the salary adds on top':'')+'.'});
+        if(exAca>0.5)_trRow(g,'Extra ACA premium for '+Math.round(acaMo)+' month'+(Math.round(acaMo)===1?'':'s')+' after you retire',exAca,'usd',{kind:'minus'});
+        _trRow(g,'That year’s income for IRMAA, two years on',r.retYrIrmaaMagi+lmpY+ssB,'usd',{kind:'flag',note:'Medicare reads this return for your premiums two years later, unless you file SSA-44 for the work stoppage'+(lmpY>0.5?' — the one-time event’s income included, as Medicare’s calendar counts it'+(ssB>0.5?', with the Social Security it makes taxable':''):'')+'.'}); // R42-2, R45-1: + the event (the calendar adds lumpIn)
+        _trFinish(r.trace);
+      }
+    }
+    // v524: the rest of the retirement year's extra cost, in the phase that holds the rest of that year.
+    else if(i>0&&_retYrCarry){
+      const cT=_retYrCarry.tax||0,cH=_retYrCarry.aca||0,from=_retYrCarry.from;_retYrCarry=null;
+      const pm1=pc.months||1,dT=cT/pm1,dH=cH/pm1;
+      if(Math.abs(dT)+dH>0.005){
+        r.tax_mo+=dT;r.tax_a=(r.tax_a||0)+dT*12;r.usTaxBeforeFTC=(r.usTaxBeforeFTC||0)+dT*12;
+        r.health_mo+=dH;r.net_mo-=dT+dH;r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);r.retYrAcaMo=dH; // R33-2
+        const _gN=traceGroup(r,'net');
+        {const a=_trFindRow(_gN,'tax');if(a)a.value=r.tax_mo;const b=_trFindRow(_gN,'health');if(b)b.value=r.health_mo;
+         const c=_trFindRow(_gN,'net');if(c)c.value=r.net_mo;const d=_trFindRow(_gN,'netreal');if(d)d.value=r.net_real;}
+        r.retYrCarryTax=cT;r.retYrCarryAca=cH;
+        if(r.trace&&r.trace.groups){const g={id:'retyear',title:'The year you retire (continued)',tgId:'tg-irmaa',eduKey:'irmaa',rows:[]};r.trace.groups.push(g);
+          _trRow(g,'Extra federal tax from the year you retire — the part in this phase',cT,'usd',{kind:'minus',skipZero:true,note:'The year you retire runs past the end of '+from+', so the rest of its extra cost is here.'});
+          _trRow(g,'Extra ACA premium from that year — the part in this phase',cH,'usd',{kind:'minus',skipZero:true});
+          _trFinish(r.trace);}
+      }
+    }
     // Sweep R23-2 (v486): the year of death may be filed JOINTLY — the IRS lets a surviving spouse file a joint return for the
     // year the spouse died. The survivor run filed single from the death (surv23.mjs: $2,800–$4,100 of tax too much that year).
     // The engine taxes a phase as a block, so the phase is re-run as a joint return and its income and state tax are blended in
     // by the months of it that fall in the first year after the death. US federal tax only: a UK, Canadian or Australian
     // resident is taxed alone either way.
     if(s._survivorRun&&s._jointYear&&r.subjectUS!==false&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian){
-      const a0=curAge||s.startAge,jm=Math.max(0,Math.min(pc.endAge,a0+1)-Math.max(pc.startAge,a0))*12;
+      // R36-2 (v548): the joint return covers the CALENDAR year of death — the months from the death to 31 December (_retCal), not
+      // twelve months: a death at 75 in July took joint rates for 12 months where the year leaves 6, $1,972 of tax too little
+      // (r36probe P2: 108 of 146 survivor runs under-charged by more than $500). R34-2's IRMAA joint years use the same calendar.
+      const a0=curAge||s.startAge,_s0j=_retCal(s).s0,_ye=_s0j+Math.floor(a0-_s0j+1e-9)+1,jm=Math.max(0,Math.min(pc.endAge,_ye)-Math.max(pc.startAge,a0))*12;
       if(jm>0.01&&pc.months>0){
         const rJ=calcPhase({..._cpIn,filingStatus:'mfj'}),f=Math.min(1,jm/pc.months);
+        // Sweep R41-1 (v565): the marketplace reads that joint return too — a household of TWO (the 2-person poverty line) and the
+        // joint income (the couple's MAGI before the death, s._acaJoint, + the survivor's after). The survivor's marketplace months
+        // of that year were priced on the 1-person line and the survivor's income alone: r41probe P1, 152 of 705 runs off by > $500
+        // (mostly over-charged). Re-priced as the engine prices year one (its year loop + any one-time event's income, read at the
+        // cliff), the difference spread over the phase's months like the rest of its healthcare.
+        if(s._acaJoint&&r.acaYrs&&r.acaYrs[0]&&r.aca!=null&&!r.foreign){
+          const y0=r.acaYrs[0],fy=y0.f||1,m0=(r.magiYears&&r.magiYears[0]!=null)?r.magiYears[0]:r.magi,lmp=r.lumpMagi||0;
+          const _top=(s.acaCapTop!=null?s.acaCapTop:D_USD.acaCapTop),_cp=s.acaCap133!=null?s:null;
+          const _c=(x,l1,l4)=>{const v=acaPrem(x,l1,l4,null,_cp);return v===-1?Math.max(x*(_top/100)/12,700):v;};
+          const _cc=(x,l1,l4)=>{const v=acaPrem(x,l1,l4,null,_cp);return v===-1?Math.max(Math.min(x,l4)*(_top/100)/12,700):v;};
+          const g=(mb,l1,l4)=>_c(mb,l1,l4)+(lmp>0?Math.max(0,_cc(mb+lmp,l1,l4)-_cc(mb,l1,l4)):0);
+          const mJ=(s._acaJoint.couple||0)+m0*Math.max(0,12-(s._acaJoint.months||0))/12; // the survivor's months: the rest of that year, in whichever phase
+          // the 2-person line: _cpIn carries the run's own (1-person) lines, so the joint re-run rJ has them too — scale by the household ratio
+          const fS=_fplOf(s),fJ=_fplOf({...s,filingStatus:'mfj'}),k1=(+fS.fpl100>0)?fJ.fpl100/fS.fpl100:1,k4=(+fS.fpl400>0)?fJ.fpl400/fS.fpl400:1;
+          const one=g(m0,r.fpl100*fy,r.fpl400*fy),two=g(mJ,r.fpl100*k1*fy,r.fpl400*k4*fy);
+          const span=Math.max(1e-9,pc.endAge-pc.startAge),onP=(r.medicareFrac||0)>0?pc.endAge-r.medicareFrac*span:Infinity;
+          let wm=0;for(let i=0;i<jm;i++){const Ai=pc.startAge+(i+0.5)/12;if(Ai<onP-1e-6)wm+=Math.min(1,jm-i);}
+          const dH=(two-one)*wm/pc.months;
+          if(Math.abs(dH)>0.005){
+            r.health_mo+=dH;r.net_mo-=dH;r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
+            r.jointYearAca={months:wm,oneMo:one,twoMo:two,jointMagi:mJ,addMo:dH};
+            const gA=traceGroup(r,'aca');
+            if(gA)_trRow(gA,'± the year of death on the joint return',dH,'usd/mo',{kind:dH>0?'in':'minus',
+              formula:'(the premium at the joint return’s MAGI on the 2-person poverty line − at your own on the 1-person line) × '+(Math.round(wm*10)/10)+' of this phase’s '+pc.months+' months',
+              note:'For the year your spouse died you can file jointly, and the marketplace reads that return: a household of two, with the couple’s income before the death and yours after.'});
+            const gN=traceGroup(r,'net');
+            if(gN){const rh=_trFindRow(gN,'health'),rn=_trFindRow(gN,'net'),rr=_trFindRow(gN,'netreal');
+              if(rh)rh.value=r.health_mo;if(rn)rn.value=r.net_mo;if(rr)rr.value=r.net_real;}
+          }
+        }
         const dT=((rJ.tax_mo||0)-(r.tax_mo||0))*f,dS=((rJ.stateTax_mo||0)-(r.stateTax_mo||0))*f;
         if(Math.abs(dT+dS)>0.005){
           r.tax_mo+=dT;r.tax_a=(r.tax_a||0)+dT*12;r.stateTax_mo=(r.stateTax_mo||0)+dS;r.stateTax_a=(r.stateTax_a||0)+dS*12;
@@ -3223,7 +3819,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
             const rt=_trFindRow(gN,'tax'),rs=_trFindRow(gN,'statetax'),rn=_trFindRow(gN,'net'),rr=_trFindRow(gN,'netreal');
             if(rt)rt.value=r.tax_mo;if(rs)rs.value=r.stateTax_mo;if(rn)rn.value=r.net_mo;if(rr)rr.value=r.net_real;
             _trRow(gN,'… includes the tax saved by a joint return for the year of death',-(dT+dS),'usd/mo',{kind:'flag',
-              formula:'(tax at joint rates − tax at single rates) × '+(Math.round(jm*10)/10)+' of this phase’s '+pc.months+' months (the first year after the death)',
+              formula:'(tax at joint rates − tax at single rates) × '+(Math.round(jm*10)/10)+' of this phase’s '+pc.months+' months (the rest of the calendar year of the death)',
               note:'The IRS lets a surviving spouse file a joint return for the year the spouse died; the tax lines above include it.'});
           }
         }
@@ -3288,15 +3884,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
     // only the TAXABLE share of Social Security. `?? .magi` keeps this working against phase results
     // captured before the split — notably the website demo's frozen data.
     const _im=(r)=>(r.irmaaMagi!=null?r.irmaaMagi:r.magi);
-    const magiAtAge=(age)=>{
-      for(let i=0;i<results.length;i++){
-        if(age>=results[i].phaseStartAge && age<results[i].phaseEndAge) return _im(results[i]);
-      }
-      // Before the plan starts, approximate with the first phase's MAGI (pre-Medicare years are
-      // usually inside the plan already, so this only matters if Medicare begins <2 yrs into the plan).
-      if(age<results[0].phaseStartAge) return _im(results[0]);
-      return _im(results[results.length-1]);
-    };
+    const magiAtAge=(age)=>_irmaaLookbackMagi(results,s,age); // R30-4: before the restart, the figures a Replan saved
     results.forEach(r=>{
       r.irmaaSurch_mo=0;
       if(r.foreign||r.isUkRes||r.isCanadian||r.isAustralian||r.subjectUS===false){r.lookbackMagi=null;return;}
@@ -3308,40 +3896,122 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // reflects pre-disability earnings. 'current' models relief being granted; it is an
       // assumption, not a guarantee, and the UI says so.
       const _relief=s.irmaaRelief||'lookback';
-      const lookbackMagi=(_relief==='current')
-        ? (r.irmaaMagi!=null?r.irmaaMagi:r.magi)
-        : magiAtAge(r.phaseStartAge-2);
-      r.lookbackMagi=lookbackMagi; r.irmaaReliefMode=_relief;
-      r.irmaaOver=lookbackMagi>(r.adjIrmaa||1e9);
+      r.irmaaReliefMode=_relief;r.irmaaPreRet=null;r.irmaaYears=null;r._irmaaLbAge=null;r.irmaaThrAt=null;r._irmaaLbThr=null;r._irmaaTierThr=null;
+      // Which bracket an income lands in: the highest threshold it clears (tier 0 = no surcharge). Legacy plans without the
+      // ladder fall back to the single tier-1 surcharge.
+      // R34-1 (v541): the brackets of the month's OWN calendar year. They are re-set every January — thresholds with inflation (the
+      // top one frozen in statute), surcharges with healthcare inflation — while the income read is flat in dollars inside a phase.
+      // Every month was priced on the phase's MIDDLE year (r34probe P5: 260 of 1,500 random plans off by more than $500 over the
+      // plan, both ways; a surcharge paid only at 67–67½ of a 67–72 phase was priced at the 69½ amount). `f` scales the phase's
+      // mid-year figures to that year, never below the plan's first. R34-2: `joint` = a survivor run reading a return the couple
+      // filed together — the married thresholds (the surcharge itself is per person either way).
+      const _s0=_retCal(s).s0,_pm=r.phaseStartAge+(r.months||0)/24,_e0=-Math.max(0,r.yearsFromStart||0);
+      const _gI=_numOr(+s.inflation,3)/100,_hcI=(s.healthcareInflation!=null&&s.healthcareInflation!=='')?(+s.healthcareInflation||0)/100:_gI;
+      const _yrF=A=>{const e=Math.max(_e0,_s0+Math.floor(A-_s0+1e-9)+0.5-_pm);return{gT:Math.pow(1+_gI,e),gA:Math.pow(1+_hcI,e)};};
+      const _rawT=Array.isArray(s.irmaaTiers)?s.irmaaTiers:[];
+      const _mfjR=ti=>{const t=_rawT[ti];return(t&&t.thrSingle>0)?((t.thrMfj||t.thrSingle)/t.thrSingle):1;};
+      const _mfjPlain=(+s.irmaa>0)?((+s.mfjIrmaa||218000)/(+s.irmaa)):2;
+      const tierOf=(v,f,joint)=>{let tB=0,tD=0,tier=0,tThr=null;f=f||{gT:1,gA:1};
+        if(r.adjIrmaaTiers){for(let ti=0;ti<r.adjIrmaaTiers.length;ti++){const t=r.adjIrmaaTiers[ti],th=t.thr*(t.frozen?1:f.gT)*(joint?_mfjR(ti):1);
+          if(v>th){tier=ti+1;tB=t.partB*f.gA;tD=t.partD*f.gA;tThr=th;}}}
+        else if(v>(r.adjIrmaa||1e9)*f.gT*(joint?_mfjPlain:1)){tier=1;tB=(r.adjIrmaaSurch||0)*f.gA;tThr=(r.adjIrmaa||1e9)*f.gT*(joint?_mfjPlain:1);}
+        return{tier,tB,tD,tThr,thr:(r.adjIrmaa||1e9)*f.gT*(joint?_mfjPlain:1)};};
+      let lookbackMagi=0,_tierB=0,_tierD=0,_sB=null,_sD=null; // _sB/_sD: the phase's monthly surcharge, already per person and per month
+      {
+        // R34-1: 'current' (SSA-44 assumed granted) reads this phase's own income — month by month too, on each year's brackets.
+        // R32-1 (v532, owner): every Medicare MONTH is priced on the tax return Medicare actually reads for it — the calendar year
+        // two before the month's own — and counted for the people on Medicare that month. ONE lookback (the income two years
+        // before the PHASE starts) used to price every year of a phase: of 945 random plans with IRMAA, 694 were off by more than
+        // $500 over the plan, median $13,778 (irmaa-years.mjs; a 73–90 phase paid all 17 years on a Roth-conversion phase's income).
+        // And the year is a CALENDAR year (_irmaaCalendar): retiring at 62½ in July, the year you retire is the one two before
+        // the year you turn 64½, so its salary never reaches your premiums — it was charged for the whole of 65–66 (owner, 62 vs 62½).
+        // This also replaces the v515 / v529 year-by-year blend: the people on Medicare come from the phase's own shares.
+        const _cur=_relief==='current',cal=_cur?null:_irmaaCalendar(s,results),span=Math.max(1e-9,r.phaseEndAge-r.phaseStartAge);
+        const _evI=+(r.lumpIrmaaMagi!=null?r.lumpIrmaaMagi:r.lumpMagi)||0; // R48-2: a one-time event's IRMAA income (its phase's first year)
+        const onP=(r.medicareFrac||0)>0?r.phaseEndAge-r.medicareFrac*span:Infinity;
+        const onS=(r.spouseMedicareFrac||0)>0?r.phaseEndAge-r.spouseMedicareFrac*span:Infinity;
+        let sB=0,sD=0,maxV=-Infinity,over=false,overPlan=false,pre=null,tierMax=0;const runs=[];
+        for(let j=0;j<r.months;j++){
+          const A=r.phaseStartAge+(j+0.5)/12,u=(A>=onP-1e-6?1:0)+(A>=onS-1e-6?1:0);if(!u)continue;
+          // Sweep R48-2 (v581): in 'current' mode (SSA-44 relief assumed) a one-time event's income is in its own first 12 months — the rows
+          // hold none, so no event ever reached IRMAA there (r48probe P2: 0 of 781 taxable events, while 381 verdicts said "it is charged").
+          const y=_cur?(()=>{const k=Math.floor(A-_s0+1e-9),a0=_s0+k;return{v:_irmaaMagiAt(r,A)+(A<r.phaseStartAge+1-1e-9?_evI:0),src:'cur',k,a0,a1:a0+1};})():cal.lookback(A); // R37-1
+          const _yf=_yrF(A),t=tierOf(y.v,_yf,y.src==='joint');
+          sB+=t.tB*u;sD+=t.tD*u;
+          if(y.v>maxV){maxV=y.v;r._irmaaLbAge=(y.a0+y.a1)/2;r._irmaaLbThr=t.thr;}
+          if(t.tier>tierMax){tierMax=t.tier;r._irmaaTierThr=t.tThr;}
+          if(y.v>t.thr){over=true;if(r.irmaaThrAt==null)r.irmaaThrAt=t.thr;if(y.src==='pre'||y.src==='yrA'){if(!pre)pre={src:y.src,magi:y.v};}else overPlan=true;}
+          const last=runs[runs.length-1];
+          if(last&&last.k===y.k&&last.u===u)last.a1=A+0.5/12;
+          else runs.push({k:y.k,a0:A-0.5/12,a1:A+0.5/12,u,magi:y.v,src:y.src,tier:t.tier,pB:t.tB,pD:t.tD,ta0:y.a0,ta1:y.a1,thr:t.thr,gT:_yf.gT,gA:_yf.gA}); // R39-3: + its first threshold; R40-1: + its year's factors (the ladder chart)
+        }
+        lookbackMagi=maxV>-Infinity?maxV:0;
+        r.irmaaOver=over;r.irmaaTier=tierMax||undefined;r.irmaaYears=runs;
+        _sB=sB/(r.months||1);_sD=sD/(r.months||1);
+        if(pre)r.irmaaPreRet={src:pre.src,magi:pre.magi,overOnlyPre:!overPlan};
+        // Sweep R47-1 (v580): this phase's OWN income years as Medicare reads them — the calendar years its months fall in, each with
+        // the income the pass above reads for it (a year at a phase boundary blends the two phases; one-time events included, lumpIn)
+        // and the first threshold Medicare applies to it two years on. The headroom (_irmaaRoomOf) read 12-month rows from the phase's
+        // start without the events: its sign was wrong in 120 of 4,877 Medicare phases and the "within 10%" tip in 277 (r47probe P2),
+        // and with an event 50 of 490 quoted headroom in a year the event takes over (P1). Not in 'current' mode (rows, as priced).
+        if(cal){const k0=Math.floor(r.phaseStartAge-_s0+1e-9),k1=Math.floor(r.phaseEndAge-_s0-1e-9),iy=[];
+          for(let k=k0;k<=k1;k++){const A=_s0+k+2.5,y=cal.lookback(A),t=tierOf(y.v,_yrF(A),y.src==='joint');
+            iy.push({k,c0:_s0+k,a0:Math.max(r.phaseStartAge,_s0+k),a1:Math.min(r.phaseEndAge,_s0+k+1),v:y.v,thr:t.thr,src:y.src});}
+          r.irmaaIncYrs=iy;
+          // Sweep R47-2 (v580): the one-time event's IRMAA verdict on the calendar year it lands in (the one this phase starts in), as
+          // the pass prices it. It judged the phase's first 12 months, but that calendar year can start in the phase before: 46 of 393
+          // "crosses — and it is charged" added no IRMAA (the year was over on the earlier phase's income), and 44 of 396 "still under"
+          // were charged (r47probe P3). Absent when that year is over without the event (R43-1's rule).
+          const ln=r.lumpYearLine,ev=+(r.lumpIrmaaMagi!=null?r.lumpIrmaaMagi:r.lumpMagi)||0;
+          if(ln&&ln.kind==='irmaa'&&ev>0&&iy.length){const y0=iy[0],base=y0.v-ev,thr=y0.thr;
+            r.lumpYearLine={kind:'irmaa',thresh:thr};
+            r.lumpTaxSpike=base>thr?null:{kind:'irmaa',thresh:thr,magi:base,spike:y0.v,crosses:y0.v>thr,headroom:Math.max(0,thr-y0.v),
+              salary:y0.src==='yrA'||undefined,calFrom:y0.c0<r.phaseStartAge-1e-6?y0.c0:undefined};
+            _lumpSpikeTraceSet(r);}
+        }
+        else if(_cur){ // Sweep R48-2 (v581): relief assumed — Medicare uses that year's own income IN that year, on that year's threshold
+          const ln=r.lumpYearLine;
+          if(ln&&ln.kind==='irmaa'&&_evI>0){const A0=r.phaseStartAge+0.5/12,base=_irmaaMagiAt(r,A0),thr=tierOf(base,_yrF(A0)).thr;
+            r.lumpYearLine={kind:'irmaa',thresh:thr};
+            r.lumpTaxSpike=base>thr?null:{kind:'irmaa',thresh:thr,magi:base,spike:base+_evI,crosses:base+_evI>thr,headroom:Math.max(0,thr-base-_evI),current:true};
+            _lumpSpikeTraceSet(r);}
+        }
+      }
+      r.lookbackMagi=lookbackMagi;
       // TRACE: the lookback is resolved here, not in calcPhase, so these rows are appended rather
       // than emitted inline. The surcharge below mutates health_mo/net_mo, so the already-built
       // `net` group has to be patched in step or the trace would contradict the phase card.
       const _gM=traceGroup(r,'medicare');
-      if(_gM){
-        _trRow(_gM,_relief==='current'?'IRMAA MAGI — this phase’s own income':'IRMAA MAGI from two years earlier',
-          lookbackMagi,'usd/yr',{kind:'in',
-          formula:_relief==='current'
-            ?'assumes SSA accepted an SSA-44 life-changing-event request and used current income'
-            :'Medicare uses your income from 2 years before, not this year’s',
-          note:_relief==='current'
-            ?'This is an assumption, not a guarantee — SSA decides case by case and reviews it every year.':undefined});
-        _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold'});
+      // R34-1: the threshold row is the phase's middle year; each stretch is priced on its own year's brackets.
+      const _thrNote='At the middle of this phase. The brackets are re-set every year — thresholds with inflation (the top one is frozen in law), surcharges with healthcare inflation — and each year above is tested against its own.';
+      const _brkRow=x=>{if(x.tier)_trRow(_gM,'  → bracket '+x.tier+': surcharge per person in those months',x.pB+x.pD,'usd/mo',{kind:'sub',
+        note:x.a1-x.a0>1+1e-6?'Averaged over those months: it rises with healthcare inflation each year.':undefined});};
+      if(_gM&&_relief==='current'){
+        _trRow(_gM,'IRMAA MAGI — this phase’s own income',lookbackMagi,'usd/yr',{kind:'in',
+          formula:'assumes SSA accepted an SSA-44 life-changing-event request and used current income',
+          note:'This is an assumption, not a guarantee — SSA decides case by case and reviews it every year.'});
+        _irmaaRunsMerged(r).forEach(x=>{if(x.tier){_trRow(_gM,'Ages '+_ageHalf(x.a0)+'–'+_ageHalf(x.a1)+': over that year’s threshold',x.magi,'usd/yr',{kind:'in'});_brkRow(x);}});
+        _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold',note:_thrNote});
       }
-      // v14: which BRACKET the lookback lands in. IRMAA has six, and the top adds several hundred
-      // dollars a month per person — pricing every crossing at tier 1 understated a Roth-conversion
-      // plan badly. Highest tier whose threshold is cleared wins; tier 0 means no surcharge.
-      let _tierB=0,_tierD=0;
-      if(r.adjIrmaaTiers){
-        for(let ti=0;ti<r.adjIrmaaTiers.length;ti++){
-          if(lookbackMagi>r.adjIrmaaTiers[ti].thr){
-            r.irmaaTier=ti+1; _tierB=r.adjIrmaaTiers[ti].partB; _tierD=r.adjIrmaaTiers[ti].partD;
-          }
-        }
+      else if(_gM){
+        // R32-1: one row per stretch of months that reads the same kind of income at the same bracket.
+        _irmaaRunsMerged(r).forEach(x=>{
+          const lbl='Ages '+_ageHalf(x.a0)+'–'+_ageHalf(x.a1)+': '+(x.src==='pre'?'your income before you retired':x.src==='yrA'?'the year you retired (salary + retirement income)':x.src==='joint'?'your joint return with your late spouse':'your income two years earlier');
+          _trRow(_gM,lbl,x.magi,'usd/yr',{kind:'in',
+            formula:x.src==='plan'?'Medicare reads your tax return from two calendar years before — here the year from age '+_ageHalf(x.ta0)+' to '+_ageHalf(x.ta1)
+              :x.src==='joint'?'Medicare reads your tax return from two calendar years before — a year you filed jointly, so the married thresholds apply'
+              :'Medicare reads your tax return from two calendar years before, which is '+(x.src==='pre'?'before the plan starts (your figure)':'the year you retire'),
+            note:(x.src==='pre'||x.src==='yrA')?'Retiring is a “work stoppage”: form SSA-44 usually lets Social Security use your retirement income instead — tick the SSA-44 box under Taxes & healthcare to see the plan that way.'
+              :x.src==='joint'?'The death of a spouse is also a “life-changing event”: form SSA-44 can ask Social Security to use your income now instead.'
+              :(x.ta1<=results[0].phaseStartAge+1e-9&&x.src==='plan')?(_irmaaPreAt(s,x.ta0+0.5)!=null?'That year is before the plan restarts, so this is the figure saved when you replanned.':'That year is before the plan starts, so the plan’s first phase stands in for it — SSA uses your actual tax return.'):undefined});
+          _brkRow(x);
+        });
+        _trRow(_gM,'IRMAA threshold',r.adjIrmaa||0,'usd/yr',{kind:'threshold',note:_thrNote});
       }
       // The ladder sets the amount; irmaaSurcharge survives only as the flag-only switch (0 = warn
       // without costing), which was documented behaviour that old plans deliberately rely on.
       const _costed=(r.adjIrmaaSurch||0)>0;
-      const _ladder=r.adjIrmaaTiers?(_tierB+_tierD):(r.adjIrmaaSurch||0);
+      const _ladder=(_sB!=null)?(_sB+_sD):r.adjIrmaaTiers?(_tierB+_tierD):(r.adjIrmaaSurch||0);
       // The `net` group was built in calcPhase before any of this ran, so anything that moves
       // health_mo/net_mo has to patch it in step or the trace contradicts the card. Both the ladder
       // path and the manual path below mutate them, hence one helper rather than two copies.
@@ -3361,6 +4031,13 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
         r.health_mo+=_delta; r.net_mo-=_delta;
         r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
         r.irmaaSurch_mo=Math.max(0,_delta); r.irmaaOver=null; r.irmaaTier=null;
+        // Sweep R49-1 (v583): nothing the plan's income does changes the entered premium, so no threshold is judged — no headroom
+        // (irmaaIncYrs; _irmaaRoomOf returns null), no IRMAA-kind event verdict (it said "crosses — and it is charged" in 440 of 778
+        // events, none of which changed healthcare — r49probe P1), and no proximity warning (the pass below skips manual phases).
+        r.irmaaIncYrs=null;
+        if(r.lumpTaxSpike&&r.lumpTaxSpike.kind==='irmaa'){r.lumpTaxSpike=null;_lumpSpikeTraceSet(r);
+          const _gL=traceGroup(r,'lump');if(_gL)_trRow(_gL,'Income in the year of the one-time event — IRMAA',0,'flagv',{kind:'flag',
+            note:'Your Medicare premium is the one you entered from your SSA notice, so this income does not change it in the plan.'});}
         if(_gM){
           _trRow(_gM,'Premium from your SSA notice',r.adjIrmaaManual,'usd/mo',{kind:'in',
             base:s.irmaaManualPremium||0,baseAs:'from',formula:'the figure you entered x healthcare inflation to this phase',
@@ -3378,8 +4055,8 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
         // couple both on Medicare each owe it. Falls back to medicareFrac, then 1, for any caller
         // predating per-person pricing (frozen demo data, survivor rerun).
         const _mu=(r.medicareUnits!=null?r.medicareUnits:(r.medicareFrac!=null?r.medicareFrac:1));
-        r.irmaaSurchB_mo=_tierB*_mu; r.irmaaSurchD_mo=_tierD*_mu;
-        r.irmaaSurch_mo=_ladder*_mu;
+        if(_sB!=null){r.irmaaSurchB_mo=_sB;r.irmaaSurchD_mo=_sD;r.irmaaSurch_mo=_sB+_sD;} // R32-1: month by month, per person
+        else{r.irmaaSurchB_mo=_tierB*_mu; r.irmaaSurchD_mo=_tierD*_mu; r.irmaaSurch_mo=_ladder*_mu;}
         r.health_mo+=r.irmaaSurch_mo;
         r.net_mo-=r.irmaaSurch_mo;
         r.net_real=realNetCalc(r.net_mo,r.yearsFromStart,s.inflation);
@@ -3387,10 +4064,11 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
           if(r.adjIrmaaTiers&&r.irmaaTier){
             const _t=r.adjIrmaaTiers[r.irmaaTier-1];
             _trRow(_gM,'IRMAA bracket reached',r.irmaaTier,'num',{kind:'threshold',
-              formula:'highest bracket your lookback MAGI clears (there are '+r.adjIrmaaTiers.length+')'});
-            _trRow(_gM,'This bracket starts at',_t.thr,'usd/yr',{kind:'threshold',
-              note:_t.frozen?'The top bracket is fixed in statute rather than rising with inflation, so it catches more people every year.':undefined});
-            _trRow(_gM,'+ Part B surcharge',r.irmaaSurchB_mo,'usd/mo',{kind:'minus',skipZero:true});
+              formula:'highest bracket '+(_sB!=null?'any month of this phase reaches':'your lookback MAGI clears')+' (there are '+r.adjIrmaaTiers.length+')'});
+            _trRow(_gM,'This bracket starts at',r._irmaaTierThr!=null?r._irmaaTierThr:_t.thr,'usd/yr',{kind:'threshold',
+              note:_t.frozen?'The top bracket is fixed in statute rather than rising with inflation, so it catches more people every year.':'In the first year that reaches it — the brackets rise with inflation each year.'});
+            _trRow(_gM,'+ Part B surcharge',r.irmaaSurchB_mo,'usd/mo',{kind:'minus',skipZero:true,
+              note:_sB!=null?'Averaged over this phase’s months, like every figure on the card — the ages above say which months pay it.':undefined});
             _trRow(_gM,'+ Part D surcharge',r.irmaaSurchD_mo,'usd/mo',{kind:'minus',skipZero:true,
               note:'Paid to Medicare on top of whatever your drug plan charges.'});
           }
@@ -3414,34 +4092,49 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
     // existing magiAtAge fallback already resolved it to the right MAGI, so we just use that.
     results.forEach(r=>r.irmaaProximity=null);  // clear first
     results.forEach(med=>{
+      if(med.irmaaRelief==='manual'&&(med.adjIrmaaManual||0)>0)return; // R49-1: the entered premium — no threshold to be near
       if(!med.hasMedicare||med.foreign||med.isUkRes||med.isCanadian||med.isAustralian||med.subjectUS===false)return;
-      const thresh=med.adjIrmaa||1e9;
-      const lbMagi=med.lookbackMagi;
-      if(lbMagi==null)return;
-      const gap=thresh-lbMagi;
-      if(gap<=0||gap>=thresh*0.20)return;   // over threshold (handled by irmaaOver) or not close enough
-      // Find the source phase whose MAGI was used as the lookback. v14: this used to require
-      // !hasMedicare, which silently dropped the warning whenever the lookback landed on a phase
-      // Medicare starts part-way through (SSDI) — those phases are mostly pre-Medicare and are a
-      // perfectly legitimate place to warn. Excluding only the Medicare phase itself is enough.
-      const lbAge=med.phaseStartAge-2;
-      let src=null;
-      if(lbAge<results[0].phaseStartAge){
-        src=results[0];   // before plan start → first phase (mirrors magiAtAge fallback)
-      } else {
-        src=results.find(r=>lbAge>=r.phaseStartAge&&lbAge<r.phaseEndAge);
-      }
-      if(!src||src===med||src.irmaaProximity)return;   // first Medicare phase wins
+      // Sweep R39-3 (v558): every stretch of months (irmaaYears — its lookback against its own year's threshold) that reads ANOTHER
+      // phase's income, and the closest one (the smallest gap as a share of its threshold) is warned on that phase. It took only the
+      // month with the highest lookback; the threshold rises every year while the income is often flat, so the first Medicare year can
+      // be the closest: 49 of 3,219 Medicare phases had a year within 20% and no warning (r39probe P4). A phase paying IRMAA in any
+      // month is over, not near. Never a stretch read from the pre-retirement income you entered, or from the phase itself.
+      // Finding the source phase — v14: this used to require !hasMedicare, which silently dropped the warning whenever the lookback
+      // landed on a phase Medicare starts part-way through (SSDI); those phases are mostly pre-Medicare and a legitimate place to warn.
+      if(med.irmaaOver)return;
+      // Sweep R40-2 (v562): and the closest stretch that reads the Medicare phase ITSELF is warned on that phase ("own") — they were
+      // skipped, so 249 of 326 Medicare phases whose own income was within 20% of the threshold in some year had no warning anywhere
+      // (r40probe P3). Both can stand: a source phase's warning and the phase's own.
+      let best=null,bestOwn=null;
+      (med.irmaaYears||[]).forEach(rn=>{
+        if(rn.src==='pre'||!(rn.thr>0)||!(rn.magi<rn.thr))return;
+        const g=(rn.thr-rn.magi)/rn.thr;if(g>=0.20)return;   // not close enough
+        const lbAge=(rn.ta0+rn.ta1)/2; // R32-1: the tax year that stretch reads
+        let src=null;
+        if(lbAge<results[0].phaseStartAge){
+          if(_irmaaPreAt(s,lbAge)!=null)return; // R30-4: a year before the Replan — already past, so no phase of the plan can change it
+          src=results[0];   // before plan start → first phase (mirrors magiAtAge fallback)
+        } else {
+          src=results.find(r=>lbAge>=r.phaseStartAge&&lbAge<r.phaseEndAge);
+        }
+        if(src===med){if(lbAge<med.phaseStartAge)return; // a year before the plan: a stand-in for income the plan does not know, not the phase's own
+          if(!bestOwn||g<bestOwn.g)bestOwn={g,src,v:rn.magi,thr:rn.thr,age:lbAge};return;}
+        if(!src||src.irmaaProximity)return;   // first Medicare phase wins
+        if(!best||g<best.g)best={g,src,v:rn.magi,thr:rn.thr,age:lbAge};
+      });
+      [best,bestOwn].forEach(bb=>{if(!bb||bb.src.irmaaProximity)return;
+      const src=bb.src,thresh=bb.thr,lbMagi=bb.v,gap=thresh-lbMagi;
       src.irmaaProximity={
+        own:src===med,taxAge:Math.floor(bb.age+1e-9), // R40-2: the phase's own income; the age of the tax year it reads
         medicareLabel:med.label,
         medicareStartAge:med.phaseStartAge,
         lookbackMagi:Math.round(lbMagi),
         threshold:Math.round(thresh),
         gap:Math.round(gap),
         gapPct:Math.round(gap/thresh*100),
-        hasConversion:(src.rothConvAnn||0)>0,
-        conversionAnn:Math.round(src.rothConvAnn||0)
-      };
+        hasConversion:((src.wActual&&src.wActual.rothConvAnn!=null)?src.wActual.rothConvAnn:(src.rothConvAnn||0))>0, // R29-2: converted, not set
+        conversionAnn:Math.round((src.wActual&&src.wActual.rothConvAnn!=null)?src.wActual.rothConvAnn:(src.rothConvAnn||0))
+      };});
     });
   })();
   // CSR / ACA subsidy cliff proximity. Mirrors the IRMAA proximity pass above, but for the ACA
@@ -3458,25 +4151,42 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       // (SSDI) is still buying ACA cover for its earlier months, and the cliffs still apply to them.
       // This matches acaSubsidyEligible/acaCsrEligible in calcPhase, which already used medFrac<1.
       const _mf=(r.medicareFrac!=null?r.medicareFrac:(r.hasMedicare?1:0));
-      const acaApplies=!r.foreign&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian&&r.subjectUS!==false&&_mf<1;
+      // Sweep R39-1 (v558): anyone in the household on the marketplace (phaseHasAcaMonths) — the main person's medicareFrac < 1 left
+      // out a phase where they are on Medicare and the younger spouse still buys cover (818 phases in r39probe P1, 707 with a year
+      // off the subsidy, out of the CSR band or near a line). acaYrs holds only the marketplace years, so the warning reads those.
+      const acaApplies=!r.foreign&&!r.isUkRes&&!r.isCanadian&&!r.isAustralian&&r.subjectUS!==false&&(_mf<1||phaseHasAcaMonths(r));
       if(!acaApplies)return;
-      const magi=r.magi||0,f100=r.fpl100||0,f250=r.fpl250||0,f400=r.fpl400||0;
-      if(f100<=0||magi<=f100)return;            // below the 100% floor → handled by subsidy-eligibility rendering
-      const f150=Math.round(f100*1.5),f200=Math.round(f100*2.0);
-      // Bands are mutually exclusive — pick the boundary the phase currently sits just under.
-      // warnPct = how close (as a fraction of the threshold) before we surface the warning.
-      const mk=(next,label,shortLabel,kind,warnPct)=>{
-        const gap=next-magi;
-        if(gap<=0)return null;
-        const pct=next>0?gap/next:1;
-        if(pct>=warnPct)return null;
-        return{nextThreshold:Math.round(next),nextLabel:label,shortLabel,headroom:Math.round(gap),headroomPct:Math.round(pct*100),kind,hasOther:(r.rentalAnn||0)>0};
-      };
-      let prox=null;
-      if(magi<=f150)      prox=mk(f150,'150% FPL (94%→87% CSR step)','150% FPL','tier',0.06);
-      else if(magi<=f200) prox=mk(f200,'200% FPL (87%→73% CSR step)','200% FPL','tier',0.06);
-      else if(magi<=f250) prox=mk(f250,'250% FPL (Silver CSR ceiling)','250% FPL ceiling','csr',0.10);
-      else if(magi<f400)  prox=mk(f400,'400% FPL (subsidy cliff)','400% FPL cliff','subsidy',0.10);
+      const F100=r.fpl100||0,F250=r.fpl250||0,F400=r.fpl400||0;
+      if(F100<=0)return;
+      // Sweep R38-2 (v555): each marketplace year against its own lines (acaYrs — the years the premium is priced on). It judged the
+      // phase AVERAGE against the middle year's lines, so a year within 10% of the cliff went unwarned when the average was further
+      // off (r38probe P2: 30 of 1,050 long phases). The warning is the most serious line any year is near (the subsidy cliff, then the
+      // CSR ceiling, then a CSR step), its tightest year; `magi`, `age` and `yrs` say which year. One year at the average when the
+      // phase has no acaYrs — exactly as before.
+      const ys=(Array.isArray(r.acaYrs)&&r.acaYrs.length)?r.acaYrs:[{a:r.phaseStartAge,mg:r.magi||0,f:1}];
+      const anyOver=((r.acaCliffYrs&&r.acaCliffYrs.over)>0); // R33-2: over the cliff in some years → not "near" it
+      const rank={subsidy:3,csr:2,tier:1};let prox=null;
+      ys.forEach(y=>{
+        const magi=y.mg||0,f100=F100*(y.f||1),f250=F250*(y.f||1),f400=F400*(y.f||1);
+        if(magi<=f100)return;                     // below the 100% floor → handled by subsidy-eligibility rendering
+        const f150=Math.round(f100*1.5),f200=Math.round(f100*2.0);
+        // Bands are mutually exclusive — pick the boundary this year sits just under.
+        // warnPct = how close (as a fraction of the threshold) before we surface the warning.
+        const mk=(next,label,shortLabel,kind,warnPct)=>{
+          const gap=next-magi;
+          if(gap<=0)return null;
+          const pct=next>0?gap/next:1;
+          if(pct>=warnPct)return null;
+          return{nextThreshold:Math.round(next),nextLabel:label,shortLabel,headroom:Math.round(gap),headroomPct:Math.round(pct*100),kind,hasOther:(r.rentalAnn||0)>0};
+        };
+        let q=null;
+        if(magi<=f150)      q=mk(f150,'150% FPL (94%→87% CSR step)','150% FPL','tier',0.06);
+        else if(magi<=f200) q=mk(f200,'200% FPL (87%→73% CSR step)','200% FPL','tier',0.06);
+        else if(magi<=f250) q=mk(f250,'250% FPL (Silver CSR ceiling)','250% FPL ceiling','csr',0.10);
+        else if(magi<f400&&!anyOver)q=mk(f400,'400% FPL (subsidy cliff)','400% FPL cliff','subsidy',0.10);
+        if(q&&(!prox||rank[q.kind]>rank[prox.kind]||(rank[q.kind]===rank[prox.kind]&&q.headroom<prox.headroom)))
+          prox={...q,magi:Math.round(magi),age:y.a,yrs:ys.length};
+      });
       r.cliffProximity=prox;
     });
   })();
@@ -3563,6 +4273,20 @@ function calcSurvivorPhases(){
   const _su=_survivorStepUp(S,deathBals);sv._costBasis=_su.basis; // R23-1: less the part the death steps up
   sv._jointYear=true; // R23-2: the year of death may be filed jointly (calcAllPhases applies it to US federal tax)
   sv._survivorRun=true;              // spouse's benefit kept, paid as "the larger of the two" (never both)
+  // R34-2 (v541): the couple's income for the returns Medicare reads in the first years after the death — the two calendar years
+  // before it, and the months of the year of death before it (the rest of that year is the survivor's, read in the run).
+  {const s0=_retCal(S).s0,kd=Math.floor(deathAge-s0+1e-9),cb=_irmaaCalendar(S,base),years={},dm=[];
+   for(let k=kd-2;k<kd;k++)years[k]=cb.lookback(s0+k+2.5).v;
+   for(let i=0;i<12;i++){const a=s0+kd+(i+0.5)/12;dm.push(a<deathAge-1e-9?_irmaaLookbackMagi(base,S,a):null);}
+   sv._irmaaJoint={kd,years,dm};}
+  // Sweep R41-1 (v565): and the couple's ACA MAGI for the months of the calendar year of death before it — the joint return's income
+  // with the survivor's after it; the joint-year pass prices the survivor's marketplace months of that year on it, at the 2-person line.
+  // Months before the plan starts stand in with the first year's MAGI (the engine's convention).
+  {const s0=_retCal(S).s0,ys=s0+Math.floor(deathAge-s0+1e-9);let c=0,n=0;
+   for(let i=0;i<12;i++){const a=ys+(i+0.5)/12;if(a>=deathAge-1e-9)break;
+     const bp=base.find(x=>a>=x.phaseStartAge-1e-9&&a<x.phaseEndAge-1e-9)||base[0],j=Math.max(0,Math.floor(a-bp.phaseStartAge+1e-9));
+     c+=((bp.magiYears&&bp.magiYears[j]!=null)?bp.magiYears[j]:bp.magi)/12;n++;}
+   sv._acaJoint={couple:c,months:n};}
   sv.rmdStartAge=_rmdStartAgeOf(S);   // R18-5: the run's currentAge is the death age, which would move an automatic age
   sv.birthYear=_planBirthYear(S);     // R19-2: and the estimated birth year (FRA, the earnings test) with it
   // R19-2: the earnings-test months withheld before the death carry into the survivor's recredit at FRA.
@@ -3699,7 +4423,7 @@ function calcSurvivorPhases(){
    }
    const _jointOk=S.subjectToUsTax!==false&&!S.ukResident&&!(activeCurrency==='CAD'&&S.cadResident!==false)&&!(activeCurrency==='AUD'&&S.ausResident!==false);
    _trRow(g,'Filing status after the death',0,'flagv',{kind:'flag',
-     note:(_jointOk?'Joint for the year of death — the IRS lets a surviving spouse file jointly that year, so the survivor’s first 12 months are taxed at joint rates — then single: ':'Single: ')
+     note:(_jointOk?'Joint for the year of death — the IRS lets a surviving spouse file jointly that year, so the rest of that calendar year is taxed at joint rates, and a marketplace premium that year reads the joint return (a household of two) — then single: ':'Single: ')
        +'the brackets, deduction, IRMAA, NIIT and poverty-line thresholds are one person’s.'});
    if(own>0||other>0||(S.uss||0)>0||(S.spouseSS||0)>0){
      _trRow(g,'Your Social Security at the death',own,'usd/mo',{note:own>0?undefined:(S.uss||0)>0?'Not yet started at that age.':'No benefit of your own.'});
@@ -3814,7 +4538,10 @@ function _balancesAtAge(s,p5End,lumpsArr,age){
   let t=s,e=p5End;
   if(pc){
     const n=parseInt(pc.phaseKey.replace('p','').replace('b',''),10);
-    if(n>=5)e=age;
+    // Sweep R31-2 (v513): Pre-59½ (n 0) ends at the plan's end too. It could not be cut, nothing ended at the age, and the START
+    // balances came back: a first death at 57 restarted the survivor from the age-50 balances ($600,000 401k against $963,469),
+    // and Replan at 55 offered the pre-plan 10% gain where the plan had ~44%.
+    if(n>=5||n===0)e=age;
     else if(n>=1){t={...s};t['phaseAge'+n+'end']=age;}
   }
   let last=null;
