@@ -78,9 +78,9 @@
   .section:not(.band):has(+ .section:not(.band)){ padding-bottom:3rem; }
   .section:not(.band) + .section:not(.band){ padding-top:0; }
 
-  /* ⚠ .cmp-matrix-wrap is display:none below 820px — the comparison pages swap to a stacked
-     card view (#cmp-stack) at that width. This table has no stacked alternative, so without
-     this override the whole fact sheet simply disappears on a phone. */
+  /* .cmp-matrix-wrap used to be display:none below 820px (features.html swaps to a stacked card
+     view, #cmp-stack). Since 2026-10-06 only that page's #cmp-matrix is hidden, so this override is
+     no longer needed; it is kept because it is harmless. */
   @media (max-width:820px){ .factsheet-wrap{ display:block; } }
   @media (max-width:640px){
     /* Side by side stops working once the label column is squeezed — stack instead. */

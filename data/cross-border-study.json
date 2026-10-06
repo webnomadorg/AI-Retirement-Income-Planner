@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-01",
+  "generated": "2026-10-06",
   "engine": "mobile/www/engine.js (extracted from src/03-app.js)",
   "planEndAge": 90,
   "note": "All figures are net monthly income in USD, in nominal (not inflation-adjusted) dollars, single filer, no state income tax.",
@@ -30,45 +30,45 @@
             "startAge": 60,
             "endAge": 65,
             "ages": "60–65",
-            "netMo": 6176,
-            "taxMo": 367,
-            "healthMo": 457,
+            "netMo": 6191,
+            "taxMo": 353,
+            "healthMo": 456,
             "ftcMo": 0
           },
           {
             "startAge": 65,
             "endAge": 67,
             "ages": "65–67",
-            "netMo": 6128,
-            "taxMo": 373,
-            "healthMo": 499,
+            "netMo": 6352,
+            "taxMo": 357,
+            "healthMo": 291,
             "ftcMo": 0
           },
           {
             "startAge": 67,
             "endAge": 73,
             "ages": "67–73",
-            "netMo": 6437,
-            "taxMo": 361,
-            "healthMo": 312,
+            "netMo": 6433,
+            "taxMo": 343,
+            "healthMo": 328,
             "ftcMo": 0
           },
           {
             "startAge": 73,
             "endAge": 80,
             "ages": "73–80",
-            "netMo": 6378,
-            "taxMo": 377,
-            "healthMo": 378,
+            "netMo": 6380,
+            "taxMo": 356,
+            "healthMo": 397,
             "ftcMo": 0
           },
           {
             "startAge": 80,
             "endAge": 90,
             "ages": "80–90",
-            "netMo": 7155,
-            "taxMo": 359,
-            "healthMo": 486,
+            "netMo": 7156,
+            "taxMo": 333,
+            "healthMo": 510,
             "ftcMo": 0
           }
         ]
@@ -81,46 +81,46 @@
             "startAge": 60,
             "endAge": 65,
             "ages": "60–65",
-            "netMo": 6368,
-            "taxMo": 632,
+            "netMo": 6393,
+            "taxMo": 607,
             "healthMo": 0,
-            "ftcMo": 367
+            "ftcMo": 353
           },
           {
             "startAge": 65,
             "endAge": 67,
             "ages": "65–67",
-            "netMo": 6314,
-            "taxMo": 686,
+            "netMo": 6344,
+            "taxMo": 656,
             "healthMo": 0,
-            "ftcMo": 373
+            "ftcMo": 357
           },
           {
             "startAge": 67,
             "endAge": 73,
             "ages": "67–73",
-            "netMo": 6749,
-            "taxMo": 361,
+            "netMo": 6254,
+            "taxMo": 850,
             "healthMo": 0,
-            "ftcMo": 283
+            "ftcMo": 115
           },
           {
             "startAge": 73,
             "endAge": 80,
             "ages": "73–80",
-            "netMo": 6755,
-            "taxMo": 377,
+            "netMo": 6217,
+            "taxMo": 916,
             "healthMo": 0,
-            "ftcMo": 246
+            "ftcMo": 91
           },
           {
             "startAge": 80,
             "endAge": 90,
             "ages": "80–90",
-            "netMo": 7641,
-            "taxMo": 359,
+            "netMo": 7018,
+            "taxMo": 981,
             "healthMo": 0,
-            "ftcMo": 146
+            "ftcMo": 33
           }
         ]
       },
@@ -132,8 +132,8 @@
             "startAge": 60,
             "endAge": 65,
             "ages": "60–65",
-            "netMo": 6152,
-            "taxMo": 848,
+            "netMo": 6099,
+            "taxMo": 901,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -141,8 +141,8 @@
             "startAge": 65,
             "endAge": 67,
             "ages": "65–67",
-            "netMo": 6080,
-            "taxMo": 920,
+            "netMo": 6027,
+            "taxMo": 973,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -150,8 +150,8 @@
             "startAge": 67,
             "endAge": 73,
             "ages": "67–73",
-            "netMo": 5928,
-            "taxMo": 1182,
+            "netMo": 5975,
+            "taxMo": 1128,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -159,8 +159,8 @@
             "startAge": 73,
             "endAge": 80,
             "ages": "73–80",
-            "netMo": 5855,
-            "taxMo": 1277,
+            "netMo": 5935,
+            "taxMo": 1198,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -168,8 +168,8 @@
             "startAge": 80,
             "endAge": 90,
             "ages": "80–90",
-            "netMo": 6625,
-            "taxMo": 1375,
+            "netMo": 6752,
+            "taxMo": 1248,
             "healthMo": 0,
             "ftcMo": 0
           }
@@ -183,8 +183,8 @@
             "startAge": 60,
             "endAge": 65,
             "ages": "60–65",
-            "netMo": 6352,
-            "taxMo": 648,
+            "netMo": 6141,
+            "taxMo": 859,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -192,8 +192,8 @@
             "startAge": 65,
             "endAge": 67,
             "ages": "65–67",
-            "netMo": 6298,
-            "taxMo": 702,
+            "netMo": 6075,
+            "taxMo": 925,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -201,8 +201,8 @@
             "startAge": 67,
             "endAge": 73,
             "ages": "67–73",
-            "netMo": 6098,
-            "taxMo": 1012,
+            "netMo": 5885,
+            "taxMo": 1219,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -210,8 +210,8 @@
             "startAge": 73,
             "endAge": 80,
             "ages": "73–80",
-            "netMo": 6105,
-            "taxMo": 1028,
+            "netMo": 5838,
+            "taxMo": 1295,
             "healthMo": 0,
             "ftcMo": 0
           },
@@ -219,8 +219,8 @@
             "startAge": 80,
             "endAge": 90,
             "ages": "80–90",
-            "netMo": 7020,
-            "taxMo": 980,
+            "netMo": 6649,
+            "taxMo": 1351,
             "healthMo": 0,
             "ftcMo": 0
           }
@@ -235,28 +235,28 @@
           {
             "key": "uk",
             "label": "United Kingdom",
-            "netMo": 6368
-          },
-          {
-            "key": "au",
-            "label": "Australia",
-            "netMo": 6352
+            "netMo": 6393
           },
           {
             "key": "us",
             "label": "United States",
-            "netMo": 6176
+            "netMo": 6191
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6141
           },
           {
             "key": "ca",
             "label": "Canada",
-            "netMo": 6152
+            "netMo": 6099
           }
         ],
         "orderKeys": [
           "uk",
-          "au",
           "us",
+          "au",
           "ca"
         ],
         "changedFromFirst": false
@@ -266,64 +266,64 @@
         "ages": "65–67",
         "order": [
           {
+            "key": "us",
+            "label": "United States",
+            "netMo": 6352
+          },
+          {
             "key": "uk",
             "label": "United Kingdom",
-            "netMo": 6314
+            "netMo": 6344
           },
           {
             "key": "au",
             "label": "Australia",
-            "netMo": 6298
-          },
-          {
-            "key": "us",
-            "label": "United States",
-            "netMo": 6128
+            "netMo": 6075
           },
           {
             "key": "ca",
             "label": "Canada",
-            "netMo": 6080
+            "netMo": 6027
           }
         ],
         "orderKeys": [
+          "us",
           "uk",
           "au",
-          "us",
           "ca"
         ],
-        "changedFromFirst": false
+        "changedFromFirst": true
       },
       {
         "phase": 3,
         "ages": "67–73",
         "order": [
           {
-            "key": "uk",
-            "label": "United Kingdom",
-            "netMo": 6749
-          },
-          {
             "key": "us",
             "label": "United States",
-            "netMo": 6437
+            "netMo": 6433
           },
           {
-            "key": "au",
-            "label": "Australia",
-            "netMo": 6098
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6254
           },
           {
             "key": "ca",
             "label": "Canada",
-            "netMo": 5928
+            "netMo": 5975
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 5885
           }
         ],
         "orderKeys": [
-          "uk",
           "us",
-          "au",
-          "ca"
+          "uk",
+          "ca",
+          "au"
         ],
         "changedFromFirst": true
       },
@@ -332,31 +332,31 @@
         "ages": "73–80",
         "order": [
           {
-            "key": "uk",
-            "label": "United Kingdom",
-            "netMo": 6755
-          },
-          {
             "key": "us",
             "label": "United States",
-            "netMo": 6378
+            "netMo": 6380
           },
           {
-            "key": "au",
-            "label": "Australia",
-            "netMo": 6105
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 6217
           },
           {
             "key": "ca",
             "label": "Canada",
-            "netMo": 5855
+            "netMo": 5935
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 5838
           }
         ],
         "orderKeys": [
-          "uk",
           "us",
-          "au",
-          "ca"
+          "uk",
+          "ca",
+          "au"
         ],
         "changedFromFirst": true
       },
@@ -365,31 +365,31 @@
         "ages": "80–90",
         "order": [
           {
-            "key": "uk",
-            "label": "United Kingdom",
-            "netMo": 7641
-          },
-          {
             "key": "us",
             "label": "United States",
-            "netMo": 7155
+            "netMo": 7156
           },
           {
-            "key": "au",
-            "label": "Australia",
-            "netMo": 7020
+            "key": "uk",
+            "label": "United Kingdom",
+            "netMo": 7018
           },
           {
             "key": "ca",
             "label": "Canada",
-            "netMo": 6625
+            "netMo": 6752
+          },
+          {
+            "key": "au",
+            "label": "Australia",
+            "netMo": 6649
           }
         ],
         "orderKeys": [
-          "uk",
           "us",
-          "au",
-          "ca"
+          "uk",
+          "ca",
+          "au"
         ],
         "changedFromFirst": true
       }
@@ -399,27 +399,53 @@
         "key": "us",
         "label": "United States",
         "positions": [
-          3,
-          3,
+          2,
+          1,
+          1,
+          1,
+          1
+        ],
+        "from": 2,
+        "to": 1
+      },
+      {
+        "key": "uk",
+        "label": "United Kingdom",
+        "positions": [
+          1,
+          2,
           2,
           2,
           2
         ],
-        "from": 3,
+        "from": 1,
         "to": 2
+      },
+      {
+        "key": "ca",
+        "label": "Canada",
+        "positions": [
+          4,
+          4,
+          3,
+          3,
+          3
+        ],
+        "from": 4,
+        "to": 3
       },
       {
         "key": "au",
         "label": "Australia",
         "positions": [
-          2,
-          2,
           3,
           3,
-          3
+          4,
+          4,
+          4
         ],
-        "from": 2,
-        "to": 3
+        "from": 3,
+        "to": 4
       }
     ]
   },
@@ -430,18 +456,18 @@
       "firstPhaseDegenerate": false,
       "rankFirst": [
         "uk",
-        "au",
         "us",
+        "au",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
-      "spreadFirst": 216,
-      "spreadLast": 1016
+      "spreadFirst": 294,
+      "spreadLast": 507
     },
     {
       "retireAge": 62,
@@ -449,64 +475,64 @@
       "firstPhaseDegenerate": false,
       "rankFirst": [
         "uk",
-        "au",
         "us",
+        "au",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
-      "spreadFirst": 209,
-      "spreadLast": 1036
+      "spreadFirst": 285,
+      "spreadLast": 578
     },
     {
       "retireAge": 65,
       "ssAge": 67,
       "firstPhaseDegenerate": false,
       "rankFirst": [
+        "us",
         "uk",
         "au",
-        "us",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
-      "spreadFirst": 205,
-      "spreadLast": 1103
+      "spreadFirst": 293,
+      "spreadLast": 670
     },
     {
       "retireAge": 67,
       "ssAge": 68,
       "firstPhaseDegenerate": false,
       "rankFirst": [
+        "us",
         "uk",
         "au",
-        "us",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
-      "spreadFirst": 201,
-      "spreadLast": 1095
+      "spreadFirst": 286,
+      "spreadLast": 703
     }
   ],
   "portfolioSizeGrid": [
     {
       "portfolio": 600000,
       "rankFirst": [
-        "au",
         "uk",
+        "au",
         "us",
         "ca"
       ],
@@ -517,70 +543,70 @@
         "ca"
       ],
       "netFirst": {
-        "au": 3430,
-        "uk": 3327,
-        "us": 3313,
-        "ca": 3271
+        "uk": 3350,
+        "au": 3324,
+        "us": 3306,
+        "ca": 3203
       },
       "netLast": {
-        "uk": 5073,
-        "au": 4745,
-        "us": 4587,
-        "ca": 4487
+        "uk": 4670,
+        "au": 4560,
+        "us": 4558,
+        "ca": 4520
       }
     },
     {
       "portfolio": 900000,
       "rankFirst": [
-        "au",
         "uk",
+        "au",
         "us",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
+        "uk",
         "au",
         "ca"
       ],
       "netFirst": {
-        "au": 4935,
-        "uk": 4847,
-        "us": 4746,
-        "ca": 4712
+        "uk": 4872,
+        "au": 4765,
+        "us": 4752,
+        "ca": 4678
       },
       "netLast": {
-        "uk": 6435,
-        "us": 5949,
-        "au": 5834,
-        "ca": 5519
+        "us": 5945,
+        "uk": 5810,
+        "au": 5615,
+        "ca": 5602
       }
     },
     {
       "portfolio": 1200000,
       "rankFirst": [
         "uk",
-        "au",
         "us",
+        "au",
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
       "netFirst": {
-        "uk": 6368,
-        "au": 6352,
-        "us": 6176,
-        "ca": 6152
+        "uk": 6393,
+        "us": 6191,
+        "au": 6141,
+        "ca": 6099
       },
       "netLast": {
-        "uk": 7641,
-        "us": 7155,
-        "au": 7020,
-        "ca": 6625
+        "us": 7156,
+        "uk": 7018,
+        "ca": 6752,
+        "au": 6649
       }
     },
     {
@@ -592,49 +618,49 @@
         "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
-        "au",
-        "ca"
+        "uk",
+        "ca",
+        "au"
       ],
       "netFirst": {
-        "uk": 9173,
-        "us": 9044,
-        "au": 9025,
-        "ca": 9017
+        "uk": 9293,
+        "us": 9083,
+        "au": 8909,
+        "ca": 8901
       },
       "netLast": {
-        "uk": 10180,
-        "us": 9694,
-        "au": 9012,
-        "ca": 8836
+        "us": 9695,
+        "uk": 9436,
+        "ca": 8864,
+        "au": 8716
       }
     },
     {
       "portfolio": 2500000,
       "rankFirst": [
         "us",
-        "ca",
         "uk",
-        "au"
+        "au",
+        "ca"
       ],
       "rankLast": [
-        "uk",
         "us",
+        "uk",
         "ca",
         "au"
       ],
       "netFirst": {
-        "us": 12286,
-        "ca": 12230,
-        "uk": 12185,
-        "au": 12184
+        "us": 12330,
+        "uk": 12309,
+        "au": 12075,
+        "ca": 12056
       },
       "netLast": {
-        "uk": 13065,
-        "us": 12579,
-        "ca": 11337,
-        "au": 11335
+        "us": 12628,
+        "uk": 11806,
+        "ca": 11327,
+        "au": 11128
       }
     }
   ]

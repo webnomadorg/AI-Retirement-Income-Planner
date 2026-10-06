@@ -1,21 +1,21 @@
 residence,phase,start_age,end_age,net_monthly_usd,tax_monthly_usd,healthcare_monthly_usd
-United States,1,60,65,6176,367,457
-United States,2,65,67,6128,373,499
-United States,3,67,73,6437,361,312
-United States,4,73,80,6378,377,378
-United States,5,80,90,7155,359,486
-United Kingdom,1,60,65,6368,632,0
-United Kingdom,2,65,67,6314,686,0
-United Kingdom,3,67,73,6749,361,0
-United Kingdom,4,73,80,6755,377,0
-United Kingdom,5,80,90,7641,359,0
-Canada,1,60,65,6152,848,0
-Canada,2,65,67,6080,920,0
-Canada,3,67,73,5928,1182,0
-Canada,4,73,80,5855,1277,0
-Canada,5,80,90,6625,1375,0
-Australia,1,60,65,6352,648,0
-Australia,2,65,67,6298,702,0
-Australia,3,67,73,6098,1012,0
-Australia,4,73,80,6105,1028,0
-Australia,5,80,90,7020,980,0
+United States,1,60,65,6191,353,456
+United States,2,65,67,6352,357,291
+United States,3,67,73,6433,343,328
+United States,4,73,80,6380,356,397
+United States,5,80,90,7156,333,510
+United Kingdom,1,60,65,6393,607,0
+United Kingdom,2,65,67,6344,656,0
+United Kingdom,3,67,73,6254,850,0
+United Kingdom,4,73,80,6217,916,0
+United Kingdom,5,80,90,7018,981,0
+Canada,1,60,65,6099,901,0
+Canada,2,65,67,6027,973,0
+Canada,3,67,73,5975,1128,0
+Canada,4,73,80,5935,1198,0
+Canada,5,80,90,6752,1248,0
+Australia,1,60,65,6141,859,0
+Australia,2,65,67,6075,925,0
+Australia,3,67,73,5885,1219,0
+Australia,4,73,80,5838,1295,0
+Australia,5,80,90,6649,1351,0

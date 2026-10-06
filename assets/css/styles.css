@@ -1642,17 +1642,20 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .cmp-vstack-card li{ position:relative; padding-left:1.45rem; font-size:.95rem; color:var(--ink); line-height:1.5; }
 .cmp-vstack-card li::before{ content:'\2713'; position:absolute; left:0; top:0; color:var(--emerald); font-weight:700; }
 
+/* ⚠ Only the wrapper that HAS a stacked twin is hidden on phones — features.html's #cmp-matrix, replaced by
+   #cmp-stack. This rule used to hide every .cmp-matrix-wrap, so any other table in one (the data study's
+   three, the Retire Abroad tool's two results tables) vanished on every phone with nothing in its place.
+   Fixed 2026-10-06. A table without a twin now scrolls sideways inside its wrapper (overflow-x:auto). */
 @media (max-width:820px){
-  .cmp-matrix-wrap{ display:none; }
+  #cmp-matrix.cmp-matrix-wrap{ display:none; }
   #cmp-stack{ display:block; }
 }
 
 /* ---- Worked-example comparison table --------------------------------------
    A two-column "this versus that" table that reflows to cards on its own below
-   820px. Deliberately NOT .cmp-matrix-wrap: that one is display:none on mobile
-   because products.html hand-authors a #cmp-stack twin to replace it, so reusing
-   it anywhere else makes the content silently vanish on every phone. This has no
-   twin to forget — the same markup carries both layouts.
+   820px. A .cmp-matrix-wrap table instead keeps its columns and scrolls sideways
+   on a phone (until 2026-10-06 it vanished — see the #cmp-matrix rule above). This
+   one has no twin to forget — the same markup carries both layouts.
    Each <td> needs data-label="<column heading>"; that is what labels the rows
    once the header is hidden on small screens. ------------------------------- */
 .wex-compare{ border:1px solid var(--line); border-radius:var(--radius); background:var(--surface);
