@@ -64,7 +64,7 @@
 <title>Interactive Demo — AI Retirement Income Planner</title>
 <meta name="description" content="A private, single-file retirement income planner: project multi-phase income, taxes and account balances, learn as you plan, and pressure-test with Monte Carlo and historical backtesting. Runs entirely in your browser — no account, nothing uploaded. Not financial advice."/>
 <meta name="robots" content="noindex,follow"/>
-<!-- DEMO BUILD: forked from _fork-v586.html on 2026-10-05. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
+<!-- DEMO BUILD: forked from _fork-v590.html on 2026-10-06. Calc engine stripped; frozen sample plan (single, retire@62, $10k Phase-2 lump). Rebuild: tools/demo-build/ in the desktop repo. -->
 <!-- Defense-in-depth Content-Security-Policy. 'unsafe-inline' is required (single inline app script +
      inline event handlers + inline styles), so the high-value directive here is connect-src, which
      confines all network egress to the supported AI providers and the exchange-rate API — blocking data
@@ -3851,8 +3851,8 @@ html[data-theme="contrast"] .irow select:focus{
           <div id="spouse-ss-row" style="display:none;">
             <div class="irow"><label id="lbl-spousess">Spouse’s own SS /mo (USD)</label><input id="e-spousess" type="number" step="50" oninput="liveCalcDebounced()" placeholder="0"/></div>
             <div class="irow" style="margin-top:-2px;"><label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;margin:0;font-weight:400;"><input type="checkbox" id="e-spousalAuto" checked onchange="liveCalc()" style="width:auto;cursor:pointer;margin-top:2px;"><span>Add the <strong>spousal top-up</strong> — up to half the other’s full-retirement amount, from when you have both claimed<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('spousalBenefit',this)" title="What is this?" aria-label="What is this?">i</button></span></label></div>
-            <div class="irow"><label>Spouse SS claim age<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('fra',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-spouseSSBaseAge" type="number" step="0.5" min="62" max="70" oninput="liveCalcDebounced()" onchange="if(this.value!=='')this.value=S.spouseSSBaseAge" placeholder="67"/></div>
-            <div class="irow"><label><span id="lbl-spouseAge">Spouse’s age when you start retirement</span> <span style="font-size:11px;font-weight:400;color:var(--text-tertiary);margin-left:4px;">(blank = same age as you)</span></label><input id="e-spouseCurrentAge" type="number" step="0.5" min="40" max="100" oninput="liveCalcDebounced();_spouseAgeUi()" onchange="if(this.value!=='')this.value=S.spouseCurrentAge;_spouseAgeUi()" placeholder=""/></div>
+            <div class="irow"><label>Spouse SS claim age<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('fra',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-spouseSSBaseAge" type="number" step="0.5" min="62" max="70" oninput="liveCalcDebounced()" onchange="liveCalcFlush();if(this.value!=='')this.value=S.spouseSSBaseAge" placeholder="67"/></div>
+            <div class="irow"><label><span id="lbl-spouseAge">Spouse’s age when you start retirement</span> <span style="font-size:11px;font-weight:400;color:var(--text-tertiary);margin-left:4px;">(blank = same age as you)</span></label><input id="e-spouseCurrentAge" type="number" step="0.5" min="40" max="100" oninput="liveCalcDebounced();_spouseAgeUi()" onchange="liveCalcFlush();if(this.value!=='')this.value=S.spouseCurrentAge;_spouseAgeUi()" placeholder=""/></div>
             <div id="spouse-age-gap-hint" style="font-size:11px;color:var(--text-tertiary);margin:-4px 0 8px;line-height:1.5;"></div>
             <div class="irow"><label>Spouse Medicare start age <span style="font-size:11px;font-weight:400;color:var(--text-tertiary);margin-left:4px;">(blank = same as you)</span></label><input id="e-spouseMedicareStartAge" type="number" step="0.5" min="20" max="65" placeholder="65" oninput="S.spouseMedicareStartAge=(this.value===''?null:Math.max(20,Math.min(65,parseFloat(this.value)||65)));liveCalcDebounced()" onchange="if(this.value!=='')this.value=S.spouseMedicareStartAge"/><span style="font-size:11px;color:var(--text-tertiary);margin-top:3px;"><strong>Part B and Part D are charged per person</strong>, so a couple both on Medicare pays two of each &mdash; the phase cards show this as &ldquo;&times;2&rdquo;. Leave blank if you reach Medicare around the same time. Enter their age if there's a gap, or tick below if only one of you is enrolled.</span></div>
             <div class="irow" style="margin-top:2px;"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;"><input type="checkbox" id="e-spouseMedicareNever" onchange="S.spouseMedicareStartAge=this.checked?'never':null;populateInputsFromUSD();liveCalc()" style="width:auto;cursor:pointer;"> My spouse is <strong>not</strong> on Medicare (only one set of premiums)</label></div>
@@ -4100,11 +4100,11 @@ html[data-theme="contrast"] .irow select:focus{
         <h3 style="margin-bottom:10px;">Monte Carlo settings</h3>
         <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">Controls the Monte Carlo simulation on the Drawdown Strategies tab (Monte Carlo button). Returns are drawn from a normal distribution each phase. Higher σ = wider spread of outcomes.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-          <div class="irow" style="margin:0;"><label>Simulations (runs)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcRuns',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-runs" type="number" step="50" min="50" max="2000" placeholder="500" oninput="S.mcRuns=parseInt(this.value)||500;"/></div>
-          <div class="irow" style="margin:0;"><label>Stock volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcSigma',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-sigma" type="number" step="1" min="0" max="50" placeholder="12" oninput="S.mcSigma=(this.value===''?12:(parseFloat(this.value)||0));"/></div>
-          <div class="irow" style="margin:0;"><label>Cash/bond volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcSigmaCash',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-sigma-cash" type="number" step="0.5" min="0" max="20" placeholder="4" oninput="S.mcSigmaCash=(this.value===''?4:(parseFloat(this.value)||0));"/></div>
-          <div class="irow" style="margin:0;"><label>Inflation volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcInflSigma',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-infl-sigma" type="number" step="0.5" min="0" max="10" placeholder="1.5" oninput="S.mcInflSigma=(this.value===''?1.5:parseFloat(this.value)||0);"/></div>
-          <div class="irow" style="margin:0;"><label>Backtest growth-bucket stock %<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('btStockPct',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-bt-stock-pct" type="number" step="5" min="0" max="100" placeholder="60" oninput="S.btStockPct=(this.value===''?60:Math.max(0,Math.min(100,parseFloat(this.value)||0)));if(document.getElementById('tab-stress').classList.contains('active'))renderStressTest();"/></div>
+          <div class="irow" style="margin:0;"><label>Simulations (runs)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcRuns',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-runs" type="number" step="50" min="50" max="2000" placeholder="500" oninput="S.mcRuns=parseInt(this.value)||500;autoSave();"/></div>
+          <div class="irow" style="margin:0;"><label>Stock volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcSigma',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-sigma" type="number" step="1" min="0" max="50" placeholder="12" oninput="S.mcSigma=(this.value===''?12:(parseFloat(this.value)||0));autoSave();"/></div>
+          <div class="irow" style="margin:0;"><label>Cash/bond volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcSigmaCash',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-sigma-cash" type="number" step="0.5" min="0" max="20" placeholder="4" oninput="S.mcSigmaCash=(this.value===''?4:(parseFloat(this.value)||0));autoSave();"/></div>
+          <div class="irow" style="margin:0;"><label>Inflation volatility σ (%/yr)<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('mcInflSigma',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-mc-infl-sigma" type="number" step="0.5" min="0" max="10" placeholder="1.5" oninput="S.mcInflSigma=(this.value===''?1.5:parseFloat(this.value)||0);autoSave();"/></div>
+          <div class="irow" style="margin:0;"><label>Backtest growth-bucket stock %<button type="button" class="info-icon" onclick="event.preventDefault();event.stopPropagation();openInfoPopover('btStockPct',this)" title="What is this?" aria-label="What is this?">i</button></label><input id="e-bt-stock-pct" type="number" step="5" min="0" max="100" placeholder="60" oninput="S.btStockPct=(this.value===''?60:Math.max(0,Math.min(100,parseFloat(this.value)||0)));autoSave();if(document.getElementById('tab-stress').classList.contains('active'))renderStressTest();"/></div>
         </div>
         <p style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">The <strong>Historical backtest</strong> (on the Stress test tab) replays your plan against real US market history since 1928. This sets how much of your 401k/Roth/Super is modelled as stocks vs bonds in that test (your equity bucket is always stocks; cash is T-bills).</p>
       </div>
@@ -6216,7 +6216,7 @@ html[data-theme="contrast"] .irow select:focus{
 // it exactly and aborts the build if it can't). 0 = unstamped (a hand-assembled or dev
 // file); the checker then falls back to the filename, and stays silent if that fails too,
 // so an unknown version never nags the user.
-const APP_BUILD = 586; /* __BUILD__ */
+const APP_BUILD = 590; /* __BUILD__ */
 // Phase 5 was '#D85A30' (copper). Its badge chip sat next to Phase 3's amber chip and the two
 // read as the same colour — the chips are near-identical tints even though the raw hues differ.
 // Phase 5 is now teal, which is distinct from all four other phases in both light and dark.
@@ -11201,6 +11201,16 @@ function _resFxHints(){
   set('lbl-spouseAgePension','Spouse’s Age Pension monthly','AUD','A$',_penUSD(S,'spouseAgePension'),true);
   const h=document.getElementById('lbl-super-phases');if(h)h.textContent=`Per-phase Super withdrawals (${c}/mo — tax-free with AUS Res.)`;
 }
+// Refresh sweep: the Part B / Part D labels name the Medicare start age, which the SSDI "Medicare start age" box sets —
+// and only updateEditLabels wrote them, so they said "starts age 65" until a refresh. Run by every recalculation too.
+// Rewritten only when the wording changes, so a hovered ⓘ is not replaced under the pointer on every keystroke.
+function _medicareLblUi(){const c=displayCurrency;
+  [['lbl-medicare','B'],['lbl-medicareD','D']].forEach(([id,k])=>{const e=document.getElementById(id);if(!e)return;
+    const t=`Medicare Part ${k} est. /mo (${c}) — ${medicareStartLabel()}`;
+    if(e.dataset.lbl!==t){e.dataset.lbl=t;e.innerHTML=t+infoIcon('medicare');}});}
+// Refresh sweep: shown only when US healthcare is excluded — which "Non-US — no US tax" also does, and that toggle never
+// re-ran updateEditLabels, so the row waited for a refresh. Now also run by every recalculation (_refreshOpenTools).
+function _expatRowUi(){const r=document.getElementById('row-expat-health');if(r)r.style.display=_usHealthExcluded(S)?'':'none';}
 function updateEditLabels(){
   _spouseAgeUi(); // R8-1
   const c=displayCurrency;
@@ -11218,13 +11228,10 @@ function updateEditLabels(){
   // v9: US pension/disability streams — currency-aware amount labels (info icon preserved)
   {const e1=document.getElementById('lbl-usPension');if(e1)e1.innerHTML=`US pension / disability /mo (${c})`+infoIcon('usPension');}
   {const e2=document.getElementById('lbl-usPension2');if(e2)e2.innerHTML=`2nd US pension / disability /mo (${c}) <span style="font-size:11px;color:var(--text-tertiary);">(optional)</span>`+infoIcon('usPension');}
-  document.getElementById('lbl-medicare').innerHTML=`Medicare Part B est. /mo (${c}) — ${medicareStartLabel()}`+infoIcon('medicare');
-  document.getElementById('lbl-medicareD').innerHTML=`Medicare Part D est. /mo (${c}) — ${medicareStartLabel()}`+infoIcon('medicare');
+  _medicareLblUi();
   // v8: expat healthcare — show only when US healthcare is excluded (overseas/UK/CA/AU residence or non-US-taxpayer)
   {
-    const usHealthExcluded=_usHealthExcluded(S);
-    const exRow=document.getElementById('row-expat-health');
-    if(exRow)exRow.style.display=usHealthExcluded?'':'none';
+    _expatRowUi();
     const exLbl=document.getElementById('lbl-expatHealthcare');
     if(exLbl)exLbl.innerHTML=`Overseas healthcare cost /mo, household (${c})`+infoIcon('expatHealthcare'); // R17-2
   }
@@ -11577,7 +11584,12 @@ function updateLumpField(id,field,val){const l=lumps.find(x=>x.id===id);if(!l)re
     clearTimeout(lumpDebounce);lumpDebounce=setTimeout(()=>{_renderAllLumpSplitMeta();_renderLumpFeedback();renderPhasesOnly();autoSave();},300);
     return;
   }
-  if(field==='amount')l.amtUSD=toUSD(parseFloat(val)||0);else if(field==='phase')l.phase=parseInt(val);else l.label=val;
+  if(field==='phase'){
+    // Refresh sweep: redraw now. Picking a real phase for a "Not counted" event left the notice and the disabled
+    // "— not counted" option on screen until a refresh.
+    l.phase=parseInt(val);renderLumpList();renderPhasesOnly();autoSave();return;
+  }
+  if(field==='amount')l.amtUSD=toUSD(parseFloat(val)||0);else l.label=val;
   clearTimeout(lumpDebounce);lumpDebounce=setTimeout(()=>{_renderAllLumpSplitMeta();_renderLumpFeedback();renderPhasesOnly();autoSave();},300);
 }
 // User-facing names for the pots. `super` is only offered when the plan actually uses it, so a US
@@ -11622,7 +11634,22 @@ function _lumpOpeningBalances(phaseNum,forLump){
 // Every split panel, not just the edited lump's (sweep R5-6): a panel's "available" now depends on the other
 // lumps in its phase — a windfall landing first, or an expense listed earlier — so editing any lump can change it.
 function _renderAllLumpSplitMeta(){lumps.forEach(x=>{if(_lumpSpec(x).acct==='split')_renderLumpSplitMeta(x.id);});}
+// Refresh sweep (owner, 2026-10-06): the list was rebuilt only by its own controls and by opening the tab, so a change
+// made WITH the tab open (Help → Open Setup Wizard, Undo, another window's save, an AI Apply) left an event on a phase
+// the plan no longer had: no "Not counted" notice, old phase ages in its picker, until a page refresh. This is the
+// list's structure — the phases on offer and their ages, the replanned age, the currency, each event's phase,
+// direction and account; _refreshOpenTools rebuilds the open list when it changes. Amounts and labels are left out
+// on purpose: they change as the user types in the list, and a rebuild would take the cursor out of the box.
+let _lumpListSigLast=null;
+function _lumpListSig(){
+  try{
+    const curAge=S.currentAge&&S.currentAge>S.startAge?S.currentAge:0;
+    const ph=buildPhaseConfig(S.startAge,p5EndAge,curAge,S).filter((p,i,a)=>_takesLumps(a,i)).map(p=>_phaseNum(p)+':'+p.startAge+'-'+p.endAge);
+    return JSON.stringify([ph,S.startAge,curAge,displayCurrency,lumps.map(l=>[l.id,l.phase,l.dir,l.acct])]);
+  }catch(_){return null;}
+}
 function renderLumpList(){
+  _lumpListSigLast=_lumpListSig();
   const ct=document.getElementById('lump-list'),sym=CURRENCIES[displayCurrency].symbol;
   const curAge=S.currentAge&&S.currentAge>S.startAge?S.currentAge:0;
   // Lumps are keyed by numeric phase and land at the start of that phase's FIRST REMAINING segment (sweep
@@ -11668,7 +11695,7 @@ function renderLumpList(){
       <label class="lump-opt" title="Tick if this money is taxable income in the year it arrives — a pension commutation, a deferred bonus, the gain on an annuity surrender. It is taxed once, as ordinary income that year, and counts in that year’s ACA and IRMAA income. Any part you pay into the 401k / IRA (a rollover) is not taxed now — it is taxed as you withdraw it. A house sale (up to the home-sale exclusion) or an inheritance is usually not taxable."><input type="checkbox" class="lump-taxable" data-id="${l.id}"${l.taxable?' checked':''}/>Taxable income in the year it arrives</label>
     </div>`:'';
     return `<div class="lump-event ${isOut?'is-out':'is-in'}">
-    <div class="lump-event-hd"><span class="lump-event-n">${idx+1}</span>${isOut?'Money out &middot; one-time expense':'Money in &middot; windfall'}${l.label?' &middot; '+escHtml(l.label):''}</div>
+    <div class="lump-event-hd"><span class="lump-event-n">${idx+1}</span>${isOut?'Money out &middot; one-time expense':'Money in &middot; windfall'}<span class="lump-event-lbl" data-lbl-for="${l.id}">${l.label?' &middot; '+escHtml(l.label):''}</span></div>
     ${_orphan(l)?`<div class="lump-orphan" style="font-size:12px;color:var(--amber-text);background:var(--amber-bg);border-radius:6px;padding:6px 10px;margin-bottom:6px;">&#x26A0; Not counted: ${_orphan(l).past?'it falls before the current age you replanned to, so your replanned balances already include it. Delete it, or move it to a later phase if it is still to come.':'your plan no longer has that phase. Pick the phase it belongs in.'}</div>`:''}
     <div class="lump-row-grid" data-lump-id="${l.id}" style="margin-bottom:5px;">
       <div class="irow" style="margin:0;"><label>Type</label><select class="lump-dir" data-id="${l.id}"><option value="in"${!isOut?' selected':''}>Money in</option><option value="out"${isOut?' selected':''}>Money out</option></select></div>
@@ -11683,7 +11710,7 @@ function renderLumpList(){
     ${guBlock}
     ${txBlock}
     <div class="lump-fb" data-fb-for="${l.id}"></div>
-    ${l.amtUSD>0&&!isOut?`<button class="lump-annuity-btn" onclick="evalLumpAsAnnuity(${l.id},${l.amtUSD})">&#x1F4B0; Evaluate as annuity &#x2192;</button>`:''}
+    ${!isOut?`<button class="lump-annuity-btn" data-ann-for="${l.id}" onclick="evalLumpAsAnnuity(${l.id})"${l.amtUSD>0?'':' style="display:none"'}>&#x1F4B0; Evaluate as annuity &#x2192;</button>`:''}
   </div>`;}).join('');
   lumps.forEach(l=>{if(_lumpSpec(l).acct==='split')_renderLumpSplitMeta(l.id);});
   _renderLumpFeedback();
@@ -11694,7 +11721,17 @@ function renderLumpList(){
  * tab, rather than by hunting for the effect on a phase card. Recomputed in place (never via a full
  * re-render) so it can refresh while the user is still typing an amount.
  */
+// Refresh sweep: typing an event's label or amount does not rebuild the list (the cursor would leave the box), so the
+// heading's label and the "Evaluate as annuity" button (money in with an amount) follow in place — both used to wait
+// for a tab switch or a refresh.
+function _renderLumpRowsInPlace(){
+  document.querySelectorAll('.lump-event-lbl[data-lbl-for]').forEach(el=>{const l=lumps.find(x=>x.id===parseInt(el.dataset.lblFor));
+    const t=l&&l.label?' \u00B7 '+l.label:'';if(el.textContent!==t)el.textContent=t;});
+  document.querySelectorAll('.lump-annuity-btn[data-ann-for]').forEach(b=>{const l=lumps.find(x=>x.id===parseInt(b.dataset.annFor));
+    b.style.display=(l&&l.amtUSD>0&&l.dir!=='out')?'':'none';});
+}
 function _renderLumpFeedback(){
+  _renderLumpRowsInPlace();
   const boxes=document.querySelectorAll('.lump-fb[data-fb-for]');
   if(!boxes.length)return;
   let phs=null;try{phs=calcAllPhases(S,p5EndAge,lumps);}catch(_){}
@@ -12294,6 +12331,10 @@ function checkPhaseWrap(){
   const hint=document.getElementById('phase-wrap-hint');
   const wrapper=document.getElementById('phases-scroll-wrapper');
   if(!grid||!hint)return;
+  // Refresh sweep: a recalculation made on another tab measured a hidden grid (every offsetTop is 0), hid the hint, and
+  // nothing measured again when the Overview came back — the hint waited for a refresh. Measure only on screen;
+  // showTab('overview') measures on the way in.
+  if(!grid.offsetParent)return;
   if(wrapper&&wrapper.classList.contains('is-overflowing')){hint.style.display='none';return;}
   const cards=grid.children;
   if(cards.length<2){hint.style.display='none';return;}
@@ -13696,14 +13737,16 @@ function _refreshOpenTools(p){
   // R28-4: the Plan Health side panel too — Ctrl+Z and another window's save change the plan under it (badge 5/8, panel "2/8").
   {const cp=document.getElementById('conf-panel');if(cp&&cp.classList.contains('open')&&typeof renderConfPanel==='function')renderConfPanel();}
   // R30-3: the Lump sums tab's cost readout ("$8,000 reaches the expense" with $2,000 left in the account it is paid from).
-  if(on('lumps')){try{_renderAllLumpSplitMeta();_renderLumpFeedback();}catch(_){}}
+  // Refresh sweep: and the list itself when its phases (or an event's phase, direction or account) changed under it.
+  if(on('lumps')){try{if(_lumpListSig()!==_lumpListSigLast)renderLumpList();else{_renderAllLumpSplitMeta();_renderLumpFeedback();}}catch(_){}}
   try{_rpRefreshOpen();}catch(_){} // R31-4: the open Replan panel
   try{syncPreRetUI();}catch(_){} // v515: its rows follow the start age, residence and currency
+  try{_expatRowUi();_goalsSurvivorUi();_medicareLblUi();}catch(_){} // refresh sweep: rows and labels set by settings in another section
   try{_aiRefreshProposalViews();}catch(_){} // R30-2 (inside try: liveCalc can run before the AI block has loaded)
 }
-function render(){_anchorPenFx();/* R21-6 */if(typeof _tipHideAll==='function')_tipHideAll();/* a hovered node about to be replaced never fires mouseout — see TOOLTIPS */const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();if(document.getElementById('tab-taxguide').classList.contains('active'))renderTaxThresholdCharts();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);_refreshOpenTools(p); /* R14-9, R15-2 */if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
+function render(){_anchorPenFx();/* R21-6 */if(typeof _tipHideAll==='function')_tipHideAll();/* a hovered node about to be replaced never fires mouseout — see TOOLTIPS */const p=calcAllPhases(S,p5EndAge,lumps);renderSummary(p);renderPhases(p);updateRothPhaseLabels();/* refresh sweep: like liveCalc — the Age control, Undo and another window's save */if(document.getElementById('tab-scenarios').classList.contains('active'))renderScenarios();if(document.getElementById('tab-ssopt').classList.contains('active'))renderSSOptimizer();if(document.getElementById('tab-taxguide').classList.contains('active'))renderTaxThresholdCharts();scheduleHeavyRender();generateAiPrompt();generateRatesPrompt();updateConfBadge(p);_refreshOpenTools(p); /* R14-9, R15-2 */if(typeof renderLearnCard==='function')renderLearnCard();if(typeof updateAmountBtnLabel==='function')updateAmountBtnLabel();}
 function setFilingStatus(val){S.filingStatus=val;_syncFilingUI();liveCalc();}
-function _syncFilingUI(){const val=S.filingStatus==='mfj'?'mfj':'single';const a=document.getElementById('mfj-single-btn');if(a)a.classList.toggle('active',val==='single');const b=document.getElementById('mfj-mfj-btn');if(b)b.classList.toggle('active',val==='mfj');const spRow=document.getElementById('spouse-ss-row');if(spRow)spRow.style.display=val==='mfj'?'':'none';const mfjCard=document.getElementById('mfj-brackets-card');if(mfjCard)mfjCard.style.display=(val==='mfj'&&S.subjectToUsTax!==false)?'':'none';}
+function _syncFilingUI(){if(typeof renderIrmaaTierGrid==='function')renderIrmaaTierGrid();/* refresh sweep: its thresholds are single or married */const val=S.filingStatus==='mfj'?'mfj':'single';const a=document.getElementById('mfj-single-btn');if(a)a.classList.toggle('active',val==='single');const b=document.getElementById('mfj-mfj-btn');if(b)b.classList.toggle('active',val==='mfj');const spRow=document.getElementById('spouse-ss-row');if(spRow)spRow.style.display=val==='mfj'?'':'none';const mfjCard=document.getElementById('mfj-brackets-card');if(mfjCard)mfjCard.style.display=(val==='mfj'&&S.subjectToUsTax!==false)?'':'none';}
 // Sweep R2-3 (v405): the DOM half of the filing-status, US-taxpayer and residence toggles, without the
 // recalc their setters run. Import, saved-slot Load and Undo/Redo replace S wholesale and only a reload
 // re-synced these, so an imported MFJ UK-resident plan showed "Single filer", no spouse row and no
@@ -15279,7 +15322,7 @@ function scrollToReplanPanel(){
   const top=target.getBoundingClientRect().top+window.scrollY-getStickyOverviewOffset()-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
 }
-function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);if(t.getAttribute('role')==='tab')t.setAttribute('aria-selected',on?'true':'false');});positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios({animate:true});if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='lumps')renderLumpList();/* R30-3: its phases and cost readout follow edits made elsewhere */if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='taxguide')renderTaxThresholdCharts();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(syncPhaseScrollAffordance);} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
+function showTab(name){updateStickyTabHeight();scrollToTabsRow();document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);if(t.getAttribute('role')==='tab')t.setAttribute('aria-selected',on?'true':'false');});positionTabIndicator();['ai-footer','ai-footer-rates'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=name==='edit'?'':'none';});if(name==='edit'){generateRatesPrompt();refreshRatesFooter();refreshAdvisorFooter();try{syncPreRetUI();}catch(_){}/* refresh sweep: its notes are priced only on screen */}if(name==='chart')renderCharts(calcAllPhases(S,p5EndAge,lumps),{animate:true});if(name==='scenarios')renderScenarios({animate:true});if(name==='ssopt')renderSSOptimizer();if(name==='stress')renderStressTest();if(name==='drawdown')renderDrawdown();if(name==='annuity')initAnnuityTab();if(name==='lumps')renderLumpList();/* R30-3: its phases and cost readout follow edits made elsewhere */if(name==='whatif')initWhatIfTab();if(name==='confidence')renderConfidenceScore();if(name==='taxguide')renderTaxThresholdCharts();if(name==='overview'){if(_confLast)updateConfTeaser(_confLast);requestAnimationFrame(()=>{syncPhaseScrollAffordance();checkPhaseWrap();});} if(name==='ai')initAiTab();if(name==='edit')scrollToEditTopAfterLayout();else scrollToTabsRowAfterLayout();reflowTabs();}
 function setupLumpDelegation(){const ct=document.getElementById('lump-list');ct.addEventListener('input',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-amt'))updateLumpField(id,'amount',el.value);else if(el.classList.contains('lump-label'))updateLumpField(id,'label',el.value);else if(el.classList.contains('lump-split-amt'))updateLumpField(id,'split:'+el.dataset.acct,el.value);});ct.addEventListener('change',e=>{const el=e.target,id=parseInt(el.dataset.id);if(!id)return;if(el.classList.contains('lump-phase'))updateLumpField(id,'phase',el.value);else if(el.classList.contains('lump-dir'))updateLumpField(id,'dir',el.value);else if(el.classList.contains('lump-acct'))updateLumpField(id,'acct',el.value);else if(el.classList.contains('lump-fallback'))updateLumpField(id,'fallback',el.checked);else if(el.classList.contains('lump-grossup'))updateLumpField(id,'grossUp',el.checked);else if(el.classList.contains('lump-taxable'))updateLumpField(id,'taxable',el.checked);else if(el.classList.contains('lump-fbacct'))updateLumpField(id,'fbacct:'+el.dataset.acct,el.checked);});ct.addEventListener('click',e=>{const btn=e.target.closest('.lump-del');if(btn){const id=parseInt(btn.dataset.id);if(id)removeLump(id);}});}
 function setupRateListeners(){['rate-GBP','rate-CAD','rate-AUD','rate-PHP','rate-THB','rate-EUR'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',onRateChange);});}
 window.addEventListener('load',()=>{reflowTabs();setTimeout(reflowTabs,200);});
@@ -16051,7 +16094,7 @@ const HELP_AUDIT_DATE_LS='retirement_v6_help_audit_date';
 // key as the baseline "this is when our help content was current". Sweep R20-8 (v467): STAMPED by python/build.py with
 // the build's date (BUILD_DATE_RE) — it was never bumped by hand and said 2026-05-15, "the date this build shipped", for
 // builds made in September. The literal here is only what an unbuilt src/ shows.
-const BUILD_DATE='2026-10-04'; /* __BUILD_DATE__ */
+const BUILD_DATE='2026-10-06'; /* __BUILD_DATE__ */
 
 // ═══════════════════════════════════════════════════════════════
 // HELP CONTENT OVERRIDES (Tier 4) — user-applied AI corrections
@@ -19556,6 +19599,9 @@ function showEditSection(id){
   document.querySelectorAll('#edit-section-nav .whatif-pill').forEach(b=>b.classList.toggle('active',b.getAttribute('data-esec')===id));
   try{localStorage.setItem('rd_edit_section',id);}catch(e){}
   if(id==='appearance'&&typeof renderAppearancePicker==='function')renderAppearancePicker();
+  // Refresh sweep: syncPreRetUI prices its notes ("adds about $101 of federal tax…", "would save about $3,273…") only
+  // while they are on screen, so a recalculation made elsewhere — or the page load — left them hidden until a typed edit.
+  if(id==='taxes'){try{syncPreRetUI();}catch(_){}}
 }
 function initEditSection(){let s='accounts';try{s=localStorage.getItem('rd_edit_section')||'accounts';}catch(e){} showEditSection(s);}
 function showWhatIf(which,skipSave){
@@ -21617,29 +21663,12 @@ async function checkForUpdate(force){}
      • nothing reads the result. There is nothing to read; the endpoint returns 204.
    Delete api/version-ping.mjs on the server and the beacon 404s into that catch, the update
    button carries on exactly as before, and no other behaviour changes at all. */
-function _updBeacon(build){
-  try{
-    // no-cors: this is a fire-and-forget beacon, so there is no response to read and no
-    // reason to require CORS headers for one.
-    fetch(UPDATE_API+'/api/version-ping?build='+encodeURIComponent(build),
-      {method:'GET',mode:'no-cors',cache:'no-store',signal:AbortSignal.timeout(5000)})
-      .catch(function(){});
-  }catch(e){}
-}
+function _updBeacon(build){}
 
 /* Once a day at most, on the same rhythm as the update check but independent of whether it
    succeeded — a copy that cannot reach the version feed is still a copy in use. */
 const BEACON_INTERVAL=24*60*60*1000;
-function _updMaybeBeacon(){
-  try{
-    const mine=_appBuild();
-    if(!mine)return;
-    const last=parseInt(localStorage.getItem('rp_upd_pinged')||'0',10)||0;
-    if(Date.now()-last<BEACON_INTERVAL)return;
-    localStorage.setItem('rp_upd_pinged',String(Date.now()));
-    _updBeacon(mine);
-  }catch(e){}
-}
+function _updMaybeBeacon(){}
 
 function openUpdatesTab(){openHelp();switchHelpTab('updates');}
 
@@ -22140,6 +22169,13 @@ function updateGoalsCardState(){
   // goalSurvivorPct is a raw percent — never run it through toDisplay (currency conversion).
   {const pe=document.getElementById('e-goalSurvivorPct');if(pe)pe.value=Math.round(S.goalSurvivorPct||0);}
   {const ge=document.getElementById('e-goalsEnabled');if(ge)ge.checked=!!S.goalsEnabled;}
+  _goalsSurvivorUi();
+}
+// Refresh sweep: the survivor goal row (and its $ / % switch and hint) depend on the filing status and the survivor
+// scenario, which are set on the Income section — and only page load and the goals tick redrew them, so turning the
+// survivor scenario on showed no survivor goal until a refresh. Show/hide only (never writes a box you may be typing in),
+// so every recalculation runs it (_refreshOpenTools).
+function _goalsSurvivorUi(){
   // Survivor goal row: only meaningful when MFJ + the survivor scenario is modelled.
   const sr=document.getElementById('row-goalSurvivorMo');
   const mfj=(S.filingStatus==='mfj');
@@ -26051,9 +26087,31 @@ function _aiCheapModel(){
 //  are declared above the INIT block so they are out of TDZ before render() runs)
 // ═══════════════════════════════════════════════════════════════
 
+// Owner, 2026-10-06: after a refresh the calculator opened on its defaults ($200,000 at 6%), not on the annuity already in
+// the plan, while the panel below it listed that annuity's deductions. Fill it from the plan's annuity — ONCE per annuity
+// (a reload, Undo or another window brings a new object), so figures typed to try something else are left alone. A plan
+// saved before the terms were stored gets its premium and coverage; the rate then gives the monthly income.
+let _annFilledFrom=null;
+function _annFillFromPlan(){
+  const a=_annuityPlanState;
+  if(!a||typeof a!=='object'||_annFilledFrom===a)return false;
+  _annFilledFrom=a;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null&&v!=='')el.value=v;};
+  const p=(a.params&&typeof a.params==='object')?a.params:null;
+  set('ann-premium',Math.round(toDisplay(a.premiumUSD||0))||'');
+  if(p){
+    if(['spia','dia','cola'].includes(p.type))_annType=p.type;
+    set('ann-buy-age',p.buyAge);set('ann-start-age',p.startAge);set('ann-cola',p.colaPct);
+    set('ann-payout-rate',p.ratePct);set('ann-growth',p.growthPct);
+    set('ann-monthly',p.monthlyUSD>0?Math.round(toDisplay(p.monthlyUSD)):'');
+  } else {const mo=document.getElementById('ann-monthly');if(mo)mo.value='';}
+  if(a.coverage==='joint'||a.coverage==='single')_annCoverage=a.coverage;
+  return true;
+}
 function initAnnuityTab(){
   const lbl=document.getElementById('ann-cur-lbl');
   if(lbl)lbl.textContent=displayCurrency;
+  _annFillFromPlan();
   const buyAgeEl=document.getElementById('ann-buy-age');
   const startAgeEl=document.getElementById('ann-start-age');
   const growthEl=document.getElementById('ann-growth');
@@ -26759,7 +26817,12 @@ function _doAnnAdd({premiumDisplay,buyAge,startAge,monthlyBase,cola,fundingDispl
   let sourceLump=null;
   _annFromLumpId=null;
   // R18-1: the coverage travels with it — the survivor projection stops a single-life annuity at your death.
-  _annuityPlanState={premiumUSD,phaseChanges,sourceLump,fundingDeductions,coverage:_annCoverage==='joint'?'joint':'single'};
+  // Owner, 2026-10-06: the calculator opens on the annuity in the plan, so it keeps the terms it was bought on (amounts in
+  // USD like the rest of the plan). Read only by _annFillFromPlan — the engine reads phaseChanges and coverage.
+  const _g=id=>{const v=parseFloat(document.getElementById(id)?.value);return isFinite(v)?v:null;};
+  const params={type:_annType,buyAge,startAge,monthlyUSD:toUSD(monthlyBase),colaPct:Math.round(cola*10000)/100,
+    ratePct:_g('ann-payout-rate'),growthPct:_g('ann-growth')};
+  _annuityPlanState={premiumUSD,phaseChanges,sourceLump,fundingDeductions,coverage:_annCoverage==='joint'?'joint':'single',params};
   // Reset the split inputs so a future "Try again" starts clean
   _annSplit={balCash:0,bal401k:0,balEquity:0,balRoth:0,lumps:{}};
   liveCalc();
@@ -26878,6 +26941,7 @@ function removeAnnuityFromPlan(){
 
 // Called from lump sum row — switches to annuity tab with premium pre-filled
 function evalLumpAsAnnuity(lumpId,amtUSD){
+  if(amtUSD==null){const l=lumps.find(x=>x.id===lumpId);amtUSD=l?l.amtUSD:0;} // the event's amount NOW, not when the list was drawn
   const el=document.getElementById('ann-premium');
   if(el&&amtUSD>0){el.value=Math.round(toDisplay(amtUSD));annSyncRate();}
   _annFromLumpId=lumpId; // remember source so split UI can pre-target this lump if desired
