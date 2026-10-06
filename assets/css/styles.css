@@ -107,6 +107,8 @@ h1,h2,h3,h4{ font-family:var(--font-display); color:var(--ink); line-height:1.12
 h1{ font-size:var(--fs-h1); } h2{ font-size:var(--fs-h2); } h3{ font-size:var(--fs-h3); }
 p{ margin:0 0 1rem; text-wrap:pretty; }
 strong{ color:var(--ink); font-weight:650; }
+/* Bold text inside a link keeps the link's colour (the rule above made "a **Lump sums** expense" read as body text). */
+a strong, a b{ color:inherit; }
 ul,ol{ margin:0 0 1rem; padding-left:1.2em; }
 small{ font-size:.85em; }
 hr{ border:none; border-top:1px solid var(--line); margin:2.5rem 0; }
