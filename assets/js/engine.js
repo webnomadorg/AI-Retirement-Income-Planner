@@ -280,7 +280,7 @@ const D_USD={
   rothConvPre:null,
   // ── v2: filing status + spouse SS ──
   filingStatus:'single', // 'single' | 'mfj'
-  spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,
+  spouseSS:0,spouseSSColaRate:2.6,spouseSSBaseAge:62,spouseSsdiMode:false, // R56-2: the spouse's Social Security is SSDI
   // ── Sweep R20-1 (v467): the Social Security SPOUSAL top-up, on for a married plan. Each of you is paid your own benefit
   //         plus any excess of half the other's full-retirement amount (PIA) over your own — SSA's rule — cut for claiming
   //         before FRA on the spousal schedule, never raised past it, and paid only once you have both claimed. Spouse SS is
@@ -1068,6 +1068,16 @@ function syncEarlyAccessUI(){
   const hint=document.getElementById('p0-401k-hint');
   if(hint)hint.innerHTML=(m==='penalty')?'A 10% penalty is added to the tax on this amount.':'No early-withdrawal penalty applies under this exception.';
 }
+// Sweep R56-2 (owner 2026-10-10): your spouse's SSDI. Their claim age may then go below 62 (the age it started), and their Medicare
+// starts 24 months after entitlement unless a spouse Medicare age is already set (cleared again on untick if it is still that guess).
+function setSpouseSsdiMode(on){
+  S.spouseSsdiMode=!!on;
+  const ageEl=document.getElementById('e-spouseSSBaseAge');if(ageEl)ageEl.min=S.spouseSsdiMode?40:62;
+  const guess=Math.min(65,Math.round(((+S.spouseSSBaseAge||62)+2)*2)/2),m=S.spouseMedicareStartAge;
+  if(S.spouseSsdiMode){if(m==null||m==='')S.spouseMedicareStartAge=guess;}
+  else{if(+m===guess&&guess<65)S.spouseMedicareStartAge=null;if((S.spouseSSBaseAge||62)<62)S.spouseSSBaseAge=62;}
+  populateInputsFromUSD();updateEditLabels();liveCalc();
+}
 // Reflect ssdiMode into the surrounding labels/rows (called on load and on toggle).
 function syncSsdiUI(){
   const cb=document.getElementById('e-ssdiMode');if(cb)cb.checked=!!S.ssdiMode;
@@ -1111,7 +1121,9 @@ function onSSStartAgeChange(el){
     // and no early-claiming reduction, so "equivalents at other ages" is advice they cannot act on.
     hint.innerHTML=S.ssdiMode
       ? `💡 Note: ${fmtC(S.uss)} is treated as your SSDI benefit from age ${newAge} — the full FRA amount, with no early-claiming reduction. It carries on as your retirement benefit at FRA, unchanged.`
-      : `💡 Note: ${fmtC(S.uss)} is now treated as your age-${newAge} benefit. Use the SS Optimizer tab to see equivalents at other claiming ages.`;
+      : (newAge<(+S.startAge||0)&&!(S.currentAge&&S.currentAge>S.startAge))
+        ? `💡 Note: you claim at ${newAge}, before the plan starts at ${S.startAge}, so ${fmtC(S.uss)} is treated as what you receive at ${S.startAge}. Use the SS Optimizer tab to see other claiming ages.` // owner 2026-10-10
+        : `💡 Note: ${fmtC(S.uss)} is now treated as your age-${newAge} benefit. Use the SS Optimizer tab to see equivalents at other claiming ages.`;
   } else if(hint){
     hint.style.display='none';
   }
@@ -1211,7 +1223,7 @@ function _etOpts(s,pk,mfj,carry){
   const earn=(pk&&pk.partTime)||0;
   const own=mfj?((s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared'):'me';
   const earnYou=s.ssdiMode?0:(own==='me'?earn:own==='shared'?earn/2:0);
-  const earnSp=mfj?(own==='spouse'?earn:own==='shared'?earn/2:0):0;
+  const earnSp=(mfj&&!s.spouseSsdiMode)?(own==='spouse'?earn:own==='shared'?earn/2:0):0; // R56-2: SSDI is outside it
   if(!(earnYou>0||earnSp>0||(carry&&(carry.you>0||carry.sp>0))))return null;
   const by=_planBirthYear(s);
   const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
@@ -1239,7 +1251,7 @@ function _ssEtCumModelFor(s,endAge,ssAtAge,ssAmt,ssBaseAge,spAtAge,spSSAmt,spSSB
   const mfj=s.filingStatus==='mfj',curAge=s.currentAge&&s.currentAge>s.startAge?s.currentAge:0;
   const cfg=buildPhaseConfig(s.startAge,endAge,curAge,s);
   const own=mfj?((s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared'):'me';
-  const shareYou=s.ssdiMode?0:(own==='me'?1:own==='shared'?0.5:0),shareSp=mfj?(own==='spouse'?1:own==='shared'?0.5:0):0;
+  const shareYou=s.ssdiMode?0:(own==='me'?1:own==='shared'?0.5:0),shareSp=(mfj&&!s.spouseSsdiMode)?(own==='spouse'?1:own==='shared'?0.5:0):0;
   const earnAt=a=>{const pc=cfg.find(c=>a>=c.startAge-1e-9&&a<c.endAge-1e-9);return pc?((_phaseSlot(s,pc).partTime)||0):0;}; // YOUR age line
   const lim=_numOr(s.ssEarningsLimit,24480),limFra=_numOr(s.ssEarningsLimitFra,65160);
   // R35-3: each year's limits on the plan's calendar (they were today's for every year); ages on YOUR line
@@ -1285,12 +1297,12 @@ function _spousalOpts(s,mfj){
   // COLA-grown payment at ssBaseAge, and ÷ the claiming factor is then the PIA in that same money (see _ssClaimBasis).
   const claimYou=s.ssdiMode?(s.ssStartAge||fraYou):Math.max(62,Math.min(70,s.ssStartAge||62));
   const piaYou=uss>0?(s.ssdiMode?uss:uss/ssBenefitMult(claimYou,fraYou,ssDrcPct(by))):0;
-  const claimSp=Math.max(62,Math.min(70,s.spouseSSBaseAge||62));
-  const piaSp=sps>0?sps/ssBenefitMult(claimSp,fraSp,ssDrcPct(spBy)):0;
+  const claimSp=_spClaimOf(s); // R56-2: SSDI from its start, and unreduced
+  const piaSp=sps>0?(s.spouseSsdiMode?sps:sps/ssBenefitMult(claimSp,fraSp,ssDrcPct(spBy))):0;
   if(!(0.5*piaYou>piaSp+0.005||0.5*piaSp>piaYou+0.005))return null;
   // Each excess starts once both have claimed — on the payee's own age line (gap = your age − your spouse's).
-  const spStart=Math.max(claimSp,claimYou-gap),youStart=Math.max(62,claimYou,claimSp+gap);
-  return {piaYou,piaSp,baseYou:(_ssBaseAgeOf(s)||claimYou),baseSp:claimSp,cola:_numOr(s.ssColaRate,2.6),
+  const spStart=Math.max(62,claimSp,claimYou-gap),youStart=Math.max(62,claimYou,claimSp+gap); // R56-2: a spousal benefit from 62
+  return {piaYou,piaSp,baseYou:(_ssBaseAgeOf(s)||claimYou),baseSp:_spSsBaseAgeOf(s),cola:_numOr(s.ssColaRate,2.6),
     spStart,spFactor:ssSpousalFactor(spStart,fraSp),youStart,youFactor:ssSpousalFactor(youStart,fraYou),fraYou,fraSp};
 }
 // Sweep R21-1 (v474): the Social Security SURVIVOR benefit (SSA). The survivor run paid the larger of the survivor's own
@@ -1312,10 +1324,10 @@ function _survivorSSOpts(s,meDie,deathAge){
   const gap=(s.currentAge||s.startAge||0)-((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0));
   const spBy=Math.round(by+gap),fraYou=ssFRA(by),fraSp=ssFRA(spBy);
   const claimYou=s.ssdiMode?(s.ssStartAge||fraYou):Math.max(62,Math.min(70,s.ssStartAge||62));
-  const claimSp=Math.max(62,Math.min(70,s.spouseSSBaseAge||62));
+  const claimSp=_spClaimOf(s); // R56-2
   // The late spouse (L), on their own age line; the survivor's age at the death on theirs.
   const L=meDie?{amt:+s.uss||0,claim:claimYou,base:_ssBaseAgeOf(s)||claimYou,fra:fraYou,drc:ssDrcPct(by),ssdi:!!s.ssdiMode,age:deathAge,cola:s.ssColaRate}
-               :{amt:+s.spouseSS||0,claim:claimSp,base:claimSp,fra:fraSp,drc:ssDrcPct(spBy),ssdi:false,age:deathAge-gap,cola:_numOr(s.ssColaRate,2.6)};
+               :{amt:+s.spouseSS||0,claim:claimSp,base:_spSsBaseAgeOf(s),fra:fraSp,drc:ssDrcPct(spBy),ssdi:!!s.spouseSsdiMode,age:deathAge-gap,cola:_numOr(s.ssColaRate,2.6)}; // R56-2 / R56-3
   const slot=meDie?'you':'sp';
   if(!(L.amt>0))return {slot,amt:0,base:0,from:Infinity,cola:0,rule:'none'};
   const survAge=meDie?deathAge-gap:deathAge,sfra=ssSurvivorFRA(meDie?spBy:by),ownClaim=meDie?claimSp:claimYou;
@@ -1350,7 +1362,8 @@ function _survivorCppOpts(s,meDie,deathAge,planStart){
   const lateBA=meDie?(s.cppBaseAge||65):(s.spouseCppBaseAge||65),lateAge=meDie?deathAge:deathAge-gap;
   const cola=_numOr(s.cppColaRate,2.6),fx=_taxFxFactor(s,'CAD'),adj=_cppAdjAt(lateBA);
   // The late spouse's pension at 65 — indexed to the death when it was already being paid, as the pension itself is.
-  const at65=late/adj*(lateAge>lateBA?Math.pow(1+cola/100,lateAge-lateBA):1);
+  const lateCF=meDie?_inPayFrom(lateBA,s):_spInPayFrom(lateBA,s); // R56-3: an amount in payment at the plan's start is that day's
+  const at65=late/adj*(lateAge>lateCF?Math.pow(1+cola/100,lateAge-lateCF):1);
   return {slot:meDie?'sp':'you',at65,from:deathAge,cola,shift:meDie?gap:0,inflBase:planStart,
     flat:_numOr(s.cppSurvFlatMo,D_USD.cppSurvFlatMo)*fx,cap:_numOr(s.cppCombinedMaxMo,D_USD.cppCombinedMaxMo)*fx,
     late,lateBA,lateAge,adj,survAge:meDie?deathAge-gap:deathAge};
@@ -1404,10 +1417,29 @@ function colaUSS(base,yrs,rate){return yrs<=0||!rate?base:base*Math.pow(1+rate/1
 // Owner, 2026-10-10 (a user report: "SSDI rises every year and never stops"): a benefit ALREADY being paid when the plan starts is
 // entered as what you receive then, so its COLA runs from the plan's start. SSDI's base was the age it STARTED (the help says to enter
 // that as the claiming age) and the US pension / disability streams' the age they started, so today's check was grown by every COLA
-// since: SSDI from 50, plan from 55, $1,800 entered → $2,046 paid at 55, the gap growing with the years (ssdi-probe.mjs). SSDI only
-// for Social Security: a retirement benefit's amount is quoted at its claiming age (the field says so), and a Replan sets its own.
-function _ssBaseAgeOf(s){const b=s.ssBaseAge||s.ssStartAge||62;return s.ssdiMode?Math.max(b,+s.startAge||0):b;}
+// since: SSDI from 50, plan from 55, $1,800 entered → $2,046 paid at 55, the gap growing with the years (ssdi-probe.mjs).
+// Owner, 2026-10-10 (after sweep R56-3): your own Social Security retirement benefit too — one rule for every box. Claimed before the
+// plan starts, its amount is what you receive at the plan's start (it was the claiming-age amount grown by every COLA since: claimed
+// at 62, plan from 66, today's $1,800 typed → $1,995 paid). Claimed at or after the start: the amount at the claiming age, as before.
+// After a Replan ssBaseAge is today's age, past the start, so nothing changes there.
+function _ssBaseAgeOf(s){const b=s.ssBaseAge||s.ssStartAge||62;return Math.max(b,+s.startAge||0);}
 function _penColaFrom(base,s){return Math.max(base||65,+s.startAge||0);}
+// Sweep R56-3 (owner 2026-10-10): the same rule for every OTHER benefit already being paid when the plan starts — the UK State
+// Pension, CPP, OAS, the Age Pension and your spouse's Social Security and pensions. Their boxes said only "starts age 67" / "CPP
+// start age", and a retiree typing today's payment had it grown again from that age: at 72, UK State Pension +15.9%, CPP / OAS
+// +19.7%, Age Pension +13.7%; an older spouse's SS claimed at 62, at 66: +10.8% (r56probe.mjs P4 / P5). Each now grows from the later
+// of its start age and the plan's start — yours on your age line, your spouse's on theirs (their age at the plan's start = your
+// start age − the age gap). The start age itself is untouched (CPP's is also its claim age, which sets its adjustment). Your own
+// Social Security follows it too (_ssBaseAgeOf, owner 2026-10-10).
+function _spouseGapOf(s){const c=s.currentAge||s.startAge||0;return c-((s.spouseCurrentAge>0)?s.spouseCurrentAge:c);}
+function _inPayFrom(base,s){return Math.max(+base||0,+s.startAge||0);}
+function _spInPayFrom(base,s){return Math.max(+base||0,(+s.startAge||0)-_spouseGapOf(s));}
+// Sweep R56-2 (owner 2026-10-10): your spouse's Social Security can be SSDI (s.spouseSsdiMode), as yours can — any start age from
+// 40, paid unreduced (the amount IS their PIA), outside the earnings test, and grown from the plan's start when already in payment.
+// A spouse on SSDI had no box: the claim age stops at 62, and the only one left, the second pension marked "My spouse", added a
+// spousal top-up as if they had no record (+$715/mo in r56probe P3) and taxed it as a pension.
+function _spClaimOf(s){const c=+s.spouseSSBaseAge||62;return s.spouseSsdiMode?Math.max(40,Math.min(70,c)):Math.max(62,Math.min(70,c));}
+function _spSsBaseAgeOf(s){return _spInPayFrom(s.spouseSSBaseAge||62,s);}
 function realNetCalc(nom,yrs,infl){return yrs<=0?nom:nom/Math.pow(1+infl/100,yrs);}
 
 // Returns the EFFECTIVE taxable fraction of Social Security (0–0.85) using the IRS
@@ -2972,7 +3004,7 @@ function calcPhase(p){
           note:'Charged once, in the year of the expense — it is not added to the phase’s yearly income, which would tax it every year of the phase. Approximate: a single-year spike cannot be modelled to the dollar inside a multi-year phase.'});
         _trRow(g,nm+' — of which the 3.8% Net Investment Income Tax',d.niit||0,'usd',{kind:'flag',skipZero:true, // R38-1
           formula:'3.8% × (that year’s net investment income, or its MAGI over the threshold, whichever is smaller) — with the expense, minus without it',
-          note:'A gain realised to pay it is investment income, and the draw raises the income NIIT is measured on ($200,000 single, $250,000 married — not indexed for inflation).'});
+          note:'A gain realised to pay it is investment income, and the draw raises the income NIIT is measured on (the NIIT threshold for your filing status, on the Edit tab — not indexed for inflation).'});
         _trRow(g,nm+' — of which the 10% early-withdrawal penalty',d.pen||0,'usd',{kind:'flag',skipZero:true, // R24-3
           formula:'10% × the 401k money it took before 59½',
           note:(p.earlyAccessMode||'locked')==='locked'?'Your 401k is set to stay locked before 59½, so the automatic order never reaches it — this expense names the 401k itself, and a withdrawal before 59½ carries the 10% IRS penalty on top of income tax.':'A withdrawal before 59½ carries the 10% IRS penalty on top of income tax, like the phase’s regular 401k draw.'});
@@ -3319,8 +3351,9 @@ function calcPhase(p){
    }else{
      _stream(p.ssdiMode?'Your SSDI / Social Security':'Your Social Security',sim.avgSS,p.ussBase||0,p.ssBaseAge||62,p.ssColaRate,paid.ss||0,'',
        p.ssdiMode?'SSDI carries the ordinary Social Security COLA and becomes your retirement benefit at full retirement age at the same amount.':null);
-     _stream('Your spouse’s Social Security',sim.avgSpSS,p.spouseSS||0,p.spouseSSBaseAge||62,_numOr(p.spouseSSColaRate,2.6),paid.spSS||0,spAgeNote,
-       'Their own benefit is paid from their own claim age, whatever age you claim at; it grows at the same COLA as yours.');
+     _stream(p.spouseSsdiMode?'Your spouse’s SSDI / Social Security':'Your spouse’s Social Security',sim.avgSpSS,p.spouseSS||0,p.spouseSSBaseAge||62,_numOr(p.spouseSSColaRate,2.6),paid.spSS||0,spAgeNote,
+       p.spouseSsdiMode?'SSDI is paid unreduced from the age it started, carries the ordinary COLA and becomes their retirement benefit at full retirement age at the same amount (R56-2).'
+       :'Their own benefit is paid from their own claim age, whatever age you claim at; it grows at the same COLA as yours.');
      // R20-1: the spousal top-ups, inside the two figures above.
      const _spsNote='SSA pays a spouse up to half of the other’s full-retirement amount (PIA), less their own. It is cut for claiming before full retirement age, never grows past it, and starts only once you have both claimed.';
      if((sim.avgSpousalSp||0)>0.005)_trRow(g,'… of which the spousal top-up on your record',sim.avgSpousalSp,'usd/mo',{kind:'in',
@@ -3637,19 +3670,19 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       spouseSS:(mfj||s._survivorRun)?(s.spouseSS||0):0,survivorRun:!!s._survivorRun,
       // Sweep B5: the spouse's benefit gets the SAME SSA COLA as yours. It used to read spouseSSColaRate,
       // which has no input and sat at 2.6%, so a 0% or 2% COLA left the spouse's benefit on the old rate.
-      spouseSSColaRate:_numOr(s.ssColaRate,2.6),spouseSSBaseAge:s.spouseSSBaseAge||62,
+      spouseSSColaRate:_numOr(s.ssColaRate,2.6),spouseSSBaseAge:_spSsBaseAgeOf(s),spouseSsdiMode:!!s.spouseSsdiMode, // R56-2 / R56-3
       // R19-1: the spouse's own pensions, gated like yours (UKP any residence, CPP/OAS a C$ plan, Age Pension an AUS resident)
-      spUkpBase:spPaid?_penUSD(s,'spouseUkp'):0,spUkpBaseAge:s.spouseUkpBaseAge||67,
-      spCppBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseCpp'):0,spCppBaseAge:s.spouseCppBaseAge||65,
-      spOasBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseOas'):0,spOasBaseAge:s.spouseOasBaseAge||65,
-      spApBase:spPaid&&isAustralian?_penUSD(s,'spouseAgePension'):0,spApBaseAge:s.spouseAgePensionBaseAge||67,
+      spUkpBase:spPaid?_penUSD(s,'spouseUkp'):0,spUkpBaseAge:_spInPayFrom(s.spouseUkpBaseAge||67,s),
+      spCppBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseCpp'):0,spCppBaseAge:_spInPayFrom(s.spouseCppBaseAge||65,s),
+      spOasBase:spPaid&&activeCurrency==='CAD'?_penUSD(s,'spouseOas'):0,spOasBaseAge:_spInPayFrom(s.spouseOasBaseAge||65,s),
+      spApBase:spPaid&&isAustralian?_penUSD(s,'spouseAgePension'):0,spApBaseAge:_spInPayFrom(s.spouseAgePensionBaseAge||67,s),
       partTimeOwner:(s.partTimeOwner==='me'||s.partTimeOwner==='spouse')?s.partTimeOwner:'shared',usPension2Owner:s.usPension2Owner==='spouse'?'spouse':'me',
       et:_etOpts(s,pk,mfj,etCarry), // R19-2
       spousal:_spousalOpts(s,mfj), // R20-1
       survSS:s._survivorRun?(s._survSS||null):null, // R21-1: the survivor benefit, by SSA's survivor rules (calcSurvivorPhases)
       survCpp:s._survivorRun?(s._survCpp||null):null, // R22-1: the CPP survivor's pension (calcSurvivorPhases)
       // v6: positive delta = primary is older than spouse; 0 = same age (backward-compatible)
-      spouseAgeDelta:(s.currentAge||s.startAge||0) - ((s.spouseCurrentAge>0)?s.spouseCurrentAge:(s.currentAge||s.startAge||0)),
+      spouseAgeDelta:_spouseGapOf(s),
       filingStatus:s.filingStatus||'single',
       // v6: pass through so calcPhase can gate US tax / IRMAA / ACA / SS-provisional
       subjectToUsTax:s.subjectToUsTax!==false,
@@ -3675,9 +3708,9 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       phaseStartAge:pc.startAge,retireStartAge:s._inflBaseAge||curAge||s.startAge,
       planYear:s.planYear||null, // R21-10: the calendar year the plan's ages are anchored to (R20-7)
       ssColaRate:s.ssColaRate,tripleLockRate:s.triplelock,inflationRate:s.inflation,
-      ssBaseAge:_ssBaseAgeOf(s),ukpBaseAge:s.ukpBaseAge||67, // owner 2026-10-10: SSDI in payment from the plan's start
-      cppBaseAge:s.cppBaseAge||65,oasBaseAge:s.oasBaseAge||65,
-      agePensionBaseAge:s.agePensionBaseAge||67,
+      ssBaseAge:_ssBaseAgeOf(s),ukpBaseAge:_inPayFrom(s.ukpBaseAge||67,s), // owner 2026-10-10: SSDI in payment from the plan's start
+      cppBaseAge:_inPayFrom(s.cppBaseAge||65,s),oasBaseAge:_inPayFrom(s.oasBaseAge||65,s), // R56-3: the others too
+      agePensionBaseAge:_inPayFrom(s.agePensionBaseAge||67,s),
       cppColaRate:_numOr(s.cppColaRate,2.6),oasColaRate:_numOr(s.oasColaRate,2.6),agePensionColaRate:_numOr(s.agePensionColaRate,2.6),
       // v9: US pension/disability — COLA null/'' ⇒ track general inflation (single source of truth here)
       usPensionBase:s.usPension||0,usPensionBaseAge:s.usPensionBaseAge||65,
@@ -4478,10 +4511,10 @@ function calcSurvivorPhases(){
   survivor._survivorAge=meDie?deathAge-gap:deathAge;
   survivor._deathFromToday=(+S.survivorDeathAge||75)<deathAge; // R9-5
   // The two benefits as they stand at the death age (0 = not yet started), for "the check that stops".
-  const delta=(S.currentAge||S.startAge||0)-((S.spouseCurrentAge>0)?S.spouseCurrentAge:(S.currentAge||S.startAge||0));
-  const cola=S.ssColaRate,spAge=deathAge-delta,spBA=S.spouseSSBaseAge||62;
+  const delta=_spouseGapOf(S);
+  const cola=S.ssColaRate,spAge=deathAge-delta,spBA=_spClaimOf(S); // R56-2 / R56-3
   const own=(S.uss||0)>0&&deathAge>=Math.max(S.ssdiMode?40:62,Math.min(70,S.ssStartAge||62))?colaUSS(S.uss,deathAge-_ssBaseAgeOf(S),cola):0;
-  const other=(S.spouseSS||0)>0&&spAge>=spBA?colaUSS(S.spouseSS,spAge-spBA,_numOr(cola,2.6)):0;
+  const other=(S.spouseSS||0)>0&&spAge>=spBA?colaUSS(S.spouseSS,spAge-_spSsBaseAgeOf(S),_numOr(cola,2.6)):0;
   // Sweep R21-4 (v474): what the death stops, from the two engine runs over the first year after it — the couple's Social
   // Security (both benefits and any spousal top-ups) less the survivor's. `lost` was the smaller OWN benefit, which left out
   // the top-ups: "$0/mo lost" for a spouse with no record of their own, whose household loses the whole top-up.
