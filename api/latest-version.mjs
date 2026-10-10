@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 590, released: '2026-10-06', headline: 'Notes and warnings now update the moment you change a setting, with no page reload needed, and your Monte Carlo and backtest settings are now saved with your plan. The Annuities calculator also opens on the annuity already in your plan. Saved plans carry over automatically.' }; /* __LATEST__ */
+const LATEST = { build: 610, released: '2026-10-10', headline: 'SSDI and pensions you already receive now start from the amount you get today, plus tax fixes for UK, Canadian, Australian and overseas plans' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 

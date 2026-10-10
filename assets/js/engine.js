@@ -457,6 +457,11 @@ const D_USD={
   // Medicare Levy: 2% of ALL taxable income once it passes the single-person low-income threshold
   // (A$27,222 for 2024-25), shaded in at 10c per dollar above it — see _ausLevy.
   ausMedicareLevy:2, ausLevyThreshold:19356, // A$27,222
+  // Owner, 2026-10-06 (A$ Super): taxable money an Australian resident pays INTO Super is claimed as a personal deductible
+  // (concessional) contribution up to the yearly cap — A$32,500 from 1 July 2026 (A$30,000 in 2024-25 and 2025-26; indexed to
+  // AWOTE in A$2,500 steps) — and taxed 15% in the fund; Division 293 adds 15% where income + the contribution passes A$250,000
+  // (fixed since 2017-18, not indexed). USD equivalents at taxFxAt.AUD, like the thresholds above. Refreshable.
+  ausConcCap:23109, ausDiv293Thr:177759, // A$32,500 · A$250,000
   // Sweep R2-1: marks a plan whose CAD/AUD tax figures are USD equivalents. A plan saved without it
   // holds the old C$/A$ numbers and is converted once by _migrateTaxUnits. Never remove it from D_USD:
   // the load merge copies it into every plan, and that is what stops a second conversion.
@@ -1285,7 +1290,7 @@ function _spousalOpts(s,mfj){
   if(!(0.5*piaYou>piaSp+0.005||0.5*piaSp>piaYou+0.005))return null;
   // Each excess starts once both have claimed — on the payee's own age line (gap = your age − your spouse's).
   const spStart=Math.max(claimSp,claimYou-gap),youStart=Math.max(62,claimYou,claimSp+gap);
-  return {piaYou,piaSp,baseYou:(s.ssBaseAge||claimYou),baseSp:claimSp,cola:_numOr(s.ssColaRate,2.6),
+  return {piaYou,piaSp,baseYou:(_ssBaseAgeOf(s)||claimYou),baseSp:claimSp,cola:_numOr(s.ssColaRate,2.6),
     spStart,spFactor:ssSpousalFactor(spStart,fraSp),youStart,youFactor:ssSpousalFactor(youStart,fraYou),fraYou,fraSp};
 }
 // Sweep R21-1 (v474): the Social Security SURVIVOR benefit (SSA). The survivor run paid the larger of the survivor's own
@@ -1309,7 +1314,7 @@ function _survivorSSOpts(s,meDie,deathAge){
   const claimYou=s.ssdiMode?(s.ssStartAge||fraYou):Math.max(62,Math.min(70,s.ssStartAge||62));
   const claimSp=Math.max(62,Math.min(70,s.spouseSSBaseAge||62));
   // The late spouse (L), on their own age line; the survivor's age at the death on theirs.
-  const L=meDie?{amt:+s.uss||0,claim:claimYou,base:s.ssBaseAge||claimYou,fra:fraYou,drc:ssDrcPct(by),ssdi:!!s.ssdiMode,age:deathAge,cola:s.ssColaRate}
+  const L=meDie?{amt:+s.uss||0,claim:claimYou,base:_ssBaseAgeOf(s)||claimYou,fra:fraYou,drc:ssDrcPct(by),ssdi:!!s.ssdiMode,age:deathAge,cola:s.ssColaRate}
                :{amt:+s.spouseSS||0,claim:claimSp,base:claimSp,fra:fraSp,drc:ssDrcPct(spBy),ssdi:false,age:deathAge-gap,cola:_numOr(s.ssColaRate,2.6)};
   const slot=meDie?'you':'sp';
   if(!(L.amt>0))return {slot,amt:0,base:0,from:Infinity,cola:0,rule:'none'};
@@ -1396,6 +1401,13 @@ function _monthlyRate(annualPct){return Math.pow(1+Math.max(-99.9,+annualPct||0)
 function _numOr(v,d){return (typeof v==='number'&&isFinite(v))?v:d;}
 function tripleLockUKP(base,yrs,rate){return yrs<=0?base:base*Math.pow(1+rate/100,yrs);}
 function colaUSS(base,yrs,rate){return yrs<=0||!rate?base:base*Math.pow(1+rate/100,yrs);}
+// Owner, 2026-10-10 (a user report: "SSDI rises every year and never stops"): a benefit ALREADY being paid when the plan starts is
+// entered as what you receive then, so its COLA runs from the plan's start. SSDI's base was the age it STARTED (the help says to enter
+// that as the claiming age) and the US pension / disability streams' the age they started, so today's check was grown by every COLA
+// since: SSDI from 50, plan from 55, $1,800 entered → $2,046 paid at 55, the gap growing with the years (ssdi-probe.mjs). SSDI only
+// for Social Security: a retirement benefit's amount is quoted at its claiming age (the field says so), and a Replan sets its own.
+function _ssBaseAgeOf(s){const b=s.ssBaseAge||s.ssStartAge||62;return s.ssdiMode?Math.max(b,+s.startAge||0):b;}
+function _penColaFrom(base,s){return Math.max(base||65,+s.startAge||0);}
 function realNetCalc(nom,yrs,infl){return yrs<=0?nom:nom/Math.pow(1+infl/100,yrs);}
 
 // Returns the EFFECTIVE taxable fraction of Social Security (0–0.85) using the IRS
@@ -1769,6 +1781,8 @@ const LUMP_ACCTS=['cash','equity','k401','roth','super']; // also the automatic 
 // anyone under 60 today. Nothing is paid from it before then: a monthly draw waits for 60 (simPhase, Monte Carlo, the backtest)
 // and a one-time expense skips it (_lumpSpecAt). It was paid from any age, tax-free — a $50,000 car at 55 took $40,000 of Super.
 const SUPER_PRESERVATION_AGE=60;
+// Sweep R52-6 (v595): a fund cannot accept contributions from 75, except a downsizer contribution from a home sale.
+const SUPER_75_TXT='A Super fund cannot accept contributions from age 75 (from the 28th day of the month after your 75th birthday), except a downsizer contribution from selling your home: up to A$300,000 each, from age 55. The planner still adds this money to Super. If it is not a downsizer contribution, choose another account for it.';
 const SUPER_LOCK_TXT='Super is preserved until 60 (the preservation age of anyone under 60 today), so nothing is paid from it before then. Move this expense to a phase that starts at 60 or later, or choose another account for it.';
 // Trace-safe account names. The UI has its own richer labels (LUMP_ACCT_LABELS), but those live
 // outside the slice mobile/extract.mjs lifts, and trace rows must stay DOM-free.
@@ -1858,7 +1872,7 @@ function simPhase(o){
       phaseStartAge,ssColaRate,spouseSSColaRate,tripleLockRate,cppColaRate,oasColaRate,agePensionColaRate,
       equityCostBasis,ssBaseAge,ukpBaseAge,cppBaseAge,oasBaseAge,agePensionBaseAge,spouseSSBaseAge,spouseAgeDelta,
       usPensionBase,usPensionColaRate,usPensionBaseAge,usPensionEndAge,
-      usPension2Base,usPension2ColaRate,usPension2BaseAge,usPension2EndAge,ssMaxOfTwo}=o;
+      usPension2Base,usPension2ColaRate,usPension2BaseAge,usPension2EndAge,ssMaxOfTwo,usPensionColaFrom,usPension2ColaFrom}=o;
   const ssBA=ssBaseAge||62,ukpBA=ukpBaseAge||67,spBA=spouseSSBaseAge||62;
   const spDelta=spouseAgeDelta||0; // primary age - spouse age; 0 = same age (back-compat)
   // Sweep R19-1 (v458): the SPOUSE's own UK State Pension / CPP / OAS / Age Pension, on the spouse's age line (your age −
@@ -1880,6 +1894,8 @@ function simPhase(o){
   const cppBA=cppBaseAge||65,oasBA=oasBaseAge||65,apBA=agePensionBaseAge||67;
   const usPenBA=usPensionBaseAge||65; // v9: US pension/disability activation age (like CPP/OAS)
   const usPen2BA=usPension2BaseAge||65; // v9: second US pension/disability stream
+  // owner 2026-10-10: the COLA runs from the later of the start age and the plan's start (an amount in payment is that day's)
+  const usPenCF=usPensionColaFrom!=null?usPensionColaFrom:usPenBA,usPen2CF=usPension2ColaFrom!=null?usPension2ColaFrom:usPen2BA;
   // v13: age each stream STOPS. Absent ⇒ Infinity ⇒ paid for life (the pre-v13 behaviour, so an old
   // plan is untouched). Comparison is `age < end`, i.e. "ends at 65" pays its last month at 64y11m —
   // matching how a policy that "ends at 65" and how the phase boundaries both read.
@@ -1961,8 +1977,8 @@ function simPhase(o){
   let curOAS=hasOAS&&oasBase>0&&phaseStartAge>=oasBA?colaUSS(oasBase,phaseStartAge-oasBA,_numOr(oasColaRate,2.6)):0;
   let curAP=hasAgePension&&agePensionBase>0&&phaseStartAge>=apBA?colaUSS(agePensionBase,phaseStartAge-apBA,_numOr(agePensionColaRate,2.6)):0;
   // v9: US pension/disability — escalates at its own COLA (0 ⇒ flat). Activates at usPenBA like CPP/OAS.
-  let curUsPen=usPensionBase>0&&phaseStartAge>=usPenBA&&phaseStartAge<usPenEA?colaUSS(usPensionBase,phaseStartAge-usPenBA,usPensionColaRate||0):0;
-  let curUsPen2=usPension2Base>0&&phaseStartAge>=usPen2BA&&phaseStartAge<usPen2EA?colaUSS(usPension2Base,phaseStartAge-usPen2BA,usPension2ColaRate||0):0;
+  let curUsPen=usPensionBase>0&&phaseStartAge>=usPenBA&&phaseStartAge<usPenEA?colaUSS(usPensionBase,phaseStartAge-usPenCF,usPensionColaRate||0):0;
+  let curUsPen2=usPension2Base>0&&phaseStartAge>=usPen2BA&&phaseStartAge<usPen2EA?colaUSS(usPension2Base,phaseStartAge-usPen2CF,usPension2ColaRate||0):0;
   let sumSS=0,sumSpSS=0,sumUKP=0,sumCPP=0,sumOAS=0,sumAP=0,sumUsPen=0,sumUsPen2=0,sumTaxableEquity=0;
   let curSpUKP=_spPen(spUkpBase,spUkpBA,phaseStartAge,_gUkp),curSpCPP=_spPen(spCppBase,spCppBA,phaseStartAge,_gCpp),
     curSpOAS=_spPen(spOasBase,spOasBA,phaseStartAge,_gOas),curSpAP=_spPen(spApBase,spApBA,phaseStartAge,_gAp);
@@ -2013,8 +2029,8 @@ function simPhase(o){
       if(hasCPP&&cppBase>0)curCPP=ageNow>=cppBA?colaUSS(cppBase,ageNow-cppBA,_numOr(cppColaRate,2.6)):0;
       if(hasOAS&&oasBase>0)curOAS=ageNow>=oasBA?colaUSS(oasBase,ageNow-oasBA,_numOr(oasColaRate,2.6)):0;
       if(hasAgePension&&agePensionBase>0)curAP=ageNow>=apBA?colaUSS(agePensionBase,ageNow-apBA,_numOr(agePensionColaRate,2.6)):0;
-      if(usPensionBase>0)curUsPen=(ageNow>=usPenBA&&ageNow<usPenEA)?colaUSS(usPensionBase,ageNow-usPenBA,usPensionColaRate||0):0;
-      if(usPension2Base>0)curUsPen2=(ageNow>=usPen2BA&&ageNow<usPen2EA)?colaUSS(usPension2Base,ageNow-usPen2BA,usPension2ColaRate||0):0;
+      if(usPensionBase>0)curUsPen=(ageNow>=usPenBA&&ageNow<usPenEA)?colaUSS(usPensionBase,ageNow-usPenCF,usPensionColaRate||0):0;
+      if(usPension2Base>0)curUsPen2=(ageNow>=usPen2BA&&ageNow<usPen2EA)?colaUSS(usPension2Base,ageNow-usPen2CF,usPension2ColaRate||0):0;
     } else if(i>0){
       // Mid-year activation check: if pension just crossed base age this month, switch on
       if(hasCPP&&cppBase>0&&curCPP===0&&ageNow>=cppBA)curCPP=cppBase;
@@ -2233,6 +2249,7 @@ function calcPhase(p){
     equityCostBasis:p.equityCostBasis,ssBaseAge:p.ssBaseAge,ukpBaseAge:p.ukpBaseAge,
     cppBaseAge:p.cppBaseAge||65,oasBaseAge:p.oasBaseAge||65,agePensionBaseAge:p.agePensionBaseAge||67,
     spouseSSBaseAge:p.spouseSSBaseAge||62,
+    usPensionColaFrom:p.usPensionColaFrom,usPension2ColaFrom:p.usPension2ColaFrom, // owner 2026-10-10
     usPensionBase:p.usPensionBase||0,usPensionColaRate:p.usPensionColaRate,usPensionBaseAge:p.usPensionBaseAge||65,
     usPensionEndAge:p.usPensionEndAge,
     usPension2Base:p.usPension2Base||0,usPension2ColaRate:p.usPension2ColaRate,usPension2BaseAge:p.usPension2BaseAge||65,
@@ -2603,12 +2620,24 @@ function calcPhase(p){
       _trRow(_gU,'= total UK income tax',ukTax_a,'usd/yr',{kind:'total'});
       taxBands={cc:'UK',label:'UK',you:ukTaxableIncome-(_spUk||0),spouse:_spUk||0,note:'US Social Security, 401k, pensions, gains, part-time, rental and US municipal interest',
         steps:[[adjUkPA,p.ukBasicRate||20],[adjUkBasicCeil,p.ukHigherRate||40],[adjUkHigherCeil,p.ukAdditionalRate||45]]}; // R24-5
-      ftc_a=Math.min(ukTax_a,usTaxBeforeFTC);
+      // Sweep R53-1 (v598): the credit is limited the way the US limits it (§904, with the treaty's re-sourcing): only the UK tax on income
+      // the US also taxes counts, and it can offset no more than the US tax on income the UK also taxes — each share taken pro rata. It was
+      // min(ALL UK tax, ALL US tax), so UK tax on income the US does not tax (Social Security, Art. 17(3); municipal-bond interest) absorbed
+      // the US tax on income the UK does not tax (a Roth conversion): a $10,000 conversion added $0 of US tax (r53probe P1 — about $525 under
+      // the limit; 437 random UK plans: understated by a median $363/yr, > $500 in 205).
+      const _ukOnly=(ukTaxesSS?(uss_ann+spSS_ann):0)+taxExemptInt_ann,_usOnly=convIncome_ann+superUS_ann;
+      const _ukSh=ukBase_ann>0?Math.max(0,ukBase_ann-_ukOnly)/ukBase_ann:0,_usSh=gross>0?Math.max(0,gross-_usOnly)/gross:0;
+      const _ftcUk=ukTax_a*_ukSh,_ftcUs=usTaxBeforeFTC*_usSh;
+      ftc_a=Math.min(_ftcUk,_ftcUs);
       tax_a=Math.max(0,usTaxBeforeFTC-ftc_a);
       {const g=_trGroup(T,'ftc','Foreign Tax Credit — avoiding double taxation','tg-uk','ftc');
         _trRow(g,'UK income tax paid',ukTax_a,'usd/yr',{kind:'in'});
         _trRow(g,'US federal tax before the credit',usTaxBeforeFTC,'usd/yr',{kind:'in'});
-        _trRow(g,'− Foreign Tax Credit',ftc_a,'usd/yr',{kind:'minus',formula:'min(UK tax, US tax) — the credit cannot exceed the US liability'});
+        if(_ukSh<1-1e-9)_trRow(g,'UK tax on income the US also taxes',_ftcUk,'usd/yr',{kind:'in',formula:'UK tax × (UK-taxed income − the part the US does not tax) ÷ UK-taxed income',
+          note:'Social Security and US municipal-bond interest are taxed only in the UK, so the UK tax on them cannot be credited against US tax.'});
+        if(_usSh<1-1e-9)_trRow(g,'US tax on income the UK also taxes',_ftcUs,'usd/yr',{kind:'in',formula:'US tax × (US gross income − the part the UK does not tax) ÷ US gross income',
+          note:'A Roth conversion is taxed only in the US, so the credit cannot reach the US tax on it.'});
+        _trRow(g,'− Foreign Tax Credit',ftc_a,'usd/yr',{kind:'minus',formula:(_ukSh<1-1e-9||_usSh<1-1e-9)?'min('+(_ukSh<1-1e-9?'UK tax on income the US also taxes':'UK tax')+', '+(_usSh<1-1e-9?'US tax on income the UK also taxes':'US tax')+') — the credit covers only income both countries tax':'min(UK tax, US tax) — the credit cannot exceed the US liability'});
         _trRow(g,'= US federal tax after the credit',tax_a,'usd/yr',{kind:'total'});
         _trRow(g,'US Social Security',0,'flagv',{kind:'flag',
           note:'Article 17(3) of the US-UK treaty taxes social security only in the country of residence, so your US Social Security is taxed in the UK and left out of the US figure above. This is a saved exception to the treaty\'s saving clause, so it holds even for US citizens.'});
@@ -2651,7 +2680,7 @@ function calcPhase(p){
   }
   tax_mo=tax_a/12;
   let stateTax_mo=stateTax_a/12; // R37-2: + a taxable windfall's state tax (the lump section)
-  const ukTax_mo=ukTax_a/12;
+  let ukTax_mo=ukTax_a/12; // R52-1: + a UK resident's taxable windfall (the lump section)
   const ftc_mo=ftc_a/12;
   const wEquity_ann=wEquity_mo*12;
   // MAGI for ACA: 401k + SS (full, both spouses) + UKP + part-time + taxable equity + Roth conversion + taxable rental (US only)
@@ -2718,7 +2747,18 @@ function calcPhase(p){
   // conversion). In order: simPhase records the money-in events first, one per item.
   const _lumpDefer=d=>d&&d.added?((d.added.k401||0)+(p.superTaxedUS?(d.added.super||0):0)):0;
   const _lumpInD=(sim.lumpDetail||[]).filter(d=>d.dir!=='out');
-  const _lumpInTxOf=(l,i)=>l&&l.taxable&&(+l.amtUSD||0)>0?Math.max(0,+l.amtUSD-_lumpDefer(_lumpInD.find(d=>d.id!=null&&d.id===l.id)||_lumpInD[i])):0;
+  const _lumpInDOf=(l,i)=>_lumpInD.find(d=>d.id!=null&&d.id===l.id)||_lumpInD[i];
+  // Owner, 2026-10-06 (A$ Super, "Model the cap"): an Australian resident claims taxable money paid INTO Super as a personal
+  // deductible (concessional) contribution, up to that year's cap: taxed 15% in the fund (+15% Division 293 where income + the
+  // contribution passes A$250,000), not at the marginal rate. It was taxed in full on arrival. The events land together at the
+  // phase start, so they share one year's cap, in the order they are listed; above it the rest is taxed as before. Deductible
+  // under 67, or 67–74 with paid work in the phase (the work test — part-time income stands in for it); not from 75. Not
+  // modelled (the help says so): carry-forward of unused caps, employer contributions using the cap, the work-test exemption.
+  const _supAge=p.phaseStartAge||0,_supConcOk=isAustralian&&_supAge<75&&(_supAge<67||partTime_ann>0);
+  let _supCapLeft=_supConcOk?Math.round((p.ausConcCap||23109)*inflMult):0;
+  const _lumpConc=(p.lumpInItems||[]).map((l,i)=>{if(!(_supCapLeft>0.005&&l&&l.taxable&&(+l.amtUSD||0)>0))return 0;
+    const d=_lumpInDOf(l,i),c=Math.max(0,Math.min(+l.amtUSD,(d&&d.added&&d.added.super)||0,_supCapLeft));_supCapLeft-=c;return c;});
+  const _lumpInTxOf=(l,i)=>l&&l.taxable&&(+l.amtUSD||0)>0?Math.max(0,+l.amtUSD-_lumpDefer(_lumpInDOf(l,i))-(_lumpConc[i]||0)):0;
   const _lumpInTx=(p.lumpInItems||[]).reduce((t,l,i)=>t+_lumpInTxOf(l,i),0);
   // Sweep R45-1 (v576): the event's income lifts that year's provisional income too, so more of Social Security is taxable (up to
   // 85%) — as the salary in the year you retire does (v527). The tax was on the event alone, at the phase's share: a $60,000 401k roof
@@ -2784,7 +2824,8 @@ function calcPhase(p){
     // with the event minus without it, on the year's own MAGI (R37-1) and the unindexed threshold (R2-8): in the expense's tax
     // (lumpTax, so the gross-up and the funded check include it) and a taxable windfall's (lumpInTax). A windfall is not investment
     // income itself — it only raises the MAGI.
-    if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
+    // Sweep R52-2 (v595): a US taxpayer living abroad or in the UK owes it too (see the phase's NIIT below).
+    if(subjectUS&&!isCanadian&&!isAustralian){
       const _nThr=Math.round(mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000)),_nInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
       const _nM0=Math.max(0,((irmaaMagiYears&&irmaaMagiYears[0]!=null)?irmaaMagiYears[0]:irmaaMagi)-taxExemptInt_ann); // NIIT's MAGI that year
       const _nt=(x,g)=>0.038*Math.min(_nInv+g,Math.max(0,_nM0+x-_nThr)),_xo=_lumpOrd+_lumpGain;
@@ -2821,19 +2862,50 @@ function calcPhase(p){
         crosses:spikeM>thr,headroom:Math.max(0,thr-spikeM)};
     }
   }
+  // Owner, 2026-10-06: the 15% contributions tax on the concessional part, and Division 293's 15% on the part of it over the line
+  // (your own taxable income that year + the contribution, against A$250,000 — per person, not indexed).
+  const _supConcTot=_lumpConc.reduce((a,c)=>a+c,0);
+  let lumpSupTax=0,lumpSupDiv293=0;
+  if(_supConcTot>0.005){
+    const _ownInc=Math.max(0,gross-(_spAu||0))+_lumpOrd+_lumpGain+_lumpInTx;
+    lumpSupDiv293=0.15*Math.min(_supConcTot,Math.max(0,_ownInc+_supConcTot-Math.round(p.ausDiv293Thr||177759)));
+    lumpSupTax=0.15*_supConcTot+lumpSupDiv293;
+  }
   // Share the phase's lump tax across the events that caused it, in proportion to the taxable money
   // each one drew. Brackets apply to the combined spike, so the split has to come after the total.
   // (This runs BEFORE the trace below, which reports each event's own tax.)
   const lumpDetail=(sim.lumpDetail||[]).map(d=>({...d}));
+  // Sweep R52-6 (v595): money paid into Super in a phase that starts at 75 or later. It still lands (a home-sale downsizer contribution
+  // is the usual case, and allowed) but the event says so — it was accepted at 76 without a word (r52probe P3).
+  if((p.phaseStartAge||0)>=75)lumpDetail.forEach(d=>{if(d.dir!=='out'&&((d.added&&d.added.super)||0)>0.005)d.superAge75=true;});
   // R37-2: each taxable windfall's share of its tax (federal + state), for the card, PDF and AI; charged in the phase's tax below.
   lumpDetail.forEach(d=>{if(d.dir==='out')return;const src=(p.lumpInItems||[]).find(x=>x.id===d.id); // R44-1: taxed as it is withdrawn
     if(src&&src.taxable&&_lumpDefer(d)>0.005)d.txDeferred=Math.min(d.amt||0,_lumpDefer(d));});
+  // Owner 2026-10-06: each money-in event's concessional Super part (by id; by position when an event has none)
+  const _concOf=(()=>{const ins=lumpDetail.filter(d=>d.dir!=='out'),its=p.lumpInItems||[];
+    return d=>{let i=d.id!=null?its.findIndex(x=>x&&x.id===d.id):-1;if(i<0)i=ins.indexOf(d);return i>=0?(_lumpConc[i]||0):0;};})();
+  if(lumpSupTax>0.005){
+    lumpDetail.forEach(d=>{if(d.dir==='out')return;const c=_concOf(d);
+      if(c>0.005){d.supConc=c;d.supTax=lumpSupTax*c/_supConcTot;if(lumpSupDiv293>0.005)d.supDiv293=lumpSupDiv293*c/_supConcTot;}});
+    const yrsP=Math.max(1e-9,(p.months||12)/12);
+    tax_a+=lumpSupTax/yrsP;tax_mo=tax_a/12; // charged with this phase's tax, like the windfall's own (the fund takes it in practice)
+  }
   if(lumpInTax+lumpInState>0.005){
-    const txOf=d=>{const src=(p.lumpInItems||[]).find(x=>x.id===d.id);return d.dir!=='out'&&src&&src.taxable?Math.max(0,(d.amt||0)-_lumpDefer(d)):0;}; // R44-1
+    const txOf=d=>{const src=(p.lumpInItems||[]).find(x=>x.id===d.id);return d.dir!=='out'&&src&&src.taxable?Math.max(0,(d.amt||0)-_lumpDefer(d)-_concOf(d)):0;}; // R44-1; owner 2026-10-06
     const tot=lumpDetail.reduce((t,d)=>t+txOf(d),0);
     lumpDetail.forEach(d=>{const a=txOf(d);if(a>0&&tot>0){d.taxIn=(lumpInTax+lumpInState)*a/tot;d.niitIn=lumpInNiit*a/tot;}}); // R38-1: + its NIIT
     const yrsP=Math.max(1e-9,(p.months||12)/12);
-    tax_a+=lumpInTax/yrsP;if(subjectUS)usTaxBeforeFTC+=lumpInTax/yrsP;tax_mo=tax_a/12;
+    // Sweep R52-1 (v595): where it is booked. A UK resident's is priced as UK tax (_lumpIncrementalTax), so it goes on the UK line. It
+    // went on the US federal line, and for a UK resident who is not a US taxpayer on no line the card shows (r52probe P4: a $60,000
+    // windfall left $242/mo out of the card's lines). The Foreign Tax Credit is not recomputed for that year (_lumpIncrementalTax); only
+    // its NIIT (R52-2) is US tax. Canadian / Australian tax is their tax_a, never the US figure before the credit.
+    const _ukIn=isUkRes&&!foreign,_usIn=_ukIn?lumpInNiit:lumpInTax;
+    if(_ukIn&&lumpInTax-lumpInNiit>0.005){ukTax_a+=(lumpInTax-lumpInNiit)/yrsP;ukTax_mo=ukTax_a/12;
+      const _gU=T.groups.find(g=>g.id==='uktax');
+      if(_gU)_trRow(_gU,'+ UK tax on taxable money coming in',(lumpInTax-lumpInNiit)/yrsP,'usd/yr',{kind:'minus',
+        formula:'UK tax on this phase’s UK income plus the taxable amount, minus UK tax on the income alone — once, spread over this phase',
+        note:subjectUS?'The Foreign Tax Credit is not recalculated for that year: the UK bill is the one that binds.':undefined});}
+    tax_a+=_usIn/yrsP;if(subjectUS&&!isCanadian&&!isAustralian)usTaxBeforeFTC+=_usIn/yrsP;tax_mo=tax_a/12;
     if(lumpInState>0){stateTax_a+=lumpInState/yrsP;stateTax_mo=stateTax_a/12;
       const _gSt=T.groups.find(g=>g.id==='statetax')||_trGroup(T,'statetax','How your state income tax is calculated',null,'stateTax');
       _trRow(_gSt,'+ state tax on taxable money coming in',lumpInState/yrsP,'usd/yr',{kind:'minus',
@@ -2861,6 +2933,7 @@ function calcPhase(p){
    // the phase into one line, so a second lump drawing on the same account looked like it was missing.
     if(lumpDetail.length){
       const g=_trGroup(T,'lump','How your one-time cash events were funded',null,'lumpSum');
+      const _lumpUsInc=subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian; // ACA / IRMAA / state tax are US-only (owner 2026-10-06)
       const nameOf=d=>{
         const src=(p.lumpItems||[]).find(x=>x.id===d.id);
         const lbl=src&&src.label&&String(src.label).trim();
@@ -2871,11 +2944,17 @@ function calcPhase(p){
         if(d.dir!=='out'){
           _trRow(g,nm+' — money in',d.amt||0,'usd',{kind:'in'});
           LUMP_ACCTS.forEach(k=>_trRow(g,nm+' — paid into '+LUMP_ACCT_TRACE[k],(d.added&&d.added[k])||0,'usd',{skipZero:true}));
+          if(d.superAge75)_trRow(g,nm+' — paid into Super from 75',(d.added&&d.added.super)||0,'usd',{kind:'flag',note:SUPER_75_TXT}); // R52-6
           if((d.txDeferred||0)>0.005)_trRow(g,nm+' — of which paid into '+(p.superTaxedUS&&(d.added.super||0)>0.005&&!((d.added.k401||0)>0.005)?'Super':'the 401k / IRA')+': taxed as it is withdrawn',d.txDeferred,'usd',{kind:'flag', // R44-1
             note:'Taxable money rolled into a pre-tax account is not income when it arrives: it is taxed as ordinary income as you withdraw it, like the rest of that account. It is not taxed here and is not in that year’s ACA or IRMAA income. Only the part paid elsewhere is.'});
+          if((d.supConc||0)>0.005)_trRow(g,nm+' — of which into Super, claimed as a concessional contribution',d.supConc,'usd',{kind:'flag', // owner 2026-10-06
+            note:'Taxable money you pay into Super can be claimed as a personal deductible contribution, up to the yearly concessional cap (set with the Australian tax figures in Edit values). That part is not taxed at your marginal rate: the fund taxes it at 15%. Anything over the cap is taxed as income. From 67 the deduction needs the work test (the planner looks for paid work in the phase), and none is allowed from 75. Unused caps from the past five years (with Super under A$500,000) could cover more, and employer contributions use the same cap — neither is modelled.'});
+          if((d.supTax||0)>0.005)_trRow(g,nm+' — 15% contributions tax'+((d.supDiv293||0)>0.005?' + Division 293':''),d.supTax,'usd',{kind:'minus',
+            formula:'15% × the concessional part'+((d.supDiv293||0)>0.005?' + 15% × the part of it that takes your income over the Division 293 threshold':''),
+            note:'Charged once and spread over this phase with the rest of its tax (in practice the fund takes it from your Super). No balance moves.'});
           if((d.taxIn||0)>0.005)_trRow(g,nm+' — tax on it as income',d.taxIn,'usd',{kind:'minus', // R37-2
-            formula:'tax on this phase’s income plus '+((d.txDeferred||0)>0.005?'the part not paid into the 401k':'it')+(_ssXa-_ssXo>0.5?' and the Social Security it makes taxable':'')+', minus tax on the income alone (and your state rate on it)', // R44-1, R45-1
-            note:'You marked it taxable. Charged once and spread over this phase like the rest of its tax; it also counts in that year’s ACA and IRMAA income. No balance moves — it lands in full.'});
+            formula:'tax on this phase’s income plus '+((d.txDeferred||0)>0.005?'the part not paid into the 401k':(d.supConc||0)>0.005?'the part not claimed into Super':'it')+(_ssXa-_ssXo>0.5?' and the Social Security it makes taxable':'')+', minus tax on the income alone'+(_lumpUsInc?' (and your state rate on it)':''), // R44-1, R45-1
+            note:'You marked it taxable. Charged once and spread over this phase like the rest of its tax'+(_lumpUsInc?'; it also counts in that year’s ACA and IRMAA income':'')+'. No balance moves — it lands in full.'});
           if((d.niitIn||0)>0.005)_trRow(g,nm+' — of which the 3.8% Net Investment Income Tax',d.niitIn,'usd',{kind:'flag', // R38-1
             formula:'3.8% × (that year’s net investment income, or its MAGI over the threshold, whichever is smaller) — with it, minus without it',
             note:'It is not investment income itself, but it raises the income NIIT is measured on, so more of your investment income is over the threshold that year.'});
@@ -2915,12 +2994,15 @@ function calcPhase(p){
     }
   }
   // v8: NIIT — 3.8% surtax on net investment income (taxable equity gains + taxable rental) above the
-  // MAGI threshold. US residents only — NIIT is not creditable via the Foreign Tax Credit, so we omit
-  // it for UK/foreign residents rather than let FTC wrongly offset it.
+  // MAGI threshold. Sweep R52-2 (v595): every US taxpayer owes it, wherever they live. It was left out for UK and overseas residents
+  // because it "is not creditable via the Foreign Tax Credit" — which means it is owed in FULL, not that it is not owed (r52probe P2:
+  // $6,116/yr in the US, $0 for the same plan abroad). Overseas there is no credit to offset it; for a UK resident it is added AFTER
+  // the credit (ftc_a is set above) — the IRS position; a treaty-credit argument exists and the trace says so. Canadian / Australian
+  // residents pay no US tax in this model (owner, 2026-08-16).
   // ⚠ Sweep R2-8 (v405): the threshold is NOT inflated. IRC §1411 fixes it at $200k / $250k and it has
   // never been indexed; inflating it like IRMAA let later phases escape NIIT they would really owe.
   let niit_a=0;
-  if(subjectUS&&!isUkRes&&!foreign&&!isCanadian&&!isAustralian){
+  if(subjectUS&&!isCanadian&&!isAustralian){
     const niitThr=Math.round(mfj?(p.niitThresholdMfj||250000):(p.niitThreshold||200000));
     const netInv=Math.max(0,taxableEquity_ann+rentalIncome_ann);
     // v14: NIIT has its own MAGI too, and it is AGI-based — so it excludes BOTH the untaxed part
@@ -2934,12 +3016,20 @@ function calcPhase(p){
       _trRow(g,'NIIT threshold'+(mfj?' (MFJ)':''),niitThr,'usd/yr',{kind:'threshold',formula:'fixed in law — not indexed for inflation'});
       _trRow(g,'MAGI above the threshold',Math.max(0,niitMagi-niitThr),'usd/yr',{});
       _trRow(g,'= NIIT at 3.8%',niit_a,'usd/yr',{kind:'total',formula:'3.8% × min(net investment income, MAGI − threshold)'});
+      if(isUkRes&&!foreign)_trRow(g,'Not reduced by the Foreign Tax Credit',0,'flagv',{kind:'flag', // R52-2
+        note:'The IRS does not allow the Foreign Tax Credit against NIIT, so it is added after the credit, in full. Some argue the US-UK treaty allows a credit against it; if you claim one, this overstates your US tax.'});
+      else if(foreign)_trRow(g,'Owed while you live abroad',0,'flagv',{kind:'flag', // R52-2
+        note:'NIIT applies to US citizens and green-card holders wherever they live.'});
     }
     tax_a+=niit_a; usTaxBeforeFTC+=niit_a; tax_mo=tax_a/12;
     // R38-1 (v555): a taxable windfall's NIIT is already charged (in lumpInTax, spread over the phase) — shown with the phase's NIIT
     if(lumpInNiit>0){const _y=Math.max(1e-9,(p.months||12)/12);niit_a+=lumpInNiit/_y;
       _trRow(T.groups.find(g=>g.id==='niit')||_trGroup(T,'niit','Net Investment Income Tax (NIIT)',null,'niit'),'+ in the year your taxable money comes in',lumpInNiit/_y,'usd/yr',{kind:'in',
         formula:'that year’s NIIT with the money minus without it, spread over this phase'});}
+    // R52-2: a UK resident's NIIT comes after the credit, so the credit's own walk carries on to the figure the card shows
+    if(isUkRes&&!foreign&&niit_a>0.005){const _gF=T.groups.find(g=>g.id==='ftc');
+      if(_gF){_trRow(_gF,'+ Net Investment Income Tax (no credit against it)',niit_a,'usd/yr',{kind:'in'});
+        _trRow(_gF,'= US federal tax after the credit, with NIIT',tax_a,'usd/yr',{kind:'total'});}}
   }
   // ── v15: §72(t) 10% additional tax on an early 401k withdrawal ─────────────────────────────
   // Only ever charged when the user has explicitly chosen to accept it. Being in the pre-59½
@@ -3260,8 +3350,8 @@ function calcPhase(p){
          note:'Paid in '+sym+', so its '+sym+' amount stays as entered when the dollar moves: entered at '+sym+'1 = US$'+(1/at).toFixed(3)+', converted at '+sym+'1 = US$'+(1/lv).toFixed(3)+'. The amounts above are already converted.'});});
    const _pen=(lbl,avg,base,ba,rate,n,end,taxable)=>_stream(lbl,avg,base,ba,rate,n,
      (end!=null&&end!==''?'; it stops at '+end:''),taxable?null:'Tax-free (for example a VA disability payment).');
-   _pen('US pension / disability',sim.avgUsPen,p.usPensionBase||0,p.usPensionBaseAge||65,p.usPensionColaRate,paid.usPen||0,p.usPensionEndAge,p.usPensionTaxable!==false);
-   _pen('Second US pension / disability',sim.avgUsPen2,p.usPension2Base||0,p.usPension2BaseAge||65,p.usPension2ColaRate,paid.usPen2||0,p.usPension2EndAge,p.usPension2Taxable!==false);
+   _pen('US pension / disability',sim.avgUsPen,p.usPensionBase||0,p.usPensionColaFrom!=null?p.usPensionColaFrom:(p.usPensionBaseAge||65),p.usPensionColaRate,paid.usPen||0,p.usPensionEndAge,p.usPensionTaxable!==false);
+   _pen('Second US pension / disability',sim.avgUsPen2,p.usPension2Base||0,p.usPension2ColaFrom!=null?p.usPension2ColaFrom:(p.usPension2BaseAge||65),p.usPension2ColaRate,paid.usPen2||0,p.usPension2EndAge,p.usPension2Taxable!==false);
    if(!g.rows.length)T.groups.pop(); // nothing guaranteed is paid in this phase
   }
   {const tr=sim.tr||{},pre=tr.pre||{},op=tr.open||{};
@@ -3343,6 +3433,7 @@ function calcPhase(p){
     lumpMagi:(_lumpOrd||0)+(_lumpGain||0)+(_lumpInTx||0), // R36-1 / R37-2: one-time taxable income — in MAGI for the year the phase starts
     lumpSsX:_ssXa||0,lumpIrmaaMagi:(_lumpOrd||0)+(_lumpGain||0)+(_lumpInTx||0)+(_ssXa||0), // R45-1: + the Social Security it makes taxable (IRMAA only)
     lumpInTax,magiYears,irmaaMagiYears, // R37-2: tax on taxable money coming in; R37-1: MAGI by 12-month row
+    lumpSupTax,lumpSupDiv293, // owner 2026-10-06: the 15% contributions tax (+ Division 293) on taxable money claimed into Super
     lumpNiit,lumpInNiit, // R38-1: the NIIT a one-time expense / taxable money in adds in its year (inside lumpTax / lumpInTax)
     ukp_grown:sim.avgUKP,uss_grown:sim.avgSS,spSS_grown:sim.avgSpSS,
     // R19-1: the spouse's share of the pension streams (inside ukp_grown / cpp_grown / … too) and each person's taxed share;
@@ -3584,12 +3675,13 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       phaseStartAge:pc.startAge,retireStartAge:s._inflBaseAge||curAge||s.startAge,
       planYear:s.planYear||null, // R21-10: the calendar year the plan's ages are anchored to (R20-7)
       ssColaRate:s.ssColaRate,tripleLockRate:s.triplelock,inflationRate:s.inflation,
-      ssBaseAge:s.ssBaseAge||62,ukpBaseAge:s.ukpBaseAge||67,
+      ssBaseAge:_ssBaseAgeOf(s),ukpBaseAge:s.ukpBaseAge||67, // owner 2026-10-10: SSDI in payment from the plan's start
       cppBaseAge:s.cppBaseAge||65,oasBaseAge:s.oasBaseAge||65,
       agePensionBaseAge:s.agePensionBaseAge||67,
       cppColaRate:_numOr(s.cppColaRate,2.6),oasColaRate:_numOr(s.oasColaRate,2.6),agePensionColaRate:_numOr(s.agePensionColaRate,2.6),
       // v9: US pension/disability — COLA null/'' ⇒ track general inflation (single source of truth here)
       usPensionBase:s.usPension||0,usPensionBaseAge:s.usPensionBaseAge||65,
+      usPensionColaFrom:_penColaFrom(s.usPensionBaseAge,s),usPension2ColaFrom:_penColaFrom(s.usPension2BaseAge,s), // owner 2026-10-10
       usPensionEndAge:(s.usPensionEndAge!=null&&s.usPensionEndAge!=='')?s.usPensionEndAge:null, // null ⇒ for life
       usPensionColaRate:(s.usPensionColaRate!=null&&s.usPensionColaRate!=='')?s.usPensionColaRate:s.inflation,
       usPensionTaxable:s.usPensionTaxable!==false,
@@ -3637,6 +3729,7 @@ function _calcAllPhasesUncached(s,p5End,lumpsArr){
       ausRate1:(s.ausRate1!=null?s.ausRate1:15),ausRate2:(s.ausRate2!=null?s.ausRate2:30),
       ausRate3:(s.ausRate3!=null?s.ausRate3:37),ausRate4:(s.ausRate4!=null?s.ausRate4:45),
       ausLevyThreshold:(s.ausLevyThreshold||19356)*_taxFxFactor(s,'AUD'),
+      ausConcCap:(s.ausConcCap||23109)*_taxFxFactor(s,'AUD'),ausDiv293Thr:(s.ausDiv293Thr||177759)*_taxFxFactor(s,'AUD'), // owner 2026-10-06
       rmdStartAge:_rmdStartAgeOf(s),rmdAuto:!(typeof s.rmdStartAge==='number'&&s.rmdStartAge>0), // R18-5
       ownAgeShift:s._survAgeShift||0}; // R11-4: survivor runs only — the survivor's age = plan age − this
     const r=calcPhase(_cpIn);
@@ -4387,7 +4480,7 @@ function calcSurvivorPhases(){
   // The two benefits as they stand at the death age (0 = not yet started), for "the check that stops".
   const delta=(S.currentAge||S.startAge||0)-((S.spouseCurrentAge>0)?S.spouseCurrentAge:(S.currentAge||S.startAge||0));
   const cola=S.ssColaRate,spAge=deathAge-delta,spBA=S.spouseSSBaseAge||62;
-  const own=(S.uss||0)>0&&deathAge>=Math.max(S.ssdiMode?40:62,Math.min(70,S.ssStartAge||62))?colaUSS(S.uss,deathAge-(S.ssBaseAge||62),cola):0;
+  const own=(S.uss||0)>0&&deathAge>=Math.max(S.ssdiMode?40:62,Math.min(70,S.ssStartAge||62))?colaUSS(S.uss,deathAge-_ssBaseAgeOf(S),cola):0;
   const other=(S.spouseSS||0)>0&&spAge>=spBA?colaUSS(S.spouseSS,spAge-spBA,_numOr(cola,2.6)):0;
   // Sweep R21-4 (v474): what the death stops, from the two engine runs over the first year after it — the couple's Social
   // Security (both benefits and any spousal top-ups) less the survivor's. `lost` was the smaller OWN benefit, which left out
