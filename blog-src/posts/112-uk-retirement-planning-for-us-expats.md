@@ -164,7 +164,7 @@ Worth being precise about scope, because it differs from the other expat destina
 
 For a GBP plan with UK residence active, the planner applies **real UK income tax**: the personal allowance, the basic, higher and additional rate bands, and the foreign tax credit against US tax. It taxes US Social Security, 401k and IRA withdrawals, UK State Pension, equity gains and part-time income in the UK base.
 
-That is a genuine dual-country calculation, not a placeholder. It is also the reason the UK gets its own article rather than being folded into a general "retiring abroad" guide. Canada and Australia have tax models of their own, but they apply that country's tax alone, with no US layer and no credit. The Philippines, Thailand and the euro area are supported as **foreign-residence scenarios** that exclude US healthcare, without local tax regimes behind them.
+That is a genuine dual-country calculation, not a placeholder. It is also the reason the UK gets its own article rather than being folded into a general "retiring abroad" guide. Canada and Australia have tax models of their own, but they apply that country's tax alone, with no US layer and no credit. The Philippines, [Thailand](/blog/thailand-retirement-planning-for-us-retirees.html) and the euro area are supported as **foreign-residence scenarios** that exclude US healthcare, without local tax regimes behind them.
 
 ## 5. Treat Medicare As A US-Coverage Issue
 
