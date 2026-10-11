@@ -4890,6 +4890,13 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     seedSplitSlots: _seedSplitSlots,
     // Desktop sweep R13-2: the plan's balances (and brokerage cost basis) at an age — the Replan gain box starts there.
     balancesAtAge: _balancesAtAge,
+    // Desktop sweep R25-1 (owner's rule B): the withdrawals a plan pays at its own assumed returns, and what a shocked projection
+    // leaves unpaid of them — the Stress grid and "Savings last the plan" judge by the engine's own rule, not a copy of it.
+    paidAtBase: _paidAtBase,
+    unpaidOn: _unpaidOn,
+    // Desktop sweep R25-3: Super is preserved until 60; the engine's own reason text for an expense left short by it.
+    SUPER_PRESERVATION_AGE: SUPER_PRESERVATION_AGE,
+    SUPER_LOCK_TXT: SUPER_LOCK_TXT,
     ssFmtFRA: ssFmtFRA,
     PHASE_COLORS: PHASE_COLORS,
     PHASE0_COLOR: PHASE0_COLOR,
