@@ -235,7 +235,7 @@ Create:
 - Weaker USD/PHP case, entered as higher dollar costs.
 - Annual US travel case.
 - A return-to-US plan.
-- A [survivor case](/blog/survivor-benefits-widows-tax-cliff.html), from the survivor card in the **What-if?** tab, which needs **Married filing jointly** and both Social Security amounts.
+- For a couple, a [survivor case](/blog/survivor-benefits-widows-tax-cliff.html) from the survivor card in the **What-if?** tab, which works for any **Married filing jointly** plan.
 
 A plan keeps one residence from start to finish, so the planner cannot switch you back to US rules at a chosen age. Build the return case as a separate US plan and read it from the age you would move back. The planner holds three saved plans and compares your current plan with one of them at a time, so export any extra versions to JSON.
 

@@ -74,7 +74,7 @@ The AI Retirement Income Planner has a dedicated **survivor scenario** built for
 
 [IMAGE planner survivor scenario keeps larger SS single filing resilience check 2]
 
-It runs for married-filing-jointly plans once both Social Security amounts are entered. In **Edit values**, switch on **Married filing jointly**, enter your Social Security plus your spouse's (amount, claim age, and the spouse's current age if there is an age gap), then tick **Model survivor scenario** and choose a first-death age. From there the model does what actually happens:
+It runs for any married-filing-jointly plan, including one where only one of you has Social Security of your own. In **Edit values**, switch on **Married filing jointly**, enter your Social Security plus your spouse's (amount, claim age, and the spouse's current age if there is an age gap), then tick **Model survivor scenario** and choose a first-death age. From there the model does what actually happens:
 
 - The survivor **keeps the larger** of the two Social Security benefits, and the smaller one stops.
 - Filing **switches to single**, so the narrower brackets and smaller standard deduction apply to every later phase.

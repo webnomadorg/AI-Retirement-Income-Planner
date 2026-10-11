@@ -129,7 +129,7 @@ Some checks only apply when the required inputs exist. That is why one plan show
 For example:
 
 - Four checks (Tax Bracket Efficiency, ACA Subsidy Protected, IRMAA Not Triggered, and RMD Compliance) switch off when the currency is not USD, or when you have turned off the US taxpayer setting.
-- Survivor Income Resilience needs Married-Filing-Jointly, both Social Security amounts, and "Model survivor scenario" ticked on the Edit tab.
+- Survivor Income Resilience needs Married-Filing-Jointly and "Model survivor scenario" ticked on the Edit tab.
 - Income Goal and Legacy Goal need a target set on the My Goals card.
 - CSR / Subsidy Headroom only speaks up when a pre-Medicare phase is sitting close to an ACA threshold.
 
