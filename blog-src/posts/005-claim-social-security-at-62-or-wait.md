@@ -162,7 +162,7 @@ For example:
 - Claiming early may add Social Security income while you are also drawing from investments.
 - Waiting may create lower-income years that can be used for Roth conversions.
 - Delaying until 70 may increase future guaranteed income, which can affect later taxable income.
-- RMDs beginning later may overlap with Social Security and pensions.
+- [RMDs beginning later](/blog/how-rmds-change-retirement-tax-bill.html) may overlap with Social Security and pensions.
 
 This is why the Social Security decision belongs beside Roth conversion, RMD, IRMAA, and withdrawal planning. A [retirement calculator with taxes and healthcare](/blog/best-retirement-calculator-with-taxes-and-healthcare.html) can show those interactions in one place.
 

@@ -64,7 +64,7 @@ This can work because taxable accounts may have favorable capital gains treatmen
 
 But the classic order can fail when it ignores the future.
 
-If a retiree avoids traditional IRA withdrawals for too long, the account may grow into a larger RMD problem. The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. Those withdrawals are generally included in taxable income, except for already-taxed basis or tax-free qualified Roth distributions.
+If a retiree avoids traditional IRA withdrawals for too long, the account may grow into a [larger RMD problem](/blog/how-rmds-change-retirement-tax-bill.html). The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. Those withdrawals are generally included in taxable income, except for already-taxed basis or tax-free qualified Roth distributions.
 
 That means avoiding IRA withdrawals today can increase taxable income later.
 

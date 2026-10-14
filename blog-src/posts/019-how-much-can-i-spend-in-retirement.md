@@ -197,7 +197,7 @@ For couples, Social Security timing also affects survivor income. That makes it 
 
 Required minimum distributions can change future spending and tax results.
 
-The IRS explains that retirement account owners generally must take minimum distributions each year once RMD rules apply. For retirees with large traditional IRA or 401k balances, RMDs may push taxable income higher later in retirement.
+The IRS explains that retirement account owners generally must take minimum distributions each year once RMD rules apply. For retirees with large traditional IRA or 401k balances, RMDs may [push taxable income higher later in retirement](/blog/how-rmds-change-retirement-tax-bill.html).
 
 This matters for spending because a plan may look tax-efficient early but become tax-heavy later. It may also create Medicare IRMAA exposure or reduce flexibility.
 

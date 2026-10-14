@@ -63,7 +63,7 @@ This is why Roth conversion planning belongs inside a full retirement income mod
 
 The IRS says required minimum distributions are minimum amounts that many retirement account owners must withdraw each year. Traditional IRA, SEP IRA, SIMPLE IRA, and many retirement plan accounts generally start RMDs when the account owner reaches age 73.
 
-RMDs are taxable in most cases. The IRS also states that Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive, although beneficiaries can have RMD rules after the owner's death.
+[RMDs are taxable](/blog/how-rmds-change-retirement-tax-bill.html) in most cases. The IRS also states that Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive, although beneficiaries can have RMD rules after the owner's death.
 
 That creates a planning window for some households:
 
