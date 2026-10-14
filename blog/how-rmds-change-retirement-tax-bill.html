@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How RMDs Can Change Your Retirement Tax Bill</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Required minimum distributions can raise your taxable income, the tax on Social Security, Medicare IRMAA and cash flow. What to model before RMDs start at 73 or 75.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/how-rmds-change-retirement-tax-bill.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How RMDs Can Change Your Retirement Tax Bill">
+<meta property="og:description" content="Required minimum distributions can raise your taxable income, the tax on Social Security, Medicare IRMAA and cash flow. What to model before RMDs start at 73 or 75.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/how-rmds-change-retirement-tax-bill-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/how-rmds-change-retirement-tax-bill.html">
+<meta property="article:published_time" content="2026-10-13">
+<meta property="article:modified_time" content="2026-10-13">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How RMDs Can Change Your Retirement Tax Bill", "description": "Required minimum distributions can raise your taxable income, the tax on Social Security, Medicare IRMAA and cash flow. What to model before RMDs start at 73 or 75.", "datePublished": "2026-10-13", "dateModified": "2026-10-13", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/how-rmds-change-retirement-tax-bill.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/how-rmds-change-retirement-tax-bill-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Taxes & Roth", "item": "https://airetirementincomeplanner.com/blog.html#cat=taxes-roth"}, {"@type": "ListItem", "position": 4, "name": "How RMDs Can Change Your Retirement Tax Bill", "item": "https://airetirementincomeplanner.com/blog/how-rmds-change-retirement-tax-bill.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What age do RMDs start?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. The SECURE 2.0 Act raises that age to 75 for anyone born in 1960 or later. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan."}}, {"@type": "Question", "name": "Are RMDs taxable?", "acceptedAnswer": {"@type": "Answer", "text": "Usually, yes. The IRS says the account owner is taxed at their income tax rate on the withdrawn RMD, except for amounts that are a return of basis or qualified tax-free Roth distributions."}}, {"@type": "Question", "name": "Can I withdraw more than the RMD?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The IRS says you can withdraw more than the required minimum amount. The extra withdrawal may still be taxable, depending on the account and tax details."}}, {"@type": "Question", "name": "Can I skip an RMD if I do not need the money?", "acceptedAnswer": {"@type": "Answer", "text": "Generally, no. If the RMD rules apply, the required amount must be withdrawn by the deadline. Missing an RMD can trigger an excise tax."}}, {"@type": "Question", "name": "Can RMDs affect Social Security taxes?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. RMDs can increase income, and the IRS says Social Security taxation depends in part on modified adjusted gross income plus one half of Social Security benefits."}}, {"@type": "Question", "name": "Can RMDs affect Medicare costs?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. RMDs can increase income, and higher income can affect Medicare IRMAA for Part B and Part D."}}, {"@type": "Question", "name": "Do Roth IRAs have RMDs?", "acceptedAnswer": {"@type": "Answer", "text": "The IRS says Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive. Beneficiaries can still be subject to RMD rules."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=taxes-roth">Taxes & Roth</a>
+        </nav>
+        <header class="post-header">
+          <h1>How RMDs Can Change Your Retirement Tax Bill</h1>
+          <p class="post-meta"><span class="cat-badge">Taxes & Roth</span> · Published October 13, 2026 · 12 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#what-is-an-rmd">What Is An RMD?</a></li>
+      <li><a href="#why-rmds-can-raise-taxes">Why RMDs Can Raise Taxes</a></li>
+      <li><a href="#rmds-and-social-security-taxes">RMDs And Social Security Taxes</a></li>
+      <li><a href="#rmds-and-medicare-irmaa">RMDs And Medicare IRMAA</a></li>
+      <li><a href="#rmds-and-aca-coverage-before-medicare">RMDs And ACA Coverage Before Medicare</a></li>
+      <li><a href="#the-first-rmd-timing-trap">The First RMD Timing Trap</a></li>
+      <li><a href="#what-happens-if-you-miss-an-rmd">What Happens If You Miss An RMD?</a></li>
+      <li><a href="#why-bigger-balances-can-create-bigger-rmd-pressure">Why Bigger Balances Can Create Bigger RMD Pressure</a></li>
+      <li><a href="#planning-moves-to-compare-before-rmd-age">Planning Moves To Compare Before RMD Age</a></li>
+      <li><a href="#how-to-model-rmds-in-the-ai-retirement-income-planner">How To Model RMDs In The AI Retirement Income Planner</a></li>
+      <li><a href="#a-simple-rmd-planning-checklist">A Simple RMD Planning Checklist</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>Required minimum distributions can change your retirement tax bill because they force taxable withdrawals from many pre-tax retirement accounts once you reach RMD age.</p>
+<p>The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. Under the SECURE 2.0 Act that age becomes 75 for anyone born in 1960 or later, which covers most people retiring in the next few years. The withdrawal is usually included in taxable income, except for any part that was already taxed or qualifies for tax-free treatment.</p>
+<p>That extra income can do more than raise federal tax. It may also affect:</p>
+<ul>
+<li>How much of your Social Security is taxable</li>
+<li>Medicare IRMAA</li>
+<li>State income tax</li>
+<li>Roth conversion room</li>
+<li>Survivor tax planning</li>
+<li>Cash flow and portfolio withdrawals</li>
+</ul>
+<figure class="shot post-img">
+<img src="/assets/img/blog/how-rmds-change-retirement-tax-bill-1.webp" alt="Flow diagram titled How a Traditional IRA Impacts Your Retirement: a traditional IRA leads to required minimum distributions, which the chart notes start at 73 under current law, then to taxable income, which branches to four outcomes: higher federal tax, a larger taxable share of Social Security, higher Medicare premiums through IRMAA, and the income left to spend." width="1400" height="1050" loading="lazy">
+</figure>
+
+<aside class="cta-box cta-soft">
+  <p>RMDs are easier to plan for before they begin. The AI Retirement Income Planner estimates your RMD for every year, flags any phase where your planned withdrawal falls below it, and shows how meeting it changes your taxable income, account balances, Medicare costs, survivor planning, and retirement confidence.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="what-is-an-rmd">What Is An RMD?</h2>
+<p>An RMD is a required minimum distribution. It is the minimum amount you must withdraw each year from certain retirement accounts once the rules apply to you.</p>
+<p>The IRS says RMD rules apply to traditional IRAs and employer plans such as 401k, 403b, profit-sharing, and 457b plans. Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive, though beneficiaries can be subject to RMD rules.</p>
+<p>For many retirees, the first surprise is that the word "minimum" does not mean "small." The RMD amount depends on the prior year-end account balance and an IRS life expectancy factor. If a pre-tax balance has grown for decades, the required withdrawal can become a major source of taxable income.</p>
+<h2 id="why-rmds-can-raise-taxes">Why RMDs Can Raise Taxes</h2>
+<p>RMDs from pre-tax accounts generally count as taxable income. That means they can stack on top of other income sources, including:</p>
+<ul>
+<li>Social Security</li>
+<li>Pension income</li>
+<li>Interest</li>
+<li>Dividends</li>
+<li>Capital gains</li>
+<li>Rental income</li>
+<li>Part-time work</li>
+<li>Annuity income</li>
+</ul>
+<p>A retiree may feel low-income because they are no longer working, but the tax return may tell a different story once RMDs begin.</p>
+<p>For example, a household might have:</p>
+<ul>
+<li>Social Security income</li>
+<li>A pension</li>
+<li>A large traditional IRA</li>
+<li>Taxable investment income</li>
+</ul>
+<p>Before RMDs, the plan may look manageable. After RMDs begin, the IRA withdrawal can push taxable income higher every year.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the AI Retirement Income Planner Balance tab's year-by-year table with demo data before and after RMD age, once the 401(k) withdrawal meets the minimum. The visual should make the RMD increase in taxable withdrawals easy to see. Purpose: show that the planner can reveal future tax pressure before the retiree reaches RMD age. Suggested alt text: "AI Retirement Income Planner showing taxable income and retirement account withdrawals around RMD age." -->
+
+<h2 id="rmds-and-social-security-taxes">RMDs And Social Security Taxes</h2>
+<p>RMDs can also affect how much of your Social Security benefit is taxable.</p>
+<p>The IRS says Social Security benefits may be taxable when your modified adjusted gross income plus one half of your Social Security benefits is above the base amount for your filing status. That income measure is not the same one used for ACA subsidies or Medicare surcharges: <a href="/blog/what-is-magi.html">what MAGI is</a> sets out the four definitions and where each one bites.</p>
+<p>Because RMDs can raise income, they can increase the portion of Social Security that is taxed. This can surprise retirees who thought Social Security and IRA withdrawals were separate planning questions.</p>
+<p>They are not separate on the tax return.</p>
+<h2 id="rmds-and-medicare-irmaa">RMDs And Medicare IRMAA</h2>
+<p>Medicare IRMAA is an income-related monthly adjustment amount. It can increase Medicare Part B and Part D costs for higher-income beneficiaries.</p>
+<p>RMDs can matter because they may increase the income used to determine whether IRMAA applies.</p>
+<p>The Social Security Administration has a process to request a lower IRMAA after certain life-changing events that reduce household income, including marriage, divorce, the death of a spouse, stopping or cutting back work, losing pension income or income-producing property, and some employer settlement payments. That process can help in specific situations, but it is better to see possible IRMAA exposure before the income year happens.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the Plan Health sidebar with a demo warning or note about Medicare/IRMAA or rising taxable income after RMD age. Purpose: show how the planner turns a future tax and healthcare issue into a visible planning item. Suggested alt text: "Plan Health sidebar showing a Medicare or RMD-related retirement planning note." -->
+
+<h2 id="rmds-and-aca-coverage-before-medicare">RMDs And ACA Coverage Before Medicare</h2>
+<p>RMDs usually begin after Medicare age for most retirees, but the broader lesson applies to pre-Medicare planning too: retirement account withdrawals can affect healthcare costs.</p>
+<p>HealthCare.gov says retirees may qualify for Marketplace savings based on income and household size. It also states that IRA and 401k withdrawals generally count as income. For the years before 65 specifically, see <a href="/blog/can-i-retire-at-62-before-medicare.html">can I retire at 62 before Medicare</a>, and for the order you draw from accounts, <a href="/blog/which-retirement-account-withdraw-from-first.html">which retirement account to withdraw from first</a>.</p>
+<p>For a person retiring before Medicare, planned withdrawals before RMD age may affect ACA premium tax credits. Later, after Medicare starts, RMDs may affect IRMAA instead.</p>
+<p>The details change, but the planning habit is the same:</p>
+<p>Model taxes and healthcare together.</p>
+<h2 id="the-first-rmd-timing-trap">The First RMD Timing Trap</h2>
+<p>The IRS says you must take your first RMD for the year you reach your RMD age (73, or 75 if you were born in 1960 or later), but you can delay that first RMD until April 1 of the following year.</p>
+<p>That delay can sound helpful. It can also create a problem.</p>
+<p>If you delay the first RMD into the next year, you may need to take two RMDs in that same calendar year:</p>
+<ul>
+<li>The delayed first RMD</li>
+<li>The second RMD due by December 31</li>
+</ul>
+<p>Two RMDs in one tax year can increase taxable income and may affect other income-based costs.</p>
+<p>This does not mean delaying the first RMD is always wrong. It means the decision should be modeled before the deadline.</p>
+<h2 id="what-happens-if-you-miss-an-rmd">What Happens If You Miss An RMD?</h2>
+<p>The IRS says account owners are responsible for taking the correct RMD amount on time. If the full RMD is not withdrawn by the deadline, the missed amount may be subject to an excise tax.</p>
+<p>The IRS currently describes the penalty as 25 percent of the missed amount, or 10 percent if corrected in a timely way within two years.</p>
+<p>That is another reason to track RMDs directly in the retirement plan instead of treating them as a once-a-year tax paperwork issue.</p>
+<h2 id="why-bigger-balances-can-create-bigger-rmd-pressure">Why Bigger Balances Can Create Bigger RMD Pressure</h2>
+<p>Pre-tax retirement accounts are powerful because they allow tax-deferred growth. The tradeoff is that the tax bill has not disappeared. It has been delayed.</p>
+<p>If investment growth is strong, a traditional IRA or 401k balance may become large enough that future RMDs are bigger than the retiree expected.</p>
+<p>That can create a pattern like this:</p>
+<ul>
+<li>The years before RMDs: lower taxable income</li>
+<li>From your RMD age (73, or 75 if born in 1960 or later): RMDs begin</li>
+<li>Later 70s and 80s: RMD percentage rises as the life expectancy factor changes</li>
+<li>Survivor years: one spouse may <a href="/blog/survivor-benefits-widows-tax-cliff.html">face taxes as a single filer</a></li>
+</ul>
+<p>This is why RMD planning often starts before RMD age.</p>
+<!-- IMAGE PLACEHOLDER: Generated image: A simple line chart showing pre-tax account balance growing before RMD age, then annual RMD withdrawals rising over time. Prompt for ChatGPT Images 2: "Create a clean educational line chart for retirement planning. Show a pre-tax retirement account balance growing before age 75, then required minimum distributions beginning at 75 and increasing gradually over time. Use clear labels, professional style, white background, muted colors, no logos, no tiny text." Suggested alt text: "Chart showing how pre-tax account growth can lead to larger RMD withdrawals after age 75." -->
+
+<h2 id="planning-moves-to-compare-before-rmd-age">Planning Moves To Compare Before RMD Age</h2>
+<p>RMD planning is not about avoiding every dollar of tax. It is about comparing choices early enough to avoid being boxed in later.</p>
+<p>Common strategies to model include:</p>
+<h3 id="roth-conversions">Roth Conversions</h3>
+<p>A Roth conversion before RMD age may reduce future pre-tax balances. That can reduce future RMD pressure, but it can also raise current taxable income.</p>
+<p>This works best as a comparison:</p>
+<ul>
+<li>No conversion</li>
+<li>Small annual conversion</li>
+<li>Moderate annual conversion</li>
+<li>Larger conversion</li>
+</ul>
+<p>Then compare taxes, Medicare costs, ending balances, survivor outcomes, and confidence scores.</p>
+<h3 id="spending-from-the-right-accounts">Spending From The Right Accounts</h3>
+<p>Some retirees spend taxable cash first. Others draw from tax-deferred accounts earlier to reduce future RMD pressure. Some preserve Roth assets for later years or heirs.</p>
+<p>There is no universal withdrawal order. The right sequence depends on the household's income, tax bracket, investment mix, healthcare costs, and goals.</p>
+<h3 id="delaying-or-starting-social-security">Delaying Or Starting Social Security</h3>
+<p>Social Security timing affects taxable income patterns. <a href="/blog/when-to-take-social-security-62-67-70.html">Delaying benefits</a> may create lower-income years before age 70, which can be useful for Roth conversions or planned pre-tax withdrawals.</p>
+<p>Starting earlier may reduce the need for portfolio withdrawals, but it can also change the lifetime income picture.</p>
+<p>The planner should compare both paths. The case for acting early is set out in <a href="/blog/roth-conversions-before-rmds.html">Roth conversions before RMDs</a>.</p>
+<h3 id="charitable-giving">Charitable Giving</h3>
+<p>Some retirees use charitable strategies to manage taxable IRA distributions. The rules are specific, and the details matter, so this is an area where a tax professional should be involved.</p>
+<p>The planning point is simple: if giving is already part of the household's plan, include it in the tax model.</p>
+<h2 id="how-to-model-rmds-in-the-ai-retirement-income-planner">How To Model RMDs In The AI Retirement Income Planner</h2>
+<p>The planner estimates your RMD but does not take it for you. It works out the minimum for every year from your RMD age and warns when your planned 401(k) withdrawal falls below it, so the tax effect appears once your withdrawals meet the minimum. Use this workflow:</p>
+<ol>
+<li>In <strong>Edit values</strong>, enter your ages, birth year, retirement age, account balances, Social Security timing, pensions, and spending goals. The birth year sets the RMD age (73, or 75 if born in 1960 or later) unless you type one into the RMD start age box.</li>
+<li>On the <strong>Overview</strong>, open the phase cards that run past your RMD age. The tax block shows the estimated RMD, or an amber warning naming the age your planned 401(k) withdrawal first falls below the minimum.</li>
+<li>Open <strong>Plan Health</strong> and read the RMD Compliance check, which lists every phase that falls short.</li>
+<li>Raise the 401(k) withdrawal in each flagged phase to at least the minimum. The projection then shows what RMDs do to your tax, to the taxable share of your Social Security, and to IRMAA.</li>
+<li>Check the <strong>Balance</strong> tab for account balances over time and the year-by-year table of withdrawals.</li>
+<li>The <strong>Tax &amp; ACA</strong> tab explains how the RMD estimate, tax brackets, MAGI, and IRMAA are worked out.</li>
+<li>Use <strong>What-if?</strong> to test Roth conversion sizes and Social Security claiming ages.</li>
+<li>Save your baseline and an alternative, such as a conversion plan or a different withdrawal order, in <strong>Saved plans</strong>, then use <strong>Compare</strong> to see them side by side.</li>
+<li>If you are married, review the survivor outcome in <strong>What-if?</strong>.</li>
+<li>Check ending balances and the <strong>Plan Confidence</strong> score, not only tax totals.</li>
+</ol>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show Saved plans > Compare with a baseline plan, a Roth conversion plan, and an alternate withdrawal-order plan side by side. Purpose: demonstrate that RMD planning is a scenario comparison, not a single calculation. Suggested alt text: "AI Retirement Income Planner scenarios comparing RMD planning strategies." -->
+
+<h2 id="a-simple-rmd-planning-checklist">A Simple RMD Planning Checklist</h2>
+<p>Before RMDs begin, answer these questions:</p>
+<ul>
+<li>Which accounts will be subject to RMDs?</li>
+<li>What is the projected pre-tax balance at your RMD age?</li>
+<li>How much taxable income might RMDs create?</li>
+<li>Will RMDs overlap with pension income?</li>
+<li>Will RMDs overlap with Social Security?</li>
+<li>Could RMDs affect Medicare IRMAA?</li>
+<li>Would Roth conversions before RMDs start help or hurt?</li>
+<li>What happens if one spouse dies first?</li>
+<li>Is there enough cash to pay taxes without forced selling?</li>
+<li>Does the plan still work in weak market years?</li>
+</ul>
+<p>This checklist is more useful than asking whether RMDs are "bad." RMDs are simply part of the retirement income system. The issue is whether they are planned for.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo and look at the phase card that starts at 73. The sample plan starts at 62 in 2026, so its RMDs begin at 75, and the card's tax block flags that the planned 401(k) withdrawal falls below the minimum from that age, with how far short it is by 79.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-age-do-rmds-start">What age do RMDs start?</h3>
+<p>The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. The SECURE 2.0 Act raises that age to 75 for anyone born in 1960 or later. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan.</p>
+<h3 id="are-rmds-taxable">Are RMDs taxable?</h3>
+<p>Usually, yes. The IRS says the account owner is taxed at their income tax rate on the withdrawn RMD, except for amounts that are a return of basis or qualified tax-free Roth distributions.</p>
+<h3 id="can-i-withdraw-more-than-the-rmd">Can I withdraw more than the RMD?</h3>
+<p>Yes. The IRS says you can withdraw more than the required minimum amount. The extra withdrawal may still be taxable, depending on the account and tax details.</p>
+<h3 id="can-i-skip-an-rmd-if-i-do-not-need-the-money">Can I skip an RMD if I do not need the money?</h3>
+<p>Generally, no. If the RMD rules apply, the required amount must be withdrawn by the deadline. Missing an RMD can trigger an excise tax.</p>
+<h3 id="can-rmds-affect-social-security-taxes">Can RMDs affect Social Security taxes?</h3>
+<p>Yes. RMDs can increase income, and the IRS says Social Security taxation depends in part on modified adjusted gross income plus one half of Social Security benefits.</p>
+<h3 id="can-rmds-affect-medicare-costs">Can RMDs affect Medicare costs?</h3>
+<p>Yes. RMDs can increase income, and higher income can affect Medicare IRMAA for Part B and Part D.</p>
+<h3 id="do-roth-iras-have-rmds">Do Roth IRAs have RMDs?</h3>
+<p>The IRS says Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive. Beneficiaries can still be subject to RMD rules.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>IRS, Required Minimum Distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>IRS, Retirement Topics: Required Minimum Distributions: https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds</li>
+<li>SECURE 2.0 Act of 2022 (Public Law 117-328, Division T), Section 107, Increase in age for required beginning date for mandatory distributions: https://www.govinfo.gov/content/pkg/PLAW-117publ328/html/PLAW-117publ328.htm</li>
+<li>IRS, Topic No. 423, Social Security and Equivalent Railroad Retirement Benefits: https://www.irs.gov/taxtopics/tc423</li>
+<li>Social Security Administration, Request to Lower an Income-Related Monthly Adjustment Amount: https://www.ssa.gov/medicare/lower-irmaa</li>
+<li>HealthCare.gov, Health Care Coverage for Retirees: https://www.healthcare.gov/retirees/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Tax rules, benefit rules, healthcare costs and thresholds change over time, and any projection depends on assumptions that may not hold. Screenshots show a sample plan with invented figures and are illustrative only. Verify important figures with official sources such as IRS.gov, SSA.gov, Medicare.gov and HealthCare.gov, and confirm decisions with a qualified professional before acting.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-how-rmds-change-retirement-tax-bill">Leave this blank</label>
+      <input type="text" id="pc-honey-how-rmds-change-retirement-tax-bill" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-how-rmds-change-retirement-tax-bill">Email address</label>
+    <input type="email" id="pc-email-how-rmds-change-retirement-tax-bill" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Before your RMDs start, compare your baseline plan with Roth conversions, alternate withdrawal orders, and Social Security timing changes. The AI Retirement Income Planner helps you test those choices in one private browser-based plan.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/roth-conversions-before-rmds.html">Roth Conversions Before RMDs: What Retirees Should Model</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/what-is-magi.html">What Is MAGI in Retirement Planning?</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/state-taxes-in-retirement.html">State Taxes in Retirement: How Your State Changes Net Income</a> <span class="post-meta">· Taxes & Roth</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#v7">Planner v7</a></li>
+          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
