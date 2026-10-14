@@ -4901,6 +4901,10 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     // applies — the phone's Replan pre-fills its two "Income for IRMAA" boxes from the plan's own projection, as the desktop does.
     irmaaCalendar: _irmaaCalendar,
     usHealthExcluded: _usHealthExcluded,
+    // Desktop v515–v532: the income around retirement (Settings and the setup wizard) — when each question can change something: the
+    // household's Medicare ages, the retirement year on the calendar, and whether the years before / the year itself reach a premium.
+    medInfo: _medInfo, retCal: _retCal, ageHalf: _ageHalf,
+    preRetRelevant: _preRetRelevant, retYrIrmaaRelevant: _retYrIrmaaRelevant, preRetAges: _preRetAges,
     ssFmtFRA: ssFmtFRA,
     PHASE_COLORS: PHASE_COLORS,
     PHASE0_COLOR: PHASE0_COLOR,
