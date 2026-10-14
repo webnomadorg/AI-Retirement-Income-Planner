@@ -4897,6 +4897,10 @@ function computeMonteCarlo(s,p5End,lumpsArr){
     // Desktop sweep R25-3: Super is preserved until 60; the engine's own reason text for an expense left short by it.
     SUPER_PRESERVATION_AGE: SUPER_PRESERVATION_AGE,
     SUPER_LOCK_TXT: SUPER_LOCK_TXT,
+    // Desktop sweep R30-4: the IRMAA calendar (what Medicare's two-year lookback reads for each tax year) and whether US healthcare
+    // applies — the phone's Replan pre-fills its two "Income for IRMAA" boxes from the plan's own projection, as the desktop does.
+    irmaaCalendar: _irmaaCalendar,
+    usHealthExcluded: _usHealthExcluded,
     ssFmtFRA: ssFmtFRA,
     PHASE_COLORS: PHASE_COLORS,
     PHASE0_COLOR: PHASE0_COLOR,
