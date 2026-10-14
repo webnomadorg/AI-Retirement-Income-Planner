@@ -221,7 +221,7 @@ Then, when you want the whole picture at once rather than card by card, a [Plan 
 - In each pre-Medicare phase, how much MAGI headroom is left before the next healthcare threshold?
 - Which phases still have low-bracket space, and am I using it?
 - What share of my Social Security becomes taxable, and does an extra withdrawal change it?
-- From 73 onward, does my planned withdrawal meet the required minimum?
+- From my RMD age (73, or 75 if born in 1960 or later), does my planned withdrawal meet the required minimum?
 - Which year's income sets my first Medicare premium, and how close is it to a surcharge tier?
 - What is my *real* monthly income in the last phase, not the nominal figure?
 - If I have an income target, which phase is furthest below it?

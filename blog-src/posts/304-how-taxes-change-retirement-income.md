@@ -84,7 +84,7 @@ For some households the effect is small. For others it is significant, particula
 
 ## RMDs: The Bill That Arrives on a Schedule
 
-Required minimum distributions are mandatory withdrawals from certain pre-tax accounts once you reach the applicable age, currently 73 for most people newly affected. They can create taxable income whether or not you need the cash.
+Required minimum distributions are mandatory withdrawals from certain pre-tax accounts once you reach the applicable age: 73 for people born from 1951 to 1959, and 75 for anyone born in 1960 or later. They can create taxable income whether or not you need the cash.
 
 Here is the trap. A traditional account left untouched for years is often celebrated because the balance keeps growing. That growth can also build a larger forced withdrawal later, and large RMDs ripple outward into federal tax, the taxable share of Social Security, and Medicare surcharges. None of this means traditional accounts should always be drained early. It means the RMD phase should be looked at *before* it arrives. The single most useful question is: if I do nothing now, what does the RMD phase look like later? If the answer is future tax pressure, earlier withdrawals or Roth conversions become worth testing.
 
@@ -133,7 +133,7 @@ Cash flow is the money you actually have to spend. Taxable income is the figure 
 
 ### At what age do required minimum distributions start?
 
-For most people newly reaching the age today, RMDs from traditional pre-tax accounts begin at 73. They are mandatory whether or not you need the money, and a large untouched traditional balance can produce a bigger forced withdrawal, which is why the RMD phase is worth reviewing years before it starts. The planner lets you set the RMD start age and estimates the required amount on the affected phases.
+RMDs from traditional pre-tax accounts begin at 73 for people born from 1951 to 1959, and at 75 for anyone born in 1960 or later. They are mandatory whether or not you need the money, and a large untouched traditional balance can produce a bigger forced withdrawal, which is why the RMD phase is worth reviewing years before it starts. The planner sets the RMD start age from your birth year, or uses the age you enter, and estimates the required amount on the affected phases.
 
 ### Are Roth conversions always a good idea?
 

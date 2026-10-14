@@ -128,7 +128,7 @@ Before changing withdrawal sources, review:
 - Estimated tax payments.
 - Future RMDs.
 
-The IRS says retirees generally have to begin required minimum distributions from many tax-deferred retirement accounts at age 73. If large tax-deferred balances remain, RMDs may become part of the later plan even if balances feel lower today, and [converting before they begin](/blog/roth-conversions-before-rmds.html) is the main lever for reducing them.
+The IRS says retirees generally have to begin required minimum distributions from many tax-deferred retirement accounts at age 73, or 75 for anyone born in 1960 or later. If large tax-deferred balances remain, RMDs may become part of the later plan even if balances feel lower today, and [converting before they begin](/blog/roth-conversions-before-rmds.html) is the main lever for reducing them.
 
 ## Step 6: Update Healthcare Costs
 

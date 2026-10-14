@@ -61,7 +61,7 @@ This is why Roth conversion planning belongs inside a full retirement income mod
 
 ## Why The Years Before RMDs Matter
 
-The IRS says required minimum distributions are minimum amounts that many retirement account owners must withdraw each year. Traditional IRA, SEP IRA, SIMPLE IRA, and many retirement plan accounts generally start RMDs when the account owner reaches age 73.
+The IRS says required minimum distributions are minimum amounts that many retirement account owners must withdraw each year. Traditional IRA, SEP IRA, SIMPLE IRA, and many retirement plan accounts generally start RMDs when the account owner reaches age 73, or 75 for anyone born in 1960 or later under the SECURE 2.0 Act.
 
 [RMDs are taxable](/blog/how-rmds-change-retirement-tax-bill.html) in most cases. The IRS also states that Roth IRAs and designated Roth accounts are not subject to RMDs while the owner is alive, although beneficiaries can have RMD rules after the owner's death.
 
@@ -189,7 +189,7 @@ Record:
 - Confidence score
 - Ending balances
 - Taxable income pattern by age
-- RMD pressure after 73
+- RMD pressure once RMDs start
 - Estimated healthcare costs
 - Survivor plan health
 
@@ -269,7 +269,7 @@ Often, yes. A conversion from pre-tax retirement money generally adds taxable in
 
 ### When do RMDs start?
 
-The IRS says traditional IRA, SEP IRA, SIMPLE IRA, and retirement plan account owners generally must start RMDs at age 73. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan.
+The IRS says traditional IRA, SEP IRA, SIMPLE IRA, and retirement plan account owners generally must start RMDs at age 73. The SECURE 2.0 Act raises that age to 75 for anyone born in 1960 or later. Some workplace plan participants may be able to delay RMDs until retirement, unless they are 5 percent owners of the business sponsoring the plan.
 
 ### Are Roth accounts subject to RMDs?
 

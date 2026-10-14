@@ -146,7 +146,7 @@ That can affect:
 
 One detail matters more than it sounds. When a one-time expense is funded from a 401k, the tax comes out of the money withdrawn, so a $60,000 draw delivers roughly $45,000 to the expense. The planner has a Withdraw extra to cover the tax option that grosses the withdrawal up instead, so the full amount arrives and the plan carries the larger withdrawal. Deciding which of those two you meant is part of comparing sources honestly.
 
-The IRS says retirees generally have to start required minimum distributions from many tax-deferred retirement accounts at age 73. If RMDs are already required, a large withdrawal should be checked against the year's required amount and future tax picture, which [planning conversions before RMDs](/blog/roth-conversions-before-rmds.html) covers.
+The IRS says retirees generally have to start required minimum distributions from many tax-deferred retirement accounts at age 73, or 75 for anyone born in 1960 or later. If RMDs are already required, a large withdrawal should be checked against the year's required amount and future tax picture, which [planning conversions before RMDs](/blog/roth-conversions-before-rmds.html) covers.
 
 ## Step 6: Compare Roth Withdrawals
 

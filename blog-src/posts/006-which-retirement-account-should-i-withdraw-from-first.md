@@ -64,7 +64,7 @@ This can work because taxable accounts may have favorable capital gains treatmen
 
 But the classic order can fail when it ignores the future.
 
-If a retiree avoids traditional IRA withdrawals for too long, the account may grow into a [larger RMD problem](/blog/how-rmds-change-retirement-tax-bill.html). The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts. Those withdrawals are generally included in taxable income, except for already-taxed basis or tax-free qualified Roth distributions.
+If a retiree avoids traditional IRA withdrawals for too long, the account may grow into a [larger RMD problem](/blog/how-rmds-change-retirement-tax-bill.html). The IRS says RMDs generally begin at age 73 for traditional IRAs, SEP IRAs, SIMPLE IRAs, and many retirement plan accounts, and the SECURE 2.0 Act moves that to 75 for anyone born in 1960 or later. Those withdrawals are generally included in taxable income, except for already-taxed basis or tax-free qualified Roth distributions.
 
 That means avoiding IRA withdrawals today can increase taxable income later.
 
@@ -116,7 +116,7 @@ Example:
 
 A retiree has low taxable income from age 62 to 69 because they delayed Social Security and have no pension yet. They spend only cash and taxable savings to keep taxes low.
 
-At age 70, Social Security begins. At age 73, RMDs begin. Later, the tax return includes Social Security, RMDs, investment income, and possibly pension income.
+At age 70, Social Security begins. At their RMD age, 73 or 75 depending on the year they were born, RMDs begin. Later, the tax return includes Social Security, RMDs, investment income, and possibly pension income.
 
 The early low-tax years were real. The later tax pressure is also real.
 
@@ -308,7 +308,7 @@ The right answer depends on:
 - Will I have pension income?
 - Will I use ACA coverage before Medicare?
 - Could withdrawals affect Medicare IRMAA?
-- What will my RMDs look like after age 73?
+- What will my RMDs look like once they start?
 - Do I have low-income years before RMDs?
 - Should I test Roth conversions?
 - What happens if markets fall early in retirement?
@@ -339,7 +339,7 @@ Some Roth withdrawals are tax-free, but the rules matter. The IRS says returns o
 
 ### Do RMDs affect withdrawal order?
 
-Yes. RMDs can force taxable withdrawals later. The IRS says RMDs generally begin at age 73 for many traditional retirement accounts.
+Yes. RMDs can force taxable withdrawals later. The IRS says RMDs generally begin at age 73 for many traditional retirement accounts. The SECURE 2.0 Act raises that age to 75 for anyone born in 1960 or later.
 
 ### Can withdrawals affect Social Security taxes?
 

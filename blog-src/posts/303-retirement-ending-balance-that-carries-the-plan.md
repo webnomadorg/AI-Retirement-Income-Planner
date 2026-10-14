@@ -99,7 +99,7 @@ This is why a plan that looks fine on a smooth average return can look much weak
 
 Two retirees can both end a phase with $500,000 and face completely different futures, because the ending balance should be read **by account type**, not as one total:
 
-- **Tax-deferred** (traditional 401(k)/IRA): fully taxable on withdrawal and subject to RMDs from 73. A large residual here can force taxable income you did not ask for.
+- **Tax-deferred** (traditional 401(k)/IRA): fully taxable on withdrawal and subject to RMDs from 73 (75 if you were born in 1960 or later). A large residual here can force taxable income you did not ask for.
 - **Roth:** tax-free, invisible to the income figures that drive ACA and Medicare costs, no RMDs, and the best asset to leave to heirs.
 - **Cash:** low growth but high liquidity, a buffer against selling investments at a bad time.
 - **Taxable brokerage:** flexible, but sales can trigger capital gains.
@@ -145,7 +145,7 @@ Not necessarily. A planned drawdown can be sensible, especially when Social Secu
 
 ### Why does the account mix of the ending balance matter?
 
-Because different accounts are taxed and treated very differently. A large traditional 401(k) or IRA balance drives taxable RMDs from 73; a Roth balance is tax-free, avoids RMDs, and is the best asset to leave to heirs; cash provides liquidity; a brokerage account can trigger capital gains. Two identical totals can mean very different future tax and flexibility, so read the balance by account type, not just as one number.
+Because different accounts are taxed and treated very differently. A large traditional 401(k) or IRA balance drives taxable RMDs from 73 or 75; a Roth balance is tax-free, avoids RMDs, and is the best asset to leave to heirs; cash provides liquidity; a brokerage account can trigger capital gains. Two identical totals can mean very different future tax and flexibility, so read the balance by account type, not just as one number.
 
 ### What is sequence-of-returns risk?
 

@@ -16,7 +16,7 @@ Use `Article` schema with `FAQPage` schema for the FAQ section. Suggested FAQ qu
 
 - How often should I review my retirement plan?
 - What should I update first in an annual retirement review?
-- Should RMDs be part of an annual review before age 73?
+- Should RMDs be part of an annual review before they start?
 - What should I do with the annual review results?
 - Can the planner help with annual reviews?
 

@@ -69,7 +69,7 @@ Retirement has a handful of common milestones. Not everyone uses all of them, bu
 - **65:** Medicare eligibility usually begins. For anyone who has been on ACA marketplace insurance, retiree coverage, or self-pay, this is often a major cost change.
 - **67:** a common planning reference for full retirement age (the exact age depends on birth year), the point at which Social Security is no longer reduced for claiming early.
 - **70:** delayed-claiming credits stop growing, so this is usually the latest practical age to start Social Security.
-- **73:** the age required minimum distributions (RMDs) currently begin for many retirees with traditional pre-tax accounts. RMDs can force taxable withdrawals even if you do not need the cash.
+- **73 or 75:** the age required minimum distributions (RMDs) begin for retirees with traditional pre-tax accounts: 73 if you were born from 1951 to 1959, 75 if you were born in 1960 or later. RMDs can force taxable withdrawals even if you do not need the cash.
 
 None of these milestones tell you what to *do*. They mark the points where the plan may change: before 65 you may care intensely about ACA income thresholds; after 65 the focus shifts to Medicare premiums and IRMAA; before Social Security your portfolio carries more of the load; after RMDs begin you have less control over taxable income.
 
@@ -83,7 +83,7 @@ The planner turns those milestones into a working structure. By default it split
 | **Phase&nbsp;2** | 62 to 65 | Social Security can begin here. Still before Medicare, so ACA thresholds may still apply. |
 | **Phase&nbsp;3** | 65 to 67 | Medicare has begun. ACA concerns give way to Medicare premiums and possible IRMAA surcharges. |
 | **Phase&nbsp;4** | 67 to 73 | Full retirement age reached. The low-tax window that runs right up to RMDs, so often the best stretch for testing Roth conversions. |
-| **Phase&nbsp;5** | 73 to plan end | The RMD years, which begin at 73. Taxable income may rise whether or not you need the cash. |
+| **Phase&nbsp;5** | 73 to plan end | The RMD years, which begin at 73, or at 75 for anyone born in 1960 or later. Taxable income may rise whether or not you need the cash. |
 
 Two things make this more than a fixed template:
 
@@ -195,7 +195,7 @@ This series summarizes it, but the complete step-by-step framework is in the fre
 
 ## Newsletter Summary
 
-Retirement is easier to plan when you treat it as a timeline instead of one long, uniform period. Age milestones (59½, 62, 65, 67, 70, 73) mark the points where the plan changes: penalty-free account access, Social Security, Medicare, full retirement age, and required minimum distributions. This article shows how to break retirement into phases, each with its own income sources, healthcare rules, tax situation, and a job to do, and how the ending balance of one phase becomes the starting balance of the next. It also shows how the planner's Overview tab builds that timeline as editable phase cards that recalculate whenever you change a withdrawal, a claiming age, or an assumption.
+Retirement is easier to plan when you treat it as a timeline instead of one long, uniform period. Age milestones (59½, 62, 65, 67, 70, and 73 or 75) mark the points where the plan changes: penalty-free account access, Social Security, Medicare, full retirement age, and required minimum distributions. This article shows how to break retirement into phases, each with its own income sources, healthcare rules, tax situation, and a job to do, and how the ending balance of one phase becomes the starting balance of the next. It also shows how the planner's Overview tab builds that timeline as editable phase cards that recalculate whenever you change a withdrawal, a claiming age, or an assumption.
 
 ## Educational Disclaimer
 

@@ -72,7 +72,7 @@ The first real improvement is to stop treating retirement as one long block and 
 | Phase 1 | 62 to 65 | Early retirement before Medicare. ACA coverage applies and income affects its cost. No Social Security yet, so withdrawals and cash carry spending. |
 | Phase 2 | 65 to 67 | Medicare begins; Social Security still delayed. ACA is no longer the issue, but a possible low-tax window opens before benefits and RMDs. |
 | Phase 3 | 67 to 73 | Social Security begins. Portfolio pressure eases; attention shifts to how much of the benefit is taxable and whether withdrawals can fall. |
-| Phase 4 | 73 to 80 | RMDs may begin. Forced taxable withdrawals can lift income and brush against Medicare IRMAA thresholds. |
+| Phase 4 | 73 to 80 | RMDs begin: at 73, or at 75 for anyone born in 1960 or later. Forced taxable withdrawals can lift income and brush against Medicare IRMAA thresholds. |
 | Phase 5 | 80 to 90 | Later retirement. The questions become real income, reliable income, healthcare reserves, and the remaining balance. |
 
 Now the retiree is no longer asking whether "retirement" works. They are asking what each phase has to accomplish, which is a far easier thing to test.
@@ -116,7 +116,7 @@ This is where the framework earns its keep. Rather than accept or reject the bas
 A useful answer would name the ACA bridge years as sensitive, point to unused low tax-bracket space before RMDs, raise possible Roth conversions, note later real-income pressure, and flag future RMD or IRMAA exposure. The retiree does not apply anything yet. They follow up with narrower questions, each tied to a phase, account, threshold, or decision:
 
 - **Which phase is weakest, and why?** The answer focuses the review, whether it is Phase 1 for healthcare, Phase 4 for RMDs, or Phase 5 for real income.
-- **Do I have unused low tax-bracket space before RMDs begin?** From 65 to 73 there may be room for modest traditional withdrawals or conversions, but the follow-up matters: would those affect ACA before 65 or IRMAA after? Timing decides the answer.
+- **Do I have unused low tax-bracket space before RMDs begin?** From 65 until RMDs begin there may be room for modest traditional withdrawals or conversions, but the follow-up matters: would those affect ACA before 65 or IRMAA after? Timing decides the answer.
 - **How can I fund 62 to 65 while preserving ACA support where possible?** More cash protects MAGI but drains reserves; Roth protects MAGI but spends future flexibility; traditional supports tax planning but raises healthcare cost. The best answer is usually a blend.
 - **Would small annual Roth conversions from 65 to 73 improve the plan without unreasonable tax or IRMAA cost?** This is far more useful than "are Roth conversions good?" because it names the amount, the window, and the concern.
 - **Can I raise discretionary spending by $300 a month from 62 to 72 without weakening the later phases too much?** A specific question produces a specific answer about healthcare cost, later real income, and the ending balance at 90.

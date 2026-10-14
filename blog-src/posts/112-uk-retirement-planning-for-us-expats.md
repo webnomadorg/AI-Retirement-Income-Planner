@@ -214,7 +214,7 @@ US expats in the UK may hold:
 
 Model traditional 401k and IRA balances as tax-deferred accounts. Model Roth separately. Model taxable brokerage separately. This helps the planner show withdrawal timing, tax pressure, RMD estimates, and balance changes.
 
-IRS early distribution rules and RMD rules still need review. Early distributions can create additional US tax unless an exception applies, and RMDs generally begin at age 73 for traditional IRAs and many retirement plans under current IRS rules.
+IRS early distribution rules and RMD rules still need review. Early distributions can create additional US tax unless an exception applies, and RMDs generally begin at age 73 for traditional IRAs and many retirement plans under current IRS rules, or at 75 for anyone born in 1960 or later.
 
 ## 8. Add Foreign Account Reporting To The Checklist
 

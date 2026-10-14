@@ -293,9 +293,9 @@ Many retirees review the plan once a year and after major changes such as a mark
 
 Start with current balances, current spending, current income, current withdrawals, current healthcare costs, and current tax assumptions.
 
-### Should RMDs be part of an annual review before age 73?
+### Should RMDs be part of an annual review before they start?
 
-Yes. Future RMDs can affect taxable income, Medicare IRMAA, Social Security taxation, withdrawal order, and survivor planning.
+Yes. RMDs start at 73, or at 75 if you were born in 1960 or later, and future RMDs can affect taxable income, Medicare IRMAA, Social Security taxation, withdrawal order, and survivor planning.
 
 ### What should I do with the annual review results?
 
@@ -335,7 +335,7 @@ Use `Article` schema with `FAQPage` schema for the FAQ section. Suggested FAQ qu
 
 - How often should I review my retirement plan?
 - What should I update first in an annual retirement review?
-- Should RMDs be part of an annual review before age 73?
+- Should RMDs be part of an annual review before they start?
 - What should I do with the annual review results?
 - Can the planner help with annual reviews?
 
