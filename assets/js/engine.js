@@ -2501,11 +2501,17 @@ function calcPhase(p){
       _trRow(g,'32% bracket ceiling',adjBrk32Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk32||512450):(p.brk32||256225),baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'35% bracket ceiling (37% above)',adjBrk35Eff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjBrk35||768700):(p.brk35||640600),baseAs:'from',formula:'base × inflation multiplier'});
       _trRow(g,'Standard deduction',adjStdDedEff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjStdDed||30000):p.stdDed,baseAs:'from',formula:'base × inflation multiplier'});
-      _trRow(g,'IRMAA threshold',adjIrmaaEff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjIrmaa||218000):(p.irmaa||109000),baseAs:'from',formula:'base × inflation multiplier'});
-      _trRow(g,'100% federal poverty level'+(mfj?' (2-person household)':''),adjFpl100,'usd/yr',{kind:'threshold',base:p.fpl100,baseAs:'from',formula:'base × inflation multiplier'});
-      _trRow(g,'400% FPL (ACA cliff)'+(mfj?' (2-person household)':''),adjFpl400,'usd/yr',{kind:'threshold',base:p.fpl400,baseAs:'from',formula:'base × inflation multiplier'});
+      // Combined sweep R61-2: the Medicare and ACA lines only where US healthcare is part of the plan — a UK resident or a plan abroad pays
+      // US tax (the brackets above) but no ACA premium or IRMAA, and these rows read as if both applied. (foreign / isUkRes are declared
+      // further down, hence the plan fields.)
+      if(!p.foreignResident&&!p.ukResident){
+        _trRow(g,'IRMAA threshold',adjIrmaaEff,'usd/yr',{kind:'threshold',base:mfj?(p.mfjIrmaa||218000):(p.irmaa||109000),baseAs:'from',formula:'base × inflation multiplier'});
+        _trRow(g,'100% federal poverty level'+(mfj?' (2-person household)':''),adjFpl100,'usd/yr',{kind:'threshold',base:p.fpl100,baseAs:'from',formula:'base × inflation multiplier'});
+        _trRow(g,'400% FPL (ACA cliff)'+(mfj?' (2-person household)':''),adjFpl400,'usd/yr',{kind:'threshold',base:p.fpl400,baseAs:'from',formula:'base × inflation multiplier'});
+      }
     }
-    if(mfj)_trRow(g,'Filing as Married Filing Jointly',1,'flagv',{kind:'flag',
+    // R61-2: the MFJ note speaks of the US brackets, so only where US tax applies (a Canadian or Australian resident is taxed there alone).
+    if(mfj&&subjectUS&&!isCanadian&&!isAustralian)_trRow(g,'Filing as Married Filing Jointly',1,'flagv',{kind:'flag',
       note:'Bracket ceilings and the standard deduction use the wider MFJ values.'});
   }
   // Sweep R10-1 (v426): the age-65 extra deduction is PER PERSON. mfjSeniorDed holds the amount for a couple
