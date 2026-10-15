@@ -4751,10 +4751,21 @@ function _lumpDrawAmounts(s,p5End,lumpsArr){
 function _mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function _seedFromInputs(obj){try{const str=JSON.stringify(obj);let h=2166136261>>>0;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}catch(e){return 0x9E3779B9;}}
 
+// Combined sweep R65-1: the seed comes from what the plan COMPUTES — each phase's months, net, tax and ending balances, with the end age,
+// the Monte Carlo settings and the return and inflation assumptions — not from the stored plan's JSON. That text depends on how a plan is
+// stored, not what it is: the phone stores the same plan in another key order with its defaults filled differently, so one plan file
+// gave 98% here and 99% on the phone; and the plan's notes are in it, so typing a note moved the result. Same projection = same draws.
+function _mcSeedOf(s,p5End,lumpsArr){
+  try{const ph=calcAllPhases(s,p5End,lumpsArr)||[],c=v=>Math.round((+v||0)*100);
+    const proj=ph.map(p=>[p.phaseKey,p.months,c(p.net_mo),c(p.tax_mo),c(p.health_mo),...['b401k','bcash','bEquity','bRoth','bSuper'].map(k=>c((p.end||{})[k]))]);
+    const a=['mcRuns','mcSigma','mcSigmaCash','mcInflSigma','r401k','rCash','rEquity','rRoth','rSuper','inflation'].map(k=>+s[k]||0);
+    return _seedFromInputs([proj,p5End,a]);}
+  catch(e){return _seedFromInputs([s,p5End,lumpsArr]);}
+}
 function computeMonteCarlo(s,p5End,lumpsArr){
   // Seeded RNG → reproducible per plan (see note above _mulberry32). Same plan = same result every
-  // render; editing any input reseeds so the simulation updates.
-  const _rng=_mulberry32(_seedFromInputs([s,p5End,lumpsArr]));
+  // render; editing any input that changes the projection reseeds so the simulation updates (R65-1: _mcSeedOf).
+  const _rng=_mulberry32(_mcSeedOf(s,p5End,lumpsArr));
   // Box-Muller normal distribution
   function randNorm(mean,std){
     const u1=Math.max(1e-10,_rng()),u2=_rng();
