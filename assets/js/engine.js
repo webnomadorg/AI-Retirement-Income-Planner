@@ -1041,6 +1041,10 @@ function syncEarlyAccessUI(){
   // on a lapsed exception is the one failure here that would understate a real cost.
   if(!earlyAccessEligible(S.earlyAccessMode||'locked')){S.earlyAccessMode='locked';S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
   const m=S.earlyAccessMode||'locked';
+  // Combined sweep R60-1: a locked 401k has no pre-59½ draw. readInputs and setEarlyAccessMode zero it, but a plan file that carried one
+  // (hand-edited, or from another tool) was paid — penalty-free, with the box hidden and the note saying "untouched until 59½" — until
+  // the first edit anywhere cleared it, so the projection changed on an unrelated edit. The phone zeroes it on load (normalizeEarlyAccess).
+  if(m==='locked'){S.p0.w401k=0;if(S.p0b)S.p0b.w401k=0;}
   const sel=document.getElementById('e-earlyAccessMode');
   if(sel){
     // Hide the options this plan cannot honestly use, rather than offering a control that lies.

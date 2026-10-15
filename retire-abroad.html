@@ -211,8 +211,8 @@
 
         <h2 id="net-income-per-month-by-phase" style="margin-top:2.2rem;">Net income per month, by phase</h2>
         <p style="color:var(--ink-faint);margin-top:-.5rem;">After income tax and healthcare costs.
-          Phases split at Medicare eligibility (65), your Social Security claim age, the RMD age (73)
-          and 80.</p>
+          Phases split at 59½ if you retire before it, Medicare eligibility (65), your Social Security claim age,
+          the RMD age (73, or 75 if you were born in 1960 or later) and 80.</p>
         <div class="cmp-matrix-wrap">
           <table class="cmp-table" id="ra-table-net">
             <caption class="sr-only">Net monthly retirement income by country and phase</caption>
@@ -248,15 +248,18 @@
             <li><strong>US healthcare</strong> — ACA premiums, the 400% FPL subsidy cliff, the 250%
               FPL Silver CSR band, then Medicare Part B/D and IRMAA surcharges from 65.</li>
             <li><strong>UK</strong> — personal allowance and the basic/higher/additional rates. Under
-              Article 17 of the US–UK treaty, US Social Security is <em>not</em> taxed by the UK,
-              while 401(k) and pension withdrawals are. US tax is then reduced by a
-              <strong>Foreign Tax Credit</strong>.</li>
+              Article 17(3) of the US–UK treaty, US Social Security paid to a UK resident is taxed
+              <em>only</em> by the UK, and 401(k) and pension withdrawals are taxed by both countries. US
+              tax on those is then reduced by a <strong>Foreign Tax Credit</strong>.</li>
             <li><strong>Canada</strong> — federal brackets plus the basic personal amount and a
               provincial rate.</li>
             <li><strong>Australia</strong> — the tax-free threshold, marginal brackets and the
               Medicare levy.</li>
-            <li><strong>Required Minimum Distributions</strong> from age 73, using the IRS Uniform
-              Lifetime Table.</li>
+            <li><strong>Required Minimum Distributions</strong> from age 73 (75 if you were born in 1960
+              or later), using the IRS Uniform Lifetime Table.</li>
+            <li><strong>Retiring before 59½</strong> — the 401(k) is left untouched until then in every
+              column (an earlier withdrawal carries a 10% IRS penalty), so those years are paid from
+              your brokerage and cash withdrawals.</li>
             <li>Inflation on brackets, deductions, thresholds and healthcare costs, applied per phase.</li>
           </ul>
         </div>
@@ -461,16 +464,23 @@
   // Phase boundaries always land on the events that change the math: Medicare at 65, the Social
   // Security claim, the RMD age, then 80. Putting the claim age ON a boundary means Social Security
   // never starts mid-phase, so each phase is either wholly before or wholly after it.
-  function boundaries(startAge, ssAge) {
-    var pts = [65, ssAge, 73, 80].filter(function (a) { return a > startAge; });
+  // Combined sweep R60-5: the RMD boundary is the engine's own RMD age for the plan's birth year (73, or 75 if born in 1960 or later) — it
+  // was 73 for everyone.
+  function boundaries(startAge, ssAge, rmdAge) {
+    var pts = [65, ssAge, rmdAge || 73, 80].filter(function (a) { return a > startAge; });
     pts = pts.filter(function (a, i) { return pts.indexOf(a) === i; }).sort(function (a, b) { return a - b; });
     while (pts.length < 4) pts.push((pts.length ? pts[pts.length - 1] : startAge) + 5);
     return pts.slice(0, 4);
   }
 
+  function rmdAgeFor(age) {
+    var s = JSON.parse(JSON.stringify(E.D_USD)); s.startAge = age; s.currentAge = 0;
+    return E.rmdStartAgeOf ? E.rmdStartAgeOf(s) : 73;
+  }
+
   function buildPlan(inp) {
     var s = JSON.parse(JSON.stringify(E.D_USD));
-    var b = boundaries(inp.age, inp.ssAge);
+    var b = boundaries(inp.age, inp.ssAge, rmdAgeFor(inp.age));
 
     s.startAge = inp.age;
     s.currentAge = 0;
@@ -493,7 +503,13 @@
     // the three accounts) so total income stays level instead of stepping up.
     var gross = inp.w401k + inp.wEquity + inp.wCash;
     var keep = gross > 0 ? Math.max(0, gross - inp.ss) / gross : 0;
-    var starts = [inp.age, b[0], b[1], b[2], b[3]];
+    var starts = [Math.max(inp.age, 59.5), b[0], b[1], b[2], b[3]];
+
+    // Combined sweep R60-5: retiring before 59½ the engine adds a phase from the retirement age to 59½ (p0). The page never set it, so it
+    // paid the default $100/mo for every country, every row below was labelled one phase early and the last read "Age undefined". The
+    // 401(k) stays locked there (no draw, no penalty) in every column, so those years are paid from the brokerage and cash withdrawals.
+    s.earlyAccessMode = 'locked';
+    s.p0 = { w401k: 0, wcash: Math.round(inp.wCash), wEquity: Math.round(inp.wEquity), uss: 0, ukp: 0, partTime: 0, wRoth: 0, rothConversion: 0, rentalAnn: 0, wSuper: 0 };
 
     ['p1', 'p2', 'p3', 'p4', 'p5'].forEach(function (k, i) {
       var on = starts[i] >= inp.ssAge;
@@ -516,7 +532,10 @@
       b401k: num('ra-b401k', 800000), bEquity: num('ra-bequity', 300000), bCash: num('ra-bcash', 100000),
       w401k: num('ra-w401k', 4000), wEquity: num('ra-wequity', 2000), wCash: num('ra-wcash', 1000)
     };
-    if (inp.ssAge <= inp.age) { fail('Your Social Security claim age needs to be later than the age you retire.'); return; }
+    // Combined sweep R60-5: claiming at or before the age you retire is allowed — Social Security is then paid from the first phase (the
+    // engine pays an amount already in payment from the plan's start). It was refused, so retiring at 62 and claiming at 62, or retiring
+    // at 70 or later, could not be compared at all.
+    if (!(inp.ssAge >= 62 && inp.ssAge <= 70)) { fail('Enter a Social Security claim age from 62 to 70.'); return; }
     if (inp.b401k + inp.bEquity + inp.bCash <= 0) { fail('Enter at least one account balance.'); return; }
     if (inp.w401k + inp.wEquity + inp.wCash <= 0) { fail('Enter at least one monthly withdrawal.'); return; }
 
@@ -532,6 +551,7 @@
           label: r.label,
           phases: phs.map(function (p) {
             return {
+              a0: p.phaseStartAge, a1: p.phaseEndAge, // R60-5: each row is labelled with the engine's own phase
               net: p.net_mo || 0,
               // Total income tax = US federal AFTER the Foreign Tax Credit (tax_mo) + UK tax
               // (ukTax_mo) + state tax (stateTax_mo). tax_mo alone is only the US federal part, so
@@ -557,11 +577,9 @@
 
   function fail(msg) { err.textContent = msg; err.classList.add('visible'); out.hidden = true; }
 
-  function phaseLabels(inp) {
-    var b = boundaries(inp.age, inp.ssAge);
-    var starts = [inp.age, b[0], b[1], b[2], b[3]], ends = [b[0], b[1], b[2], b[3], 90], labels = [];
-    for (var i = 0; i < 5; i++) labels.push(starts[i] + '–' + ends[i]);
-    return labels;
+  function ageTxt(a) { a = Math.round(a * 2) / 2; return a % 1 ? Math.floor(a) + '½' : String(a); }
+  function phaseLabels(results) {
+    return results[0].phases.map(function (p) { return ageTxt(p.a0) + '–' + ageTxt(p.a1); });
   }
 
   function table(el, rows, cols, labels) {
@@ -578,7 +596,7 @@
   }
 
   function render(results, inp) {
-    var labels = phaseLabels(inp), cols = results.map(function (r) { return r.label; });
+    var labels = phaseLabels(results), cols = results.map(function (r) { return r.label; });
     var n = results[0].phases.length;
 
     var netRows = [];
@@ -653,7 +671,7 @@
         shift += ', while <strong>' + faller.label + '</strong> slips from ' +
           faller.from + ordinalSuffix(faller.from) + ' to ' + faller.to + ordinalSuffix(faller.to);
       }
-      shift += '. Medicare at 65, Social Security and required minimum distributions from 73 each ' +
+      shift += '. Medicare at 65, Social Security and required minimum distributions from ' + rmdAgeFor(inp.age) + ' each ' +
         'change the balance, so the best country early is not always the best one later.</p>';
     } else {
       shift = '<p style="margin:0;">The order stays the same in every phase of this plan — no country ' +
