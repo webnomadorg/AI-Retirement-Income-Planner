@@ -30,7 +30,7 @@
 
 ## Quick Answer
 
-Money sitting in a traditional IRA or 401(k) is growing tax-deferred, which sounds great until you reach 73. From that age the IRS forces you to take required minimum distributions (RMDs) whether you need the money or not, and because your balance keeps compounding while the divisor shrinks, those forced withdrawals escalate every year. Stacked on Social Security, they can push you into higher brackets, tax more of your benefits, and trigger Medicare surcharges. That pile-up is often called the **tax torpedo.**
+Money sitting in a traditional IRA or 401(k) is growing tax-deferred, which sounds great until you reach your RMD age: 73, or 75 if you were born in 1960 or later. From that age the IRS forces you to take required minimum distributions (RMDs) whether you need the money or not, and because your balance keeps compounding while the divisor shrinks, those forced withdrawals escalate every year. Stacked on Social Security, they can push you into higher brackets, tax more of your benefits, and trigger Medicare surcharges. That pile-up is often called the **tax torpedo.**
 
 [IMAGE roth optimizer 1]
 
@@ -38,19 +38,19 @@ The Multi-Year Roth Conversion Optimizer is a companion tool that solves the har
 
 ## Key Takeaways
 
-- **The problem is forced income later.** RMDs from 73 onward grow relentlessly and can trigger higher taxes, more Social Security taxation, and Medicare IRMAA surcharges.
-- **The fix is converting earlier, at known lower rates.** Moving money to a Roth in the years before 73 shrinks the future RMD and locks in today's bracket.
+- **The problem is forced income later.** Once RMDs start, they grow relentlessly and can trigger higher taxes, more Social Security taxation, and Medicare IRMAA surcharges.
+- **The fix is converting earlier, at known lower rates.** Moving money to a Roth in the years before your RMD age shrinks the future RMD and locks in today's bracket.
 - **The hard part is the amount.** Convert too little and you barely help; too much and you overshoot a bracket or cross the IRMAA or ACA cliff.
 - **The tool maps the whole window.** It shows bracket space year by year, respects every cliff, and calculates an optimal conversion for each year across six strategies.
 - **It produces a plan you can act on.** A year-by-year conversion calendar, scored against confidence checks, that you can hand to your accountant, and export into the main planner.
 
 ## Why Roth Conversions Matter: the Tax Torpedo
 
-If you do nothing, here is what happens. A traditional IRA that has grown to, say, several hundred thousand dollars by 73 produces a first RMD in the tens of thousands, and that is taxable income you did not choose to take. It grows every year: a balance still compounding at 7% combined with an IRS divisor that shrinks with age means the mandatory withdrawal escalates with no ceiling.
+If you do nothing, here is what happens. A traditional IRA that has grown to, say, several hundred thousand dollars by your RMD age produces a first RMD in the tens of thousands, and that is taxable income you did not choose to take. It grows every year: a balance still compounding at 7% combined with an IRS divisor that shrinks with age means the mandatory withdrawal escalates with no ceiling.
 
 [IMAGE roth optimizer 2]
 
-Worse, that extra income does not just get taxed once. It pulls more of your Social Security into the taxable zone, and once your income crosses certain thresholds it lifts your Medicare Part B and D premiums through IRMAA. The marginal cost of one extra dollar of RMD income can be far higher than the bracket alone suggests. This is the same web of thresholds covered in [taxes, ACA, and healthcare in early retirement](/blog/taxes-aca-healthcare-early-retirement.html), now working against you in later life. The solution is to voluntarily move money out of the pre-tax account before 73, paying tax today at a known rate, typically 12% or 22%, so it never appears as a forced RMD later. For the case behind that decision, rather than the tool that plans it, see [Roth conversions before RMDs](/blog/roth-conversions-before-rmds.html).
+Worse, that extra income does not just get taxed once. It pulls more of your Social Security into the taxable zone, and once your income crosses certain thresholds it lifts your Medicare Part B and D premiums through IRMAA. The marginal cost of one extra dollar of RMD income can be far higher than the bracket alone suggests. This is the same web of thresholds covered in [taxes, ACA, and healthcare in early retirement](/blog/taxes-aca-healthcare-early-retirement.html), now working against you in later life. The solution is to voluntarily move money out of the pre-tax account before your RMD age, paying tax today at a known rate, typically 12% or 22%, so it never appears as a forced RMD later. For the case behind that decision, rather than the tool that plans it, see [Roth conversions before RMDs](/blog/roth-conversions-before-rmds.html).
 
 ## Roth Conversion Software: Why This Optimizer Works Backwards
 
@@ -64,9 +64,9 @@ Before entering anything personal, refresh the tax figures. A button at the top 
 
 ## Step 2: Enter Your Portfolio and See the Problem
 
-Next you enter your situation: your age and filing status, your traditional IRA and 401(k) balance and growth rate, any Roth balance, your Social Security amount and claiming age, your spending, and your inflation assumption. As soon as you enter an age, two chips appear: your **conversion window** (how many years until RMDs start at 73) and your **projected IRA balance at 73 if you do nothing**, the number you are trying to reduce.
+Next you enter your situation: your age and filing status, your traditional IRA and 401(k) balance and growth rate, any Roth balance, your Social Security amount and claiming age, your spending, and your inflation assumption. As soon as you enter an age, two chips appear: your **conversion window** (how many years until your RMDs start, at 73 or at 75 if you were born in 1960 or later) and your **projected IRA balance at that age if you do nothing**, the number you are trying to reduce.
 
-The tool then shows the problem in full: a bar chart of your projected RMD for each year from 73 onward, escalating over time, and a "tax torpedo" chart showing how your effective marginal rate steps up as Social Security taxation kicks in. This is the reality that gets locked in at 73 if you take no action today.
+The tool then shows the problem in full: a bar chart of your projected RMD for each year from your RMD age onward, escalating over time, and a "tax torpedo" chart showing how your effective marginal rate steps up as Social Security taxation kicks in. This is the reality that gets locked in at your RMD age if you take no action today.
 
 ## Step 3: See Your Conversion Opportunity Window
 
@@ -84,9 +84,9 @@ The plan itself is built in step five, where you choose a strategy, no conversio
 
 ## Step 6: Compare All Six Strategies
 
-Step six is the comparison view. Six buttons, one per strategy, each summarized by metric cards: total conversions over the window, estimated **lifetime tax savings versus doing nothing**, the projected RMD reduction at 73, the Roth balance at 73, and the estate-value gain for heirs, which reflects the tax-free advantage of a Roth under the ten-year inherited-IRA rules.
+Step six is the comparison view. Six buttons, one per strategy, each summarized by metric cards: total conversions over the window, estimated **lifetime tax savings versus doing nothing**, the projected RMD reduction, the Roth balance at your RMD age, and the estate-value gain for heirs, which reflects the tax-free advantage of a Roth under the ten-year inherited-IRA rules.
 
-Each strategy also shows a trajectory chart of your IRA balance and Roth balance over time. With an optimal-mix strategy you can watch the IRA decline steadily through the conversion years while the Roth grows, leaving a much healthier shape by 73 than the do-nothing baseline where the IRA dominates. Comparing options one at a time is the same principle as [saving and comparing scenarios](/blog/save-load-compare-retirement-scenarios.html) in the main planner.
+Each strategy also shows a trajectory chart of your IRA balance and Roth balance over time. With an optimal-mix strategy you can watch the IRA decline steadily through the conversion years while the Roth grows, leaving a much healthier shape by your RMD age than the do-nothing baseline where the IRA dominates. Comparing options one at a time is the same principle as [saving and comparing scenarios](/blog/save-load-compare-retirement-scenarios.html) in the main planner.
 
 ## Step 7: Confidence Checks and a Printable Calendar
 
@@ -120,7 +120,7 @@ The optimizer is a paid companion tool. Two things near it are free: the [retire
 
 ### What problem does a Roth conversion actually solve?
 
-It reduces the forced taxable income you face from required minimum distributions starting at 73. By moving money from a pre-tax IRA into a Roth in earlier years, at a known lower tax rate, you shrink the future RMD, which in turn can lower your later tax bracket, reduce how much of your Social Security is taxed, and help you avoid Medicare IRMAA surcharges.
+It reduces the forced taxable income you face from required minimum distributions starting at 73 (75 if you were born in 1960 or later). By moving money from a pre-tax IRA into a Roth in earlier years, at a known lower tax rate, you shrink the future RMD, which in turn can lower your later tax bracket, reduce how much of your Social Security is taxed, and help you avoid Medicare IRMAA surcharges.
 
 ### How is this different from a normal Roth conversion calculator?
 
@@ -161,7 +161,7 @@ No. They create a tax bill today and are not easily reversed, and whether they h
 
 ## Facebook Post Snippets
 
-**Snippet 1:** Money in a traditional IRA is growing tax-deferred, which is great until 73, when required distributions force it out whether you need it or not. Stacked on Social Security, they can raise your taxes and Medicare premiums. That pile-up is the tax torpedo, and converting earlier is how you defuse it.
+**Snippet 1:** Money in a traditional IRA is growing tax-deferred, which is great until 73 (75 if you were born in 1960 or later), when required distributions force it out whether you need it or not. Stacked on Social Security, they can raise your taxes and Medicare premiums. That pile-up is the tax torpedo, and converting earlier is how you defuse it.
 
 **Snippet 2:** Most Roth conversion calculators ask what you want to convert and report the tax. This one works backwards: it maps your whole conversion window, shows the bracket space each year, marks the ACA and IRMAA cliffs, and calculates the optimal amount for every year automatically.
 
@@ -169,7 +169,7 @@ No. They create a tax bill today and are not easily reversed, and whether they h
 
 ## Newsletter Summary
 
-Money in a traditional IRA grows tax-deferred until 73, when required minimum distributions force it out and, stacked on Social Security, can raise your tax bracket, tax more of your benefits, and trigger Medicare IRMAA surcharges, the tax torpedo. This guide walks through the Multi-Year Roth Conversion Optimizer, a companion tool that solves the hardest part: how much to convert each year. Instead of asking for an amount and reporting the tax, it maps your entire conversion window year by year, shows the bracket space available in each, marks the ACA and IRMAA cliffs, and calculates an optimal conversion for every year across six strategies you can compare side by side. It covers each step, from refreshing tax rates and entering your portfolio, through the opportunity window and guardrails, to building and comparing strategies, running six confidence checks, and producing a printable year-by-year calendar. Finally it exports the plan straight into the main retirement planner, with a note on the brokerage-withdrawal limitation to watch for.
+Money in a traditional IRA grows tax-deferred until 73 (75 if you were born in 1960 or later), when required minimum distributions force it out and, stacked on Social Security, can raise your tax bracket, tax more of your benefits, and trigger Medicare IRMAA surcharges, the tax torpedo. This guide walks through the Multi-Year Roth Conversion Optimizer, a companion tool that solves the hardest part: how much to convert each year. Instead of asking for an amount and reporting the tax, it maps your entire conversion window year by year, shows the bracket space available in each, marks the ACA and IRMAA cliffs, and calculates an optimal conversion for every year across six strategies you can compare side by side. It covers each step, from refreshing tax rates and entering your portfolio, through the opportunity window and guardrails, to building and comparing strategies, running six confidence checks, and producing a printable year-by-year calendar. Finally it exports the plan straight into the main retirement planner, with a note on the brokerage-withdrawal limitation to watch for.
 
 ## Educational Disclaimer
 
