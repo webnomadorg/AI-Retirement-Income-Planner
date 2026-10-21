@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medicare IRMAA: The Retirement Income Surcharge Many People Miss</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Medicare IRMAA can raise Part B and Part D costs when retirement income is higher. Learn what income events to model before Medicare and during retirement.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/medicare-irmaa-retirement-income-planning.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Medicare IRMAA: The Retirement Income Surcharge Many People Miss">
+<meta property="og:description" content="Medicare IRMAA can raise Part B and Part D costs when retirement income is higher. Learn what income events to model before Medicare and during retirement.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/medicare-irmaa-retirement-income-planning-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/medicare-irmaa-retirement-income-planning.html">
+<meta property="article:published_time" content="2026-10-15">
+<meta property="article:modified_time" content="2026-10-15">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Medicare IRMAA: The Retirement Income Surcharge Many People Miss", "description": "Medicare IRMAA can raise Part B and Part D costs when retirement income is higher. Learn what income events to model before Medicare and during retirement.", "datePublished": "2026-10-15", "dateModified": "2026-10-15", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/medicare-irmaa-retirement-income-planning.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/medicare-irmaa-retirement-income-planning-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Healthcare", "item": "https://airetirementincomeplanner.com/blog.html#cat=healthcare"}, {"@type": "ListItem", "position": 4, "name": "Medicare IRMAA: The Retirement Income Surcharge Many People Miss", "item": "https://airetirementincomeplanner.com/blog/medicare-irmaa-retirement-income-planning.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "IRMAA stands for Income-Related Monthly Adjustment Amount. It is an additional amount some Medicare beneficiaries pay for Part B and Part D when income is higher."}}, {"@type": "Question", "name": "Which Medicare parts can have IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "Medicare.gov says Part B premiums can be higher depending on income, and Part D premiums may also be higher depending on income."}}, {"@type": "Question", "name": "Can a Roth conversion trigger IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "It can. A Roth conversion increases taxable income in the conversion year, and Medicare reads that year two years later when it sets your premiums."}}, {"@type": "Question", "name": "Can RMDs affect Medicare premiums?", "acceptedAnswer": {"@type": "Answer", "text": "They can. RMDs from pre-tax accounts generally increase taxable income, and higher income can affect Medicare Part B and Part D premium costs."}}, {"@type": "Question", "name": "Can I appeal IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "SSA says you can ask to lower the additional Medicare Part B and Part D amount if you had a life-changing event that reduced household income. SSA lists marriage, divorce, death of a spouse, loss of income, and employer settlement payment as examples, and Form SSA-44 adds stopping or cutting back work and losing pension income or income-producing property."}}, {"@type": "Question", "name": "Should I avoid all income that could cause IRMAA?", "acceptedAnswer": {"@type": "Answer", "text": "No. Avoiding income at all costs can be a poor planning goal. A higher-income year may still be worth it if it improves the overall plan. The right question is whether the tax, healthcare, cash-flow, and long-term effects are acceptable."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=healthcare">Healthcare</a>
+        </nav>
+        <header class="post-header">
+          <h1>Medicare IRMAA: The Retirement Income Surcharge Many People Miss</h1>
+          <p class="post-meta"><span class="cat-badge">Healthcare</span> · Published October 15, 2026 · 11 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#why-irmaa-surprises-retirees">Why IRMAA Surprises Retirees</a></li>
+      <li><a href="#what-income-events-can-matter">What Income Events Can Matter?</a></li>
+      <li><a href="#the-medicare-years-are-not-all-the-same">The Medicare Years Are Not All The Same</a></li>
+      <li><a href="#an-irmaa-example-one-conversion-two-years-later">An IRMAA Example: One Conversion, Two Years Later</a></li>
+      <li><a href="#irmaa-and-roth-conversions">IRMAA And Roth Conversions</a></li>
+      <li><a href="#irmaa-and-rmds">IRMAA And RMDs</a></li>
+      <li><a href="#can-you-appeal-irmaa">Can You Appeal IRMAA?</a></li>
+      <li><a href="#how-to-model-irmaa-risk-in-the-planner">How To Model IRMAA Risk In The Planner</a></li>
+      <li><a href="#income-choices-to-test">Income Choices To Test</a></li>
+      <li><a href="#an-irmaa-checklist-before-age-65">An IRMAA Checklist Before Age 65</a></li>
+      <li><a href="#a-planning-checklist-after-medicare-starts">A Planning Checklist After Medicare Starts</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>IRMAA stands for Income-Related Monthly Adjustment Amount. It is an extra amount some Medicare beneficiaries pay for Medicare Part B and Part D when their income is above certain levels.</p>
+<p>Medicare.gov says the standard Part B premium in 2026 is $202.90 per month, or higher depending on income. Medicare.gov also says Part D premiums vary by plan and may be higher depending on income. The income figure that decides which of those you pay is MAGI, and <a href="/blog/what-is-magi.html">it is not one number</a>: the version Medicare uses differs from the one the ACA marketplace uses.</p>
+<p>Medicare sets IRMAA from your tax return two years earlier, so 2026 premiums are based on 2024 income.</p>
+<p>That means retirement income planning can affect healthcare costs after age 65, and the income you have in the two years before 65 already counts. A Roth conversion, large IRA withdrawal, capital gain, pension start date, or required minimum distribution may raise income enough to increase Medicare premiums.</p>
+<p>The point is not to fear income. The point is to model it.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/medicare-irmaa-retirement-income-planning-1.webp" alt="Flow diagram: five income sources, IRA withdrawals, Roth conversions, capital gains, pensions and RMDs, each with an arrow into a central circle labeled Income / MAGI Planning, which leads to two boxes, the Medicare Part B premium and the Medicare Part D premium." width="1400" height="1050" loading="lazy">
+</figure>
+
+<aside class="cta-box cta-soft">
+  <p>Medicare premiums are part of retirement income planning. The AI Retirement Income Planner estimates the IRMAA your income would trigger two years later and flags the phases where it lands, so you can compare income choices, Roth conversions and RMDs before a decision becomes part of your tax return.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="why-irmaa-surprises-retirees">Why IRMAA Surprises Retirees</h2>
+<p>Many retirees think of Medicare as a fixed monthly cost. It is not always fixed.</p>
+<p>The base Medicare costs are only part of the story. Medicare.gov lists standard Part B costs, deductibles, coinsurance, and Part D plan costs. It also notes that Part B and Part D premiums can be higher depending on income.</p>
+<p>That income link is what catches people off guard.</p>
+<p>A retiree might sell an investment property, convert part of a traditional IRA to Roth, take a large withdrawal for a home project, or begin RMDs. The event may be perfectly reasonable, but it can still change Medicare costs.</p>
+<p>The planning mistake is looking only at tax.</p>
+<h2 id="what-income-events-can-matter">What Income Events Can Matter?</h2>
+<p>IRMAA planning starts with a simple question:</p>
+<p>Which decisions could raise income in a Medicare year?</p>
+<p>Common examples include:</p>
+<ul>
+<li>Roth conversions</li>
+<li>Traditional IRA withdrawals</li>
+<li>401k withdrawals</li>
+<li>Required minimum distributions</li>
+<li>Capital gains from selling investments</li>
+<li>Sale of a second home or investment property</li>
+<li>Pension income</li>
+<li>Part-time work</li>
+<li>Business sale income</li>
+<li>Large taxable interest or dividend income</li>
+<li><a href="/blog/municipal-bonds-social-security-tax-trap.html">Tax-exempt interest</a>, such as municipal bond interest, which Medicare adds back when it measures income</li>
+</ul>
+<p>Some of these income events are voluntary. Others are built into the plan. RMDs are a good example. The IRS says many traditional retirement accounts generally require minimum distributions starting at age 73. Under the SECURE 2.0 Act that age becomes 75 for anyone born in 1960 or later.</p>
+<p>That means Medicare cost planning should begin before age 65, because Medicare reads income from two years back, and continue well before RMDs start.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the Tax & ACA tab's "Where your plan sits on the cliffs" card with the IRMAA surcharge ladder, or the Healthcare costs card on Edit values with the IRMAA brackets, using the sample plan. Purpose: show that Medicare premiums are connected to retirement income choices. Suggested alt text: "AI Retirement Income Planner IRMAA surcharge ladder, marking where a sample plan's income sits against the Medicare brackets." -->
+
+<h2 id="the-medicare-years-are-not-all-the-same">The Medicare Years Are Not All The Same</h2>
+<p>Medicare planning often happens in phases.</p>
+<h3 id="age-62-to-64">Age 62 To 64</h3>
+<p>These may be <a href="/blog/can-i-retire-at-62-before-medicare.html">pre-Medicare years</a> for early retirees. Healthcare planning may involve Marketplace coverage, COBRA, employer retiree coverage, spouse coverage, or private insurance.</p>
+<p>HealthCare.gov says retirees may qualify for Marketplace savings based on income and household size. That makes income planning important before Medicare too. It counts again later: Medicare reads income from two years back, so the year you turn 63 sets the premiums for the year you turn 65.</p>
+<h3 id="age-65-until-rmds-start">Age 65 Until RMDs Start</h3>
+<p>Medicare usually begins at 65. This is also a window when some retirees have Medicare coverage but have not started RMDs yet.</p>
+<p>This period can include:</p>
+<ul>
+<li>Social Security decisions</li>
+<li>Roth conversions</li>
+<li>Portfolio withdrawals</li>
+<li>Pension start dates</li>
+<li>Capital gains planning</li>
+<li>Medicare premium planning</li>
+</ul>
+<h3 id="once-rmds-start">Once RMDs Start</h3>
+<p>The IRS says RMDs generally begin at age 73 for many pre-tax retirement accounts, and SECURE 2.0 moves that to 75 for anyone born in 1960 or later. RMDs can add taxable income each year, which is covered in <a href="/blog/how-rmds-change-retirement-tax-bill.html">how RMDs change your retirement tax bill</a>.</p>
+<p>That income can affect the overall tax plan and may also affect Medicare premiums.</p>
+<p>This is why a retirement income plan should not stop at the first year of retirement.</p>
+<h2 id="an-irmaa-example-one-conversion-two-years-later">An IRMAA Example: One Conversion, Two Years Later</h2>
+<p>Suppose a retired couple reaches Medicare age with these income sources:</p>
+<ul>
+<li>Social Security</li>
+<li>A pension</li>
+<li>Taxable investment income</li>
+<li>A traditional IRA</li>
+<li>A Roth IRA</li>
+</ul>
+<p>Their base plan looks comfortable. Then they decide to convert part of the traditional IRA to Roth in one year.</p>
+<p>The conversion may help reduce future RMDs. It may also raise current taxable income. That can affect federal tax, state tax, and Medicare premium planning. If they convert in the year they turn 66, Medicare reads that income two years later, so any IRMAA it causes shows up in their premiums for the year they turn 68.</p>
+<p>The same is true if they sell appreciated investments or take a large IRA withdrawal.</p>
+<p>None of these moves are automatically wrong. The problem is making the move without checking the whole retirement income picture.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the What-if? tab's Roth conversion size-impact panel for a Medicare-age phase of the sample plan, with the chart's IRMAA starts marker and the IRMAA chip visible. Purpose: show how the planner marks the conversion size at which IRMAA begins. Suggested alt text: "AI Retirement Income Planner Roth conversion chart marking where IRMAA starts for a sample plan." -->
+
+<h2 id="irmaa-and-roth-conversions">IRMAA And Roth Conversions</h2>
+<p>Roth conversions are one of the most common IRMAA planning topics.</p>
+<p>A Roth conversion can be useful because it moves money from a pre-tax retirement account into a Roth account. That may reduce future RMD pressure and create more tax diversification.</p>
+<p>The tradeoff is that the conversion may increase income in the year it happens.</p>
+<p>For some retirees, that is still a good trade. For others, the added tax and Medicare cost may make the conversion less attractive.</p>
+<p>A good model compares:</p>
+<ul>
+<li>No conversion</li>
+<li>Small conversion</li>
+<li>Moderate conversion</li>
+<li>Larger conversion</li>
+</ul>
+<p>Then it checks:</p>
+<ul>
+<li>Current tax</li>
+<li>Future RMDs</li>
+<li>Medicare premium exposure</li>
+<li>Survivor income</li>
+<li>Ending balances</li>
+<li>Confidence score</li>
+</ul>
+<h2 id="irmaa-and-rmds">IRMAA And RMDs</h2>
+<p>RMDs can also create Medicare cost pressure because they may raise income every year once they start, at 73 or 75.</p>
+<p>The IRS says traditional IRA and many employer plan account owners are responsible for taking the correct RMD amount on time. It also says RMD withdrawals are taxed at the account owner's income tax rate except for amounts that are already-taxed basis or tax-free qualified Roth distributions.</p>
+<p>If a retiree has large pre-tax balances, RMDs may become a major annual income source.</p>
+<p>That is why the best IRMAA planning may happen years before the first RMD.</p>
+<h2 id="can-you-appeal-irmaa">Can You Appeal IRMAA?</h2>
+<p>Sometimes.</p>
+<p>The Social Security Administration says that if you had a life-changing event that reduced household income, you can ask to lower the additional amount you pay for Medicare Part B and Part D.</p>
+<p>SSA lists examples including:</p>
+<ul>
+<li>Marriage</li>
+<li>Divorce</li>
+<li>Death of a spouse</li>
+<li>Loss of income</li>
+<li>Employer settlement payment</li>
+</ul>
+<p>SSA also provides Form SSA-44 for these requests. The form breaks loss of income down further: stopping work, cutting back work, and losing pension income or income-producing property. Retiring counts as stopping work, which matters when your first Medicare premiums are set from a year when you still had a salary.</p>
+<p>This process matters, but it should not be treated as the main plan. It is better to model income before the Medicare premium year when you can.</p>
+<!-- IMAGE PLACEHOLDER: Generated image: A simple decision flow showing "Higher Medicare premium notice" leading to "Did income fall because of a life-changing event?" then "Review SSA-44" or "Plan future income years." Prompt for ChatGPT Images 2: "Create a simple professional decision flow chart for Medicare IRMAA planning. Use boxes labeled Higher Medicare premium notice, Life-changing event, Review SSA-44, and Plan future income years. White background, muted colors, no logos, no people, no small text." Suggested alt text: "Decision flow for reviewing a Medicare IRMAA notice and life-changing event request." -->
+
+<h2 id="how-to-model-irmaa-risk-in-the-planner">How To Model IRMAA Risk In The Planner</h2>
+<p>Use the AI Retirement Income Planner to compare income choices before they happen. The lever most likely to move this number is a conversion, which <a href="/blog/roth-conversions-before-rmds.html">Roth conversions before RMDs</a> works through year by year.</p>
+<p>A practical workflow:</p>
+<ol>
+<li>Enter current ages, retirement age, Social Security timing, pensions, account balances, and spending goals.</li>
+<li>In Edit values, check the Healthcare costs card: the Medicare Part B and Part D estimates, the IRMAA brackets, and your income in the two years before you retire, which sets your first Medicare premiums.</li>
+<li>Read each phase card after 65. If the income Medicare reads from two years earlier is over an IRMAA threshold, or close to one, the card says so, and when the surcharge is charged it shows the monthly amount added to healthcare.</li>
+<li>Open Plan Health and look at the IRMAA Not Triggered and RMD Compliance checks.</li>
+<li>On the Tax &amp; ACA tab, the IRMAA surcharge ladder marks where your plan's income sits against the brackets.</li>
+<li>Use What-if? to test the size of a Roth conversion. Its chart shows the tax each size adds and marks the amount at which IRMAA starts.</li>
+<li>Add a large one-off withdrawal on the Lump sums tab, paid from the account it would really come from. Money from the 401k or IRA, or the gain on investments sold, counts as income that year, and if it pushes the year over the IRMAA line, the phase card flags it.</li>
+<li>Check the Balance tab for account balances before and after RMDs start.</li>
+<li>Keep different versions in Saved plans and use Compare to see them side by side.</li>
+<li>Review the Confidence tab after each change.</li>
+<li>If you are married, run the survivor scenario on What-if?. It taxes the surviving spouse as <a href="/blog/survivor-benefits-widows-tax-cliff.html">a single filer</a>, and the single IRMAA thresholds start at half the joint ones ($109,000 against $218,000 in 2026).</li>
+</ol>
+<p>The goal is not to chase a single perfect number. The goal is to understand tradeoffs before a tax year is over.</p>
+<h2 id="income-choices-to-test">Income Choices To Test</h2>
+<p>Here are useful comparisons to run:</p>
+<h3 id="roth-conversion-timing">Roth Conversion Timing</h3>
+<p>Compare conversions before Medicare, during early Medicare years, and after RMDs begin.</p>
+<h3 id="withdrawal-order">Withdrawal Order</h3>
+<p>Compare spending taxable cash first, using IRA withdrawals earlier, preserving Roth assets, or blending withdrawals from several accounts.</p>
+<h3 id="social-security-timing">Social Security Timing</h3>
+<p><a href="/blog/claim-social-security-at-62-or-wait.html">Social Security timing</a> changes income patterns. Delaying benefits can create lower-income years earlier, but it may increase guaranteed income later.</p>
+<h3 id="capital-gains-timing">Capital Gains Timing</h3>
+<p>A large capital gain may affect the Medicare income picture. Compare spreading gains across years against taking one large gain in a single year.</p>
+<h3 id="rmd-preparation">RMD Preparation</h3>
+<p>If projected RMDs look large, compare Roth conversions or earlier planned withdrawals before RMDs start.</p>
+<h2 id="an-irmaa-checklist-before-age-65">An IRMAA Checklist Before Age 65</h2>
+<p>Before Medicare starts, ask:</p>
+<ul>
+<li>What income year will Medicare use for premium calculations?</li>
+<li>Will I have unusually high income in the years before Medicare?</li>
+<li>Am I planning a Roth conversion?</li>
+<li>Am I selling a business, property, or large taxable investment?</li>
+<li>Will I still have earned income?</li>
+<li>Will my spouse still be working?</li>
+<li>Could a lower-income retirement year create planning room?</li>
+<li>Do I understand how future RMDs may change the plan?</li>
+</ul>
+<h2 id="a-planning-checklist-after-medicare-starts">A Planning Checklist After Medicare Starts</h2>
+<p>After Medicare starts, ask:</p>
+<ul>
+<li>Will this year's income be much higher than usual?</li>
+<li>Is the income increase temporary or permanent?</li>
+<li>Would spreading income across years help?</li>
+<li>Are Roth conversions still worth the current tax and Medicare cost?</li>
+<li>Are RMDs likely to increase future income?</li>
+<li>Would survivor filing status change the Medicare and tax picture?</li>
+<li>Did a life-changing event reduce income enough to review SSA-44?</li>
+</ul>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo, go to What-if?, and choose Phase 3, the sample plan's first Medicare years, in the Roth conversion section. The chart shows the tax each conversion size adds and marks the size at which IRMAA starts, well above the $20,000 conversion the demo shows.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-is-irmaa">What is IRMAA?</h3>
+<p>IRMAA stands for Income-Related Monthly Adjustment Amount. It is an additional amount some Medicare beneficiaries pay for Part B and Part D when income is higher.</p>
+<h3 id="which-medicare-parts-can-have-irmaa">Which Medicare parts can have IRMAA?</h3>
+<p>Medicare.gov says Part B premiums can be higher depending on income, and Part D premiums may also be higher depending on income.</p>
+<h3 id="can-a-roth-conversion-trigger-irmaa">Can a Roth conversion trigger IRMAA?</h3>
+<p>It can. A Roth conversion increases taxable income in the conversion year, and Medicare reads that year two years later when it sets your premiums.</p>
+<h3 id="can-rmds-affect-medicare-premiums">Can RMDs affect Medicare premiums?</h3>
+<p>They can. RMDs from pre-tax accounts generally increase taxable income, and higher income can affect Medicare Part B and Part D premium costs.</p>
+<h3 id="can-i-appeal-irmaa">Can I appeal IRMAA?</h3>
+<p>SSA says you can ask to lower the additional Medicare Part B and Part D amount if you had a life-changing event that reduced household income. SSA lists marriage, divorce, death of a spouse, loss of income, and employer settlement payment as examples, and Form SSA-44 adds stopping or cutting back work and losing pension income or income-producing property.</p>
+<h3 id="should-i-avoid-all-income-that-could-cause-irmaa">Should I avoid all income that could cause IRMAA?</h3>
+<p>No. Avoiding income at all costs can be a poor planning goal. A higher-income year may still be worth it if it improves the overall plan. The right question is whether the tax, healthcare, cash-flow, and long-term effects are acceptable.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Medicare.gov, Costs: https://www.medicare.gov/basics/costs/medicare-costs</li>
+<li>Social Security Administration, Request to Lower an Income-Related Monthly Adjustment Amount: https://www.ssa.gov/medicare/lower-irmaa</li>
+<li>Social Security Administration, Form SSA-44, Medicare Income-Related Monthly Adjustment Amount - Life-Changing Event: https://www.ssa.gov/forms/ssa-44.pdf</li>
+<li>IRS, Required Minimum Distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>HealthCare.gov, Health Care Coverage for Retirees: https://www.healthcare.gov/retirees/</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Tax rules, benefit rules, healthcare costs and thresholds change over time, and any projection depends on assumptions that may not hold. Screenshots show a sample plan with invented figures and are illustrative only. Verify important figures with official sources such as IRS.gov, SSA.gov, Medicare.gov and HealthCare.gov, and confirm decisions with a qualified professional before acting.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-medicare-irmaa-retirement-income-plannin">Leave this blank</label>
+      <input type="text" id="pc-honey-medicare-irmaa-retirement-income-plannin" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-medicare-irmaa-retirement-income-plannin">Email address</label>
+    <input type="email" id="pc-email-medicare-irmaa-retirement-income-plannin" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Before taking a large withdrawal, Roth conversion, or taxable gain in retirement, model the Medicare cost picture. The AI Retirement Income Planner gives you a private, browser-based way to compare versions of your plan before speaking with your tax or Medicare professional.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/aca-silver-plan-cost-sharing-reductions.html">Silver ACA Plan Before 65 and Cost-Sharing Reductions</a> <span class="post-meta">· Healthcare</span></li>
+      <li><a href="/blog/can-i-retire-at-62-before-medicare.html">Can I Retire at 62 Before Medicare? What to Model First</a> <span class="post-meta">· Healthcare</span></li>
+      <li><a href="/blog/health-insurance-before-medicare-retirement.html">Health Insurance Before Medicare for Early Retirees</a> <span class="post-meta">· Healthcare</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#us">Planner v7 US version</a></li>
+          <li><a href="/products.html#intl">Planner v7 International</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
