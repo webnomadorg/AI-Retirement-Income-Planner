@@ -67,7 +67,7 @@ One of the most useful ways to organize retirement income is to split it into tw
 - **Reliable income** is what you expect to receive regularly and for a long time: Social Security, pensions, annuities, other stable payments.
 - **Flexible income** comes from assets you control: cash, traditional accounts, Roth accounts, brokerage accounts.
 
-Reliable income forms an **income floor.** Flexible income fills the gap above it. Suppose your essential expenses are $3,500 a month. If Social Security and a pension cover $2,800, your portfolio only has to reliably produce the remaining $700 for essentials; anything more funds travel, hobbies, or gifts. That is a very different situation from someone whose reliable income is only $1,200, whose portfolio has to carry the bulk of the essentials. Neither plan is doomed, but the second one asks much more of the portfolio, and a good plan makes that responsibility visible.
+Reliable income forms an **income floor.** Flexible income [fills the gap above it](/blog/retirement-income-gap.html). Suppose your essential expenses are $3,500 a month. If Social Security and a pension cover $2,800, your portfolio only has to reliably produce the remaining $700 for essentials; anything more funds travel, hobbies, or gifts. That is a very different situation from someone whose reliable income is only $1,200, whose portfolio has to carry the bulk of the essentials. Neither plan is doomed, but the second one asks much more of the portfolio, and a good plan makes that responsibility visible.
 
 This is also why [when you claim Social Security](/blog/claim-social-security-at-62-or-wait.html) is really a question about how tall you want your income floor to be for the rest of your life.
 

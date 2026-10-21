@@ -115,7 +115,7 @@ You have several broad choices:
 
 SSA explains that there is no best age for everyone and that the monthly benefit amount can differ greatly based on when benefits start. If benefits begin before full retirement age, the benefit is smaller but paid for a longer period. If benefits start at full retirement age or later, the monthly benefit is larger but paid for a shorter period.
 
-For age-60 retirees, the tradeoff is clear. Delaying Social Security may strengthen later income, but the household must fund the gap from savings or other income.
+For age-60 retirees, the tradeoff is clear. Delaying Social Security may strengthen later income, but the household must [fund the gap from savings or other income](/blog/retirement-income-gap.html).
 
 The planner's Social Security Optimizer can help compare these claiming ages inside the full plan.
 

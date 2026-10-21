@@ -92,7 +92,7 @@ Two things make this more than a fixed template:
 
 ## Each Phase Has Its Own Job
 
-The reason phases are useful is that each one groups together a set of conditions, which gives it a job to do. In one phase the job is to bridge the gap until Social Security begins. In another it is to keep income low enough to manage ACA costs. In another it is to use low tax brackets before RMDs begin. In another it is to protect a reliable income floor while allowing more flexible spending from investments.
+The reason phases are useful is that each one groups together a set of conditions, which gives it a job to do. In one phase the job is to [bridge the gap until Social Security begins](/blog/retirement-income-gap.html). In another it is to keep income low enough to manage ACA costs. In another it is to use low tax brackets before RMDs begin. In another it is to protect a reliable income floor while allowing more flexible spending from investments.
 
 That changes how you evaluate the plan. Instead of asking whether the *entire* retirement is good or bad, you ask what each phase needs to accomplish:
 
