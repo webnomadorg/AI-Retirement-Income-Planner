@@ -111,7 +111,7 @@ Instead of asking how much room is left in a bracket, ask:
 
 ### 2. Will the conversion affect Medicare IRMAA?
 
-Medicare IRMAA is an income-related monthly adjustment amount for Medicare Part B and Part D. A higher-income year can affect later Medicare premiums.
+Medicare IRMAA is an income-related monthly adjustment amount for Medicare Part B and Part D. A higher-income year [can affect later Medicare premiums](/blog/medicare-irmaa-retirement-income-planning.html).
 
 The Social Security Administration says people who had a life-changing event that reduced household income can ask to lower IRMAA, with examples including marriage, divorce, death of a spouse, loss of income, and employer settlement payment. That relief process is useful to know, but it is not a planning substitute.
 

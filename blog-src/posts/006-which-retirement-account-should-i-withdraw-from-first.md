@@ -140,7 +140,7 @@ Withdrawal order and claiming age should be tested together. See [should you cla
 
 Medicare income-related premium adjustments can also affect withdrawal planning.
 
-A large IRA withdrawal, Roth conversion, capital gain, or RMD can raise income in a Medicare year. That may affect Part B or Part D premiums for higher-income retirees.
+A large IRA withdrawal, Roth conversion, capital gain, or RMD can raise income in a Medicare year. That may [affect Part B or Part D premiums](/blog/medicare-irmaa-retirement-income-planning.html) for higher-income retirees.
 
 This does not mean you should avoid every higher-income year. It means Medicare costs belong in the comparison. A [retirement calculator with taxes and healthcare](/blog/best-retirement-calculator-with-taxes-and-healthcare.html) keeps those costs in view.
 

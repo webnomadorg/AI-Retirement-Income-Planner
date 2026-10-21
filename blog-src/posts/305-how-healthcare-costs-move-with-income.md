@@ -91,7 +91,7 @@ There is no automatic answer. A retiree with a very large traditional IRA may de
 
 ## Medicare Changes the Question: IRMAA
 
-At 65, Medicare eligibility usually simplifies one thing and introduces another. The ACA marketplace may fall away, replaced by Part B premiums, Part D, supplemental cover or Medicare Advantage, and the possibility of IRMAA. IRMAA, the Income-Related Monthly Adjustment Amount, is an extra premium that higher-income beneficiaries pay on Part B and Part D.
+At 65, Medicare eligibility usually simplifies one thing and introduces another. The ACA marketplace may fall away, replaced by Part B premiums, Part D, supplemental cover or Medicare Advantage, and the possibility of IRMAA. IRMAA, the Income-Related Monthly Adjustment Amount, is [an extra premium that higher-income beneficiaries pay](/blog/medicare-irmaa-retirement-income-planning.html) on Part B and Part D.
 
 Its importance is that it turns an income decision into a healthcare-cost decision. A retiree weighing a large Roth conversion might find the tax acceptable, then discover the conversion lifts income enough to trigger IRMAA, so the true cost is tax *plus* higher Medicare premiums. Crossing an IRMAA threshold can still be worth it, because the conversion, sale, or withdrawal may bring benefits that justify the surcharge. The point is to know the surcharge is there before deciding, not after the premium notice arrives.
 

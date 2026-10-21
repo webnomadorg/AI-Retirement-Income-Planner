@@ -143,7 +143,7 @@ SSA says people who had a life-changing event that reduced household income can 
 
 For retirees who keep working part time, the planning point is different:
 
-Income can affect the Medicare cost picture. If part-time income is temporary, the retiree should understand how future income changes may affect IRMAA and whether a life-changing event request later becomes relevant.
+Income can affect the Medicare cost picture. If part-time income is temporary, the retiree should understand how future income changes [may affect IRMAA](/blog/medicare-irmaa-retirement-income-planning.html) and whether a life-changing event request later becomes relevant.
 
 The main lesson is simple:
 
