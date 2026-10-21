@@ -54,8 +54,11 @@ This folder is its own git repo, wired to **github.com/webnomadorg/AI-Retirement
 1. **Domain:** canonical + social tags across all seven `.html` files point to `https://airetirementincomeplanner.com`.
 2. **Prices / sales:** edit the `.price`, `.price-was`, `.price-save` spans in `index.html` and `products.html`, and the comparison table in `products.html`.
 3. **Stripe payment links** (created by `tools/stripe/create-catalog.mjs` in the desktop repo; canonical list in its `catalog-output.json`):
-   - Planner v7 $37.49: `https://buy.stripe.com/fZucN6f6u6LEef08V74Ja00`
-   - Bundle (v7 + Roth) $39.99: `https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01`
+   - Planner v7 International version $37.49 (sku `v7`): `https://buy.stripe.com/fZucN6f6u6LEef08V74Ja00`
+   - International version + Roth bundle $39.99 (sku `bundle`): `https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01`
+   - Planner v7 US version $22.99 (sku `v7us`): `https://buy.stripe.com/6oUfZi1fE8TMdaW2wJ4Ja0b`
+   - US version + Roth bundle $24.99 (sku `bundleus`): `https://buy.stripe.com/fZufZi1fEgme1se7R34Ja0c`
+   - The four Planner v7 buttons carry `data-promo`, so `products.html?promo=CODE` (the nurture emails) fills the code in at checkout — see the end of `assets/js/sale.js`.
    - Roth Optimizer $5.99: `https://buy.stripe.com/14AbJ25vU7PI9YKgnz4Ja02`
    - v1 $4.99 / v2 $9.99 / v3 $12.99 / v4 $16.99 / v5 $19.99: `.../6oU8wQbUi2vo6My1sF4Ja03`, `.../00weVecYmee6b2Ob3f4Ja04`, `.../5kQcN69Mab1Ufj4gnz4Ja05`, `.../4gM6oIaQe8TM8UG0oB4Ja06`, `.../8x200kf6ugme7QCc7j4Ja07`
    After payment, Stripe redirects to `thanks.html?session_id=…`, which lists downloads served by `api/download.mjs` (verifies the Checkout Session, then streams the ZIP from the **private** Vercel Blob store — product files are never in this repo, which is public).

@@ -254,3 +254,32 @@
     })
     .catch(function () { /* no banner is the correct answer when the feed cannot be reached */ });
 })();
+
+/* ?promo=CODE — a personal discount code carried in from an email.
+
+   The nurture emails (tools/admin/nurture-offer.mjs, desktop repo) link to
+   products.html?promo=SAVE20-XXXXXXX: Planner v7 comes in two versions, so there is no single
+   checkout to send the reader to. This fills that code into the Stripe checkout behind every
+   button marked data-promo — the four Planner v7 buttons, which are exactly the products such a
+   code works on. Buttons for products the code does NOT cover are left alone, because a code
+   prefilled where it cannot apply greets the buyer with an error at checkout.
+
+   ⚠ The value comes from a URL, so anyone can put anything there. It is accepted only if it has
+   the shape of a promotion code (3–30 characters, A–Z, 0–9 and dashes — the same rule the owner
+   console enforces) and it is only ever set as a query parameter on the Stripe link, never
+   written into the page. Its own IIFE: it must run on pages with no sale bar, where the one
+   above returns early. Nothing is stored. */
+(function () {
+  "use strict";
+  var m = /[?&]promo=([A-Za-z0-9][A-Za-z0-9-]{2,29})(?=&|#|$)/.exec(location.search);
+  if (!m) return;
+  var code = m[1].toUpperCase();
+  var links = document.querySelectorAll('a[data-promo][href^="https://buy.stripe.com/"]');
+  for (var i = 0; i < links.length; i++) {
+    try {
+      var u = new URL(links[i].href);
+      u.searchParams.set("prefilled_promo_code", code);
+      links[i].href = u.toString();
+    } catch (e) { /* an unparseable link stays as it was */ }
+  }
+})();

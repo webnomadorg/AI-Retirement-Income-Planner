@@ -143,6 +143,7 @@
           <tbody>
             <tr><th scope="row">Product name</th><td data-label="">AI Retirement Income Planner</td></tr>
             <tr><th scope="row">Type</th><td data-label="">Retirement income planning software. A single self-contained HTML file that runs in a web browser.</td></tr>
+            <tr><th scope="row">Versions</th><td data-label="">Two versions of version 7, sold separately. The <strong>US version</strong> is for people who live in the United States and works in US dollars only. The <strong>International version</strong> is the same planner plus seven currencies, UK, Canadian and Australian tax and pensions, and retiring-abroad scenarios.</td></tr>
             <tr><th scope="row">Developer</th><td data-label="">Paul Hankin, trading as WebNomad Studio</td></tr>
             <tr><th scope="row">Website</th><td data-label="">airetirementincomeplanner.com</td></tr>
             <tr><th scope="row">Purchase model</th><td data-label="">One-time purchase. No subscription, no account, no recurring fee. Current prices are on the <a href="/products.html">products page</a>.</td></tr>
@@ -154,7 +155,7 @@
       <h2 id="what-it-does">What it does</h2>
       <p>It projects retirement income month by month across five configurable phases, so the answer changes as your circumstances change rather than being one lifetime average.</p>
       <ul>
-        <li>Models withdrawals separately from each account type: traditional 401k or IRA, Roth, taxable equity, cash, and Australian superannuation.</li>
+        <li>Models withdrawals separately from each account type: traditional 401k or IRA, Roth, taxable equity, cash, and, in the International version, Australian superannuation.</li>
         <li>Calculates US federal income tax, including how much of your Social Security becomes taxable, and applies a state tax rate and pension exclusion where you set one.</li>
         <li>Estimates healthcare cost as a real line item: ACA premiums and cost-sharing reductions against federal poverty level thresholds before 65, then Medicare Part B and Part D with IRMAA surcharges and the two-year lookback afterwards.</li>
         <li>Estimates required minimum distributions and flags when a planned withdrawal falls below the required minimum.</li>
@@ -169,7 +170,7 @@
       <ul>
         <li><strong>An automatic Pre 59&frac12; phase</strong> appears when you retire before 59&frac12;, because withdrawing from a traditional 401k or IRA before that age carries an early-withdrawal penalty that the rest of the plan does not.</li>
         <li><strong>A phase splits in two when a benefit starts partway through it.</strong> If Social Security begins mid-phase, that phase becomes Phase 2 and Phase 2b (for example), and each half carries its own independently editable withdrawal amounts. The same happens in the Pre 59&frac12; phase when SSDI is active.</li>
-        <li><strong>Each phase holds its own figures</strong> — withdrawals per account (traditional 401k or IRA, Roth, taxable equity, cash, Australian superannuation), part-time income, one-off expenses, and Roth conversion settings.</li>
+        <li><strong>Each phase holds its own figures</strong> — withdrawals per account (traditional 401k or IRA, Roth, taxable equity, cash, and Australian superannuation in the International version), part-time income, one-off expenses, and Roth conversion settings.</li>
         <li><strong>Thresholds are inflation-adjusted per phase</strong>, so the app shows a figure alongside the estimated calendar year it applies to, rather than projecting today's statutory number forward silently.</li>
       </ul>
 
@@ -214,7 +215,7 @@
         <li><strong>It does not give financial advice.</strong> It is an educational modelling tool. It is not financial, tax, investment, legal, insurance, Social Security, Medicare, or estate advice, and it is not a substitute for a qualified professional.</li>
         <li><strong>It does not connect to your bank or brokerage.</strong> There is no account aggregation and no automatic balance syncing. You enter figures yourself.</li>
         <li><strong>It does not file anything, or move money.</strong> It is a projection tool only.</li>
-        <li><strong>It does not model full foreign tax regimes.</strong> Philippines and Thailand are supported as foreign-residence scenarios affecting US healthcare eligibility and currency, not as complete local tax systems. The United Kingdom, Canada and Australia have their own tax modelling.</li>
+        <li><strong>It does not model full foreign tax regimes.</strong> Philippines and Thailand are supported as foreign-residence scenarios affecting US healthcare eligibility and currency, not as complete local tax systems. The United Kingdom, Canada and Australia have their own tax modelling. All of this is in the International version; the US version models the United States only.</li>
         <li><strong>It does not model variable annuities.</strong> The annuity tool covers income annuities and excludes variable products.</li>
         <li><strong>It does not work with any arbitrary AI provider.</strong> It supports a defined list, and its content security policy restricts arbitrary custom endpoints.</li>
         <li><strong>It is not a guarantee.</strong> Every figure is a projection resting on assumptions that may not hold.</li>
@@ -236,12 +237,13 @@
       <p>When the plan sells from a taxable brokerage account only the gain is taxed, split out using the pre-plan taxable gain percentage you set, with the remaining cost basis reduced as you go. That realized gain is then added to taxable income at ordinary rates. Most long-term gains in reality qualify for the lower 0/15/20% rates, so this is a <em>cautious</em> simplification: the planner will generally show more capital-gains tax than you would actually pay, never less. The gap is widest where income is low enough that the real long-term rate would be 0% &mdash; common in early retirement, living off a brokerage account before Social Security starts. What is <em>not</em> simplified is the part that usually matters more: gains count in full toward MAGI, so they drive ACA subsidy eligibility, the Silver cost-sharing band, the subsidy cliff and the two-year IRMAA lookback exactly as they would in reality, and the 3.8% Net Investment Income Tax applies above its thresholds.</p>
 
       <h2 id="supported-currencies-and-residencies">Supported currencies and residencies</h2>
+      <p>Everything in this section is in the International version. The US version works in US dollars, for US residents, and has no currency or residence settings.</p>
       <p>Seven currencies: US dollar, pound sterling, Canadian dollar, Australian dollar, Philippine peso, Thai baht, and euro. Exchange rates can be fetched live or set manually.</p>
       <p>Residency-aware planning covers US residents, UK residents (including foreign tax credit handling under the US-UK treaty), Canadian and Australian residents with their own tax rules, and foreign-residence scenarios for other destinations. All monetary values are stored internally in US dollars and converted for display.</p>
 
       <h2 id="privacy-model">Privacy model</h2>
       <p>Your financial figures stay in your browser. The planner is a local HTML file, your plan is saved to your own device's local storage, and there is no account, no server-side profile, and no upload of your plan.</p>
-      <p>Three things do reach the internet, and only when you choose them: an optional AI assistant sends the plan summary you ask about to whichever AI provider you have configured with your own API key; live exchange-rate lookups; and an anonymous check for whether a newer version exists. None of these are required to use the planner.</p>
+      <p>Three things do reach the internet, and only when you choose them: an optional AI assistant sends the plan summary you ask about to whichever AI provider you have configured with your own API key; live exchange-rate lookups, in the International version only; and an anonymous check for whether a newer version exists. None of these are required to use the planner.</p>
 
       <h2 id="try-it-before-buying">Try it before buying</h2>
       <p>An <a href="/demo.html">interactive demo</a> runs a complete sample retirement plan in the browser with no purchase and no signup, so the claims on this page can be checked directly against the software.</p>
@@ -314,8 +316,8 @@
       <div class="footer-col">
         <h4>Buy</h4>
         <ul>
-          <li><a href="/products.html#v7">Planner v7</a></li>
-          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/products.html#us">Planner v7 US version</a></li>
+          <li><a href="/products.html#intl">Planner v7 International</a></li>
           <li><a href="/sessions.html">1-on-1 Sessions</a></li>
           <li><a href="/products.html">All versions</a></li>
         </ul>

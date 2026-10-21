@@ -50,7 +50,7 @@
   fbq('track', 'PageView');
 </script>
 <script src="/assets/js/consent.js" defer></script>
-<meta name="description" content="Buy the AI Retirement Income Planner v7, the v7 + Roth Optimizer bundle, the standalone Roth Conversion Optimizer, or earlier versions. One-time purchase, instant download. No subscription.">
+<meta name="description" content="Buy the AI Retirement Income Planner v7 in its US version or International version, on its own or bundled with the Roth Conversion Optimizer. Also the standalone optimizer and earlier versions. One-time purchase, instant download, no subscription.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://airetirementincomeplanner.com/products.html">
 <meta property="og:type" content="website">
@@ -151,21 +151,112 @@
     </div>
   </section>
 
-  <section class="section">
+  <!-- Which version. Planner v7 comes in two versions since 2026-10-21 (desktop repo,
+       Plans/US-Version.md): the US version is the same planner with the currency and residence
+       settings left out. This box is the one place that says who needs which, so the cards below
+       can stay short. The FAQ and the site assistant give the same rule; change all three together. -->
+  <section class="section-tight" id="which">
     <div class="container">
-      <div class="grid cols-3" data-stagger>
+      <div class="card ver-choose">
+        <h2 id="which-version-do-i-need">Which version do I need?</h2>
+        <div class="grid cols-2">
+          <div>
+            <h3 id="us-version">US version</h3>
+            <p>If you live in the United States and expect to stay. Everything is in US dollars: federal and state tax, Social Security, the ACA before 65, and Medicare and IRMAA after it.</p>
+          </div>
+          <div>
+            <h3 id="international-version">International version</h3>
+            <p>If you live outside the US or might retire abroad, if your income is in pounds, Canadian or Australian dollars, or if you will get a UK, Canadian or Australian pension, even while living in the US. It is the same planner plus seven currencies and the tax and pension rules of the UK, Canada and Australia.</p>
+          </div>
+        </div>
+        <p class="ver-choose-note">Bought the US version and later need the International one? Write to <a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org" data-s="Moving to the International version">dev at webnomad.org</a> and you pay only the difference.</p>
+      </div>
+    </div>
+  </section>
 
-        <article class="product-card reveal" id="v7">
-          <div class="product-figure"><img src="assets/img/cover-v7.png" alt="AI Retirement Income Planner v7 dashboard"></div>
+  <section class="section" id="us">
+    <div class="container">
+      <div class="center" style="max-width:56ch;margin-inline:auto;">
+        <span class="eyebrow" style="justify-content:center;">For US residents</span>
+        <h2 id="planner-v7-us-version">Planner v7 US version</h2>
+        <p class="lead">The complete planner for retiring in the United States, in US dollars.</p>
+      </div>
+      <div class="grid cols-2 mt-3" data-stagger style="max-width:52rem;margin-inline:auto;align-items:stretch;">
+
+        <article class="product-card reveal" id="v7us">
+          <div class="product-figure"><img src="assets/img/cover-v7-us.png" alt="AI Retirement Income Planner v7 US version dashboard"></div>
           <div class="product-body">
-            <h3 id="planner-v7">Planner v7</h3>
-            <p class="product-desc">The complete AI Retirement Income Planner.</p>
+            <h3 id="planner-v7-us-version-2">Planner v7 US version</h3>
+            <p class="product-desc">The complete AI Retirement Income Planner, for US residents.</p>
             <ul class="product-features">
               <li>Five‑phase month‑by‑month engine</li>
               <li>AI chat &amp; verifiable proposals</li>
-              <li>Tax, Social Security &amp; healthcare modeling</li>
+              <li>Federal &amp; state tax, Social Security, ACA &amp; Medicare</li>
               <li>Monte Carlo, stress test &amp; optimizers</li>
-              <li>Multi‑currency &amp; expat support</li>
+              <li>Everything in US dollars</li>
+            </ul>
+            <div class="price-row">
+              <span class="price" data-usd="22.99">$22.99</span>
+              <span class="price-was">$45.99</span>
+              <span class="price-break" aria-hidden="true"></span>
+              <span class="price-save">Save 50%</span>
+            </div>
+            <div class="product-actions">
+              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/6oUfZi1fE8TMdaW2wJ4Ja0b" data-promo>Buy now</a>
+            </div>
+            <p class="product-note">Instant download · In your browser</p>
+          </div>
+        </article>
+
+        <article class="product-card featured reveal" id="bundleus">
+          <div class="product-figure"><span class="product-tag best right">Best value</span><img src="assets/img/cover-bundle-us.png" alt="Planner v7 US version plus Roth Conversion Optimizer bundle"></div>
+          <div class="product-body">
+            <h3 id="us-version-roth-optimizer-bundle">US version + Roth Optimizer Bundle</h3>
+            <p class="product-desc">The US version <em>and</em> the companion Roth Conversion Optimizer.</p>
+            <ul class="product-features">
+              <li>Everything in Planner v7 US version</li>
+              <li><strong>Plus</strong> the Roth Conversion Optimizer</li>
+              <li>Minimize lifetime tax with IRMAA &amp; ACA guardrails</li>
+              <li>Export conversion plans into the planner</li>
+              <li>Just $2.00 more than the planner alone</li>
+            </ul>
+            <div class="price-row">
+              <span class="price" data-usd="24.99">$24.99</span>
+              <span class="price-was">$49.99</span>
+              <span class="price-break" aria-hidden="true"></span>
+              <span class="price-save">Save 50%</span>
+            </div>
+            <div class="product-actions">
+              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/fZufZi1fEgme1se7R34Ja0c" data-promo>Buy now</a>
+            </div>
+            <p class="product-note">Best overall value</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" id="intl">
+    <div class="container">
+      <div class="center" style="max-width:56ch;margin-inline:auto;">
+        <span class="eyebrow" style="justify-content:center;">For the UK, Canada, Australia &amp; abroad</span>
+        <h2 id="planner-v7-international-version">Planner v7 International version</h2>
+        <p class="lead">Everything in the US version, plus seven currencies and planning for retiring in the UK, Canada, Australia or abroad.</p>
+      </div>
+      <div class="grid cols-2 mt-3" data-stagger style="max-width:52rem;margin-inline:auto;align-items:stretch;">
+
+        <article class="product-card reveal" id="v7">
+          <div class="product-figure"><img src="assets/img/cover-v7.png" alt="AI Retirement Income Planner v7 International version dashboard"></div>
+          <div class="product-body">
+            <h3 id="planner-v7-international-version-2">Planner v7 International version</h3>
+            <p class="product-desc">The complete planner, for wherever you retire.</p>
+            <ul class="product-features">
+              <li>Everything in the US version</li>
+              <li>Seven currencies &amp; a live currency converter</li>
+              <li>UK, Canadian &amp; Australian tax and pensions</li>
+              <li>US/UK treaty &amp; the Foreign Tax Credit</li>
+              <li>Retiring abroad, with expat healthcare costs</li>
             </ul>
             <div class="price-row">
               <span class="price" data-usd="37.49">$37.49</span>
@@ -174,19 +265,19 @@
               <span class="price-save">Save 50%</span>
             </div>
             <div class="product-actions">
-              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/fZucN6f6u6LEef08V74Ja00">Buy now</a>
+              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/fZucN6f6u6LEef08V74Ja00" data-promo>Buy now</a>
             </div>
             <p class="product-note">Instant download · In your browser</p>
           </div>
         </article>
 
         <article class="product-card featured reveal" id="bundle">
-          <div class="product-figure"><span class="product-tag best">Best value</span><img src="assets/img/cover-bundle.png" alt="Planner v7 plus Roth Conversion Optimizer bundle"></div>
+          <div class="product-figure"><span class="product-tag best right">Best value</span><img src="assets/img/cover-bundle.png" alt="Planner v7 International version plus Roth Conversion Optimizer bundle"></div>
           <div class="product-body">
-            <h3 id="v7-roth-optimizer-bundle">v7 + Roth Optimizer Bundle</h3>
-            <p class="product-desc">The full planner <em>and</em> the companion Roth Conversion Optimizer.</p>
+            <h3 id="international-version-roth-optimizer-bundle">International version + Roth Optimizer Bundle</h3>
+            <p class="product-desc">The International version <em>and</em> the companion Roth Conversion Optimizer.</p>
             <ul class="product-features">
-              <li>Everything in Planner v7</li>
+              <li>Everything in Planner v7 International version</li>
               <li><strong>Plus</strong> the Roth Conversion Optimizer</li>
               <li>Minimize lifetime tax with IRMAA &amp; ACA guardrails</li>
               <li>Export conversion plans into the planner</li>
@@ -199,11 +290,24 @@
               <span class="price-save">Save 50%</span>
             </div>
             <div class="product-actions">
-              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01">Buy now</a>
+              <a class="btn btn-primary btn-block" href="https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01" data-promo>Buy now</a>
             </div>
             <p class="product-note">Most popular · Best overall value</p>
           </div>
         </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="center" style="max-width:56ch;margin-inline:auto;">
+        <span class="eyebrow" style="justify-content:center;">Already have a planner?</span>
+        <h2 id="the-roth-conversion-optimizer-on-its-own">The Roth Conversion Optimizer on its own</h2>
+        <p class="lead">It works with either version, and with the earlier planners too.</p>
+      </div>
+      <div class="grid mt-3" style="max-width:26rem;margin-inline:auto;">
 
         <article class="product-card reveal" id="roth">
           <div class="product-figure"><img src="assets/img/cover-roth.png" alt="Roth Conversion Optimizer"></div>
@@ -226,7 +330,7 @@
             <div class="product-actions">
               <a class="btn btn-primary btn-block" href="https://buy.stripe.com/14AbJ25vU7PI9YKgnz4Ja02">Buy now</a>
             </div>
-            <p class="product-note">Also included in the bundle above</p>
+            <p class="product-note">Also included in both bundles above</p>
           </div>
         </article>
 
@@ -340,24 +444,27 @@
             <thead>
               <tr style="background:var(--paper-2);text-align:left;">
                 <th style="padding:1rem 1.2rem;font-family:var(--font-display);font-weight:600;">Capability</th>
-                <th style="padding:1rem 1.2rem;text-align:center;">Planner v7</th>
-                <th style="padding:1rem 1.2rem;text-align:center;color:var(--teal-deep);">Bundle</th>
+                <th style="padding:1rem 1.2rem;text-align:center;">US version</th>
+                <th style="padding:1rem 1.2rem;text-align:center;color:var(--teal-deep);">International version</th>
                 <th style="padding:1rem 1.2rem;text-align:center;">Roth Optimizer</th>
               </tr>
             </thead>
             <tbody>
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Five‑phase income &amp; withdrawal engine</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">AI co‑pilot &amp; verifiable proposals</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
-              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Tax, Social Security &amp; healthcare modeling</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">US tax, Social Security, ACA &amp; Medicare</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
               <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Monte Carlo, stress test &amp; optimizers</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
-              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Built‑in calculators &amp; currency converter</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
-              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Dedicated Roth conversion optimizer</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td></tr>
-              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Lifetime tax minimization &amp; IRMAA guardrails</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Built‑in calculators</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Seven currencies &amp; a currency converter</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">UK, Canadian &amp; Australian tax and pensions</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Retiring abroad (expat residence &amp; healthcare)</td><td style="text-align:center;color:var(--ink-faint);">—</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
+              <tr style="border-top:1px solid var(--line);"><td style="padding:.85rem 1.2rem;">Dedicated Roth conversion optimizer</td><td style="text-align:center;font-size:.92rem;">In the bundle</td><td style="text-align:center;font-size:.92rem;">In the bundle</td><td style="text-align:center;color:var(--emerald);font-weight:700;">✓</td></tr>
               <!-- data-usd-plain: the figure follows a live sale, but without the struck price
-                   and code pill — three of each across one table row is noise, and the bar above
+                   and code pill — several of each across one table is noise, and the bar above
                    already carries the offer. The requirement here is only that the number agrees
                    with checkout. -->
-              <tr style="border-top:1px solid var(--line);background:var(--surface-soft);"><td style="padding:1rem 1.2rem;font-weight:650;">Price</td><td style="text-align:center;font-weight:650;" data-usd="37.49" data-usd-plain>$37.49</td><td style="text-align:center;font-weight:650;color:var(--teal-deep);" data-usd="39.99" data-usd-plain>$39.99</td><td style="text-align:center;font-weight:650;" data-usd="5.99" data-usd-plain>$5.99</td></tr>
+              <tr style="border-top:1px solid var(--line);background:var(--surface-soft);"><td style="padding:1rem 1.2rem;font-weight:650;">Price</td><td style="text-align:center;font-weight:650;" data-usd="22.99" data-usd-plain>$22.99</td><td style="text-align:center;font-weight:650;color:var(--teal-deep);" data-usd="37.49" data-usd-plain>$37.49</td><td style="text-align:center;font-weight:650;" data-usd="5.99" data-usd-plain>$5.99</td></tr>
+              <tr style="border-top:1px solid var(--line);background:var(--surface-soft);"><td style="padding:1rem 1.2rem;font-weight:650;">With the Roth Optimizer (bundle)</td><td style="text-align:center;font-weight:650;" data-usd="24.99" data-usd-plain>$24.99</td><td style="text-align:center;font-weight:650;color:var(--teal-deep);" data-usd="39.99" data-usd-plain>$39.99</td><td style="text-align:center;color:var(--ink-faint);">—</td></tr>
             </tbody>
           </table>
         </div>
@@ -387,7 +494,7 @@
       <span class="eyebrow" style="justify-content:center;">Ready when you are</span>
       <h2 id="start-planning-with-confidence-today">Start planning with confidence today.</h2>
       <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="https://buy.stripe.com/aFaaEY2jI1rk8UGc7j4Ja01">Get the bundle — <span data-usd="39.99" data-usd-plain>$39.99</span></a>
+        <a class="btn btn-primary btn-lg" href="#which">Choose your version</a>
         <a class="btn btn-outline btn-lg" href="features.html">See all features</a>
       </div>
       <p style="margin-top:1rem;font-size:.95rem;opacity:.7;">Not sure which is right for you? <a href="contact.html" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Contact us →</a></p>
@@ -442,8 +549,8 @@
       <div class="footer-col">
         <h4>Buy</h4>
         <ul>
-          <li><a href="/products.html#v7">Planner v7</a></li>
-          <li><a href="/products.html#bundle">v7 + Roth Bundle</a></li>
+          <li><a href="/products.html#us">Planner v7 US version</a></li>
+          <li><a href="/products.html#intl">Planner v7 International</a></li>
           <li><a href="/sessions.html">1-on-1 Sessions</a></li>
           <li><a href="/products.html">All versions</a></li>
         </ul>

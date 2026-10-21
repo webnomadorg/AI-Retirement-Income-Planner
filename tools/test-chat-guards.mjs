@@ -207,6 +207,21 @@ ok('the input cap is enforced in one place', ctx.MAX_QUESTION_CHARS === 1000);
   ok('while allowing a published offer to be relayed', /You MAY state a policy or an offer/.test(a));
   ok('the cached block says up to twelve checks', /up to twelve/.test(a));
   ok('the cached block holds no date', !/20\d\d-\d\d-\d\d/.test(a));
+  /* The two versions of Planner v7 (US version launch, 2026-10-21). The model cannot be run
+     offline, so these pin the RULES that decide its answers: a US version that "does pounds"
+     or a UK-pension holder sent to the US version is a sale the buyer then has to undo. */
+  ok('the cached block names both versions', /US version/.test(a) && /International version/.test(a));
+  ok('it forbids crediting the US version with another currency or country',
+    /Never say the US version handles another currency/.test(a));
+  ok('a UK, Canadian or Australian pension routes to International even inside the US',
+    /UK, Canadian or Australian pension \(even while living in the US\) needs the International version/.test(a));
+  ok('the routing rule uses both version buttons', /\[\[page:products-intl\]\]/.test(a) && /\[\[page:products-us\]\]/.test(a));
+  ok('choosing a version is answered, not refused as personal advice',
+    /Which version fits is a question about the product/.test(a));
+  ok('the summary marks currencies and residency as International only',
+    /Currencies \(International version only\)/.test(a) && /Residency-aware planning \(International version only\)/.test(a));
+  ok('the summary says exchange-rate lookups are International only',
+    /exchange-rate lookups \(International version only\)/.test(a));
 }
 {
   // Volatile content must never leak into the cached half — that silently kills caching.

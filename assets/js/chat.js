@@ -41,6 +41,10 @@
     "ebook":           { href: "/newsletter.html", label: "Get the free guide" },
     "contact":         { href: "/contact.html",    label: "Contact us" },
     "page:products":   { href: "/products.html",   label: "Products and pricing" },
+    /* The two versions of Planner v7 (US version launch, 2026-10-21). The prompt routes a
+       visitor to one of these by where they live and what they are paid in. */
+    "page:products-us":   { href: "/products.html#us",   label: "Planner v7 US version" },
+    "page:products-intl": { href: "/products.html#intl", label: "Planner v7 International version" },
     "page:features":   { href: "/features.html",   label: "Features" },
     "page:faq":        { href: "/faq.html",        label: "FAQ" },
     "page:how-it-works": { href: "/how-it-works.html", label: "How it works" },

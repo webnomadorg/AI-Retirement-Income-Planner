@@ -452,6 +452,9 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 .product-tag{ position:absolute; top:14px; left:14px; background:var(--ink); color:#fff;
   font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.4rem .7rem; border-radius:999px; }
 .product-tag.best{ background:var(--teal); }
+/* Top-right instead, for a cover that carries its own label top-left (the US version covers say
+   "US VERSION" there, and a tag on top of it hides the one word that tells the two apart). */
+.product-tag.right{ left:auto; right:14px; }
 /* Inline variant for cards with no product image (e.g. session tiers) */
 .product-tag.static{ position:static; top:auto; left:auto; display:inline-block; align-self:flex-start; margin:0 0 .7rem; }
 .product-body{ padding:clamp(1.3rem,2.4vw,1.7rem); display:flex; flex-direction:column; flex:1; }
@@ -552,6 +555,14 @@ html[data-theme="contrast"] .brand-tagline{ background:none; backdrop-filter:non
 }
 .product-actions{ display:flex; flex-direction:column; gap:.55rem; }
 .product-note{ font-size:.85rem; color:var(--ink-faint); margin:.6rem 0 0; text-align:center; }
+
+/* "Which version do I need?" on products.html (US version launch, 2026-10-21). Its spacing is its
+   own: inside a .card, `.card p{margin:0}` beats every .mt-* utility, so the note's gap is set
+   here at a specificity that wins rather than with a utility class that silently does nothing. */
+.ver-choose h2{ font-size:var(--fs-h3); margin:0 0 1rem; }
+.ver-choose .grid{ gap:1.1rem 2rem; }
+.ver-choose h3{ font-size:1.1rem; margin:0 0 .3rem; }
+.card .ver-choose-note{ margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--line); font-size:.95rem; }
 
 /* ---- 12. Stats / logos band --------------------------------------------- */
 .stat{ text-align:center; }
@@ -1627,6 +1638,9 @@ html.dark .form-success{ background:rgba(42,181,164,.08); border-color:var(--tea
 .cmp-table .cmp-feat small{ display:block; font-size:.78rem; color:var(--ink-faint); font-weight:400; margin-top:.05rem; line-height:1.4; }
 .cmp-table .cmp-grp td{ text-align:left; background:var(--paper-2); font-family:var(--font-display); font-weight:600; font-size:1.04rem; color:var(--ink); padding:.78rem .7rem .6rem; border-bottom:2px solid var(--line); }
 .cmp-table .cmp-since{ font-family:var(--font-sans); font-size:.64rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--teal); background:var(--sage); border-radius:999px; padding:.16rem .55rem; margin-left:.55rem; vertical-align:2px; }
+/* A feature row only the International version of Planner v7 has (features.html). Tokens only, so
+   every theme and dark mode pick it up without overrides. */
+.cmp-intl{ display:inline-block; font-family:var(--font-sans); font-size:.62rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); background:var(--paper-2); border:1px solid var(--line); border-radius:999px; padding:.1rem .5rem; margin-left:.45rem; vertical-align:2px; white-space:nowrap; }
 .cmp-yes{ color:var(--emerald); font-weight:700; font-size:1.05rem; }
 .cmp-no{ color:#c9bfa6; }
 .cmp-flagcol{ background:rgba(27,113,101,.06); }
