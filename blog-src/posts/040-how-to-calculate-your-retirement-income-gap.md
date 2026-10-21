@@ -2,13 +2,13 @@
 
 **SEO title:** How To Calculate Your Retirement Income Gap  
 **Meta description:** Learn how to calculate your retirement income gap, including spending, Social Security, pensions, healthcare, taxes, withdrawals, RMDs, and stress testing.  
-**Image 2 alt:** Illustration headed Bridge Your Retirement Gap with Smart Savings: a retired couple walks along a beach on one cliff edge, a bank building stands on the other, and three stacked buckets marked with a piggy bank, a rising chart and a shield sit in the gap below, with dashed arrows rising to the dashed outline of a bridge.
+**Image 3 alt:** Illustration of a retired couple walking along a beach on one cliff edge and a bank building on the other, with a shopping-bag icon on the near cliff, a shield on the far one, and three stacked buckets marked with a piggy bank, a rising chart and a shield in the gap below, dashed arrows rising from them to the dashed outline of a bridge.
 
 **Published:** 2026-10-17
 
 **Category:** Retirement Income
 
-**Lead image:** 2
+**Lead image:** 3
 
 **Primary keyword:** retirement income gap  
 **Secondary keywords:** calculate retirement income gap, retirement income shortfall, retirement income planner, retirement cash flow gap, how much income do I need in retirement  
@@ -56,7 +56,7 @@ How much money needs to come from savings each month?
 
 Investor.gov explains that many workers now rely on defined contribution plans, where employees bear investment risk and there is no guarantee the account balance will be adequate for retirement. That makes the income-gap calculation important. A large account balance can still feel fragile if the monthly gap is too large.
 
-[IMAGE 040-how-to-calculate-your-retirement-income-gap 2]
+[IMAGE 040-how-to-calculate-your-retirement-income-gap 3]
 
 ## Step 1: Calculate Monthly Spending
 
