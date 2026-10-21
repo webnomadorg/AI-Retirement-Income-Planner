@@ -203,6 +203,17 @@
         <ul class="upd-list">
 
           <li class="upd-item reveal">
+            <span class="upd-ver">v641</span>
+            <div class="upd-body">
+              <h4>A full check of the calculations and forms, and RMD ages in the Roth Conversion Optimizer <span class="upd-date">&middot; 20 October</span></h4>
+              <p><strong>Your Monte Carlo figures will move slightly with this update.</strong> Each plan&rsquo;s Monte Carlo run uses its own fixed set of random returns, so the same plan always gives the same answer. That set used to be chosen from the way the plan was saved, which meant typing a note in Plan notes changed the result. It is now chosen from what the plan works out to, so a note no longer moves it. Every plan gets a new set of random returns once; they are drawn the same way as before.</p>
+              <p>This release comes out of a full check of the planner against damaged files and awkward typing. A plan file with a damaged section now loads with that section reset and a note saying so; before, it could replace your plan and then stop the buttons working. A file that holds no plan is refused with a message instead of reporting success. A rate typed by mistake, such as a 20-digit return or a loss of more than 100%, is no longer used: the box goes back to the rate you had, so balances can no longer show $NaN or run off to infinity. The help calculators, the Annuities tab and the Replan hint now handle the same mistakes.</p>
+              <p>If you work in pounds or Canadian or Australian dollars, amounts no longer shift by a fraction each time you save. Each box is rounded for display, and reading it back used to convert the rounded figure, so a $512,345 401(k) could become $512,345.57 after an unrelated edit. A box you have not edited now keeps its exact amount. A US-dollar plan set to living abroad keeps that setting when you switch currency and back, and Undo after a Reset brings it back too. Under the hood no longer lists Medicare and ACA thresholds for a plan outside US healthcare.</p>
+              <p>The help now says RMDs start at 73, or 75 if you were born in 1960 or later, which is what the planner already used, and the Plan Health glossary lists all 14 checks. If you retire before 59&frac12; with your 401(k) left untouched, a 401(k) withdrawal saved in that early phase by an older plan file is now dropped when the plan opens; it used to be paid until your next edit. The Roth Conversion Optimizer, version 24, in the bundle and on its own, now uses the RMD age for your birth year: it used 73 for everyone, which closed the conversion window two years early for anyone born in 1960 or later. Your saved plans carry over automatically.</p>
+            </div>
+          </li>
+
+          <li class="upd-item reveal">
             <span class="upd-ver">v627</span>
             <div class="upd-body">
               <h4>Help for disability insurance from work <span class="upd-date">&middot; 14 October</span></h4>

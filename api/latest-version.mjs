@@ -30,7 +30,7 @@
 //   straight out of "marketplace assets/planner version 7 files/" and runs at the exact
 //   moment the ZIPs are refreshed — so the two cannot drift apart. Safe to hand-edit;
 //   keep the line shape (the script matches it by regex).
-const LATEST = { build: 627, released: '2026-10-14', headline: 'Help for entering disability insurance from work, and the Age Pension note on the Australian card' }; /* __LATEST__ */
+const LATEST = { build: 641, released: '2026-10-20', headline: 'Fixes from a full bug sweep: safer plan imports, exact amounts in local currencies and repeatable Monte Carlo results' }; /* __LATEST__ */
 
 const SITE = 'https://airetirementincomeplanner.com';
 
