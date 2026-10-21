@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How To Calculate Your Retirement Income Gap</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Learn how to calculate your retirement income gap, including spending, Social Security, pensions, healthcare, taxes, withdrawals, RMDs, and stress testing.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/retirement-income-gap.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="How To Calculate Your Retirement Income Gap">
+<meta property="og:description" content="Learn how to calculate your retirement income gap, including spending, Social Security, pensions, healthcare, taxes, withdrawals, RMDs, and stress testing.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/retirement-income-gap-2.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/retirement-income-gap.html">
+<meta property="article:published_time" content="2026-10-17">
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How To Calculate Your Retirement Income Gap", "description": "Learn how to calculate your retirement income gap, including spending, Social Security, pensions, healthcare, taxes, withdrawals, RMDs, and stress testing.", "datePublished": "2026-10-17", "dateModified": "2026-10-17", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/retirement-income-gap.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/retirement-income-gap-2.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Retirement Income", "item": "https://airetirementincomeplanner.com/blog.html#cat=retirement-income"}, {"@type": "ListItem", "position": 4, "name": "How To Calculate Your Retirement Income Gap", "item": "https://airetirementincomeplanner.com/blog/retirement-income-gap.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a retirement income gap?", "acceptedAnswer": {"@type": "Answer", "text": "A retirement income gap is the difference between retirement spending and reliable retirement income. Savings and investments usually need to fill that gap."}}, {"@type": "Question", "name": "How do I calculate my retirement income gap?", "acceptedAnswer": {"@type": "Answer", "text": "Add monthly spending, including irregular annual expenses converted to a monthly amount. Then subtract reliable income such as Social Security, pensions, annuities, rental income, or work income."}}, {"@type": "Question", "name": "Should taxes be included in the income gap?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. A $3,000 monthly spending gap may require more than $3,000 of withdrawals if the money comes from taxable retirement accounts."}}, {"@type": "Question", "name": "Does healthcare affect the income gap?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Healthcare before Medicare, Medicare premiums, out-of-pocket costs, prescriptions, dental, vision, and hearing costs can all affect the gap."}}, {"@type": "Question", "name": "Can Social Security eliminate the gap?", "acceptedAnswer": {"@type": "Answer", "text": "Sometimes. In other cases, Social Security covers only part of the spending need. Claiming age can change the gap, so compare several claiming ages."}}, {"@type": "Question", "name": "What if my income gap is too large?", "acceptedAnswer": {"@type": "Answer", "text": "Possible adjustments include working longer, working part-time, reducing spending, delaying Social Security, changing withdrawal order, downsizing, paying off debt, using annuities, or revising retirement timing."}}, {"@type": "Question", "name": "Should I use cash or IRA withdrawals to fill the gap?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on taxes, healthcare income thresholds, RMDs, Social Security taxation, Medicare IRMAA, Roth accounts, and cash reserve needs. Compare more than one withdrawal order."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=retirement-income">Retirement Income</a>
+        </nav>
+        <header class="post-header">
+          <h1>How To Calculate Your Retirement Income Gap</h1>
+          <p class="post-meta"><span class="cat-badge">Retirement Income</span> · Published October 17, 2026 · 15 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#quick-answer">Quick Answer</a></li>
+      <li><a href="#why-the-income-gap-matters">Why The Income Gap Matters</a></li>
+      <li><a href="#step-1-calculate-monthly-spending">Step 1: Calculate Monthly Spending</a></li>
+      <li><a href="#step-2-separate-essential-and-flexible-spending">Step 2: Separate Essential And Flexible Spending</a></li>
+      <li><a href="#step-3-add-reliable-income">Step 3: Add Reliable Income</a></li>
+      <li><a href="#step-4-calculate-the-monthly-gap">Step 4: Calculate The Monthly Gap</a></li>
+      <li><a href="#step-5-add-taxes">Step 5: Add Taxes</a></li>
+      <li><a href="#step-6-include-healthcare-timing">Step 6: Include Healthcare Timing</a></li>
+      <li><a href="#step-7-decide-which-accounts-fill-the-gap">Step 7: Decide Which Accounts Fill The Gap</a></li>
+      <li><a href="#step-8-watch-the-gap-before-social-security-starts">Step 8: Watch The Gap Before Social Security Starts</a></li>
+      <li><a href="#step-9-watch-the-gap-after-rmds-begin">Step 9: Watch The Gap After RMDs Begin</a></li>
+      <li><a href="#step-10-add-one-time-expenses">Step 10: Add One-Time Expenses</a></li>
+      <li><a href="#step-11-stress-test-the-gap">Step 11: Stress Test The Gap</a></li>
+      <li><a href="#example-a-retirement-income-gap-calculation">Example: A Retirement Income Gap Calculation</a></li>
+      <li><a href="#how-to-use-the-ai-retirement-income-planner">How To Use The AI Retirement Income Planner</a></li>
+      <li><a href="#retirement-income-gap-checklist">Retirement Income Gap Checklist</a></li>
+      <li><a href="#common-income-gap-mistakes">Common Income Gap Mistakes</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="quick-answer">Quick Answer</h2>
+<p>Your retirement income gap is the amount your savings and investments need to provide after reliable income is subtracted from spending.</p>
+<p>The basic formula is:</p>
+<p><code>Retirement income gap = monthly spending target - reliable monthly income</code></p>
+<p>Reliable monthly income may include Social Security, pensions, annuities, rental income, or part-time work. The gap is usually filled by cash, taxable investments, traditional IRAs, 401ks, Roth accounts, and other assets.</p>
+<p>The real calculation should also include taxes, healthcare, inflation, debt payments, one-time expenses, RMDs, and survivor planning.</p>
+<p>The AI Retirement Income Planner looks at the same gap from the other side. You set how much each account pays in each phase of retirement, and it shows what is left to spend after tax and healthcare, how much of that is guaranteed income, and whether each phase reaches the target you set. Then you can test how the choice of account affects taxes, healthcare costs, balances, confidence, and stress-test results.</p>
+<aside class="cta-box cta-soft">
+  <p>The gap is the number worth getting right before anything else. The AI Retirement Income Planner shows it phase by phase, after tax and healthcare, so a large gap before Social Security starts is not hidden inside a lifetime average.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="why-the-income-gap-matters">Why The Income Gap Matters</h2>
+<p>Many retirement questions are really income-gap questions.</p>
+<p>Examples:</p>
+<ul>
+<li>Can I retire at 60?</li>
+<li>Should I claim Social Security at 62?</li>
+<li>Can I delay Social Security until 70?</li>
+<li>Do I need part-time work?</li>
+<li>Which account should I withdraw from first?</li>
+<li>How much cash should I keep?</li>
+<li>Can I afford healthcare before Medicare?</li>
+<li>Will I run out of money?</li>
+</ul>
+<p>All of these depend on the same core issue:</p>
+<p>How much money needs to come from savings each month?</p>
+<p>Investor.gov explains that many workers now rely on defined contribution plans, where employees bear investment risk and there is no guarantee the account balance will be adequate for retirement. That makes the income-gap calculation important. A large account balance can still feel fragile if the monthly gap is too large.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/retirement-income-gap-2.webp" alt="Illustration headed Bridge Your Retirement Gap with Smart Savings: a retired couple walks along a beach on one cliff edge, a bank building stands on the other, and three stacked buckets marked with a piggy bank, a rising chart and a shield sit in the gap below, with dashed arrows rising to the dashed outline of a bridge." width="1400" height="1050" loading="lazy">
+</figure>
+
+<h2 id="step-1-calculate-monthly-spending">Step 1: Calculate Monthly Spending</h2>
+<p>Start with spending, not savings.</p>
+<p>List current monthly expenses:</p>
+<ul>
+<li>Housing</li>
+<li>Utilities</li>
+<li>Food</li>
+<li>Transportation</li>
+<li>Insurance</li>
+<li>Healthcare</li>
+<li>Debt payments</li>
+<li>Taxes</li>
+<li>Home maintenance</li>
+<li>Travel</li>
+<li>Hobbies</li>
+<li>Gifts</li>
+<li>Charitable giving</li>
+<li>Family support</li>
+</ul>
+<p>Then add expenses that do not happen every month.</p>
+<p>Examples:</p>
+<ul>
+<li>Property taxes</li>
+<li>Homeowners insurance</li>
+<li>Car insurance</li>
+<li>Vacations</li>
+<li>Vehicle replacement</li>
+<li>Home repairs</li>
+<li>Dental work</li>
+<li>Major medical costs</li>
+<li>Annual subscriptions</li>
+<li>Holiday gifts</li>
+</ul>
+<p>Convert those annual or irregular expenses into a monthly amount.</p>
+<p>Example:</p>
+<ul>
+<li>Monthly bills: $5,600</li>
+<li>Annual property taxes and insurance: $8,400</li>
+<li>Annual travel budget: $9,600</li>
+<li>Home and vehicle reserve: $6,000</li>
+</ul>
+<p>Annual irregular expenses total $24,000, or $2,000 per month.</p>
+<p>Estimated monthly spending target:</p>
+<p><code>$5,600 + $2,000 = $7,600</code></p>
+<p>That $7,600 is the first draft of the monthly retirement spending target.</p>
+<h2 id="step-2-separate-essential-and-flexible-spending">Step 2: Separate Essential And Flexible Spending</h2>
+<p>Not every expense has the same importance.</p>
+<p>Group spending into:</p>
+<ul>
+<li>Essential spending</li>
+<li>Important but adjustable spending</li>
+<li>Flexible lifestyle spending</li>
+</ul>
+<p>Essential spending includes housing, utilities, food, insurance, healthcare, debt payments, and taxes.</p>
+<p>Flexible spending may include travel, hobbies, gifts, upgrades, and optional purchases.</p>
+<p>This matters because the income gap can be managed in hard years if some spending can adjust.</p>
+<p>Example:</p>
+<ul>
+<li>Essential spending: $5,400 per month</li>
+<li>Flexible spending: $2,200 per month</li>
+<li>Total spending target: $7,600 per month</li>
+</ul>
+<p>If markets fall, the household may be able to reduce flexible spending for a year or two without cutting essentials.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the My Goals card on Edit values with goals enabled, a Target net income and a Minimum income floor filled in. Purpose: show where a spending target and essential spending go in the planner. Suggested alt text: "AI Retirement Income Planner My Goals card with a target net income and a minimum income floor." -->
+
+<h2 id="step-3-add-reliable-income">Step 3: Add Reliable Income</h2>
+<p>Next, list income that does not require selling investments.</p>
+<p>This may include:</p>
+<ul>
+<li>Social Security</li>
+<li>Pension income</li>
+<li>Annuity income</li>
+<li>Rental income</li>
+<li>Part-time work</li>
+<li>Spouse income</li>
+<li>Disability income</li>
+<li>Other recurring income</li>
+</ul>
+<p>Social Security timing can change the gap, and <a href="/blog/when-to-take-social-security-62-67-70.html">when to take Social Security</a> compares the ages side by side. SSA says retirement benefits can be claimed anytime between age 62 and 70, and the payment is higher the longer you wait up to age 70. SSA also says you can check your Social Security account to estimate benefits at different claiming ages.</p>
+<p>Example:</p>
+<ul>
+<li>Social Security at 62: $2,870 per month</li>
+<li>Social Security at full retirement age (67): $4,100 per month</li>
+<li>Social Security at 70: $5,080 per month</li>
+</ul>
+<p>The same household may have three different income gaps depending on claiming age.</p>
+<h2 id="step-4-calculate-the-monthly-gap">Step 4: Calculate The Monthly Gap</h2>
+<p>Now subtract reliable income from spending.</p>
+<p>Example:</p>
+<ul>
+<li>Monthly spending target: $7,600</li>
+<li>Social Security: $3,800</li>
+<li>Pension: $1,200</li>
+<li>Reliable monthly income: $5,000</li>
+</ul>
+<p>Monthly income gap:</p>
+<p><code>$7,600 - $5,000 = $2,600</code></p>
+<p>That means savings and investments need to provide about $2,600 per month before considering taxes, healthcare timing, inflation, and one-time expenses.</p>
+<p>Annual gap:</p>
+<p><code>$2,600 x 12 = $31,200</code></p>
+<p>The $31,200 annual gap is the starting withdrawal need.</p>
+<h2 id="step-5-add-taxes">Step 5: Add Taxes</h2>
+<p>The withdrawal need and the spending need are not always the same.</p>
+<p>If the gap is filled from a traditional IRA or 401k, the withdrawal may be taxable. If it is filled from taxable investments, capital gains may apply. If it is filled from Roth accounts, qualified withdrawals may be tax-free. If it is filled from cash, the cash may not create income, although interest may be taxable.</p>
+<p>Example:</p>
+<ul>
+<li>Spending gap: $31,200 per year</li>
+<li>Source: traditional IRA</li>
+<li>Estimated effective tax on extra withdrawal: 15%</li>
+</ul>
+<p>The household may need more than $31,200 withdrawn to spend $31,200.</p>
+<p>Approximate gross withdrawal:</p>
+<p><code>$31,200 / 0.85 = $36,706</code></p>
+<p>This is why retirement income planning should focus on spendable income after taxes.</p>
+<h2 id="step-6-include-healthcare-timing">Step 6: Include Healthcare Timing</h2>
+<p>Healthcare can change the income gap by age.</p>
+<p>Before Medicare, HealthCare.gov says retirees who lose job-based coverage before age 65 can use the Marketplace to buy a plan. HealthCare.gov also says premium tax credits and lower out-of-pocket costs depend on income and household size.</p>
+<p>That means retirement withdrawals can affect <a href="/blog/health-insurance-before-medicare-retirement.html">healthcare costs before age 65</a>. IRA and 401k withdrawals generally count as income for Marketplace purposes.</p>
+<p>After Medicare begins, costs still matter. Medicare.gov says what you pay for Medicare depends on coverage choices, services, and providers. For 2026, Medicare.gov lists the standard Part B premium as $202.90 per month, or <a href="/blog/medicare-irmaa-retirement-income-planning.html">higher depending on income</a>.</p>
+<p>Your income-gap plan should show separate healthcare assumptions for:</p>
+<ul>
+<li>Pre-Medicare years</li>
+<li>Medicare enrollment year</li>
+<li>Medicare years</li>
+<li>Higher-healthcare-cost years</li>
+<li>Long-term care risk</li>
+</ul>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show two Overview phase cards from the sample plan, one before 65 with its ACA premium estimate and one after 65 with Medicare Part B and D. Purpose: show that healthcare costs change the gap when coverage changes. Suggested alt text: "AI Retirement Income Planner phase cards showing ACA healthcare costs before 65 and Medicare costs after." -->
+
+<h2 id="step-7-decide-which-accounts-fill-the-gap">Step 7: Decide Which Accounts Fill The Gap</h2>
+<p>Once you know the gap, <a href="/blog/which-retirement-account-withdraw-from-first.html">decide which account funds it</a>.</p>
+<p>Possible sources:</p>
+<ul>
+<li>Cash</li>
+<li>Taxable brokerage account</li>
+<li>Traditional IRA</li>
+<li>401k or 403b</li>
+<li>Roth IRA</li>
+<li>Roth 401k</li>
+<li>HSA for qualified healthcare expenses</li>
+<li>Annuity payments</li>
+<li>Home equity, if part of the plan</li>
+</ul>
+<p>The source matters because it can affect:</p>
+<ul>
+<li>Federal taxes</li>
+<li>State taxes</li>
+<li>Social Security taxation</li>
+<li>ACA Marketplace income</li>
+<li>Medicare IRMAA</li>
+<li>RMDs</li>
+<li>Cash reserves</li>
+<li>Survivor planning</li>
+<li>Estate goals</li>
+</ul>
+<p>A simple withdrawal order may work for some households. Other households need a blended strategy.</p>
+<p>Example:</p>
+<ul>
+<li>Cash covers the first year of the gap</li>
+<li>Taxable investments cover early retirement years</li>
+<li>Traditional IRA withdrawals fill low-tax years</li>
+<li>Roth accounts are preserved for high-tax years or survivor planning</li>
+<li>HSA funds are used for qualified medical expenses</li>
+</ul>
+<p>A good model shows how each withdrawal source changes the long-term plan.</p>
+<h2 id="step-8-watch-the-gap-before-social-security-starts">Step 8: Watch The Gap Before Social Security Starts</h2>
+<p>The income gap is often largest before Social Security and pensions begin. That stretch has its own article: <a href="/blog/how-much-can-i-spend-in-retirement.html">how much can I spend in retirement</a> works through the spending side of the same question.</p>
+<p>Example:</p>
+<ul>
+<li>Retire at 62</li>
+<li>Delay Social Security until 70</li>
+<li>Pension begins at 65</li>
+<li>Medicare begins at 65</li>
+</ul>
+<p>The plan has several stages:</p>
+<ul>
+<li>Ages 62 to 64: no Social Security, no pension, pre-Medicare healthcare</li>
+<li>Ages 65 to 69: pension begins, Medicare begins, Social Security delayed</li>
+<li>Age 70 and later: Social Security begins and the gap shrinks</li>
+</ul>
+<p>The early gap may be large, but temporary.</p>
+<p>That is different from a permanent gap.</p>
+<p>Look at the gap phase by phase, or year by year, instead of relying on a single average.</p>
+<h2 id="step-9-watch-the-gap-after-rmds-begin">Step 9: Watch The Gap After RMDs Begin</h2>
+<p>Later in retirement, RMDs can change the gap again.</p>
+<p>The IRS says required minimum distributions are minimum amounts that many retirement plan and IRA account owners must generally withdraw each year. Traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts are subject to RMD rules. Roth IRA owners are not required to take lifetime RMDs.</p>
+<p>RMDs can help fund the income gap, but they can also create more taxable income than the household needs for spending, which is the subject of <a href="/blog/how-rmds-change-retirement-tax-bill.html">how RMDs change your retirement tax bill</a>.</p>
+<p>Questions to model:</p>
+<ul>
+<li>When do RMDs begin?</li>
+<li>Are RMDs larger than the spending gap?</li>
+<li>Do RMDs increase taxable Social Security?</li>
+<li>Do RMDs affect Medicare IRMAA?</li>
+<li>Should Roth conversions be tested before RMDs begin?</li>
+<li>What happens to the surviving spouse?</li>
+</ul>
+<p>RMDs are part of the income plan even before they start.</p>
+<!-- IMAGE PLACEHOLDER: Generated image: A clean retirement timeline showing income gap stages before Social Security, after Medicare, and after RMDs begin. No readable text. Prompt for ChatGPT Images 2: "Create a clean retirement planning timeline showing three stages of income gap planning: early retirement before Social Security, Medicare years, and later RMD years. Use simple icons, professional financial planning style, no readable words, no logos." Suggested alt text: "Timeline showing retirement income gap stages before Social Security, after Medicare, and after RMDs." -->
+
+<h2 id="step-10-add-one-time-expenses">Step 10: Add One-Time Expenses</h2>
+<p>A clean monthly gap can hide <a href="/blog/large-one-time-expense-in-retirement.html">large future costs</a>.</p>
+<p>Add known or likely expenses:</p>
+<ul>
+<li>Vehicle replacement</li>
+<li>Roof replacement</li>
+<li>Major home repair</li>
+<li>Moving costs</li>
+<li>Family support</li>
+<li>Weddings</li>
+<li>Medical procedures</li>
+<li>Dental work</li>
+<li>Long trips</li>
+<li>Tax payments</li>
+<li>Funeral costs</li>
+</ul>
+<p>Example:</p>
+<ul>
+<li>Monthly income gap: $2,600</li>
+<li>Annual gap: $31,200</li>
+<li>Vehicle replacement in year 3: $35,000</li>
+</ul>
+<p>That year's real gap is not $31,200. It is closer to $66,200 before taxes and account-source effects.</p>
+<p>The AI Retirement Income Planner keeps these out of the monthly average. On the Lump sums tab, each one-time cost lands at the start of the phase you assign it to, paid from the account you choose, and the tax that withdrawal creates is charged with it.</p>
+<h2 id="step-11-stress-test-the-gap">Step 11: Stress Test The Gap</h2>
+<p>The income gap should be tested under pressure.</p>
+<p>Stress tests may include:</p>
+<ul>
+<li>Market decline in the first 3 years</li>
+<li>Higher inflation</li>
+<li>Higher healthcare costs</li>
+<li>Lower Social Security than expected</li>
+<li>Pension reduction or loss</li>
+<li>Part-time work ending early</li>
+<li>Large home repair</li>
+<li>Long-term care event</li>
+<li>One spouse dying earlier than expected</li>
+<li>Longer life than expected</li>
+</ul>
+<p>A plan with a $2,600 monthly gap may look fine in normal conditions. It may look different if the portfolio falls 20% early in retirement while healthcare costs rise.</p>
+<p>Stress testing shows whether the gap is manageable or too fragile.</p>
+<p>The planner covers part of that list directly. Its Stress test tab combines different investment returns with different inflation rates, the historical backtest on the Confidence tab replays every starting year on record, bad ones included, and the survivor scenario on What-if? covers a spouse dying earlier than expected. The rest, such as higher healthcare costs or part-time work ending early, are changes you make to a copy of the plan and then compare.</p>
+<h2 id="example-a-retirement-income-gap-calculation">Example: A Retirement Income Gap Calculation</h2>
+<p>Assume a couple is age 63 and 61.</p>
+<p>They have:</p>
+<ul>
+<li>Monthly spending target: $7,800</li>
+<li>Essential spending: $5,500</li>
+<li>Flexible spending: $2,300</li>
+<li>Cash and taxable savings: $180,000</li>
+<li>Traditional IRAs and 401ks: $900,000</li>
+<li>Roth accounts: $120,000</li>
+<li>HSA: $25,000</li>
+<li>Social Security if both claim as early as they can (at 63 and 62): about $3,900 per month combined</li>
+<li>Social Security if both delay to 70: about $6,600 per month combined</li>
+<li>Pension beginning at 65: $1,400 per month</li>
+<li>Marketplace healthcare before Medicare</li>
+</ul>
+<p>They test three scenarios.</p>
+<h3 id="scenario-a-claim-social-security-now">Scenario A: Claim Social Security Now</h3>
+<p>Reliable income begins sooner.</p>
+<p>The monthly income gap is smaller in the first years, but Social Security benefits are lower for life.</p>
+<h3 id="scenario-b-delay-social-security-and-use-taxable-savings">Scenario B: Delay Social Security And Use Taxable Savings</h3>
+<p>The early income gap is larger.</p>
+<p>Cash and taxable accounts fall faster, but future Social Security income is higher.</p>
+<h3 id="scenario-c-delay-social-security-and-work-part-time">Scenario C: Delay Social Security And Work Part-Time</h3>
+<p>Part-time income reduces the gap during the bridge years.</p>
+<p>The plan depends on the work actually happening, so they also test what happens if part-time income ends early.</p>
+<p>The best answer depends on taxes, healthcare, cash reserves, survivor planning, and stress-test results.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show Saved plans Compare with a saved claim-early plan beside a delay-to-70 plan on screen, net income per month and the final total balance visible. Purpose: show how two income-gap choices compare side by side. Suggested alt text: "AI Retirement Income Planner comparing a claim-early plan with a delay-to-70 plan." -->
+
+<h2 id="how-to-use-the-ai-retirement-income-planner">How To Use The AI Retirement Income Planner</h2>
+<p>Use this workflow:</p>
+<ol>
+<li>Work out your monthly spending target and your essential spending, as in Steps 1 and 2.</li>
+<li>On the My Goals card in Edit values, turn goals on and enter the target as Target net income and your essentials as the Minimum income floor. Both are in today's money, after tax and healthcare.</li>
+<li>Add Social Security, pensions, part-time work, and rental income under Income streams and in each phase. An annuity can be added to the plan from the Annuities tab.</li>
+<li>Enter account balances. The planner has four account types: 401k or IRA, cash, taxable investments, and Roth. An HSA has no place of its own.</li>
+<li>Check the healthcare assumptions in Edit values. The planner estimates ACA premiums before 65 and Medicare Part B and D after, and healthcare costs can inflate at their own rate.</li>
+<li>Set how much each account pays in each phase. That choice is how you fill the gap, and the planner works out the tax on it for you.</li>
+<li>Open Plan Health. The Income Goal check names any phase that falls short of your target, says by how much, and suggests which withdrawal would close it.</li>
+<li>On the Drawdown tab, choose Floor &amp; Upside to see guaranteed income beside the portfolio gap, phase by phase.</li>
+<li>Add one-time costs on the Lump sums tab.</li>
+<li>Test claiming ages on the SS Optimizer tab, or with the Social Security slider on What-if?.</li>
+<li>Check RMD Compliance in Plan Health. The planner estimates RMDs from your birth year and flags any phase whose 401k withdrawal falls short of them.</li>
+<li>Test the plan under pressure with the Stress test tab, the Monte Carlo and historical views on the Confidence tab, and, if you are married, the survivor scenario on What-if?.</li>
+<li>Keep alternatives in Saved plans and use Compare to set one beside the plan on screen.</li>
+</ol>
+<p>The goal is to move from a vague question to a visible plan:</p>
+<p>"Here is the gap, here is where the money comes from, and here is what happens if conditions change."</p>
+<h2 id="retirement-income-gap-checklist">Retirement Income Gap Checklist</h2>
+<p>Before retiring, review:</p>
+<ul>
+<li>Monthly spending target</li>
+<li>Annual irregular expenses</li>
+<li>Essential spending</li>
+<li>Flexible spending</li>
+<li>Social Security estimates</li>
+<li>Pension income</li>
+<li>Part-time income assumptions</li>
+<li>Rental or business income</li>
+<li>Healthcare before Medicare</li>
+<li>Medicare costs</li>
+<li>Taxes</li>
+<li>Account balances by tax type</li>
+<li>Withdrawal order</li>
+<li>Cash reserve</li>
+<li>Debt payments</li>
+<li>One-time expenses</li>
+<li>RMD timing</li>
+<li>Roth conversion opportunities</li>
+<li>Inflation assumptions</li>
+<li>Market stress tests</li>
+<li>Survivor income gap</li>
+</ul>
+<h2 id="common-income-gap-mistakes">Common Income Gap Mistakes</h2>
+<h3 id="mistake-1-using-gross-income-instead-of-spendable-income">Mistake 1: Using Gross Income Instead Of Spendable Income</h3>
+<p>Taxes can reduce what is available for spending. Estimate after-tax income.</p>
+<h3 id="mistake-2-averaging-the-gap-across-retirement">Mistake 2: Averaging The Gap Across Retirement</h3>
+<p>The gap may be large before Social Security and smaller later. Year-by-year planning is better than a single average.</p>
+<h3 id="mistake-3-ignoring-healthcare-before-medicare">Mistake 3: Ignoring Healthcare Before Medicare</h3>
+<p>The pre-Medicare healthcare bridge can create a larger income gap than expected.</p>
+<h3 id="mistake-4-forgetting-one-time-expenses">Mistake 4: Forgetting One-Time Expenses</h3>
+<p>Vehicle purchases, home repairs, and medical costs can change the gap in specific years.</p>
+<h3 id="mistake-5-treating-all-accounts-the-same">Mistake 5: Treating All Accounts The Same</h3>
+<p>Cash, taxable investments, traditional IRAs, Roth accounts, and HSAs can have very different tax effects.</p>
+<h3 id="mistake-6-skipping-survivor-planning">Mistake 6: Skipping Survivor Planning</h3>
+<p>The surviving spouse may have a different income gap, tax status, healthcare cost, and withdrawal need.</p>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo, go to the Drawdown tab and choose Floor & Upside. It puts the sample plan's guaranteed income beside the portfolio gap its withdrawals have to cover, and the chart stacks the two, phase by phase.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="what-is-a-retirement-income-gap">What is a retirement income gap?</h3>
+<p>A retirement income gap is the difference between retirement spending and reliable retirement income. Savings and investments usually need to fill that gap.</p>
+<h3 id="how-do-i-calculate-my-retirement-income-gap">How do I calculate my retirement income gap?</h3>
+<p>Add monthly spending, including irregular annual expenses converted to a monthly amount. Then subtract reliable income such as Social Security, pensions, annuities, rental income, or work income.</p>
+<h3 id="should-taxes-be-included-in-the-income-gap">Should taxes be included in the income gap?</h3>
+<p>Yes. A $3,000 monthly spending gap may require more than $3,000 of withdrawals if the money comes from taxable retirement accounts.</p>
+<h3 id="does-healthcare-affect-the-income-gap">Does healthcare affect the income gap?</h3>
+<p>Yes. Healthcare before Medicare, Medicare premiums, out-of-pocket costs, prescriptions, dental, vision, and hearing costs can all affect the gap.</p>
+<h3 id="can-social-security-eliminate-the-gap">Can Social Security eliminate the gap?</h3>
+<p>Sometimes. In other cases, Social Security covers only part of the spending need. Claiming age can change the gap, so compare several claiming ages.</p>
+<h3 id="what-if-my-income-gap-is-too-large">What if my income gap is too large?</h3>
+<p>Possible adjustments include working longer, working part-time, reducing spending, delaying Social Security, changing withdrawal order, downsizing, paying off debt, using annuities, or revising retirement timing.</p>
+<h3 id="should-i-use-cash-or-ira-withdrawals-to-fill-the-gap">Should I use cash or IRA withdrawals to fill the gap?</h3>
+<p>It depends on taxes, healthcare income thresholds, RMDs, Social Security taxation, Medicare IRMAA, Roth accounts, and cash reserve needs. Compare more than one withdrawal order.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Investor.gov, Managing Lifetime Income: https://www.investor.gov/additional-resources/retirement-toolkit/managing-lifetime-income</li>
+<li>Social Security Administration, Plan For Retirement: https://www.ssa.gov/retirement/plan-for-retirement</li>
+<li>HealthCare.gov, Health Coverage For Retirees: https://www.healthcare.gov/retirees/</li>
+<li>Medicare.gov, Medicare Costs: https://www.medicare.gov/basics/costs/medicare-costs</li>
+<li>IRS, Retirement Plan And IRA Required Minimum Distributions FAQs: https://www.irs.gov/retirement-plans/retirement-plan-and-ira-required-minimum-distributions-faqs</li>
+<li>IRS Publication 590-B, Distributions From Individual Retirement Arrangements: https://www.irs.gov/forms-pubs/about-publication-590-b</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Tax rules, benefit rules, healthcare costs and thresholds change over time, and any projection depends on assumptions that may not hold. Screenshots show a sample plan with invented figures and are illustrative only. Verify important figures with official sources such as IRS.gov, SSA.gov, Medicare.gov and HealthCare.gov, and confirm decisions with a qualified professional before acting.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-retirement-income-gap">Leave this blank</label>
+      <input type="text" id="pc-honey-retirement-income-gap" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-retirement-income-gap">Email address</label>
+    <input type="email" id="pc-email-retirement-income-gap" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Your retirement income gap is the number that turns a retirement dream into a retirement plan. The AI Retirement Income Planner helps you see the gap phase by phase, choose which accounts fill it, estimate taxes, model healthcare costs, test Social Security timing, estimate RMDs, compare saved plans, and stress test the plan before you retire.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/should-i-retire-with-debt.html">Should I Retire With Debt? Retirement Income Planning Checklist</a> <span class="post-meta">· Retirement Income</span></li>
+      <li><a href="/blog/retirement-with-rental-income.html">How To Plan Retirement With Rental Income</a> <span class="post-meta">· Retirement Income</span></li>
+      <li><a href="/blog/do-you-need-a-million-dollars-to-retire.html">Do You Really Need $1 Million to Retire? Find Your Own Number</a> <span class="post-meta">· Retirement Income</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#us">Planner v7 US version</a></li>
+          <li><a href="/products.html#intl">Planner v7 International</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
