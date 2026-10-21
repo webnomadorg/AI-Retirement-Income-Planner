@@ -82,7 +82,7 @@
      and no plan data. The ZIP download itself is a window.open navigation, which CSP fetch directives
      don't cover. -->
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://img.youtube.com https://i.ytimg.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 https://open.er-api.com https://airetirementincomeplanner.com; object-src 'none'; base-uri 'self'; form-action 'none'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://www.facebook.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 https://open.er-api.com https://airetirementincomeplanner.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net; object-src 'none'; base-uri 'self'; form-action 'none'"/>
 <style>
   :root {
     /* Light theme — paper-like off-white family (was pure #ffffff which read too
