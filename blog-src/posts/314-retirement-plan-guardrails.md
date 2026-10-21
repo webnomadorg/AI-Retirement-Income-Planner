@@ -148,7 +148,7 @@ Also on that card, in plain gray: `Est. RMD: $776/mo`. Nothing is wrong, so noth
 
 The previous family costs you money you could have kept. This one costs you money you did not have to spend at all.
 
-**Required minimum distributions.** From age 73, the IRS requires a minimum withdrawal from tax-deferred accounts each year. Fall short and the penalty is 25% of the shortfall — reducible to 10% if corrected promptly, but still the harshest routine penalty in retirement.
+**Required minimum distributions.** From age 73 (75 if you were born in 1960 or later), the IRS requires a minimum withdrawal from tax-deferred accounts each year. Fall short and the penalty is 25% of the shortfall — reducible to 10% if corrected promptly, but still the harshest routine penalty in retirement.
 
 [IMAGE RMD shortfall warning below the IRS minimum 7]
 

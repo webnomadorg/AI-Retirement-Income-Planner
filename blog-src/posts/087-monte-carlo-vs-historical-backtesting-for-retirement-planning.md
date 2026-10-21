@@ -344,7 +344,7 @@ A plan should account for:
 - ACA income before Medicare.
 - Medicare IRMAA after Medicare.
 
-IRS says RMDs are minimum amounts that must be withdrawn each year from certain retirement accounts once the rules apply. The IRS FAQ says account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts when they reach age 73.
+IRS says RMDs are minimum amounts that must be withdrawn each year from certain retirement accounts once the rules apply. The IRS FAQ says account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts when they reach age 73 (75 for anyone born in 1960 or later).
 
 If a model ignores RMDs, taxes, and Social Security taxation, the risk score may not represent spendable income.
 

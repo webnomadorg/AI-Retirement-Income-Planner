@@ -159,7 +159,7 @@ Healthcare belongs in the sustainability test because it is both essential and h
 
 ## Step 5: Look Ahead To RMDs
 
-The IRS says retirees generally have to start taking withdrawals from IRA, SIMPLE IRA, SEP IRA, or retirement plan accounts at age 73. The IRS also says RMDs are minimum annual withdrawals, and those withdrawals are generally included in taxable income except for amounts already taxed or received tax-free.
+The IRS says retirees generally have to start taking withdrawals from IRA, SIMPLE IRA, SEP IRA, or retirement plan accounts at age 73 (75 for anyone born in 1960 or later). The IRS also says RMDs are minimum annual withdrawals, and those withdrawals are generally included in taxable income except for amounts already taxed or received tax-free.
 
 For sustainability, RMDs can be a mixed signal.
 

@@ -42,7 +42,7 @@ This is the fifth article in our framework series drawn from the free companion 
 - **Account type sets the tax result.** A dollar from a traditional 401(k), a Roth, cash, or a brokerage account has a completely different tax footprint, so the same spending can produce very different bills.
 - **Timing is a lever.** Low-income years, often the gap between leaving work and starting Social Security or RMDs, can be used on purpose rather than left idle.
 - **Taxes interact.** One withdrawal can raise your bracket, tax more of your Social Security, and change your healthcare costs at the same time, so the true cost can exceed the tax alone.
-- **RMDs arrive on a schedule.** A traditional account left untouched keeps growing, and the required distributions from 73 can force taxable income whether you need the cash or not.
+- **RMDs arrive on a schedule.** A traditional account left untouched keeps growing, and the required distributions that start at 73 (75 if you were born in 1960 or later) can force taxable income whether you need the cash or not.
 - **The lowest-tax plan is not automatically the best plan.** Tax efficiency is one input among spendable income, flexibility, healthcare, and peace of mind.
 
 ## Cash Flow Is Not the Same as Taxable Income

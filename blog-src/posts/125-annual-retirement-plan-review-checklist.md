@@ -153,7 +153,7 @@ If the tax bill surprised you, the plan needs an updated tax assumption. A tax s
 
 ## 6. Review RMDs
 
-The IRS says retirees generally have to start taking withdrawals from IRAs, SIMPLE IRAs, SEP IRAs, or retirement plan accounts at age 73. RMDs are minimum annual withdrawals, and withdrawals are generally included in taxable income except for amounts that were already taxed or can be received tax-free.
+The IRS says retirees generally have to start taking withdrawals from IRAs, SIMPLE IRAs, SEP IRAs, or retirement plan accounts at age 73 (75 for anyone born in 1960 or later). RMDs are minimum annual withdrawals, and withdrawals are generally included in taxable income except for amounts that were already taxed or can be received tax-free.
 
 During the annual review, check:
 

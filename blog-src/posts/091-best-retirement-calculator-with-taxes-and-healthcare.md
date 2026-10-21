@@ -140,7 +140,7 @@ This is the single clearest reason a retirement tax calculator has to model the 
 
 It also shows why the order you draw accounts in is a tax decision and not just a preference. The same $10,000 taken from a Roth account changes provisional income by nothing at all.
 
-The IRS says required minimum distributions are the minimum amounts that must be withdrawn from certain retirement accounts each year once the rules apply. IRS FAQs say account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts at age 73.
+The IRS says required minimum distributions are the minimum amounts that must be withdrawn from certain retirement accounts each year once the rules apply. IRS FAQs say account owners generally must start taking withdrawals from traditional IRAs, SEP IRAs, SIMPLE IRAs, and retirement plan accounts at age 73 (75 for anyone born in 1960 or later).
 
 That matters because RMDs can force taxable income later in retirement.
 
