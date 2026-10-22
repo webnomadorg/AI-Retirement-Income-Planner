@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can Roth Conversions Affect ACA Subsidies?</title>
+<!-- Google Analytics + Meta Pixel — on every page (visible here in the source).
+     Consent starts DENIED, except for a visitor who has ALREADY accepted: their saved
+     choice is read synchronously right here, BEFORE gtag('config') sends the page_view.
+     ⚠ This has to happen in <head> and nowhere else. consent.js is deferred, so until
+     2026-08-31 it restored a saved 'granted' AFTER the page_view had already gone out as
+     gcs=G100 (consent denied) — and gtag never re-sends a page_view. Every pageview by
+     every visitor, consenting or not, was reported as a cookieless denied ping, which GA4
+     only turns back into users through behavioural modelling this site is far too small to
+     qualify for. Measured that day: GA4 saw roughly a quarter of the traffic the cookieless
+     Vercel Web Analytics did. The Meta pixel never had this bug — fbq QUEUES events while
+     revoked and flushes them on grant, which is why Facebook's numbers looked right and
+     Google's did not. Keep this block byte-identical across every page; page_build.py
+     propagates it from partials/head-analytics.html and --check flags any page left behind. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VX12DHPY3"></script>
+<script>
+  window.wnConsent = (function () {
+    try { return localStorage.getItem('wn-consent') === 'granted' ? 'granted' : 'denied'; }
+    catch (e) { return 'denied'; }
+  })();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: window.wnConsent,
+    ad_user_data: window.wnConsent,
+    ad_personalization: window.wnConsent,
+    analytics_storage: window.wnConsent
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-6VX12DHPY3');
+</script>
+<!-- Meta Pixel. Revoked BEFORE init unless the visitor already accepted (Meta requires that
+     order); while revoked fbq queues events and flushes them when consent.js grants. -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  if (window.wnConsent !== 'granted') fbq('consent', 'revoke');
+  fbq('init', '2106222783607307');
+  fbq('track', 'PageView');
+</script>
+<script src="/assets/js/consent.js" defer></script>
+<meta name="description" content="Roth conversions can raise income during pre-Medicare retirement years, which may affect Marketplace premium tax credits and out-of-pocket savings. Learn what to model.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://airetirementincomeplanner.com/blog/can-roth-conversions-affect-aca-subsidies.html">
+<!-- Open Graph / social -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Can Roth Conversions Affect ACA Subsidies?">
+<meta property="og:description" content="Roth conversions can raise income during pre-Medicare retirement years, which may affect Marketplace premium tax credits and out-of-pocket savings. Learn what to model.">
+<meta property="og:image" content="https://airetirementincomeplanner.com/assets/img/blog/can-roth-conversions-affect-aca-subsidies-1.webp">
+<meta property="og:url" content="https://airetirementincomeplanner.com/blog/can-roth-conversions-affect-aca-subsidies.html">
+<meta property="article:published_time" content="2026-10-19">
+<meta property="article:modified_time" content="2026-10-19">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Retirement Income Planner Blog" href="/blog/feed.xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>!function(){var e=document.documentElement,t=localStorage.getItem('wn-theme'),d='1'===localStorage.getItem('wn-dark');t&&e.setAttribute('data-theme',t);d&&e.classList.add('dark')}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Can Roth Conversions Affect ACA Subsidies?", "description": "Roth conversions can raise income during pre-Medicare retirement years, which may affect Marketplace premium tax credits and out-of-pocket savings. Learn what to model.", "datePublished": "2026-10-19", "dateModified": "2026-10-19", "mainEntityOfPage": "https://airetirementincomeplanner.com/blog/can-roth-conversions-affect-aca-subsidies.html", "author": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com"}, "publisher": {"@type": "Organization", "name": "WebNomad Studio", "url": "https://airetirementincomeplanner.com", "logo": {"@type": "ImageObject", "url": "https://airetirementincomeplanner.com/assets/img/og-cover.png"}}, "image": "https://airetirementincomeplanner.com/assets/img/blog/can-roth-conversions-affect-aca-subsidies-1.webp"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://airetirementincomeplanner.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://airetirementincomeplanner.com/blog.html"}, {"@type": "ListItem", "position": 3, "name": "Taxes & Roth", "item": "https://airetirementincomeplanner.com/blog.html#cat=taxes-roth"}, {"@type": "ListItem", "position": 4, "name": "Can Roth Conversions Affect ACA Subsidies?", "item": "https://airetirementincomeplanner.com/blog/can-roth-conversions-affect-aca-subsidies.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Roth conversion affect ACA premium tax credits?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. A Roth conversion can increase household income for the year, and HealthCare.gov says Marketplace savings are based on income and household size."}}, {"@type": "Question", "name": "Do IRA or 401k withdrawals count as income for Marketplace coverage?", "acceptedAnswer": {"@type": "Answer", "text": "HealthCare.gov says generally yes. Roth conversions from pre-tax retirement accounts can also add income because the converted amount is usually taxable."}}, {"@type": "Question", "name": "Should I avoid Roth conversions while on Marketplace coverage?", "acceptedAnswer": {"@type": "Answer", "text": "Not automatically. Some retirees may still benefit from smaller conversions or carefully timed conversions. The tax and healthcare effects should be modeled together."}}, {"@type": "Question", "name": "Is the ACA subsidy based on last year's income?", "acceptedAnswer": {"@type": "Answer", "text": "HealthCare.gov says Marketplace savings are based on your income estimate for the year you want coverage, not last year's income."}}, {"@type": "Question", "name": "Can Roth conversions help later RMDs?", "acceptedAnswer": {"@type": "Answer", "text": "They can. Moving money from a pre-tax account to a Roth account may reduce future pre-tax balances and future RMD pressure, but the conversion can create current tax and healthcare cost effects."}}, {"@type": "Question", "name": "Should I ask a tax professional before converting?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Roth conversions during ACA years can affect taxes and healthcare costs. A tax professional can help check the current rules and reporting details."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/" aria-label="WebNomad Studio — home">
+      <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+      <span><span class="brand-name">WebNomad</span><span class="brand-tagline">Confident today. Secure tomorrow.</span></span>
+    </a>
+    <!-- Outside .nav-panel on purpose. The panel collapses into the hamburger below 1500px, so a
+         search button inside it would be invisible on every laptop and phone — buried under two
+         taps. Here it sits beside the hamburger and stays reachable at every width. -->
+    <button class="nav-search" id="navSearch" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" title="Search (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="nav-panel" aria-expanded="false"><span></span></button>
+    <div class="nav-panel" id="nav-panel">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products.html">Products</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/how-it-works.html">How It Works</a></li>
+        <li><a href="/getting-started.html">Getting Started</a></li>
+        <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+        <li><a href="/blog.html" aria-current="page">Blog</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+      <div class="nav-theme">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <select class="theme-select" id="themeSelect" aria-label="Choose color theme">
+          <option value="">Quiet Fintech</option>
+          <option value="soft">Soft Consumer</option>
+          <option value="editorial">Editorial</option>
+          <option value="pro">Pro Dashboard</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="/products.html" aria-label="Buy the planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Buy now</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sale bar. Empty until assets/js/sale.js fills it from /api/sale, so a promotion can start
+       and stop with no deploy.
+
+       ⚠ It must live INSIDE the site-header element. page_build.py rewrites pages by matching
+       that element with a non-greedy regex, so anything below the closing tag would not
+       propagate and would show as permanent --check drift. For the same reason, never write
+       that closing tag anywhere in here — not even inside a comment like this one. The regex
+       stops at the first one it sees, which truncates the header it writes into all 90 pages
+       and leaves the remainder loose in the body. Nothing errors; the check even goes green
+       again on the next run, because the first match is clean and the wreckage sits after it. -->
+  <div id="saleBar" class="sale-bar" hidden></div>
+  <!-- Reserve the 30px before first paint, exactly as the theme snippet in <head> restores dark
+       mode before first paint, and for the same reason: sale.js is deferred, so without this the
+       bar would arrive after the page had already been drawn and shove the hero down under the
+       reader's eyes. This only decides WHETHER to make room; sale.js remains the single source
+       of what the bar actually says. -->
+  <script>try{var s=JSON.parse(sessionStorage.getItem('wn-sale')||'null');if(s&&s.active&&s.id!==localStorage.getItem('wn-sale-dismissed')&&Date.parse(s.endsAt)>Date.now()){document.documentElement.classList.add('has-sale');document.getElementById('saleBar').hidden=false}}catch(e){}</script>
+</header>
+
+<!-- Reading progress. Driven entirely by a CSS scroll-timeline, so there is no scroll
+     listener and no JavaScript at all. Sits outside <main> because search_build.py reads
+     <main> and this element carries no content. -->
+<div class="read-progress" aria-hidden="true"></div>
+
+<main id="main">
+  <article class="section post-page">
+    <div class="container">
+      <div class="post-article">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html">Blog</a> <span aria-hidden="true">›</span>
+          <a href="/blog.html#cat=taxes-roth">Taxes & Roth</a>
+        </nav>
+        <header class="post-header">
+          <h1>Can Roth Conversions Affect ACA Subsidies?</h1>
+          <p class="post-meta"><span class="cat-badge">Taxes & Roth</span> · Published October 19, 2026 · 9 min read</p>
+        </header>
+        <details class="post-toc">
+  <summary>On this page</summary>
+  <ul>
+      <li><a href="#short-answer">Short Answer</a></li>
+      <li><a href="#why-roth-conversions-matter-for-early-retirees">Why Roth Conversions Matter For Early Retirees</a></li>
+      <li><a href="#how-a-roth-conversion-changes-income">How A Roth Conversion Changes Income</a></li>
+      <li><a href="#marketplace-savings-are-based-on-estimated-income">Marketplace Savings Are Based On Estimated Income</a></li>
+      <li><a href="#the-common-mistake-converting-without-checking-the-subsidy">The Common Mistake: Converting Without Checking The Subsidy</a></li>
+      <li><a href="#a-roth-conversion-and-aca-subsidy-example">A Roth Conversion And ACA Subsidy Example</a></li>
+      <li><a href="#roth-conversions-before-medicare-can-still-make-sense">Roth Conversions Before Medicare Can Still Make Sense</a></li>
+      <li><a href="#when-to-be-careful">When To Be Careful</a></li>
+      <li><a href="#when-to-convert-before-65-or-after-medicare-starts">When To Convert: Before 65, Or After Medicare Starts</a></li>
+      <li><a href="#how-to-model-a-roth-conversion-against-aca-subsidies">How To Model A Roth Conversion Against ACA Subsidies</a></li>
+      <li><a href="#questions-to-ask-before-converting-during-aca-years">Questions To Ask Before Converting During ACA Years</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#educational-disclaimer">Educational Disclaimer</a></li>
+  </ul>
+</details>
+        <div class="post-body">
+<h2 id="short-answer">Short Answer</h2>
+<p>Yes. A Roth conversion can affect ACA subsidies because it can raise household income for the year.</p>
+<p>HealthCare.gov says Marketplace savings are based on your income estimate for the year you want coverage, not last year's income. The measure it uses is MAGI, and <a href="/blog/what-is-magi.html">there is more than one definition of it</a>: the Marketplace version is not the one Medicare applies later. HealthCare.gov also says retirees may qualify for premium tax credits and lower out-of-pocket costs based on income and household size.</p>
+<p>If you <a href="/blog/health-insurance-before-medicare-retirement.html">retire before Medicare and use Marketplace coverage</a>, a Roth conversion may reduce your premium tax credit or other savings.</p>
+<p>That does not mean Roth conversions are bad before Medicare. It means they need to be <a href="/blog/taxes-aca-healthcare-early-retirement.html">modeled with healthcare costs, not only tax brackets</a>.</p>
+<figure class="shot post-img">
+<img src="/assets/img/blog/can-roth-conversions-affect-aca-subsidies-1.webp" alt="Flow diagram titled Roth Conversion Raises Yearly Income, Impacts Healthcare Savings and Taxes: a Roth conversion leads to increased yearly income, which branches to three boxes, the Marketplace premium tax credit with a down arrow, out-of-pocket healthcare cost with an up arrow, and the tax bill with an up arrow." width="1400" height="875" loading="lazy">
+</figure>
+
+<aside class="cta-box cta-soft">
+  <p>The AI Retirement Income Planner helps you compare Roth conversion amounts during Marketplace coverage years using What-if?, Tax & ACA, the phase cards, Saved plans, Balance, Plan Health, and Confidence.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">See it in the demo</a></p>
+</aside>
+<h2 id="why-roth-conversions-matter-for-early-retirees">Why Roth Conversions Matter For Early Retirees</h2>
+<p>Many early retirees have a window between leaving work and starting Medicare.</p>
+<p>HealthCare.gov says if you retire before age 65 and lose job-based health coverage, you can use the Health Insurance Marketplace to buy a plan. The tier worth protecting is the Silver cost-sharing band, covered in <a href="/blog/aca-silver-plan-cost-sharing-reductions.html">the Silver ACA plan advantage before 65</a>. Losing job-based coverage can qualify you for a Special Enrollment Period.</p>
+<p>That bridge period often creates lower-income years. Lower-income years can look attractive for Roth conversions because wages may be gone and Social Security may not have started yet.</p>
+<p>But those same years may also be ACA Marketplace years.</p>
+<p>So the conversion question becomes:</p>
+<p>Is the tax benefit of converting worth the possible healthcare cost change?</p>
+<h2 id="how-a-roth-conversion-changes-income">How A Roth Conversion Changes Income</h2>
+<p>A Roth conversion moves money from a pre-tax retirement account into a Roth account. The wider case for doing it before required distributions start is in <a href="/blog/roth-conversions-before-rmds.html">Roth conversions before RMDs</a>.</p>
+<p>The IRS says rollovers generally let taxpayers move retirement savings from one plan or IRA to another, and if the money is not rolled over, the payment is generally taxable except for qualified Roth distributions and already-taxed amounts.</p>
+<p>When you convert pre-tax money to Roth, the converted amount usually adds taxable income for the year.</p>
+<p>That income may affect:</p>
+<ul>
+<li>Federal tax</li>
+<li>State tax</li>
+<li>Marketplace premium tax credits</li>
+<li>Cost-sharing reductions</li>
+<li>Future RMDs</li>
+<li>Future Medicare IRMAA</li>
+<li>Social Security taxation later</li>
+</ul>
+<p>That is why Roth conversion planning before Medicare is a tax and healthcare decision.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the Tax & ACA tab's "Where your plan sits on the cliffs" card with the ACA subsidy cliff chart, for a sample early retiree with a Roth conversion in the pre-Medicare phase. Purpose: show readers that conversion income and healthcare costs belong in one view. Suggested alt text: "AI Retirement Income Planner ACA subsidy cliff chart showing a sample early retiree's income against the cliff." -->
+
+<h2 id="marketplace-savings-are-based-on-estimated-income">Marketplace Savings Are Based On Estimated Income</h2>
+<p>HealthCare.gov says you can start with adjusted gross income and update it for expected changes when estimating household income for Marketplace coverage. It also says savings are based on your income estimate for the year you want coverage.</p>
+<p>That matters because retirees often have income that can be controlled or timed:</p>
+<ul>
+<li>IRA withdrawals</li>
+<li>401k withdrawals</li>
+<li>Roth conversions</li>
+<li>Capital gains</li>
+<li>Part-time work</li>
+<li>Pension start date</li>
+<li>Social Security claiming age</li>
+</ul>
+<p>HealthCare.gov also says IRA or 401k withdrawals generally count as income.</p>
+<p>If a conversion changes the income estimate, it may change healthcare savings.</p>
+<p>Two lines matter most. Silver cost-sharing reductions stop at 250% of the federal poverty level. For 2026 coverage, the premium tax credit stops entirely at 400%, because the larger credits that had removed that cliff expired at the end of 2025. A conversion that carries income over either line can cost far more than its tax.</p>
+<h2 id="the-common-mistake-converting-without-checking-the-subsidy">The Common Mistake: Converting Without Checking The Subsidy</h2>
+<p>The common mistake is looking only at tax brackets.</p>
+<p>Example:</p>
+<p>A retiree says, "I have room in a lower tax bracket, so I should convert more this year."</p>
+<p>That might be true.</p>
+<p>But if that retiree is also using Marketplace coverage, the better question is:</p>
+<p>What happens to the tax bill and the healthcare cost together?</p>
+<p>A conversion can still be worth doing. But a $20,000 conversion, $40,000 conversion, and $80,000 conversion may produce very different healthcare results.</p>
+<h2 id="a-roth-conversion-and-aca-subsidy-example">A Roth Conversion And ACA Subsidy Example</h2>
+<p>Suppose a couple <a href="/blog/can-i-retire-at-62-before-medicare.html">retires at 62</a> and needs Marketplace coverage until Medicare at 65.</p>
+<p>They have:</p>
+<ul>
+<li>Cash savings</li>
+<li>Taxable brokerage</li>
+<li>Traditional IRA</li>
+<li>Roth IRA</li>
+<li>Social Security planned at 67</li>
+<li>No pension</li>
+</ul>
+<p>They want to convert traditional IRA money to Roth from age 62 to 64.</p>
+<p>They compare:</p>
+<ul>
+<li>No conversion</li>
+<li>$15,000 annual conversion</li>
+<li>$30,000 annual conversion</li>
+<li>$60,000 annual conversion</li>
+</ul>
+<p>The $60,000 conversion may reduce future RMDs more than the smaller conversion. It may also increase current taxes and reduce Marketplace savings.</p>
+<p>The best answer is the one that improves the whole plan, not the one that maximizes the conversion amount.</p>
+<!-- IMAGE PLACEHOLDER: App screenshot: Show the What-if? tab's Roth conversion size-impact panel for the pre-Medicare phase of a sample plan, with the extra-tax curve, the ACA cliff marker and the ACA chip visible. Purpose: show how the planner marks the conversion size at which the subsidy is lost. Suggested alt text: "AI Retirement Income Planner Roth conversion chart marking where a conversion crosses the ACA subsidy cliff." -->
+
+<h2 id="roth-conversions-before-medicare-can-still-make-sense">Roth Conversions Before Medicare Can Still Make Sense</h2>
+<p>It is easy to overcorrect and say, "Never do Roth conversions before Medicare."</p>
+<p>That is too simple.</p>
+<p>Roth conversions before Medicare may still help if:</p>
+<ul>
+<li>Future RMDs look large.</li>
+<li>The household has a large traditional IRA.</li>
+<li>The retiree wants tax diversification.</li>
+<li>The conversion helps survivor planning.</li>
+<li>Future tax rates are a concern.</li>
+<li>Cash is available to pay conversion taxes.</li>
+<li>Marketplace cost changes are acceptable.</li>
+</ul>
+<p>The point is to compare the full tradeoff.</p>
+<h2 id="when-to-be-careful">When To Be Careful</h2>
+<p>Be extra careful if:</p>
+<ul>
+<li>You rely heavily on premium tax credits.</li>
+<li>You qualify for cost-sharing reductions.</li>
+<li>Your income is near 250% or 400% of the federal poverty level.</li>
+<li>You are doing a large one-year conversion.</li>
+<li>You also have capital gains that year.</li>
+<li>You have part-time work income.</li>
+<li>You plan to claim Social Security before Medicare.</li>
+<li>You are close to Medicare and may later face <a href="/blog/medicare-irmaa-retirement-income-planning.html">IRMAA planning issues</a>.</li>
+</ul>
+<p>The conversion may still be reasonable, but it should not be a surprise.</p>
+<h2 id="when-to-convert-before-65-or-after-medicare-starts">When To Convert: Before 65, Or After Medicare Starts</h2>
+<p>Roth conversions do not have to be the same amount every year.</p>
+<p>You might compare:</p>
+<ul>
+<li>No conversion in ACA years, then conversions after Medicare starts</li>
+<li>Smaller conversions during ACA years</li>
+<li>Larger conversions only in a year with lower healthcare cost exposure</li>
+<li>Conversions before retirement while still on employer coverage</li>
+<li>Conversions after Medicare starts but before RMDs</li>
+<li>Conversions spread over several years</li>
+</ul>
+<p>Each version changes taxes, healthcare, future RMDs, and account balances.</p>
+<!-- IMAGE PLACEHOLDER: Generated image: A simple timeline showing early retirement Marketplace years, Medicare at 65, Social Security timing, and RMDs at 73 or 75, with possible Roth conversion windows marked. Prompt for ChatGPT Images 2: "Create a clean retirement planning timeline showing early retirement Marketplace coverage years before 65, Medicare at 65, optional Social Security timing, and RMDs at 73 or 75. Mark possible Roth conversion windows before Medicare, after Medicare, and before RMDs. White background, muted blue, green, and gold accents, no logos, no tiny text." Suggested alt text: "Timeline showing Roth conversion windows around Marketplace coverage, Medicare, Social Security, and RMDs." -->
+
+<h2 id="how-to-model-a-roth-conversion-against-aca-subsidies">How To Model A Roth Conversion Against ACA Subsidies</h2>
+<p>Use this workflow in the AI Retirement Income Planner:</p>
+<ol>
+<li>Enter your retirement age. The planner starts Medicare at 65, or at the earlier age you set under Income streams if you are on SSDI.</li>
+<li>Check the ACA figures in the Tax parameters card on Edit values. The planner estimates your Marketplace premium from your income, using those poverty-level thresholds and premium caps, so there is no premium to type in.</li>
+<li>Enter account balances by tax type: cash, taxable, Roth, and tax-deferred.</li>
+<li>Enter Social Security claiming ages and pension income if any.</li>
+<li>Build a baseline with no Roth conversion.</li>
+<li>Use What-if? to test conversion sizes for a pre-Medicare phase. Its chart shows the extra tax at each size and marks where a conversion would cross the ACA subsidy cliff.</li>
+<li>Read the pre-Medicare phase cards. Each shows whether the plan stays eligible for the premium tax credit and for Silver cost-sharing reductions.</li>
+<li>On the Tax &amp; ACA tab, "Where your plan sits on the cliffs" charts your income against the subsidy cliff.</li>
+<li>Enter the size you like in that phase's Roth conversion field, save the plan, and use Saved plans to compare it with the baseline.</li>
+<li>Review Balance to see future pre-tax and Roth balances.</li>
+<li>Check the years after RMDs start (at 73, or 75 if you were born in 1960 or later) for RMD pressure.</li>
+<li>Open Plan Health for the ACA Subsidy Protected and CSR / Subsidy Headroom checks.</li>
+<li>Review Confidence and ending balances.</li>
+</ol>
+<p>The planner's job is not to decide the conversion for you. Its job is to make the tradeoff visible.</p>
+<h2 id="questions-to-ask-before-converting-during-aca-years">Questions To Ask Before Converting During ACA Years</h2>
+<ul>
+<li>Am I using Marketplace coverage this year?</li>
+<li>What household income estimate did I use?</li>
+<li>Will IRA or 401k withdrawals count as income?</li>
+<li>How much income will the conversion add?</li>
+<li>Will I also have capital gains?</li>
+<li>Will I have part-time work income?</li>
+<li>Will I claim Social Security before Medicare?</li>
+<li>How much tax will the conversion create?</li>
+<li>How much healthcare savings might change?</li>
+<li>Will the conversion reduce future RMD pressure?</li>
+<li>Does the conversion improve survivor planning?</li>
+<li>Do I have cash to pay the tax?</li>
+<li>Should I convert less this year and more later?</li>
+</ul>
+<aside class="cta-box cta-demo">
+  <p>Open the live demo and look at the Phase 2 card, the sample plan's years before Medicare: its income is already above the Silver cost-sharing ceiling but still under the subsidy cliff. Then go to What-if? and choose Phase 2 in the Roth conversion section. The chart marks where a conversion would cross that cliff, and at the $20,000 conversion the demo uses, the chip warns that it does.</p>
+  <p class="cta-box-action"><a class="btn btn-primary btn-sm" href="/demo.html">Try the live demo</a></p>
+</aside>
+<h2 id="faq">FAQ</h2>
+<h3 id="can-a-roth-conversion-affect-aca-premium-tax-credits">Can a Roth conversion affect ACA premium tax credits?</h3>
+<p>Yes. A Roth conversion can increase household income for the year, and HealthCare.gov says Marketplace savings are based on income and household size.</p>
+<h3 id="do-ira-or-401k-withdrawals-count-as-income-for-marketplace-coverage">Do IRA or 401k withdrawals count as income for Marketplace coverage?</h3>
+<p>HealthCare.gov says generally yes. Roth conversions from pre-tax retirement accounts can also add income because the converted amount is usually taxable.</p>
+<h3 id="should-i-avoid-roth-conversions-while-on-marketplace-coverage">Should I avoid Roth conversions while on Marketplace coverage?</h3>
+<p>Not automatically. Some retirees may still benefit from smaller conversions or carefully timed conversions. The tax and healthcare effects should be modeled together.</p>
+<h3 id="is-the-aca-subsidy-based-on-last-years-income">Is the ACA subsidy based on last year's income?</h3>
+<p>HealthCare.gov says Marketplace savings are based on your income estimate for the year you want coverage, not last year's income.</p>
+<h3 id="can-roth-conversions-help-later-rmds">Can Roth conversions help later RMDs?</h3>
+<p>They can. Moving money from a pre-tax account to a Roth account may reduce future pre-tax balances and future RMD pressure, but the conversion can create current tax and healthcare cost effects.</p>
+<h3 id="should-i-ask-a-tax-professional-before-converting">Should I ask a tax professional before converting?</h3>
+<p>Yes. Roth conversions during ACA years can affect taxes and healthcare costs. A tax professional can help check the current rules and reporting details.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>HealthCare.gov, Health Coverage For Retirees: https://www.healthcare.gov/retirees/</li>
+<li>HealthCare.gov, Saving Money On Health Insurance: https://www.healthcare.gov/lower-costs/</li>
+<li>IRS, Rollovers Of Retirement Plan And IRA Distributions: https://www.irs.gov/retirement-plans/plan-participant-employee/rollovers-of-retirement-plan-and-ira-distributions</li>
+<li>IRS, Topic No. 451, Individual Retirement Arrangements: https://www.irs.gov/taxtopics/tc451</li>
+</ul>
+<h2 id="educational-disclaimer">Educational Disclaimer</h2>
+<p>This article is for general education only. It is not financial, tax, investment, legal, healthcare, insurance, Social Security, Medicare, estate, or retirement advice. Tax rules, benefit rules, healthcare costs and thresholds change over time, and any projection depends on assumptions that may not hold. Screenshots show a sample plan with invented figures and are illustrative only. Verify important figures with official sources such as IRS.gov, SSA.gov, Medicare.gov and HealthCare.gov, and confirm decisions with a qualified professional before acting.</p>
+        </div>
+        <!-- Free ask before the paid ask: a reader who just finished the article will trade an
+             email address long before they'll buy, and the offer is matched to the post's topic
+             (see CAPTURE_BY_CATEGORY in tools/blog_build.py). -->
+<aside class="post-capture">
+  <p class="post-capture-kicker">Free eBook</p>
+  <h2>Build a Retirement Plan You Can Question</h2>
+  <p class="post-capture-pitch">Thirteen short chapters on building a plan whose numbers you can actually check — free, straight to your inbox.</p>
+  <div class="form-notice" role="alert" data-nl-notice></div>
+  <form class="post-capture-form" novalidate data-newsletter data-magnet="ebook">
+    <div class="sr-only" aria-hidden="true">
+      <label for="pc-honey-can-roth-conversions-affect-aca-subsidie">Leave this blank</label>
+      <input type="text" id="pc-honey-can-roth-conversions-affect-aca-subsidie" name="_honey" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="sr-only" for="pc-email-can-roth-conversions-affect-aca-subsidie">Email address</label>
+    <input type="email" id="pc-email-can-roth-conversions-affect-aca-subsidie" name="email" autocomplete="email" required
+           placeholder="you@example.com">
+    <button type="submit" class="btn btn-primary">Send me the eBook</button>
+  </form>
+  <p class="post-capture-fine">No spam. Unsubscribe anytime. Educational only &mdash; not financial advice.</p>
+  <div class="form-success" role="status" aria-live="polite" data-nl-success>
+    <p>Check your inbox &mdash; it&rsquo;s on its way.</p>
+  </div>
+</aside>
+        <div class="cta-band">
+          <h2 class="cta-band-title">Test this with your own numbers</h2>
+          <p>Before converting during ACA years, model taxes and healthcare together. The AI Retirement Income Planner gives you a private browser-based way to compare conversion amounts before the decision becomes part of your tax return.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/products.html">See the planner</a>
+            <a class="btn btn-outline" href="/demo.html">Try the live demo</a>
+          </div>
+          <p class="cta-trust">One-time purchase · No subscription · No account · Runs privately in your browser · Educational planning tool, not financial advice</p>
+        </div>
+        
+        <nav class="related-posts" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+      <li><a href="/blog/how-rmds-change-retirement-tax-bill.html">How RMDs Can Change Your Retirement Tax Bill</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/roth-conversions-before-rmds.html">Roth Conversions Before RMDs: What Retirees Should Model</a> <span class="post-meta">· Taxes & Roth</span></li>
+      <li><a href="/blog/what-is-magi.html">What Is MAGI in Retirement Planning?</a> <span class="post-meta">· Taxes & Roth</span></li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="WebNomad Studio — home">
+          <img class="logo" src="/assets/img/everwise-mark.svg" alt="" width="38" height="38">
+          <span><span class="brand-name">WebNomad</span><span class="brand-sub" style="color:#7FB7AA;">Studio</span></span>
+        </a>
+        <p>Thoughtful, private financial tools you buy once and own forever.</p>
+        <div class="social" aria-label="Follow WebNomad Studio">
+          <a href="https://www.facebook.com/profile.php?id=61590506987795" target="_blank" rel="noopener" aria-label="WebNomad Studio on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z"/></svg></a>
+          <a href="https://www.youtube.com/@webnomadstudio" target="_blank" rel="noopener" aria-label="WebNomad Studio on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.53A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.45 12 20.45 12 20.45s7.5 0 9.38-.53a3 3 0 0 0 2.12-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://www.instagram.com/webnomadorg/" target="_blank" rel="noopener" aria-label="WebNomad Studio on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.99.05-1.53.21-1.89.35-.47.18-.81.4-1.17.76-.36.36-.58.7-.76 1.17-.14.36-.3.9-.35 1.89-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05.99.21 1.53.35 1.89.18.47.4.81.76 1.17.36.36.7.58 1.17.76.36.14.9.3 1.89.35 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.99-.05 1.53-.21 1.89-.35.47-.18.81-.4 1.17-.76.36-.36.58-.7.76-1.17.14-.36.3-.9.35-1.89.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-.99-.21-1.53-.35-1.89a3.15 3.15 0 0 0-.76-1.17 3.15 3.15 0 0 0-1.17-.76c-.36-.14-.9-.3-1.89-.35-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 1 1 0 11.9 5.95 5.95 0 0 1 0-11.9zm0 1.44a4.51 4.51 0 1 0 0 9.02 4.51 4.51 0 0 0 0-9.02zm6.18-.16a1.39 1.39 0 1 1-2.78 0 1.39 1.39 0 0 1 2.78 0z"/></svg></a>
+          <a href="https://www.linkedin.com/in/paul-hankin/" target="_blank" rel="noopener" aria-label="Paul Hankin on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+        <p class="footer-dev">Handcrafted by <a href="https://www.webnomad.org" target="_blank" rel="noopener">WebNomad</a> — independent developer &amp; tool builder.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/products.html">Products</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How It Works</a></li>
+          <li><a href="/getting-started.html">Getting Started</a></li>
+          <li><a href="/private.html">Private by Design</a></li>
+          <li><a href="/technical.html">Technical</a></li>
+          <li><a href="/demo.html">Try the Demo</a></li>
+          <li><a href="/worked-example-retiring-at-62.html">Worked Example</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/newsletter.html">Free eBook</a></li>
+        </ul>
+      </div>
+      <!-- The cross-border cluster gets its own column: it groups three pages that belong together,
+           it rebalances Explore (was 11 items against Buy's 4), and the short labels fit the narrower
+           column on one line — "Cross-Border Methodology" wrapped to two under the old layout. -->
+      <div class="footer-col">
+        <h4>Retire Abroad</h4>
+        <ul>
+          <li><a href="/retire-abroad.html">Comparison Tool</a></li>
+          <li><a href="/cross-border-retirement-data-study.html">Data Study</a></li>
+          <li><a href="/cross-border-methodology.html">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy</h4>
+        <ul>
+          <li><a href="/products.html#us">Planner v7 US version</a></li>
+          <li><a href="/products.html#intl">Planner v7 International</a></li>
+          <li><a href="/sessions.html">1-on-1 Sessions</a></li>
+          <li><a href="/products.html">All versions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/search.html">Search the site</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/updates.html">Updates &amp; Fixes</a></li>
+          <li><a href="/about.html">About the Developer</a></li>
+          <li><a href="/press.html">Press Kit</a></li>
+          <li><a href="/affiliates.html">Affiliates</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/share.html">Share your experience</a></li>
+          <li><a class="eml" href="/contact.html" data-n="dev" data-h="webnomad.org">Email us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/software-terms.html">Software Terms</a></li>
+          <li><a href="/terms.html">Session Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> WebNomad Studio. All rights reserved.</span>
+      <span>Made for planners, not subscribers.</span>
+    </div>
+    <p class="footer-disclaimer">The AI Retirement Income Planner is an educational planning tool. It is not financial, tax, or legal advice, and it does not provide personalized investment recommendations. Every figure is an estimate based on the values you enter. Always consult a qualified professional before making financial decisions.</p>
+  </div>
+  <!-- Sitewide search. It lives inside the footer because the header and footer regions are the
+       only ones page_build.py propagates — <head> and the tail of each page are hand-maintained,
+       so a script tag there would have to be pasted into 86 files and would drift. Deferred, and
+       it fetches nothing until someone actually searches. -->
+  <script src="/assets/js/search.js" defer></script>
+  <!-- Sale bar, here for the same reason as the line above: the footer propagates, the page
+       tail does not. Fills #saleBar in the header, and rewrites any price marked data-usd. -->
+  <script src="/assets/js/sale.js" defer></script>
+  <!-- Site assistant, here for the same reason as the two lines above: the footer
+       propagates and the page tail does not. ⚠ It renders NOTHING and fetches nothing
+       until the visitor shows some engagement, and even then it asks the server whether
+       it should appear on this page at all -- so a bounce costs one script parse and no
+       requests, and the owner can switch it off from the console with no deploy. -->
+  <script src="/assets/js/chat.js" defer></script>
+  <!-- Email addresses are assembled here rather than written into the HTML, so an address
+       harvester fetching the page source finds no address to take. The link works without
+       JavaScript too: it points at the contact form until this upgrades it.
+       ⚠ This runs LAST in the body, so it also upgrades any a.eml in the page above it —
+       which is why in-page mentions need no script of their own. ⚠ Pages with no footer
+       (the chrome-free /get/ landing pages) must carry their own copy; page_build --check
+       enforces that. -->
+  <script>/*eml*/(function(){var l=document.querySelectorAll('a.eml[data-n][data-h]');for(var i=0;i<l.length;i++){var a=l[i],e=a.getAttribute('data-n')+String.fromCharCode(64)+a.getAttribute('data-h'),s=a.getAttribute('data-s');a.href='mai'+'lto:'+e+(s?'?subject='+encodeURIComponent(s):'');if(!a.hasAttribute('data-keep'))a.textContent=e;}})();</script>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<!-- Vercel Web Analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
