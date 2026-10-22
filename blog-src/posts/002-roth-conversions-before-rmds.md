@@ -85,7 +85,7 @@ From age 62 to 69, their taxable income may be lower than it was while they were
 
 Now change the facts.
 
-Suppose the same couple needs ACA Marketplace coverage until Medicare. HealthCare.gov says IRA and 401k withdrawals generally count as income for Marketplace purposes. A Roth conversion can raise income, which may affect premium tax credits or cost-sharing reductions.
+Suppose the same couple needs ACA Marketplace coverage until Medicare. HealthCare.gov says IRA and 401k withdrawals generally count as income for Marketplace purposes. A Roth conversion can raise income, which [may affect premium tax credits or cost-sharing reductions](/blog/can-roth-conversions-affect-aca-subsidies.html).
 
 The same conversion that looks appealing from a tax-bracket view may look less appealing after healthcare costs are included. The income measure doing the damage here is MAGI, and it is not one number: see [what MAGI is](/blog/what-is-magi.html) for why the ACA, IRMAA and Social Security versions differ. The cost-sharing tier specifically is covered in [ACA Silver plan cost-sharing reductions](/blog/aca-silver-plan-cost-sharing-reductions.html).
 

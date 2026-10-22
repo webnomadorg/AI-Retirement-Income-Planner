@@ -150,7 +150,7 @@ That can create planning opportunities:
 
 But the same choices can affect healthcare costs before Medicare.
 
-For example, a Roth conversion may look attractive from a tax-bracket view, but it may raise income during Marketplace coverage years. That could reduce premium tax credits or other savings.
+For example, a Roth conversion may look attractive from a tax-bracket view, but it may [raise income during Marketplace coverage years](/blog/can-roth-conversions-affect-aca-subsidies.html). That could reduce premium tax credits or other savings.
 
 At 55, taxes and healthcare need to be modeled together.
 

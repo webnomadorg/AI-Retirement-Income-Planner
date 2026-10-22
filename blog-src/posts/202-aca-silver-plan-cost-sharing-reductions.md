@@ -95,7 +95,7 @@ So a retiree who needs, say, $60,000 to live on can often assemble it in ways th
 
 ## The Trade-Off Worth Naming: CSR vs Roth Conversions
 
-Staying under 250% FPL for CSR is powerful, but it is not free, and a good plan should show both sides. The same low-income years that protect CSR are also the classic window for **Roth conversions** at low tax rates, and conversions **raise** MAGI. You often cannot maximize both in the same year.
+Staying under 250% FPL for CSR is powerful, but it is not free, and a good plan should show both sides. The same low-income years that protect CSR are also the classic window for **Roth conversions** at low tax rates, and conversions **raise** MAGI. You often [cannot maximize both in the same year](/blog/can-roth-conversions-affect-aca-subsidies.html).
 
 There is no universal right answer. For some retirees, locking in years of strong CSR and low healthcare costs before Medicare is the better deal. For others, converting more to Roth now, accepting the loss of CSR in those years, reduces a much larger tax and IRMAA problem later. The point is that this is a real, quantifiable trade-off, not a slogan, and it is precisely the kind of question you want to test with numbers rather than guess. This is closely tied to [which accounts you draw from first](/blog/which-retirement-account-withdraw-from-first.html) and to [how much you can actually spend](/blog/how-much-can-i-spend-in-retirement.html) once healthcare is in the picture.
 
