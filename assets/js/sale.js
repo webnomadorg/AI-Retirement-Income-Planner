@@ -20,6 +20,16 @@
    ⚠ Editorial figures are NOT prices — the blog and the cross-border study are full of "$605,000
    portfolio" and "$312/month". Never mark those.
 
+   AN AFFILIATE'S LINK OUTRANKS A SALE. /api/sale?promo=CODE answers with the affiliate's offer in
+   place of any running sale, and this draws it the same way: bar, prices, code pill. The rest of
+   the tab stays on that offer, because it is held in the same cached response, so following the
+   nav back to the products page cannot lose the visitor their discount or the affiliate the sale.
+
+   ⚠ The price shown must be the price charged, so an offer also fills its code into the checkout
+   behind every button whose price it changed. A new buy button needs data-promo (Planner v7, which
+   the emailed codes also cover) or data-promo-aff (anything else affiliate codes cover). Never
+   put either on a 1-on-1 session.
+
    Nothing here stores anything about the visitor. The two keys it writes are the cached
    response (so the next page does not jump) and which sale this browser has dismissed. */
 
@@ -132,6 +142,18 @@
     }
   }
 
+  function fillCheckout(code) {
+    var links = document.querySelectorAll(
+      'a[data-promo][href^="https://buy.stripe.com/"],a[data-promo-aff][href^="https://buy.stripe.com/"]');
+    for (var i = 0; i < links.length; i++) {
+      try {
+        var u = new URL(links[i].href);
+        u.searchParams.set("prefilled_promo_code", code);
+        links[i].href = u.toString();
+      } catch (e) { /* an unparseable link stays as it was */ }
+    }
+  }
+
   /* ---- the bar ------------------------------------------------------------ */
   function hide() {
     if (timer) { clearInterval(timer); timer = null; }
@@ -141,7 +163,7 @@
   }
 
   function render(sale, animate) {
-    var ends = endsText(sale.endsAt);
+    var ends = sale.affiliate ? "applied at checkout" : endsText(sale.endsAt);
     if (!ends && !sale.preview) { hide(); return; }
 
     bar.innerHTML =
@@ -149,7 +171,7 @@
         icon(sale.icon) +
         "<span><strong>" + esc(sale.title) + "</strong> — " + sale.percent + "% off</span>" +
       "</a>" +
-      '<span class="sale-bar-lead">Enter code</span>' +
+      '<span class="sale-bar-lead">' + (sale.affiliate ? "Code" : "Enter code") + "</span>" +
       '<button type="button" class="sale-bar-code" aria-label="Copy the code ' + esc(sale.code) +
         '">' + esc(sale.code) + "</button>" +
       (ends ? '<span class="sale-bar-ends">· ' + esc(ends) + "</span>" : "") +
@@ -180,8 +202,8 @@
       hide();
     });
 
-    if (timer) clearInterval(timer);
-    timer = setInterval(function () {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (!sale.affiliate) timer = setInterval(function () {
       var t = endsText(sale.endsAt);
       if (!t) { hide(); return; }          // the sale ends on screen, with no reload
       var slot = bar.querySelector(".sale-bar-ends");
@@ -226,6 +248,8 @@
   /* ---- decide what to show ------------------------------------------------ */
   function show(sale, animate) {
     if (!sale || !sale.active) { hide(); return; }
+    // Closing the bar closes the bar. The visitor came for this price, so it stays either way.
+    if (sale.affiliate) { renderPrices(sale); fillCheckout(sale.code); }
     var dismissed = null;
     try { dismissed = localStorage.getItem(DISMISS_KEY); } catch (e) {}
     // Keyed to the sale id, so closing one sale never hides the next one.
@@ -236,26 +260,40 @@
   // Paint from the cached copy first. The inline snippet in the header partial has already
   // reserved the 30px, so this fills it rather than moving the page.
   var cached = readJSON(sessionStorage, CACHE_KEY);
-  if (cached && cached.active) show(cached, false);
+  var promoInUrl = (/[?&]promo=([A-Za-z0-9][A-Za-z0-9-]{2,29})(?=&|#|$)/.exec(location.search) || [])[1] || "";
+  promoInUrl = promoInUrl.toUpperCase();
+  var wasAffiliate = !!(cached && cached.affiliate);
+  var promo = promoInUrl || (wasAffiliate ? cached.code : "");
+  // A link carrying a code waits for the answer, or a cached sale's price would flash first.
+  var painted = !!(cached && cached.active && (!promoInUrl || (wasAffiliate && cached.code === promoInUrl)));
+  if (painted) show(cached, false);
 
   // A local escape hatch for verification: the preview server is a plain static file server
   // and does not run /api/*, so there is no other way to see the bar without deploying.
   if (window.__SALE_PREVIEW__) { show(window.__SALE_PREVIEW__, !cached); return; }
 
   var previewId = (/[?&]salepreview=([^&#]+)/.exec(location.search) || [])[1];
-  var url = previewId ? API + "?preview=" + encodeURIComponent(previewId) : API;
+  var url = previewId ? API + "?preview=" + encodeURIComponent(previewId)
+    : promo ? API + "?promo=" + encodeURIComponent(promo) : API;
 
   fetch(url, { headers: { Accept: "application/json" } })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
       if (!d) return;
       if (!previewId) write(sessionStorage, CACHE_KEY, JSON.stringify(d));
+      // The code we painted from has been switched off since. Its prices overwrote the originals,
+      // so start the page again. Only if the cache really changed: a failed write would loop.
+      if (!previewId && painted && wasAffiliate && !d.affiliate) {
+        var kept = readJSON(sessionStorage, CACHE_KEY);
+        if (!(kept && kept.affiliate)) { location.reload(); return; }
+      }
       show(d, !(cached && cached.active));
     })
     .catch(function () { /* no banner is the correct answer when the feed cannot be reached */ });
 })();
 
-/* ?promo=CODE — a personal discount code carried in from an email.
+/* ?promo=CODE — a personal discount code carried in from an email. An affiliate's link uses the
+   same parameter, but the first half of this file handles those once the server has confirmed one.
 
    The nurture emails (tools/admin/nurture-offer.mjs, desktop repo) link to
    products.html?promo=SAVE20-XXXXXXX: Planner v7 comes in two versions, so there is no single

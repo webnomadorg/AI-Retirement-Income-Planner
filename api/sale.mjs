@@ -23,6 +23,11 @@
    out a working discount months early. So an automated sale that has not started yet has its
    code MASKED here. The bar can still be checked for layout, which is all a preview is for.
 
+   ?promo=<code> is an affiliate's link. An active affiliate code answers with that affiliate's
+   offer INSTEAD of any running sale (owner, 2026-11-09), even when the sale is the bigger
+   discount: checkout takes one code, and the affiliate earns only on theirs. Any other code gets
+   the answer no code gets — see lib/affiliate-codes.mjs for why that must stay true.
+
    NOTE: classic Node (req, res) signature — the web-standard handler(request) form crashes
    this project's runtime with FUNCTION_INVOCATION_FAILED. Same constraint as
    api/download.mjs and api/latest-version.mjs. */
@@ -30,6 +35,7 @@
 import {
   readState, resolveActive, findSale, publicView, inWindow, maskCode,
 } from '../lib/sale-state.mjs';
+import { affiliatePercent, affiliateView } from '../lib/affiliate-codes.mjs';
 
 export default async function handler(req, res) {
   // Same reasoning as api/latest-version.mjs: nothing here is private or user-specific, and
@@ -46,6 +52,17 @@ export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.setHeader('Allow', 'GET, HEAD, OPTIONS');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Before the sale state is even read, so no sale can outrank it. A preview is the owner's own
+  // look at a sale, so that wins if both are present.
+  const promo = typeof req.query?.promo === 'string' ? req.query.promo : '';
+  if (promo && !req.query?.preview) {
+    const percent = await affiliatePercent(promo);
+    if (percent) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=300');
+      return res.status(200).json(affiliateView(promo, percent));
+    }
   }
 
   let state;
